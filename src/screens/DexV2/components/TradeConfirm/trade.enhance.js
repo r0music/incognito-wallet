@@ -1,13 +1,10 @@
 import React from 'react';
-import { MESSAGES, PRV_ID } from '@screens/Dex/constants';
-import { COINS } from '@src/constants';
+import { MESSAGES } from '@screens/Dex/constants';
+import { ANALYTICS } from '@src/constants';
 import { ExHandler } from '@services/exception';
 import accountService from '@services/wallet/accountService';
-import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import {
   deposit as depositAPI,
-  trade as tradeAPI,
-  submitRawDataPdexHandler,
 } from '@services/api/pdefi';
 import { MAX_PDEX_TRADE_STEPS } from '@screens/DexV2/constants';
 import { apiTradePKyber } from '@screens/DexV2';
@@ -19,6 +16,7 @@ import { getSlippagePercent } from '@screens/DexV2/components/Trade/TradeV2/Trad
 import BigNumber from 'bignumber.js';
 import { accountSelector } from '@src/redux/selectors';
 import { walletSelector } from '@src/redux/selectors/wallet';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
 
 const withTrade = (WrappedComp) => (props) => {
   const [error, setError] = React.useState('');
@@ -190,6 +188,7 @@ const withTrade = (WrappedComp) => (props) => {
       // if (result && result.txId) {
       //   onTradeSuccess(true);
       // }
+      dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.TRADE));
       const reqTrade = {
         account,
         wallet,

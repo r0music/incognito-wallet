@@ -6,10 +6,11 @@ import {
   genCentralizedDepositAddress,
   genBSCDepositAddress,
 } from '@src/services/api/deposit';
-import { CONSTANT_COMMONS } from '@src/constants';
+import { ANALYTICS, CONSTANT_COMMONS } from '@src/constants';
 import config from '@src/constants/config';
 import { signPublicKeyEncodeSelector } from '@src/redux/selectors/account';
 import formatUtil from '@utils/format';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -231,6 +232,7 @@ export const actionPortalFetch = ({ tokenID, selectedPrivacy, account, accountWa
         isPortal: true,
       }),
     );
+    dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.SHIELD));
   } catch (error) {
     await dispatch(actionFetchFail());
     throw error;

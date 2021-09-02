@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isValid, formValueSelector, change, focus } from 'redux-form';
 import { actionFetchFeeByMax } from '@src/components/EstimateFee/EstimateFee.actions';
 import { useKeyboard } from '@src/components/UseEffect/useKeyboard';
+import { ANALYTICS } from '@src/constants';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { enhanceAddressValidation } from './Form.enhanceAddressValidator';
 import { enhanceAmountValidation } from './Form.enhanceAmountValidator';
 import { enhanceInit } from './Form.enhanceInit';
@@ -17,7 +19,7 @@ import { enhanceSend } from './Form.enhanceSend';
 import { enhanceUnshield } from './Form.enhanceUnShield';
 import { enhanceMemoValidation } from './Form.enhanceMemoValidator';
 import { enhanceSwitchPortal } from './Form.enhanceSwitchPortal';
-import { removeAllSpace, standardizedAddress } from './Form.utils';
+import { removeAllSpace } from './Form.utils';
 
 export const formName = 'formSend';
 
@@ -125,9 +127,11 @@ export const enhance = (WrappedComp) => (props) => {
       }
       await setIsSending(true);
       if (isSend) {
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.SEND));
         await handleSendAnonymously(payload);
       }
       if (isUnShield) {
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.UNSHIELD));
         await handleUnShieldCrypto(payload);
       }
     } catch (error) {
