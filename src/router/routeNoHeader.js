@@ -95,6 +95,7 @@ import TwoTokensSelect from '@screens/Dex/features/TwoTokensSelect';
 import SelectTokenStreamline from '@screens/Streamline/features/SelectTokens';
 import ConvertTokenList from '@screens/Home/features/ConvertTokenList';
 import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
+import WebView from '@screens/WebView';
 
 const masterKeyRoutes = [
   {
@@ -488,6 +489,10 @@ const routes = [
   {
     screen: Standby,
     name: routeNames.Standby,
+  },
+  {
+    screen: WebView,
+    name: routeNames.WebView,
   },
 ];
 

@@ -217,21 +217,21 @@ const enhance = (WrappedComp) => (props) => {
           desc: 'CONFIGS_APP',
         }),
       );
-      await setStatusConfigs('load pin');
+      await setStatusConfigs('loading pin');
       await dispatch(loadPin());
       await dispatch(
         actionLogEvent({
           desc: 'LOAD_PIN',
         }),
       );
-      await setStatusConfigs('get info');
+      await setStatusConfigs('getting info');
       await login();
       await dispatch(
         actionLogEvent({
           desc: 'LOGIN',
         }),
       );
-      await setStatusConfigs('get configs');
+      await setStatusConfigs('getting configs');
       const [servers] = await new Promise.all([
         serverService.get(),
         getFunctionConfigs().catch((e) => e),

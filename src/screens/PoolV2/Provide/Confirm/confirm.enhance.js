@@ -9,6 +9,8 @@ import { accountSelector } from '@src/redux/selectors';
 import ReCaptchaV3 from '@haskkor/react-native-recaptchav3';
 import appConstant from '@src/constants/app';
 import { PRV_ID } from '@src/constants/common';
+import {MESSAGES} from '@screens/Dex/constants';
+import {useError} from '@components/UseEffect/useError';
 
 
 const withConfirm = (WrappedComp) => (props) => {
@@ -16,6 +18,7 @@ const withConfirm = (WrappedComp) => (props) => {
     accountSelector.signPublicKeyEncodeSelector,
   );
   const [error, setError] = React.useState('');
+  const errorMessage = useError(error);
   const [providing, setProviding] = React.useState(false);
   const [provideTx, setProvideTx] = React.useState(null);
   const [disable, setDisable] = React.useState(true);
@@ -49,9 +52,9 @@ const withConfirm = (WrappedComp) => (props) => {
         tokenId: coin.id,
       });
       onSuccess(true);
-    } catch (e) {
+    } catch (error) {
       setProvideTx(null);
-      setError(new ExHandler(e).getMessage());
+      setError(new ExHandler(error).getMessage(error?.message || MESSAGES.SUBMIT_PROVIDE_RAW_TX_ERROR));
     } finally {
       setProviding(false);
     }
@@ -155,7 +158,7 @@ const withConfirm = (WrappedComp) => (props) => {
         {...{
           ...props,
           providing,
-          error,
+          error: errorMessage,
           disable,
           refreshing,
 
