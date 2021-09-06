@@ -34,6 +34,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import BtnRetryGrey from '@components/Button/BtnRetryGrey';
 import withParams from '@screens/DexV2/components/Trade/params.enhance';
 import withHistory from '@screens/DexV2/components/Trade/history.enhance';
+import {useError} from '@components/UseEffect/useError';
 import styles from './style';
 
 const Trade = (props) => {
@@ -73,6 +74,8 @@ const Trade = (props) => {
     disableButton,
     loadHistories,
   } = props;
+
+  const errorMessage = useError(error || '');
 
   const navigation = useNavigation();
   const navigateTradeConfirm = () => {
@@ -117,7 +120,7 @@ const Trade = (props) => {
         placeholder="0"
         maxValue={inputBalanceText}
       />
-      <Text style={styles.error}>{error}</Text>
+      <Text style={styles.error}>{errorMessage}</Text>
       <SwapToken onSwapTokens={onSwapTokens} />
       <TradeInputAmount
         tokens={outputList}
