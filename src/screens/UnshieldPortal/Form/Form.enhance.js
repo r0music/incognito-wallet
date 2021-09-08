@@ -3,11 +3,12 @@ import React from 'react';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { compose } from 'recompose';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { isValid, getFormSyncErrors } from 'redux-form';
 import { selectedPrivacySelector } from '@src/redux/selectors';
-import { CONSTANT_COMMONS } from '@src/constants';
+import { ANALYTICS, CONSTANT_COMMONS } from '@src/constants';
 import format from '@utils/format';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { enhanceAddressValidation } from './Form.enhanceAddressValidator';
 import { enhanceInit, formName } from './Form.enhanceInit';
 import { enhancePortalUnshield } from './Form.enhancePortalUnShield';
@@ -19,6 +20,7 @@ export const enhance = (WrappedComp) => (props) => {
   const { handleUnshieldPortal, onChangeField } = props;
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const isFormValid = useSelector((state) => isValid(formName)(state));
   const syncErrors = useSelector((state) => getFormSyncErrors(formName)(state));
   const disabledForm = Object.keys(syncErrors).length !== 0 || !isFormValid;
@@ -51,6 +53,7 @@ export const enhance = (WrappedComp) => (props) => {
       if (disabledForm) {
         return;
       }
+      dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.UNSHIELD));
       await setIsSending(true);
       await handleUnshieldPortal(payload);
     } catch (error) {

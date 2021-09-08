@@ -1,6 +1,6 @@
 {
   "name": "incognito-wallet",
-  "version": "4.6.2",
+  "version": "4.6.3",
   "private": true,
   "rnpm": {
     "assets": [
@@ -57,7 +57,7 @@
     "@react-native-community/netinfo": "^5.0.0",
     "@react-native-community/push-notification-ios": "^1.4.1",
     "@tradle/react-native-http": "^2.0.1",
-    "@walletconnect/react-native-dapp": "^1.4.1",
+    "@walletconnect/react-native-dapp": "^1.6.5",
     "@zilliqa-js/zilliqa": "^0.9.0",
     "assert": "^1.5.0",
     "axios": "^0.18.0",
@@ -79,7 +79,7 @@
     "formik": "^1.5.3",
     "https-browserify": "0.0.1",
     "immutability-helper": "^3.0.1",
-    "incognito-chain-web-js": "https://github.com/incognitochain/incognito-chain-web-js#4.2.17.66",
+    "incognito-chain-web-js": "https://github.com/incognitochain/incognito-chain-web-js#4.2.17.68",
     "intl": "^1.2.5",
     "jetifier": "^1.6.5",
     "json-2-csv": "^3.10.2",

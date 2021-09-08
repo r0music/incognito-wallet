@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import formatUtil from '@utils/format';
 import config from '@src/constants/config';
 
@@ -112,6 +113,7 @@ export const MESSAGES = {
   WITH_DRAW_FEE_MUST_BE_AN_INTERGER_NUMBER: 'Withdraw value must be an interger number',
   CONVERT_PROCESS: 'Converting your coins...\nThis may take a couple of minutes. Please do not navigate away from the app.',
   EARNED_FEE_INSUFFICIENT: 'Your earned fee is insufficient.',
+  SUBMIT_PROVIDE_RAW_TX_ERROR: 'Cant submit raw transaction, please try again',
 };
 export const MILLISECOND = 1;
 export const SECOND = 1000 * MILLISECOND;

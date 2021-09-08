@@ -150,4 +150,5 @@ export default {
   HistoryConvert: 'HistoryConvert',
 
   Standby: 'Standby',
+  WebView: 'WebView',
 };

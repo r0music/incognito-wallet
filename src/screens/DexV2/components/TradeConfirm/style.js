@@ -11,6 +11,7 @@ export default StyleSheet.create({
   },
   error: {
     color: COLORS.red,
+    lineHeight: 22,
   },
   bigText: {
     color: COLORS.blue5,
