@@ -16,9 +16,9 @@ export const {
 } = ACCOUNT_CONSTANT;
 
 const PORTAL_STATUS_DETAIL = {
-  [STATUS_CODE_UNSHIELD_PORTAL.PENDING]: 'The unshielding request is waiting to process.',
-  [STATUS_CODE_UNSHIELD_PORTAL.PROCESSING]: 'Your token is being sent out to your address.',
-  [STATUS_CODE_UNSHIELD_PORTAL.COMPLETE]: '',
+  [STATUS_CODE_UNSHIELD_PORTAL.PENDING]: 'The unshielding request is waiting for processing.',
+  [STATUS_CODE_UNSHIELD_PORTAL.PROCESSING]: 'The unshielding request is processing.',
+  [STATUS_CODE_UNSHIELD_PORTAL.COMPLETE]: 'The public token has been sent to your external address.',
   [STATUS_CODE_UNSHIELD_PORTAL.REFUND]: 'The unshielding request was refunded to your account. Please try again.'
 };
 
@@ -111,6 +111,8 @@ export const getPortalStatusColor = (history) => {
       // shield
       if (status === STATUS_CODE_SHIELD_PORTAL.SUCCESS) {
         statusColor = COLORS.green;
+      } else if (status === STATUS_CODE_SHIELD_PORTAL.FAILED) {
+        statusColor = COLORS.red;
       } else {
         statusColor = COLORS.colorGreyBold;
       }

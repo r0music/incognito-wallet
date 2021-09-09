@@ -212,7 +212,6 @@ export const mappingTxPortalSelector = createSelector(
     const isShieldTx = txType === ACCOUNT_CONSTANT.TX_TYPE.SHIELDPORTAL;
     const statusColor = getPortalStatusColor(txp);
     let inchainTxId = isShieldTx ? reqTxID : txId;
-    const statusDetail =  getPortalStatusDetail(txp);
     let result = {
       ...txp,
       timeStr: formatUtil.formatDateTime(time),
@@ -223,9 +222,8 @@ export const mappingTxPortalSelector = createSelector(
       }),
       symbol,
       statusColor,
-      inchainTx: `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${inchainTxId}`,
+      inchainTx: inchainTxId ? `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${inchainTxId}` : '',
       outchainTx: externalTxID ? `${CONSTANT_CONFIGS.BTC_EXPLORER_URL}/tx/${externalTxID}` : '', 
-      statusDetail,
     };
 
     if (!isShieldTx) {
@@ -555,7 +553,8 @@ export const historyDetailFactoriesSelector = createSelector(
           statusColor,
           inchainTx,
           outchainTx,
-          incognitoAddress
+          incognitoAddress,
+          statusDetail
         } = tx;
         return [
           {
@@ -568,6 +567,8 @@ export const historyDetailFactoriesSelector = createSelector(
             value: statusStr,
             disabled: !statusStr,
             valueTextStyle: { color: statusColor },
+            detail: statusDetail,
+            showDetail: !!statusDetail,
           },
           {
             label: 'Time',
