@@ -66,7 +66,10 @@ const shieldReducer = (state = initialState, action) => {
     };
   }
   case ACTION_RESET: {
-    return { ...initialState };
+    return {
+      ...initialState,
+      storage: state.storage,
+    };
   }
   default:
     return state;

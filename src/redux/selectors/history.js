@@ -211,6 +211,7 @@ export const mappingTxPortalSelector = createSelector(
 
     const isShieldTx = txType === ACCOUNT_CONSTANT.TX_TYPE.SHIELDPORTAL;
     const statusColor = getPortalStatusColor(txp);
+    const statusDetail = getPortalStatusDetail(txp);
     let inchainTxId = isShieldTx ? reqTxID : txId;
     let result = {
       ...txp,
@@ -222,6 +223,7 @@ export const mappingTxPortalSelector = createSelector(
       }),
       symbol,
       statusColor,
+      statusDetail,
       inchainTx: inchainTxId ? `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${inchainTxId}` : '',
       outchainTx: externalTxID ? `${CONSTANT_CONFIGS.BTC_EXPLORER_URL}/tx/${externalTxID}` : '', 
     };
