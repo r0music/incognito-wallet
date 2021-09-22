@@ -24,7 +24,7 @@ const PORTAL_UNSHIELD_STATUS_DETAIL = {
 
 const PORTAL_SHIELD_STATUS_DETAIL = {
   [STATUS_CODE_SHIELD_PORTAL.PENDING]: 'The shielding transaction is waiting for confirmation.',
-  [STATUS_CODE_SHIELD_PORTAL.PROCESSING]: 'The shielding transaction is confirmed with ', // + number blocks.
+  [STATUS_CODE_SHIELD_PORTAL.PROCESSING]: 'The shielding transaction has ', // + 2/6 block confirmations.
   [STATUS_CODE_SHIELD_PORTAL.FAILED]: 'The shielding request is rejected because the shielding amount is smaller than the minimum amount.',
   [STATUS_CODE_SHIELD_PORTAL.SUCCESS]: '',
 };
@@ -157,10 +157,8 @@ export const getPortalStatusDetail = (history) => {
         const { confirmations } = history;
         if ( confirmations === undefined ) {
           statusDetail = '';
-        } else if ( confirmations === 1 ) {
-          statusDetail = statusDetail + confirmations.toString() + ' block.';
         } else {
-          statusDetail = statusDetail + confirmations.toString() + ' blocks.';
+          statusDetail = statusDetail + confirmations.toString() + '/6 block confirmations.';
         }
       }
       break;
