@@ -42,7 +42,11 @@ export const template = {
     isOnline: 0,
     accountName: '',
     stakeTx: '',
-    latestFirmware: ''
+    latestFirmware: '',
+    slashing: {
+      isSlash: false,
+      desc: ''
+    }
   },
   keyInfo:{
     publicKeyMining:'',
@@ -489,5 +493,28 @@ export default class Device {
     }
 
     return !!this.Account && !this.IsStaking && this.IsStaked && !this.IsUnstaking;
+  }
+
+  get Slashing() {
+    let slashing = this.data.minerInfo.slashing;
+    if (!slashing) {
+      slashing = { isSlash: false, desc: '' };
+    }
+    return slashing;
+  }
+
+  set Slashing({ isSlash, desc }) {
+    this.data.minerInfo.slashing = {
+      isSlash,
+      desc
+    };
+  }
+
+  get IsSlashing() {
+    let slashing = this.data.minerInfo.slashing;
+    if (!slashing) {
+      slashing = { isSlash: false, desc: '' };
+    }
+    return slashing.isSlash;
   }
 }
