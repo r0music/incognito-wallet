@@ -204,7 +204,7 @@ const NodeItemDetail = memo(({
           {renderItemText('Keychain', name)}
           {renderItemText('IP', ip)}
           { item?.IsPNode && renderItemText('Version', item?.Firmware) }
-          {(!!item && !!item?.IsSlashing) && renderWarning('Slashing', item.Slashing.desc)}
+          {(!!item && !!item?.IsSlashing) && renderItemText('Slashing', item.Slashing.desc)}
           { !!item && (<NodeStatus isLoading={isLoading} item={item} />) }
         </View>
         {renderStakeInfo()}
