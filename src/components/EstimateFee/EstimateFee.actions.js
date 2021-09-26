@@ -122,12 +122,12 @@ export const actionFetchFailFee = () => ({
   type: ACTION_FETCH_FAIL_FEE,
 });
 
-export const actionFetchFee = ({ amount, address, screen, memo, childSelectedPrivacy = null }) => async (
+export const actionFetchFee = ({ amount, address, screen, memo }) => async (
   dispatch,
   getState,
 ) => {
   const state = getState();
-  const selectedPrivacy = childSelectedPrivacy ? childSelectedPrivacy : selectedPrivacySelector.selectedPrivacy(state);
+  const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
   let feeEst = MAX_FEE_PER_TX;
   let feePTokenEst = null;
   let minFeePTokenEst = null;
@@ -150,9 +150,9 @@ export const actionFetchFee = ({ amount, address, screen, memo, childSelectedPri
     await dispatch(actionFetchingFee());
     await dispatch(actionInitEstimateFee({ screen }));
     if (selectedPrivacy?.isWithdrawable && screen === 'UnShield') {
-      const isAddressValidated = await dispatch(actionValAddr(address, childSelectedPrivacy));
+      const isAddressValidated = await dispatch(actionValAddr(address));
       if (isAddressValidated) {
-        await dispatch(actionFetchUserFees({ address, amount, memo, childSelectedPrivacy }));
+        await dispatch(actionFetchUserFees({ address, amount, memo }));
       }
     }
   } catch (error) {
@@ -420,13 +420,13 @@ export const actionFetchedValidAddr = (payload) => ({
   payload,
 });
 
-export const actionValAddr = (address = '', childSelectedPrivacy = null) => async (dispatch, getState) => {
+export const actionValAddr = (address = '') => async (dispatch, getState) => {
   let isAddressValidated = true;
   let isValidETHAddress = true;
   const state = getState();
-  const selectedPrivacy = childSelectedPrivacy ? childSelectedPrivacy : selectedPrivacySelector.selectedPrivacy(state);
+  const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
   const { isUnShield } = feeDataSelector(state);
-  if (!isUnShield || (childSelectedPrivacy === null & selectedPrivacy?.isMainCrypto)) {
+  if (!isUnShield) {
     return;
   }
   try {
@@ -455,7 +455,7 @@ export const actionValAddr = (address = '', childSelectedPrivacy = null) => asyn
     throw error;
   } finally {
     await dispatch(
-      actionFetchedValidAddr({ isAddressValidated, isValidETHAddress, childSelectedPrivacy }),
+      actionFetchedValidAddr({ isAddressValidated, isValidETHAddress }),
     );
   }
   return isAddressValidated;
@@ -478,8 +478,8 @@ export const actionFetchFailUserFees = (payload) => ({
 export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
   let userFeesData;
   const state = getState();
-  const { address: paymentAddress, memo, amount: requestedAmount, childSelectedPrivacy } = payload;
-  const selectedPrivacy = childSelectedPrivacy ? childSelectedPrivacy : selectedPrivacySelector.selectedPrivacy(state);
+  const { address: paymentAddress, memo, amount: requestedAmount } = payload;
+  const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
   const signPublicKeyEncode = accountSelector.signPublicKeyEncodeSelector(
     state,
   );
