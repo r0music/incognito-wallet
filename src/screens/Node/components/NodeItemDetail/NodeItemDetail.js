@@ -104,6 +104,15 @@ const NodeItemDetail = memo(({
     );
   };
 
+  const renderWarning = (text, value) => {
+    return (
+      <View style={[{ flexDirection: 'column', marginBottom: 30 }]}>
+        <Text style={[theme.text.boldTextStyleMedium]}>{text}</Text>
+        <Text style={styles.warningDesc} numberOfLines={4}>{value || ''}</Text>
+      </View>
+    );
+  };
+
   const renderNodeSettings = () => {
     return (
       <TouchableOpacity
@@ -195,6 +204,7 @@ const NodeItemDetail = memo(({
           {renderItemText('Keychain', name)}
           {renderItemText('IP', ip)}
           { item?.IsPNode && renderItemText('Version', item?.Firmware) }
+          {(!!item && !!item?.IsSlashing) && renderItemText('Is slashed?', 'True')}
           { !!item && (<NodeStatus isLoading={isLoading} item={item} />) }
         </View>
         {renderStakeInfo()}
