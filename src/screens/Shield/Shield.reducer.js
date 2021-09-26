@@ -6,12 +6,15 @@ import {
   ACTION_FETCHED,
   ACTION_FETCH_FAIL,
   ACTION_TOGGLE_GUIDE,
+  ACTION_RESET,
+  ACTION_BSC_FEE_FETCHING,
 } from './Shield.constant';
 
 const initialState = {
   isFetching: false,
   isFetched: false,
   isFetchFailed: false,
+  isPortalCompatible: true,
   data: {
     min: null,
     max: null,
@@ -21,6 +24,10 @@ const initialState = {
     tokenFee: 0,
     estimateFee: 0,
     isPortal: false,
+  },
+  databsc: {
+    tokenFee: 0,
+    estimateFee: 0,
   },
   storage: {
     guide: false,
@@ -34,6 +41,12 @@ const shieldReducer = (state = initialState, action) => {
       ...state,
       isFetching: true,
       isFetchFailed: false,
+    };
+  }
+  case ACTION_BSC_FEE_FETCHING: {
+    return {
+      ...state,
+      databsc: { ...action.bscPayload },
     };
   }
   case ACTION_FETCHED: {
@@ -51,6 +64,7 @@ const shieldReducer = (state = initialState, action) => {
       isFetched: false,
       isFetching: false,
       isFetchFailed: true,
+      isPortalCompatible: action.isPortalCompatible,
     };
   }
   case ACTION_TOGGLE_GUIDE: {
@@ -60,6 +74,12 @@ const shieldReducer = (state = initialState, action) => {
         ...state.storage,
         guide: true,
       },
+    };
+  }
+  case ACTION_RESET: {
+    return {
+      ...initialState,
+      storage: state.storage,
     };
   }
   default:

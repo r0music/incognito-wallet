@@ -1,17 +1,16 @@
+/* eslint-disable import/no-cycle */
 import { Validator } from 'incognito-chain-web-js/build/wallet';
 import LocalDatabase from '@utils/LocalDatabase';
 import types from '@src/redux/types/masterKey';
-// eslint-disable-next-line import/no-cycle
 import MasterKeyModel from '@models/masterKey';
 import storage from '@src/services/storage';
-// eslint-disable-next-line import/no-cycle
 import {
   importWallet,
   saveWallet,
   storeWalletAccountIdsOnAPI,
   configsWallet,
+  loadWallet,
 } from '@services/wallet/WalletService';
-// eslint-disable-next-line import/no-cycle
 import {
   actionSubmitOTAKeyForListAccount,
   reloadWallet,
@@ -23,12 +22,12 @@ import {
   masterlessKeyChainSelector,
   noMasterLessSelector,
 } from '@src/redux/selectors/masterKey';
-import _, { flatten } from 'lodash';
+import _ from 'lodash';
 import { clearWalletCaches } from '@services/cache';
 import accountService from '@services/wallet/accountService';
 import { actionLogEvent } from '@src/screens/Performance';
-import { devSelector } from '@src/screens/Dev';
 import { performance } from '@src/screens/Performance/Performance.utils';
+import { getPassphrase } from '@src/services/wallet/passwordService';
 
 const DEFAULT_MASTER_KEY = new MasterKeyModel({
   name: 'Wallet',
@@ -119,6 +118,7 @@ export const initMasterKey = (masterKeyName, mnemonic) => async (dispatch) => {
     await syncServerAccounts(wallet);
     defaultMasterKey.mnemonic = wallet.Mnemonic;
     defaultMasterKey.wallet = wallet;
+    wallet.RootName = masterKeyName;
     const masterKeys = [defaultMasterKey, masterlessMasterKey];
     await dispatch(initMasterKeySuccess(masterKeys));
     await dispatch(switchMasterKey(defaultMasterKey.name));
@@ -276,6 +276,7 @@ export const createMasterKey = (data) => async (dispatch) => {
     );
     newMasterKey.wallet = wallet;
     newMasterKey.mnemonic = wallet.Mnemonic;
+    wallet.RootName = newMasterKey.name;
     await dispatch(createMasterKeySuccess(newMasterKey));
     await dispatch(switchMasterKey(data.name));
     await dispatch(followDefaultTokenForWallet(wallet));
@@ -381,6 +382,7 @@ export const importMasterKey = (data) => async (dispatch, getState) => {
     await syncServerAccounts(wallet, dispatch);
     newMasterKey.wallet = wallet;
     newMasterKey.mnemonic = wallet.Mnemonic;
+    wallet.RootName = newMasterKey.name;
     await dispatch(importMasterKeySuccess(newMasterKey));
     await dispatch(switchMasterKey(data.name));
     await dispatch(syncUnlinkWithNewMasterKey(newMasterKey));

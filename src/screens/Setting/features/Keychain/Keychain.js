@@ -76,6 +76,11 @@ const Keychain = () => {
     desc: 'Back up all master keys and masterless private keys',
     handlePress: () => navigation.navigate(routeNames.BackupKeys),
   });
+  sectionItemFactories.push({
+    title: 'Restore',
+    desc: 'Restore all master keys and masterless private keys',
+    handlePress: () => navigation.navigate(routeNames.Standby),
+  });
   return (
     <MainLayout
       header="Keychain"

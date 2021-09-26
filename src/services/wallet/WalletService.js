@@ -52,12 +52,13 @@ export async function loadListAccountWithBLSPubKey(wallet) {
   }
 }
 
-export async function loadWallet(passphrase, name = 'Wallet') {
+export async function loadWallet(passphrase, name = 'Wallet', rootName = '') {
   try {
     let wallet = new Wallet();
     wallet.Name = name;
+    wallet.RootName = rootName;
     await configsWallet(wallet);
-    wallet = await wallet.loadWallet(passphrase, name);
+    wallet = await wallet.loadWallet(passphrase);
     return wallet?.Name ? wallet : false;
   } catch (error) {
     console.log('ERROR WHEN LOAD WALLET', error);
@@ -80,6 +81,7 @@ export async function configsWallet(wallet) {
     wallet.AuthToken = await getToken();
     wallet.RpcApiService = server?.apiServices;
     wallet.PortalService = server?.portalServices;
+    wallet.Network = server?.id;
     if (typeof setShardNumber === 'function') {
       await setShardNumber(server?.shardNumber);
     }
@@ -90,10 +92,11 @@ export async function configsWallet(wallet) {
   return wallet;
 }
 
-export async function initWallet(walletName = 'Wallet') {
+export async function initWallet(walletName = 'Wallet', rootName) {
   try {
     const { aesKey } = await getPassphrase();
     let wallet = new Wallet();
+    wallet.RootName = rootName;
     await configsWallet(wallet);
     await wallet.init(aesKey, storage, walletName, 'Anon');
     await wallet.save(aesKey);

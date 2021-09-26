@@ -13,6 +13,7 @@ import { compose } from 'recompose';
 import { CONSTANT_COMMONS } from '@src/constants';
 import withAccount from '@screens/DexV2/components/account.enhance';
 import ShieldDecentralized from '@screens/Shield/features/ShieldDecentralized';
+import { PRV_ID } from '@src/screens/Dex/constants';
 
 const enhance = (WrappedComp) => (props) => {
   const {
@@ -20,7 +21,6 @@ const enhance = (WrappedComp) => (props) => {
     decentralized,
     isFetched,
     isFetching,
-    loading,
     selectedPrivacy,
     handleShield,
   } = props;
@@ -76,12 +76,12 @@ const enhance = (WrappedComp) => (props) => {
   }, [selectedTerm]);
 
   /** render loading */
-  if (isFetching || loading) {
+  if (isFetching) {
     return renderLoading();
   }
 
   /** render term off user */
-  if (isDecentralized && showTerm) {
+  if (isDecentralized && showTerm && selectedPrivacy?.tokenId !== PRV_ID) {
     return renderTermOfUse();
   }
 

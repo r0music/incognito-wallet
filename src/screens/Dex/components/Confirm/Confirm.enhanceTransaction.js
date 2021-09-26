@@ -5,6 +5,7 @@ import { HEADER_TABS, TRANSACTION_FEE } from '@screens/Dex/Liquidity.constants';
 import Loading from '@screens/Dex/components/Loading';
 import { ExHandler } from '@services/exception';
 import BigNumber from 'bignumber.js';
+import {useError} from '@components/UseEffect/useError';
 
 const withTransaction = WrappedComp => props => {
   const {
@@ -22,7 +23,7 @@ const withTransaction = WrappedComp => props => {
   } = props;
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
-
+  const errorMessage = useError(error);
   const onCreateContribute = async () => {
     await accountServices.createAndSendTxsWithContributions({
       account,
@@ -92,7 +93,7 @@ const withTransaction = WrappedComp => props => {
         {...{
           ...props,
           onConfirmPress,
-          error,
+          error: errorMessage,
           loading,
         }}
       />

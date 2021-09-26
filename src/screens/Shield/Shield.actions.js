@@ -6,17 +6,25 @@ import {
   genCentralizedDepositAddress,
   genBSCDepositAddress,
 } from '@src/services/api/deposit';
-import { CONSTANT_COMMONS } from '@src/constants';
+import { ANALYTICS, CONSTANT_COMMONS } from '@src/constants';
 import config from '@src/constants/config';
 import { signPublicKeyEncodeSelector } from '@src/redux/selectors/account';
 import formatUtil from '@utils/format';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
   ACTION_FETCH_FAIL,
   ACTION_TOGGLE_GUIDE,
+  ACTION_RESET,
+  ACTION_BSC_FEE_FETCHING,
 } from './Shield.constant';
 import { shieldSelector } from './Shield.selector';
+import { PRV_ID } from '../DexV2/constants';
+
+export const actionReset = () => ({
+  type: ACTION_RESET,
+});
 
 export const actionFetching = () => ({
   type: ACTION_FETCHING,
@@ -27,8 +35,14 @@ export const actionFetched = (payload) => ({
   payload,
 });
 
-export const actionFetchFail = () => ({
+export const actionBSCFetch = (bscPayload) => ({
+  type: ACTION_BSC_FEE_FETCHING,
+  bscPayload,
+});
+
+export const actionFetchFail = (isPortalCompatible = true) => ({
   type: ACTION_FETCH_FAIL,
+  isPortalCompatible: isPortalCompatible,
 });
 
 export const actionGetMinMaxShield = async ({ tokenId }) => {
@@ -59,13 +73,24 @@ export const actionGetAddressToShield = async ({
         currencyType: selectedPrivacy?.currencyType,
         signPublicKeyEncode,
       });
-    } else if (selectedPrivacy?.isErc20Token) {
+    } else if (selectedPrivacy?.isErc20Token || selectedPrivacy?.tokenId === PRV_ID) {
+      let currencyType_ = selectedPrivacy?.currencyType;
+      let tokenContractID_ = selectedPrivacy?.contractId;
+      if (selectedPrivacy?.tokenId === PRV_ID) {
+        console.log({selectedPrivacy});
+        if (selectedPrivacy?.listChildToken) {
+          const tokenChild = selectedPrivacy?.listChildToken.find(x => x.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20);
+          currencyType_ = tokenChild?.currencyType;
+          tokenContractID_ = tokenChild?.contractId;
+        }
+      }
+
       generateResult = await genERC20DepositAddress({
         paymentAddress: account.PaymentAddress,
         walletAddress: account.PaymentAddress,
         tokenId: selectedPrivacy?.tokenId,
-        tokenContractID: selectedPrivacy?.contractId,
-        currencyType: selectedPrivacy?.currencyType,
+        tokenContractID: tokenContractID_,
+        currencyType: currencyType_,
         signPublicKeyEncode,
       });
     } else if (
@@ -106,6 +131,30 @@ export const actionGetAddressToShield = async ({
   }
 };
 
+export const actionGetPRVBep20FeeToShield = (account, signPublicKeyEncode, selectedPrivacy) => async (
+  dispatch,
+  getState,
+) => {
+  let generateResult = await genBSCDepositAddress({
+    paymentAddress: account.PaymentAddress,
+    walletAddress: account.PaymentAddress,
+    tokenId: selectedPrivacy?.tokenId,
+    tokenContractID: selectedPrivacy?.contractId,
+    currencyType: selectedPrivacy?.currencyType,
+    signPublicKeyEncode,
+  });
+  let {
+    tokenFee,
+    estimateFee,
+  } = generateResult;
+  await dispatch(
+    actionBSCFetch({
+      tokenFee,
+      estimateFee,
+    }),
+  );
+};
+
 export const actionFetch = ({ tokenId, selectedPrivacy, account }) => async (
   dispatch,
   getState,
@@ -139,6 +188,14 @@ export const actionFetch = ({ tokenId, selectedPrivacy, account }) => async (
     if (expiredAt) {
       expiredAt = formatUtil.formatDateTime(expiredAt);
     }
+
+    await dispatch(
+      actionBSCFetch({
+        tokenFee : 0,
+        estimateFee : 0,
+      }),
+    );
+
     await dispatch(
       actionFetched({
         min,
@@ -159,16 +216,10 @@ export const actionFetch = ({ tokenId, selectedPrivacy, account }) => async (
 
 export const actionGeneratePortalShieldAddress = async ({ accountWallet, tokenID, incAddress }) => {
   try {
-    let shieldingAddress = await accountWallet.getStoragePortalShieldAddress();
-    if (shieldingAddress) {
-      return shieldingAddress;
-    }
     const chainName = config.isMainnet ? 'mainnet' : 'testnet';
-    shieldingAddress = await accountWallet.handleGenerateShieldingAddress({ tokenID, incAddress, chainName });
-    await accountWallet.setStoragePortalShieldAddress({ shieldAddress: shieldingAddress });
-    return shieldingAddress;
+    return accountWallet.handleGenerateShieldingAddress({ tokenID, incAddress, chainName });
   } catch (e) {
-    throw new Error('Can not generate portal shield address');
+    throw new Error(`Can not generate portal shield address ${e}`);
   }
 };
 
@@ -226,8 +277,13 @@ export const actionPortalFetch = ({ tokenID, selectedPrivacy, account, accountWa
         isPortal: true,
       }),
     );
+    dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.SHIELD));
   } catch (error) {
-    await dispatch(actionFetchFail());
+    let isCompatible = true;
+    if (error.message?.includes('Shielding address is not compatible'))  {
+      isCompatible = false;
+    }
+    await dispatch(actionFetchFail(isCompatible));
     throw error;
   }
 };

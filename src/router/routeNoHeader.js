@@ -24,6 +24,7 @@ import TxHistoryDetail from '@screens/Wallet/features/History';
 import ImportAccount from '@src/screens/Account/features/ImportAccount';
 import CreateAccount from '@src/screens/Account/features/CreateAccount';
 import BackupKeys from '@src/screens/BackupKeys';
+import Standby from '@screens/Keychain/features/Standby';
 import Setting from '@screens/Setting';
 import ExportAccount from '@src/screens/Account/features/ExportAccount';
 import NetworkSetting from '@src/screens/NetworkSetting';
@@ -94,6 +95,7 @@ import TwoTokensSelect from '@screens/Dex/features/TwoTokensSelect';
 import SelectTokenStreamline from '@screens/Streamline/features/SelectTokens';
 import ConvertTokenList from '@screens/Home/features/ConvertTokenList';
 import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
+import WebView from '@screens/WebView';
 
 const masterKeyRoutes = [
   {
@@ -483,6 +485,14 @@ const routes = [
   {
     screen: HistoryConvert,
     name: routeNames.HistoryConvert,
+  },
+  {
+    screen: Standby,
+    name: routeNames.Standby,
+  },
+  {
+    screen: WebView,
+    name: routeNames.WebView,
   },
 ];
 

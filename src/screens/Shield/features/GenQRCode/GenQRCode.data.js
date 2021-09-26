@@ -6,7 +6,7 @@ import {
   shieldDataSelector,
   shieldSelector,
 } from '@screens/Shield/Shield.selector';
-import { actionFetch as fetchDataShield, actionPortalFetch as fetchPortalDataShield } from '@screens/Shield/Shield.actions';
+import { actionFetch as fetchDataShield, actionPortalFetch as fetchPortalDataShield, actionReset } from '@screens/Shield/Shield.actions';
 import { wcProviderOptionals } from '@screens/Wallet/features/BridgeConnect';
 import WalletConnectProvider from '@walletconnect/react-native-dapp';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
@@ -15,7 +15,6 @@ import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 
 const enhance = (WrappedComp) => (props) => {
-  const [loading, setLoading] = React.useState(true);
   const dispatch = useDispatch();
   const account = useSelector(defaultAccountSelector);
   const accountWallet = useSelector(getDefaultAccountWalletSelector);
@@ -23,7 +22,7 @@ const enhance = (WrappedComp) => (props) => {
   const tokenSymbol = tokenShield?.externalSymbol || tokenShield?.symbol;
   const { tokenId } = tokenShield;
   const { decentralized } = useSelector(shieldDataSelector);
-  const { isFetching, isFetched, isFetchFailed } = useSelector(shieldSelector);
+  const { isFetching, isFetched, isFetchFailed, isPortalCompatible, data } = useSelector(shieldSelector);
   const handleShield = async () => {
     const isPortalToken  = await accountWallet.handleCheckIsPortalToken({ tokenID: tokenId});
     if( isPortalToken ){
@@ -43,15 +42,16 @@ const enhance = (WrappedComp) => (props) => {
       dispatch(actionAddFollowToken(tokenId));
     });
   };
-  React.useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 300);
-  }, []);
+
   React.useEffect(() => {
     setTimeout(() => {
       handleUpdateTokenSelector();
     }, 1000);
+
+    // reset shield data when unmounting
+    return () => {
+      dispatch(actionReset());
+    };
   }, []);
   return (
     <WalletConnectProvider {...wcProviderOptionals}>
@@ -59,16 +59,17 @@ const enhance = (WrappedComp) => (props) => {
         <WrappedComp
           {...{
             ...props,
-            loading,
             tokenId,
             tokenSymbol,
             selectedPrivacy: tokenShield,
             isFetching,
             isFetched,
+            data,
             isFetchFailed,
             decentralized,
             tokenShield,
             handleShield,
+            isPortalCompatible,
           }}
         />
       </ErrorBoundary>

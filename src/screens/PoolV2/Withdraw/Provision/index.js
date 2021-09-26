@@ -63,7 +63,7 @@ const Provide = ({
           style={mainStyle.coinExtra}
         />
         <Text style={mainStyle.coinExtra}>
-          Provision withdrawals may take up to 3 days
+          Provision withdrawals may take up to 5-7 days
           to process.
         </Text>
       </View>

@@ -12,6 +12,8 @@ import { Dimensions, PixelRatio, Platform } from 'react-native';
 import { handleCameraPermission } from '@src/utils/PermissionUtil';
 import {ExHandler} from '@services/exception';
 import routeNames from '@routers/routeNames';
+import {useSelector} from 'react-redux';
+import {accountSelector} from '@src/redux/selectors';
 
 const sendFeedback = async () => {
   const buildVersion = AppUpdater.appVersion;
@@ -33,7 +35,7 @@ const sendFeedback = async () => {
 
 const enhance = WrappedComp => props => {
   const navigation = useNavigation();
-
+  const account = useSelector(accountSelector.defaultAccount);
   const goToScreen = (route, params, event) => {
     navigation.navigate(route, params);
     if (event) {
@@ -79,6 +81,11 @@ const enhance = WrappedComp => props => {
       break;
     case 'convert_coins_ver1':
       goToScreen(routeNames.ConvertTokenList);
+      break;
+    case 'faucet_prv':
+      goToScreen(routeNames.WebView, {
+        url: CONSTANT_CONFIGS.FAUCET_URL + `address=${account.paymentAddress}`
+      });
       break;
     default:
       goToScreen(item?.route || '');

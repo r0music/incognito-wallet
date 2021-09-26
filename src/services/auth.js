@@ -5,8 +5,9 @@ import DeviceInfo from 'react-native-device-info';
 import { getToken as getUserToken } from '@src/services/api/user';
 import LocalDatabase from '@utils/LocalDatabase';
 import { v4 } from 'uuid';
+import { cachePromise } from './cache';
 
-export const getToken = async () => {
+export const getTokenNoCache = async () => {
   let firebaseToken = '';
   try {
     firebaseToken = await getFirebaseToken();
@@ -23,6 +24,9 @@ export const getToken = async () => {
   return token;
 };
 
+export const getToken = async () =>
+  cachePromise('AUTH_TOKEN', () => getTokenNoCache(), 1e9);
+  
 // if "fresh" is true, dont use savedToken, have to get new one
 export const login = async () => {
   const token = await getToken();

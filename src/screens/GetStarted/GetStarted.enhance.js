@@ -5,7 +5,7 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import Wizard from '@screens/Wizard';
 import { useSelector, useDispatch } from 'react-redux';
 import { login } from '@src/services/auth';
-import { CONSTANT_KEYS } from '@src/constants';
+import { ANALYTICS, CONSTANT_KEYS } from '@src/constants';
 import { reloadWallet } from '@src/redux/actions/wallet';
 import { getPTokenList, getInternalTokenList } from '@src/redux/actions/token';
 import { loadPin } from '@src/redux/actions/pin';
@@ -32,6 +32,7 @@ import KeepAwake from 'react-native-keep-awake';
 import { COLORS, FONT } from '@src/styles';
 import { accountServices } from '@src/services/wallet';
 import { actionLogEvent } from '@src/screens/Performance';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
 import {
   wizardSelector,
   isFollowedDefaultPTokensSelector,
@@ -204,6 +205,7 @@ const enhance = (WrappedComp) => (props) => {
         isCreating: false,
         errorMsg: errorMessage,
       });
+      dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));
     }
   };
 
@@ -215,21 +217,21 @@ const enhance = (WrappedComp) => (props) => {
           desc: 'CONFIGS_APP',
         }),
       );
-      await setStatusConfigs('load pin');
+      await setStatusConfigs('loading pin');
       await dispatch(loadPin());
       await dispatch(
         actionLogEvent({
           desc: 'LOAD_PIN',
         }),
       );
-      await setStatusConfigs('get info');
+      await setStatusConfigs('getting info');
       await login();
       await dispatch(
         actionLogEvent({
           desc: 'LOGIN',
         }),
       );
-      await setStatusConfigs('get configs');
+      await setStatusConfigs('getting configs');
       const [servers] = await new Promise.all([
         serverService.get(),
         getFunctionConfigs().catch((e) => e),

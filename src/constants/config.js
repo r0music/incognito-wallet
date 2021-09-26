@@ -26,7 +26,7 @@ const BSCSCAN_URL = isMainnet
   ? 'https://bscscan.com'
   : 'https://testnet.bscscan.com';
 const BTC_EXPLORER_URL = isMainnet
-  ? 'https://live.blockcypher.com/btc/'
+  ? 'https://live.blockcypher.com/btc'
   : 'https://live.blockcypher.com/btc-testnet';  
 const DEX_BINANCE_TOKEN_URL = isMainnet
   ? 'https://dex.binance.org/api/v1/tokens'
