@@ -114,7 +114,6 @@ const NETWORK_NAME = {
   ETHEREUM: 'Ethereum',
   TOMO: 'TomoChain',
   BSC: 'Binance Smart Chain',
-  PRV: 'Privacy',
 };
 
 export const PRV = {
@@ -133,7 +132,6 @@ const FACTORIES_EVM_NETWORK = [
   NETWORK_NAME.ETHEREUM,
   NETWORK_NAME.TOMO,
   NETWORK_NAME.BSC,
-  NETWORK_NAME.PRV,
 ];
 
 const PRIVATE_TOKEN_CURRENCY_TYPE = {
@@ -156,13 +154,6 @@ const PRIVATE_TOKEN_CURRENCY_TYPE = {
   ZEC: 16,
   DOT: 17,
 };
-
-const PRIVATE_TOKEN_CURRENCY_NAME = {
-  [PRIVATE_TOKEN_CURRENCY_TYPE.ERC20]: 'ERC20 Ethereum',
-  [PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20]: 'BEP20 Smart Chain',
-};
-
-const RESPONSE_PRV_TYPES = [271, 273];
 
 export default {
   // old varibles, maybe remove later
@@ -201,7 +192,6 @@ export default {
     WITHDRAW: 2,
   },
   PRIVATE_TOKEN_CURRENCY_TYPE,
-  PRIVATE_TOKEN_CURRENCY_NAME,
   PRIVATE_TOKEN_TYPE: {
     COIN: 0,
     TOKEN: 1, // including ERC20, BEP1, BEP2,...
@@ -297,5 +287,4 @@ export default {
     PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB,
     PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20,
   ],
-  RESPONSE_PRV_TYPES,
 };

@@ -2,7 +2,6 @@ import orderBy from 'lodash/orderBy';
 import {
   Validator,
   ACCOUNT_CONSTANT,
-  PRVIDSTR
 } from 'incognito-chain-web-js/build/wallet';
 import { createSelector } from 'reselect';
 import formatUtil from '@src/utils/format';
@@ -16,7 +15,7 @@ import {
   getPortalStatusDetail,
 } from '@src/redux/utils/history';
 import { PRV } from '@src/constants/common';
-import { CONSTANT_CONFIGS, CONSTANT_COMMONS } from '@src/constants';
+import { CONSTANT_CONFIGS } from '@src/constants';
 import { selectedPrivacy } from './selectedPrivacy';
 import { burnerAddressSelector } from './account';
 
@@ -110,7 +109,7 @@ export const historyReceiverSelector = createSelector(
 export const mappingTxPTokenSelector = createSelector(
   selectedPrivacy,
   decimalDigitsSelector,
-  ({ pDecimals, symbol, decimals, tokenId }, decimalDigits) => (txp) => {
+  ({ pDecimals, symbol, decimals }, decimalDigits) => (txp) => {
     const {
       status,
       currencyType,
@@ -156,9 +155,6 @@ export const mappingTxPTokenSelector = createSelector(
           decimalDigits,
         })
         : '';
-    const network = tokenId === PRVIDSTR && currencyType && currencyType !== 0 
-      ? CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_NAME[currencyType]
-      : '';
     const result = {
       ...txp,
       timeStr: formatUtil.formatDateTime(time),
@@ -186,7 +182,6 @@ export const mappingTxPTokenSelector = createSelector(
       }),
       receivedFundsStr,
       shieldingFeeStr,
-      network,
     };
     return result;
   },
@@ -367,8 +362,7 @@ export const historyDetailFactoriesSelector = createSelector(
           receivedFundsStr,
           shieldingFeeStr,
           txReceive,
-          canRetryInvalidAmountShield,
-          network
+          canRetryInvalidAmountShield
         } = tx;
         return [
           {
@@ -450,11 +444,6 @@ export const historyDetailFactoriesSelector = createSelector(
             value: symbol,
             disabled: !symbol,
           },
-          {
-            label: 'Network',
-            value: network,
-            disabled: !network,
-          },
         ];
       }
       case ACCOUNT_CONSTANT.TX_TYPE.UNSHIELD: {
@@ -477,9 +466,7 @@ export const historyDetailFactoriesSelector = createSelector(
           inchainFeeStr,
           outchainFeeStr,
           memo,
-          network,
         } = tx;
-        
         return [
           {
             label: 'ID',
@@ -495,7 +482,7 @@ export const historyDetailFactoriesSelector = createSelector(
           {
             label: 'Inchain fee',
             value: `${inchainFeeStr} ${PRV.symbol}`,
-            disabled: !inchainFee || !inchainFeeStr,
+            disabled: !inchainFee,
           },
           {
             label: 'Outchain fee',
@@ -556,11 +543,6 @@ export const historyDetailFactoriesSelector = createSelector(
             label: 'Coin',
             value: symbol,
             disabled: !symbol,
-          },
-          {
-            label: 'Network',
-            value: network,
-            disabled: !network,
           },
         ];
       }

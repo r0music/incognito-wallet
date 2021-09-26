@@ -20,10 +20,9 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   } = selectedPrivacy;
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
   const isIncognitoAddress =
-    accountService.checkPaymentAddress(toAddress);
+    accountService.checkPaymentAddress(toAddress) || isMainCrypto;
   const isExternalAddress =
     (!!toAddress && !isIncognitoAddress) && selectedPrivacy?.isWithdrawable;
-  const isUnshieldPegPRV = isMainCrypto && isExternalAddress;
   const { isAddressValidated, isValidETHAddress } = useSelector(
     feeDataSelector,
   );
@@ -145,7 +144,6 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
         isERC20,
         isIncognitoAddress,
         isExternalAddress,
-        isUnshieldPegPRV,
       }}
     />
   );
