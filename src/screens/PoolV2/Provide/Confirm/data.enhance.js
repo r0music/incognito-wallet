@@ -25,6 +25,12 @@ const withData = WrappedComp => (props) => {
   const originDeposit = formatDeposit(value, fee);
   const deposit       = formatUtil.amountFull(originDeposit, coin.pDecimals);
 
+  let unlockTimeFormat = '';
+  if (coin.locked) {
+    const unlockTime = new Date(new Date().getTime() + coin.lockTime*2592000*1000); // 2592000 = 24*60*60*30 = 1 month
+    unlockTimeFormat = formatUtil.formatDateTime(unlockTime, 'DD MMM YYYY HH:mm A');
+  }
+
   return (
     <WrappedComp
       {...{
@@ -40,6 +46,7 @@ const withData = WrappedComp => (props) => {
         isPrv,
         originProvide,
         coins,
+        unlockTimeFormat,
       }}
     />
   );

@@ -40,7 +40,8 @@ export async function submitProvideRawTx({
   rawData,
   amount,
   captchaCode,
-  tokenId
+  tokenId,
+  locked,
 }) {
   const url = '/pool/staker/submit-rawdata';
   return http.post(url, {
@@ -52,8 +53,22 @@ export async function submitProvideRawTx({
     'g-recaptcha-response': captchaCode,
     'CaptchaVersion': 'v3',
     'TokenID': tokenId,
+    'Locked': locked,
   });
 }
+
+export async function migratePRVProvide({paymentAddress, signEncode, verifyCode, amount}) {
+  const url = '/pool/staker/migrate-to-prv-lock';
+  return http.post(url, {
+    'PStakeAddress': paymentAddress,
+    'SignEncode': signEncode,
+    'PaymentAddress': paymentAddress,
+    'Amount': amount,
+    'g-recaptcha-response': verifyCode,
+    'CaptchaVersion': 'v3',
+  });
+}
+
 
 export async function checkPreviousProvision({
   tokenId,
@@ -92,7 +107,7 @@ export async function withdrawProvision(paymentAddress, signEncode, amount, toke
 }
 
 export async function getHistories(account, page, limit, coins) {
-  const url = `/pool/staker/history?p_stake_address=${account.PaymentAddress}&page=${page}&limit=${limit}&type=1,2,6&${CANCEL_KEY}`;
+  const url = `/pool/staker/history?p_stake_address=${account.PaymentAddress}&page=${page}&limit=${limit}&type=1,2,6,8&${CANCEL_KEY}`;
   return http.get(url)
     .then(data => ({
       items: data.Items.map(item => new PoolHistory(item, account, coins)),

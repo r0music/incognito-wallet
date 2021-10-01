@@ -114,6 +114,7 @@ export const MESSAGES = {
   CONVERT_PROCESS: 'Converting your coins...\nThis may take a couple of minutes. Please do not navigate away from the app.',
   EARNED_FEE_INSUFFICIENT: 'Your earned fee is insufficient.',
   SUBMIT_PROVIDE_RAW_TX_ERROR: 'Cant submit raw transaction, please try again',
+  REQUEST_MIGRATE_TOKEN_ERROR: 'Cant migrate to lock PRV, please try again',
 };
 export const MILLISECOND = 1;
 export const SECOND = 1000 * MILLISECOND;

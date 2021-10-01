@@ -16,6 +16,7 @@ import styles from './style';
 const Home = ({
   config,
   userData,
+  groupedUserData,
   withdrawable,
   totalRewards,
   displayClipTotalRewards,
@@ -47,7 +48,8 @@ const Home = ({
         />
         <CoinList
           coins={config.coins}
-          data={userData}
+          userData={userData}
+          groupedUserData={groupedUserData}
           withdrawable={withdrawable}
           histories={histories}
           onLoad={onLoad}
@@ -70,6 +72,7 @@ const Home = ({
 Home.propTypes = {
   config: PropTypes.object,
   userData: PropTypes.array,
+  groupedUserData: PropTypes.array,
   withdrawable: PropTypes.bool.isRequired,
   displayFullTotalRewards: PropTypes.string.isRequired,
   displayClipTotalRewards: PropTypes.string.isRequired,
@@ -85,6 +88,7 @@ Home.propTypes = {
 Home.defaultProps = {
   config: null,
   userData: null,
+  groupedUserData: null,
 };
 
 export default compose(

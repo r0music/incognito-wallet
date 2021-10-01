@@ -1,10 +1,16 @@
 import React from 'react';
 import { useNavigationParam } from 'react-navigation-hooks';
 
+const filterLocked = (item) => {
+  return !item?.locked;
+};
+
 const withCoinsData = WrappedComp => (props) => {
-  const coins = useNavigationParam('data') || [];
+  const tempCoins = useNavigationParam('data') || [];
   const totalRewards = useNavigationParam('totalRewards');
   const displayFullTotalRewards = useNavigationParam('displayFullTotalRewards');
+
+  const coins = tempCoins.filter(filterLocked);
 
   return (
     <WrappedComp

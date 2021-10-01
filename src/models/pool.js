@@ -18,14 +18,17 @@ class CoinConfigModel {
     this.max = data.Max;
     this.apy = data.APY.toFixed(2);
     this.masterAddress = masterAddress;
+    this.locked = data.Locked;
+    this.lockTime = data.LockTime;
 
     if (this.id === COINS.PRV_ID) {
-      this.name = COINS.PRV.name;
+      this.name = this.locked ? `${COINS.PRV.name} Lock` : COINS.PRV.name;
       this.symbol = COINS.PRV.symbol;
       this.pDecimals = COINS.PRV.pDecimals;
     }
 
     this.displayInterest = `${formatUtil.toFixed(this.apy, 2)}%  APY`;
+    this.displayLockTime = this.locked ? `${this.lockTime} Months` : '';
   }
 }
 
@@ -42,6 +45,12 @@ export class UserCoinPoolModel {
     this.pendingBalance = data.PendingBalance;
     this.unstakePendingBalance = data.UnstakePendingBalance;
     this.withdrawPendingBalance = data.WithdrawPendingBalance;
+    this.locked = data.Locked;
+    this.lockTime = data.LockTime;
+    this.stakerTokenBalanceID = data.ID;
+    this.unlockDate = data.DaturityDate;
+    this.displayUnlockDate = formatUtil.formatDateTime(this.unlockDate, 'DD MMM YYYY HH:mm A');
+    this.active = data.Active;
 
     // if (this.id === COINS.PRV_ID) {
     //   this.name = COINS.PRV.name;
@@ -49,7 +58,7 @@ export class UserCoinPoolModel {
     //   this.pDecimals = COINS.PRV.pDecimals;
     // }
 
-    this.coin = coins.find(coin => coin.id === this.id);
+    this.coin = coins.find(coin => coin.id === this.id && coin.locked === this.locked && coin.lockTime === this.lockTime);
 
     if (this.coin) {
       this.pDecimals = this.coin.pDecimals;
@@ -89,9 +98,21 @@ export class PoolHistory {
     this.coinId = data.TokenID;
     this.tx = data.IncognitoTx;
     this.paymentAddress = data.PStakeAddress;
+    this.stakerTokenBalanceID = data.StakerTokenBalanceID;
 
     this.account = account?.name || account?.AccountName;
     this.coin = coins.find(coin => coin.id === this.coinId);
+    
+    if (data.Extra) {
+      try {
+        const extra = JSON.parse(data.Extra);
+        this.locked = extra.Locked;
+        this.lockTime = extra.LockTime;
+        this.unlockDate = moment(extra.DaturityDate).format(LONG_DATE_TIME_FORMAT);
+      } catch (e) {
+        console.log('Ignore err: ', e);
+      } 
+    }
 
     if (this.coin) {
       this.description = `${formatUtil.amountFull(this.amount, this.coin.pDecimals, true)} ${this.coin.symbol}`;
@@ -116,6 +137,12 @@ export class PoolHistory {
       'Auto stake off',
       'Reward',
       'Withdraw reward',
+      'None',
+      'Migrate',
     ][data.Type];
+
+    if (this.locked) {
+      this.type += ' lock';
+    }
   }
 }

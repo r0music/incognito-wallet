@@ -47,6 +47,10 @@ const SelectCoin = ({
                 }
               </Row>
               <Text style={mainStyle.coinExtra}>{coin.displayInterest}</Text>
+              { coin.locked 
+                ? <Text style={mainStyle.coinExtra}>{coin.displayLockTime}</Text>
+                : null
+              }
             </View>
           </TouchableOpacity>
         ))}

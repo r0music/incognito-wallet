@@ -43,6 +43,7 @@ import {
   PoolV2History,
   PoolV2Provide,
   PoolV2Withdraw,
+  PoolV2LockHistory,
 } from '@src/screens/PoolV2';
 import Profile from '@src/screens/Profile';
 import Receipt from '@src/components/Receipt';
@@ -301,6 +302,14 @@ const routes = [
     name: routeNames.PoolV2ProvideConfirm,
   },
   {
+    screen: PoolV2Provide.InputMigration,
+    name: routeNames.PoolV2ProvideMigrateInput,
+  },
+  {
+    screen: PoolV2Provide.ConfirmMigration,
+    name: routeNames.PoolV2ProvideMigrateConfirm,
+  },
+  {
     screen: PoolV2Withdraw.SelectCoin,
     name: routeNames.PoolV2WithdrawSelectCoin,
   },
@@ -319,6 +328,10 @@ const routes = [
   {
     screen: PoolV2History.HistoryDetail,
     name: routeNames.PoolV2HistoryDetail,
+  },
+  {
+    screen: PoolV2LockHistory.LockHistoryList,
+    name: routeNames.PoolV2ProvideLockHistory,
   },
   {
     name: routeNames.News,

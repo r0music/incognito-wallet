@@ -30,6 +30,13 @@ export default StyleSheet.create({
     fontSize: 18,
     marginBottom: UTILS.heightScale(8),
   },
+  unlockDate: {
+    fontFamily: FONT.NAME.medium,
+    color: COLORS.newGrey,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: UTILS.heightScale(8),
+  },
   textRight: {
     textAlign: 'right',
   },

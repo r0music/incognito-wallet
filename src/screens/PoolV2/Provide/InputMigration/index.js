@@ -4,7 +4,7 @@ import { View, Text, BaseTextInput, RoundCornerButton } from '@components/core';
 import mainStyle from '@screens/PoolV2/style';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout/index';
-import withCoinData from '@screens/PoolV2/Provide/Input/coin.enhance';
+import withCoinData from '@screens/PoolV2/Provide/InputMigration/coin.enhance';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import withChangeInput from '@screens/DexV2/components/Trade/input.enhance';
 import withValidate from '@screens/PoolV2/validate.enhance';
@@ -12,48 +12,40 @@ import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { Header, Row } from '@src/components/';
 import { BtnInfinite } from '@components/Button/index';
-import convertUtil, { formatTime }from '@utils/convert';
+import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
 import styles from './style';
 
-const Provide = ({
-  coins,
+const InputMigration = ({
+  data,
   coin,
   inputValue,
   inputText,
   onChangeInputText,
-  feeToken,
-  prvBalance,
-  fee,
   error,
-  payOnOrigin,
-  isPrv
+  coins,
 }) => {
   const navigation = useNavigation();
 
   const handleProvide = () => {
-    navigation.navigate(ROUTE_NAMES.PoolV2ProvideConfirm, {
-      coins,
+    navigation.navigate(ROUTE_NAMES.PoolV2ProvideMigrateConfirm, {
+      data,
       coin,
+      coins,
       value: inputValue,
       text: inputText,
-      fee,
-      feeToken,
-      prvBalance,
-      payOnOrigin,
-      isPrv,
     });
   };
 
   const handleMax = () => {
-    const humanAmount = convertUtil.toHumanAmount(coin.balance, coin.pDecimals);
+    const humanAmount = convertUtil.toHumanAmount(data.balance, coin.pDecimals);
     const fixDecimals = formatUtil.toFixed(humanAmount, coin.pDecimals);
     onChangeInputText(fixDecimals.toString());
   };
 
   return (
     <View style={mainStyle.flex}>
-      <Header title={`Provide ${coin.symbol}`} />
+      <Header title={`Migrate ${coin.symbol}`} />
       <View style={mainStyle.coinContainer}>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
@@ -63,62 +55,41 @@ const Provide = ({
             value={inputText}
             keyboardType="decimal-pad"
           />
-          <BtnInfinite
-            style={mainStyle.symbol}
-            onPress={handleMax}
-          />
+          <BtnInfinite style={mainStyle.symbol} onPress={handleMax} />
         </Row>
-        <Text style={mainStyle.coinExtra}>{coin.displayInterest}</Text>
-        {
-          coin.locked 
-            ? <Text style={mainStyle.coinExtra}>{coin.displayLockTime}</Text>
-            : null
-        }
         <Text style={mainStyle.error}>{error}</Text>
+        <Text>Migrate your no lock PRV to lock in one step</Text>
         <RoundCornerButton
-          title="Provide liquidity"
+          title="Migrate"
           style={[mainStyle.button, styles.button]}
           onPress={handleProvide}
           disabled={!!error || !inputText}
         />
         <ExtraInfo
-          left="Balance"
-          right={`${coin.displayFullBalance} ${coin.symbol}`}
-        />
-        <ExtraInfo
-          token={feeToken}
-          left="Fee"
-          right={`${formatUtil.amount(fee, feeToken.pDecimals)} ${feeToken.symbol}`}
-          style={styles.extra}
+          left="Non-lock balance"
+          right={`${data.displayFullBalance} ${coin.symbol}`}
         />
       </View>
     </View>
   );
 };
 
-Provide.propTypes = {
+InputMigration.propTypes = {
   coins: PropTypes.array,
+  data: PropTypes.object.isRequired,
   coin: PropTypes.object.isRequired,
   inputValue: PropTypes.number,
   inputText: PropTypes.string,
   onChangeInputText: PropTypes.func,
-  prvBalance: PropTypes.number,
-  fee: PropTypes.number,
-  feeToken: PropTypes.object,
   error: PropTypes.string,
-  payOnOrigin: PropTypes.bool.isRequired,
-  isPrv: PropTypes.bool.isRequired
 };
 
-Provide.defaultProps = {
+InputMigration.defaultProps = {
   inputValue: 0,
   inputText: '',
   onChangeInputText: undefined,
-  prvBalance: 0,
-  fee: 0,
-  feeToken: null,
   error: '',
-  coins: []
+  coins: [],
 };
 
 export default compose(
@@ -126,5 +97,4 @@ export default compose(
   withCoinData,
   withChangeInput,
   withValidate,
-)(Provide);
-
+)(InputMigration);
