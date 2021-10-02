@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  RoundCornerButton,
 } from '@components/core';
 import mainStyles from '@screens/PoolV2/style';
 import { Row, PRVSymbol } from '@src/components/';
@@ -15,8 +14,22 @@ import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { RefreshControl } from 'react-native';
 import { PRV_ID } from '@src/screens/DexV2/constants';
-import {UTILS} from '@src/styles';
 import styles from './style';
+
+export const LockTimeComp = React.memo(({ time }) => {
+  if (!time) return null;
+  const arrTime = time.split(' ');
+  let timeText = time;
+  if (arrTime && arrTime.length === 2) {
+    timeText = `${arrTime[0]}${arrTime[1].charAt(0)}`;
+  }
+  return (
+    <Row style={mainStyles.wrapperLock}>
+      <LockIcon />
+      <Text style={mainStyles.lockText}>{timeText}</Text>
+    </Row>
+  );
+});
 
 const CoinList = ({
   coins,
@@ -100,21 +113,6 @@ const CoinList = ({
     });
   };
 
-  const renderLockTime = (time) => {
-    if (!time) return null;
-    const arrTime = time.split(' ');
-    let timeText = time;
-    if (arrTime && arrTime.length === 2) {
-      timeText = `${arrTime[0]}${arrTime[1].charAt(0)}`;
-    }
-    return (
-      <Row style={mainStyles.wrapperLock}>
-        <LockIcon />
-        <Text style={mainStyles.lockText}>{timeText}</Text>
-      </Row>
-    );
-  };
-
   const renderBtnMirage = (item) => {
     return (
       <TouchableOpacity style={mainStyles.btnMirage} onPress={() => handleOpenMigrate(item)}>
@@ -125,11 +123,12 @@ const CoinList = ({
 
   const renderMainCoin = (item) => {
     const mapCoin = item.coin;
+    const provideBalance = item.balance;
     return (
       <View style={mainStyles.wrapTitle}>
         <Text style={[mainStyles.coinName, { marginBottom: 0 }]}>{item.symbol}</Text>
-        {item.locked && renderLockTime(mapCoin.displayLockTime)}
-        {(!item.locked && mapCoin.id === PRV_ID) && renderBtnMirage(item)}
+        {item.locked && <LockTimeComp time={mapCoin.displayLockTime} />}
+        {(!item.locked && mapCoin.id === PRV_ID && !!provideBalance) && renderBtnMirage(item)}
       </View>
     );
   };
@@ -149,6 +148,7 @@ const CoinList = ({
           const mapCoin = item.coin;
           const isLock = mapCoin.locked;
           const isPRV = mapCoin.id === PRV_ID;
+          const provideBalance = item.balance;
           const COMP = isLock ? TouchableOpacity : View;
           return (
             <View key={`${item.id} ${item.locked}`} style={mainStyles.coin}>
@@ -156,7 +156,7 @@ const CoinList = ({
                 onPress={() => handleShowLockHistory(mapCoin)}
                 key={`${item.id} ${item.locked}`}
                 activeOpacity={isLock ? 0.7 : 1}
-                style={[(!isLock && !isPRV) && { opacity: 0.5 }]}
+                style={[(!isLock && (!isPRV || !provideBalance)) && { opacity: 0.5 }]}
               >
                 <View>
                   <Row>
@@ -266,6 +266,10 @@ CoinList.defaultProps = {
   onLoad: undefined,
   loading: false,
   isLoadingHistories: false,
+};
+
+LockTimeComp.propTypes = {
+  time: PropTypes.string.isRequired
 };
 
 export default React.memo(CoinList);

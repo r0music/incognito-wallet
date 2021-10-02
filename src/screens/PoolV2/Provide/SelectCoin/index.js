@@ -11,6 +11,7 @@ import ROUTE_NAMES from '@routers/routeNames';
 import { useNavigation } from 'react-navigation-hooks';
 import { Header, Row } from '@src/components/';
 import { COINS } from '@src/constants';
+import {LockTimeComp} from '@screens/PoolV2/Home/CoinList';
 
 const SelectCoin = ({
   coins
@@ -40,17 +41,16 @@ const SelectCoin = ({
           >
             <View style={coin.balance === 0 && mainStyle.disabled}>
               <Row spaceBetween>
-                <Text style={mainStyle.coinName}>{coin.symbol}</Text>
+                <Row>
+                  <Text style={mainStyle.coinName}>{coin.symbol}</Text>
+                  {!!coin.locked && <LockTimeComp time={coin.displayLockTime} />}
+                </Row>
                 {coin.displayBalance ?
                   <Text style={mainStyle.coinName}>{coin.displayBalance}</Text> :
                   <ActivityIndicator />
                 }
               </Row>
               <Text style={mainStyle.coinExtra}>{coin.displayInterest}</Text>
-              { coin.locked 
-                ? <Text style={mainStyle.coinExtra}>{coin.displayLockTime}</Text>
-                : null
-              }
             </View>
           </TouchableOpacity>
         ))}
