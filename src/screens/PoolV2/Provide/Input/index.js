@@ -68,13 +68,16 @@ const Provide = ({
             onPress={handleMax}
           />
         </Row>
-        <Text style={mainStyle.coinExtra}>{coin.displayInterest}</Text>
-        {
-          coin.locked 
-            ? <Text style={mainStyle.coinExtra}>{coin.displayLockTime}</Text>
-            : null
-        }
+        <Row center spaceBetween>
+          <Text style={mainStyle.coinExtraSmall}>{coin.displayInterest}</Text>
+          {
+            coin.locked 
+              ? <Text style={[mainStyle.coinExtraSmall, mainStyle.textRight]}>{coin.displayLockTime}</Text>
+              : null
+          }
+        </Row>
         <Text style={mainStyle.error}>{error}</Text>
+        
         <RoundCornerButton
           title="Provide liquidity"
           style={[mainStyle.button, styles.button]}
@@ -84,12 +87,15 @@ const Provide = ({
         <ExtraInfo
           left="Balance"
           right={`${coin.displayFullBalance} ${coin.symbol}`}
+          style={mainStyle.coinExtraSmall}
+          wrapperStyle={mainStyle.coinExtraSmallWrapper}
         />
         <ExtraInfo
           token={feeToken}
           left="Fee"
           right={`${formatUtil.amount(fee, feeToken.pDecimals)} ${feeToken.symbol}`}
-          style={styles.extra}
+          style={mainStyle.coinExtraSmall}
+          wrapperStyle={mainStyle.coinExtraSmallWrapper}
         />
       </View>
     </View>

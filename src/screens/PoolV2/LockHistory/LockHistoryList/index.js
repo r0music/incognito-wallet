@@ -2,8 +2,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
-import { View, Text, TouchableOpacity, ScrollView } from '@components/core';
+import { View, Text, TouchableOpacity, ScrollView, Divider, Image } from '@components/core';
+import emptyListIcon from '@src/assets/images/icons/empty_list.png';
 import { Row, PRVSymbol } from '@src/components/';
+import { COLORS } from '@src/styles';
 import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header/index';
 import { useNavigation } from 'react-navigation-hooks';
@@ -18,48 +20,61 @@ const LockHistory = ({
 }) => {
   const navigation = useNavigation();
 
+  const renderEmptyList = () => {
+    return (
+      <View style={styles.emptyListContainer}>
+        <Image
+          source={emptyListIcon}
+          style={{
+            width: 60,
+            height: 60,
+          }}
+        />
+        <Text style={styles.emptyText}>
+          {'There have no providing\nlock PRV details.'}
+        </Text>
+      </View>
+    );
+  };
+ 
   return (
     <View style={styles.wrapper}>
       <Header title="Provide PRV lock detail" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
       { lockHistories.length > 0 
         ? (
           <ScrollView style={mainStyles.coinContainer}>
-            {lockHistories.map((item) => {
+            {lockHistories.map((item, index) => {
               return (
-                <TouchableOpacity key={item}>
-                  <View style={mainStyles.coin} key={item.symbol}>
+                <>
+                  <View key={item.symbol}>
                     <Row>
                       <View>
                         <Text style={mainStyles.coinName}>{item.displayBalance} {item.symbol} </Text>
-                        <Text style={mainStyles.coinExtra}> Unlock </Text>
+                        <Text style={styles.unlockDate}> Unlock </Text>
                       </View>
                       <View style={[mainStyles.flex]}>
                         <Row
                           style={[mainStyles.textRight, mainStyles.justifyRight]}
                           center
                         >
-                          <PRVSymbol style={mainStyles.coinInterest} />
+                          <Text style={mainStyles.coinInterest}>+</Text><PRVSymbol style={mainStyles.coinInterest} />
                           <Text style={mainStyles.coinInterest}>
                             &nbsp;{item.displayReward}
                           </Text>
                         </Row>
-                        <Text style={[mainStyles.textRight, mainStyles.unlockDate]}>
+                        <Text style={[mainStyles.textRight, styles.unlockDate]}>
                           {item.displayUnlockDate}
                         </Text>
                       </View>
                     </Row>
                   </View>
-                </TouchableOpacity>
+                  {index === lockHistories.length - 1  ? null :  <Divider color={COLORS.lightGrey31} style={styles.divider} />}
+                </>
               );
             })}
           </ScrollView>
         ) 
-        : (
-          <View style={mainStyles.coinContainer}>
-            <Text style={[mainStyles.coinExtra, {textAlign: 'center'}]}>There have no providing lock PRV details.</Text>
-          </View>
-          
-        )
+        : renderEmptyList()
       }
     </View>
   );

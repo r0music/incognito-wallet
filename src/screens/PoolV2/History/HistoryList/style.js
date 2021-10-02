@@ -26,7 +26,7 @@ export default StyleSheet.create({
     color: COLORS.lightGrey16,
   },
   historyItem: {
-    marginBottom: 30,
+    paddingVertical: 15,
   },
   historyTitle: {
     paddingTop: 30,

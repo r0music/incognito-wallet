@@ -30,10 +30,10 @@ const ConfirmMigration = ({
   );
   return (
     <View style={{ flex: 1 }}>
-      <Header title="Migrate preview" />
+      <Header title="Confirmation" />
       <ScrollView refreshControl={renderRefreshControl()}>
         <View style={styles.mainInfo}>
-          <Text style={styles.bigText}>Migrate</Text>
+          <Text style={styles.label}>Migrate</Text>
           <Text style={styles.bigText} numberOfLines={3}>
             {migrate} {coin.symbol}
           </Text>
@@ -41,12 +41,14 @@ const ConfirmMigration = ({
         <ExtraInfo
           left="Unlock date"
           right={`${unlockTimeFormat}`}
-          style={{ ...styles.extra, ...styles.bold }}
+          style={styles.extra}
+          rightStyle={styles.extraRight}
         />
         <ExtraInfo
           left="Migrate"
           right={`${migrate} ${coin.symbol}`}
-          style={{ ...styles.extra, ...styles.bold }}
+          style={styles.extra}
+          rightStyle={styles.extraRight}
         />
         {!!error && <Text style={styles.error}>{error}</Text>}
         <RoundCornerButton

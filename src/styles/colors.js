@@ -12,6 +12,7 @@ const COLORS = {
   blue5: '#5995F0',
   blue6: '#00407E',
   red: '#FE4D4D',
+  red1: '#FF443A',
   green: '#34C759',
   pink: '#E5006D',
   dark1: '#101111',
@@ -41,6 +42,7 @@ const COLORS = {
   lightGrey19: '#F4F4F4',
   lightGrey20: '#D6D6D6',
   lightGrey30: '#F5F5F5',
+  lightGrey31: '#F7F7F7',
   newGrey: '#8A8A8E',
   manateeGrey: '#959599',
 

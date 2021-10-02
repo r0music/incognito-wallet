@@ -1,4 +1,4 @@
-import {COLORS, FONT} from '@src/styles';
+import {COLORS, FONT, UTILS} from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
@@ -48,4 +48,28 @@ export default StyleSheet.create({
     flex: 1,
     marginRight: 25,
   },
+  emptyListContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    paddingBottom: 80,
+  },
+  emptyText: {
+    marginTop: 16,
+    fontFamily: FONT.NAME.regular,
+    color: COLORS.newGrey,
+    fontSize: 16,
+    lineHeight: 24,
+    textAlign: 'center',
+  },
+  unlockDate: {
+    fontFamily: FONT.NAME.regular,
+    color: COLORS.newGrey,
+    fontSize: 14,
+    lineHeight: 16,
+  },
+  divider: {
+    marginBottom: UTILS.heightScale(16),
+    marginTop: UTILS.heightScale(16),
+  }
 });

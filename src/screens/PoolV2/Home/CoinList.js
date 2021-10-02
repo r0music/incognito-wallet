@@ -10,11 +10,12 @@ import {
 } from '@components/core';
 import mainStyles from '@screens/PoolV2/style';
 import { Row, PRVSymbol } from '@src/components/';
-import { ArrowRightGreyIcon } from '@components/Icons/index';
+import {ArrowRightGreyIcon, LockIcon} from '@components/Icons';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { RefreshControl } from 'react-native';
 import { PRV_ID } from '@src/screens/DexV2/constants';
+import {UTILS} from '@src/styles';
 import styles from './style';
 
 const CoinList = ({
@@ -43,12 +44,12 @@ const CoinList = ({
           <Text style={mainStyles.coinName}>Provide liquidity for pDEX</Text>
         </Row>
         <ScrollView
-          refreshControl={
+          refreshControl={(
             <RefreshControl
               refreshing={loading}
               onRefresh={() => onLoad(account)}
             />
-          }
+          )}
           style={styles.scrollView}
         >
           {coins.map((item) => (
@@ -99,38 +100,74 @@ const CoinList = ({
     });
   };
 
+  const renderLockTime = (time) => {
+    if (!time) return null;
+    const arrTime = time.split(' ');
+    let timeText = time;
+    if (arrTime && arrTime.length === 2) {
+      timeText = `${arrTime[0]}${arrTime[1].charAt(0)}`;
+    }
+    return (
+      <Row style={mainStyles.wrapperLock}>
+        <LockIcon />
+        <Text style={mainStyles.lockText}>{timeText}</Text>
+      </Row>
+    );
+  };
+
+  const renderBtnMirage = (item) => {
+    return (
+      <TouchableOpacity style={mainStyles.btnMirage} onPress={() => handleOpenMigrate(item)}>
+        <Text style={mainStyles.mirageText}>Migrate</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderMainCoin = (item) => {
+    const mapCoin = item.coin;
+    return (
+      <View style={mainStyles.wrapTitle}>
+        <Text style={[mainStyles.coinName, { marginBottom: 0 }]}>{item.symbol}</Text>
+        {item.locked && renderLockTime(mapCoin.displayLockTime)}
+        {(!item.locked && mapCoin.id === PRV_ID) && renderBtnMirage(item)}
+      </View>
+    );
+  };
+
   const renderUserData = () => {
     return (
       <ScrollView
-        refreshControl={
+        refreshControl={(
           <RefreshControl
             refreshing={loading}
             onRefresh={() => onLoad(account)}
           />
-        }
+        )}
         style={styles.scrollView}
       >
         {groupedUserData.map((item) => {
           const mapCoin = item.coin;
+          const isLock = mapCoin.locked;
+          const isPRV = mapCoin.id === PRV_ID;
+          const COMP = isLock ? TouchableOpacity : View;
           return (
             <View key={`${item.id} ${item.locked}`} style={mainStyles.coin}>
-              <TouchableOpacity onPress={() => handleShowLockHistory(mapCoin)} key={`${item.id} ${item.locked}`}>
+              <COMP
+                onPress={() => handleShowLockHistory(mapCoin)}
+                key={`${item.id} ${item.locked}`}
+                activeOpacity={isLock ? 0.7 : 1}
+                style={[(!isLock && !isPRV) && { opacity: 0.5 }]}
+              >
                 <View>
                   <Row>
                     <View>
-                      <Text style={mainStyles.coinName}>{item.symbol}</Text>
+                      {renderMainCoin(item)}
                       <Text style={mainStyles.coinExtra}>
                         {mapCoin.displayInterest}
                       </Text>
-                      {item.locked ? (
-                        <Text style={mainStyles.coinExtra}>
-                          {mapCoin.displayLockTime}
-                        </Text>
-                      ) : null}
-
                     </View>
                     <View style={[mainStyles.flex]}>
-                      <Text style={[mainStyles.coinName, mainStyles.textRight]}>
+                      <Text style={[mainStyles.coinName, mainStyles.textRight, { lineHeight: 24 }]}>
                         {item.displayBalance}
                       </Text>
                       {!!item.displayPendingBalance && (
@@ -160,21 +197,8 @@ const CoinList = ({
                     </View>
                   </Row>
                 </View>
-              </TouchableOpacity>
-              {!item.locked && mapCoin.id === PRV_ID && (
-                <View
-                  style={styles.migrateRow}
-                  center
-                >
-                  <RoundCornerButton
-                    title="Migrate"
-                    style={styles.migrateButton}
-                    onPress={() => handleOpenMigrate(item)}
-                  />
-                </View>
-              )}
+              </COMP>
             </View>
-            
           );
         })}
         {renderRate()}

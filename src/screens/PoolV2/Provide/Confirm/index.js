@@ -37,10 +37,10 @@ const Confirm = ({
   );
   return (
     <View style={{ flex: 1 }}>
-      <Header title="Order preview" />
+      <Header title="Confirmation" />
       <ScrollView refreshControl={renderRefreshControl()}>
         <View style={styles.mainInfo}>
-          <Text style={styles.bigText}>Provide</Text>
+          <Text style={styles.label}>Provide</Text>
           <Text style={styles.bigText} numberOfLines={3}>{provide} {coin.symbol}</Text>
         </View>
         {
@@ -50,7 +50,8 @@ const Confirm = ({
                 <ExtraInfo
                   left="Unlock date"
                   right={`${unlockTimeFormat}`}
-                  style={{ ...styles.extra, ...styles.bold }}
+                  style={styles.extra}
+                  rightStyle={styles.extraRight}
                 />
               </>
             )
@@ -59,13 +60,15 @@ const Confirm = ({
         <ExtraInfo
           left="Deposit"
           right={`${deposit} ${coin.symbol}`}
-          style={{ ...styles.extra, ...styles.bold }}
+          style={styles.extra}
+          rightStyle={styles.extraRight}
         />
         <ExtraInfo
           token={feeToken}
           left="Fee"
           right={`${format.amount(fee, feeToken.pDecimals)} ${feeToken.symbol}`}
           style={styles.extra}
+          rightStyle={styles.extraRight}
         />
         {!!error && <Text style={styles.error}>{error}</Text>}
         <RoundCornerButton

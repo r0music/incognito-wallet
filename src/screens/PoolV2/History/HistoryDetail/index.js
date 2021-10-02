@@ -32,7 +32,7 @@ const HistoryDetail = ({ history }) => {
         />
         <ExtraInfo
           style={styles.extra}
-          rightStyle={styles.info}
+          rightStyle={[styles.info, { color: history.statusColor }]}
           left="Status:"
           right={history.status}
         />

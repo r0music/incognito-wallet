@@ -30,12 +30,15 @@ export default StyleSheet.create({
     fontSize: 18,
     marginBottom: UTILS.heightScale(8),
   },
-  unlockDate: {
+  coinExtraSmall: {
     fontFamily: FONT.NAME.medium,
     color: COLORS.newGrey,
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
+    lineHeight: 18,
     marginBottom: UTILS.heightScale(8),
+  },
+  coinExtraSmallWrapper: {
+    marginVertical: 0,
   },
   textRight: {
     textAlign: 'right',
@@ -50,6 +53,8 @@ export default StyleSheet.create({
     color: COLORS.red,
     fontSize: 16,
     minHeight: 20,
+    fontFamily: FONT.NAME.regular,
+    marginBottom: UTILS.heightScale(8),
   },
   disabled: {
     opacity: 0.5,
@@ -64,10 +69,48 @@ export default StyleSheet.create({
     marginBottom: isAndroid() ? -UTILS.heightScale(8) : 0,
   },
   inputContainer: {
-    marginBottom: UTILS.heightScale(8)
+    marginBottom: UTILS.heightScale(8),
+    backgroundColor: COLORS.lightGrey31,
+    paddingHorizontal: 16,
+    paddingVertical: 13,
+    borderRadius: 8,
   },
   symbol: {
     fontSize: UTILS.heightScale(20),
     fontFamily: FONT.NAME.bold,
   },
+  wrapTitle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: UTILS.heightScale(8)
+  },
+  wrapperLock: {
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    paddingVertical: 4,
+    backgroundColor: COLORS.lightGrey19,
+    marginLeft: 8,
+    height: 24,
+    borderRadius: 4
+  },
+  lockText: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
+    color: COLORS.newGrey,
+    marginLeft: 5
+  },
+  btnMirage: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.black,
+    marginLeft: 8,
+    height: 24,
+    paddingHorizontal: 8,
+    borderRadius: 4
+  },
+  mirageText: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
+    color: COLORS.white,
+  }
 });

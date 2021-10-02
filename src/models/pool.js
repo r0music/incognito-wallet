@@ -1,6 +1,7 @@
 import formatUtil, { LONG_DATE_TIME_FORMAT } from '@utils/format';
 import { COINS } from '@src/constants';
 import moment from 'moment';
+import {COLORS} from '@src/styles';
 
 class CoinConfigModel {
   constructor(data = {}, masterAddress) {
@@ -102,7 +103,7 @@ export class PoolHistory {
 
     this.account = account?.name || account?.AccountName;
     this.coin = coins.find(coin => coin.id === this.coinId);
-    
+
     if (data.Extra) {
       try {
         const extra = JSON.parse(data.Extra);
@@ -111,7 +112,7 @@ export class PoolHistory {
         this.unlockDate = moment(extra.DaturityDate).format(LONG_DATE_TIME_FORMAT);
       } catch (e) {
         console.log('Ignore err: ', e);
-      } 
+      }
     }
 
     if (this.coin) {
@@ -128,6 +129,14 @@ export class PoolHistory {
       'Pending',
       'Successful',
     ][data.Status];
+
+    this.statusColor = COLORS.newGrey;
+    if (this.status === 'Unsuccessful') {
+      this.statusColor = COLORS.red1;
+    }
+    if (this.status === 'Successful') {
+      this.statusColor = COLORS.green2;
+    }
 
     this.type = [
       'None',

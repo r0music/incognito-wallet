@@ -42,7 +42,7 @@ const Provide = ({
           disabled={!!error || disable}
           onPress={onConfirm}
         />
-        <Text style={mainStyle.coinExtra}>
+        <Text style={mainStyle.coinExtraSmall}>
           Your rewards counter will restart from zero.
           Please wait a couple of minutes for your main
           balance to update.
