@@ -167,7 +167,7 @@ const CoinList = ({
                       </Text>
                     </View>
                     <View style={[mainStyles.flex]}>
-                      <Text style={[mainStyles.coinName, mainStyles.textRight, { lineHeight: 24 }]}>
+                      <Text style={[mainStyles.coinName, mainStyles.textRight]}>
                         {item.displayBalance}
                       </Text>
                       {!!item.displayPendingBalance && (

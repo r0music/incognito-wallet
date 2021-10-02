@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { FONT, COLORS, UTILS } from '@src/styles';
+import { FONT, COLORS } from '@src/styles';
 import { isAndroid } from '@utils/platform';
 
 export default StyleSheet.create({
@@ -7,35 +7,35 @@ export default StyleSheet.create({
     flex: 1,
   },
   coinContainer: {
-    marginTop: UTILS.heightScale(30),
+    marginTop: 30,
     flex: 1,
   },
   coin: {
-    marginBottom: UTILS.heightScale(20),
+    marginBottom: 20,
   },
   coinName: {
     fontFamily: FONT.NAME.bold,
     fontSize: 20,
-    marginBottom: UTILS.heightScale(8),
+    marginBottom: 8,
   },
   coinInterest: {
     fontSize: 18,
     color: COLORS.green2,
     fontFamily: FONT.NAME.medium,
-    marginBottom: UTILS.heightScale(8),
+    marginBottom: 8,
   },
   coinExtra: {
     fontFamily: FONT.NAME.medium,
     color: COLORS.newGrey,
     fontSize: 18,
-    marginBottom: UTILS.heightScale(8),
+    marginBottom: 8,
   },
   coinExtraSmall: {
     fontFamily: FONT.NAME.medium,
     color: COLORS.newGrey,
     fontSize: 16,
     lineHeight: 18,
-    marginBottom: UTILS.heightScale(8),
+    marginBottom: 8,
   },
   coinExtraSmallWrapper: {
     marginVertical: 0,
@@ -54,7 +54,7 @@ export default StyleSheet.create({
     fontSize: 16,
     minHeight: 20,
     fontFamily: FONT.NAME.regular,
-    marginBottom: UTILS.heightScale(8),
+    marginBottom: 8,
   },
   disabled: {
     opacity: 0.5,
@@ -66,23 +66,23 @@ export default StyleSheet.create({
     padding: 0,
     flex: 1,
     marginRight: 15,
-    marginBottom: isAndroid() ? -UTILS.heightScale(8) : 0,
+    marginBottom: isAndroid() ? -8 : 0,
   },
   inputContainer: {
-    marginBottom: UTILS.heightScale(8),
+    marginBottom: 8,
     backgroundColor: COLORS.lightGrey31,
     paddingHorizontal: 16,
     paddingVertical: 13,
     borderRadius: 8,
   },
   symbol: {
-    fontSize: UTILS.heightScale(20),
+    fontSize: 20,
     fontFamily: FONT.NAME.bold,
   },
   wrapTitle: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: UTILS.heightScale(8)
+    marginBottom: 8
   },
   wrapperLock: {
     paddingHorizontal: 8,
