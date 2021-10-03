@@ -2,6 +2,7 @@ import formatUtil, { LONG_DATE_TIME_FORMAT } from '@utils/format';
 import { COINS } from '@src/constants';
 import moment from 'moment';
 import {COLORS} from '@src/styles';
+import orderBy from 'lodash/orderBy';
 
 class CoinConfigModel {
   constructor(data = {}, masterAddress) {
@@ -82,7 +83,8 @@ export class PoolConfigModel {
     }
 
     this.masterAddress = data.MasterAddress;
-    this.coins = data.Configs.map(item => new CoinConfigModel(item, this.masterAddress));
+    const coins = (data.Configs.map(item => new CoinConfigModel(item, this.masterAddress)) || []).filter(item => !!item);
+    this.coins = orderBy(coins, ['locked'], ['desc']);
   }
 }
 

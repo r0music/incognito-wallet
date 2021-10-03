@@ -146,6 +146,7 @@ const CoinList = ({
       >
         {groupedUserData.map((item) => {
           const mapCoin = item.coin;
+          if (!mapCoin) return null;
           const isLock = mapCoin.locked;
           const isPRV = mapCoin.id === PRV_ID;
           const provideBalance = item.balance;

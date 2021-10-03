@@ -42,7 +42,7 @@ const withPoolData = (WrappedComp) => (props) => {
         const sameIDItems = groupedUserDataTmp.filter((i) => {
           return groupedUserDataTmp.indexOf(i) !== index && i.id === item.id && i.locked === item.locked && i.lockTime === item.lockTime;
         });
-        
+
         if (sameIDItems && sameIDItems.length > 0) {
           let totalBalance = item.balance;
           let totalReward = item.rewardBalance;
@@ -80,7 +80,7 @@ const withPoolData = (WrappedComp) => (props) => {
           decimalBalance: convert.toNumber(newItem.displayBalance, true),
         });
       });
-      groupedUserDataTmp = _.orderBy(groupedUserDataTmp, ['decimalBalance'], ['desc', 'asc']);
+      groupedUserDataTmp = _.orderBy(groupedUserDataTmp, ['coin.locked', 'decimalBalance'], ['desc', 'asc']);
     }
     setUserData(userData);
     setGroupedUserData(groupedUserDataTmp);

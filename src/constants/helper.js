@@ -47,7 +47,17 @@ const HELPER_CONSTANT = {
       subTitle: 'More on fees',
       content: 'By default, Incognito doesn’t charge any trading fees for normal trades. The only fee incurred is the Incognito network fee, paid to validators for verifying transactions. If you are utilizing a Uniswap or Kyber pool, cross-chain fees will also apply.'
     }]
-  }
+  },
+  PROVIDE: {
+    title: 'Provide',
+    contents: [{
+      subTitle: 'Lock time',
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque dapibus accumsan interdum. Sed ultricies mi ac tortor varius hendrerit. Duis et facilisis leo, eu interdum libero. Vestibulum nec odio dui. Maecenas interdum neque ut eros feugiat, at ultrices mi molestie. Cras porttitor orci tristique est sagittis, ut condimentum turpis accumsan. Aenean sit amet dictum ipsum. Quisque luctus id ante eu cursus. Nullam tempor vulputate finibus. Aenean lobortis ullamcorper congue. Etiam nec ligula in nisl vulputate pulvinar vitae eu urna. Donec varius tempus lectus, non condimentum tortor rhoncus lacinia.',
+    }, {
+      subTitle: 'No lock time',
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque dapibus accumsan interdum. Sed ultricies mi ac tortor varius hendrerit. Duis et facilisis leo, eu interdum libero. Vestibulum nec odio dui. Maecenas interdum neque ut eros feugiat, at ultrices mi molestie. Cras porttitor orci tristique est sagittis, ut condimentum turpis accumsan. Aenean sit amet dictum ipsum. Quisque luctus id ante eu cursus. Nullam tempor vulputate finibus. Aenean lobortis ullamcorper congue. Etiam nec ligula in nisl vulputate pulvinar vitae eu urna. Donec varius tempus lectus, non condimentum tortor rhoncus lacinia.'
+    }]
+  },
 };
 
 export default { HELPER_CONSTANT };
