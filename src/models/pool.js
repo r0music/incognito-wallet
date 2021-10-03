@@ -104,12 +104,12 @@ export class PoolHistory {
     this.account = account?.name || account?.AccountName;
     this.coin = coins.find(coin => coin.id === this.coinId);
 
-    if (data.Extra) {
+    if (data.LockData) {
       try {
-        const extra = JSON.parse(data.Extra);
-        this.locked = extra.Locked;
-        this.lockTime = extra.LockTime;
-        this.unlockDate = moment(extra.DaturityDate).format(LONG_DATE_TIME_FORMAT);
+        const lockData = JSON.parse(data.LockData);
+        this.locked = lockData.Locked;
+        this.lockTime = lockData.LockTime;
+        this.unlockDate = moment(lockData.DaturityDate).format(LONG_DATE_TIME_FORMAT);
       } catch (e) {
         console.log('Ignore err: ', e);
       }

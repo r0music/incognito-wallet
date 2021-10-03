@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigationParam } from 'react-navigation-hooks';
-import formatUtil from '@utils/format';
+import formatUtil, {LONG_DATE_TIME_FORMAT} from '@utils/format';
 
 const withData = WrappedComp => (props) => {
   const data        = useNavigationParam('data');
@@ -12,9 +12,10 @@ const withData = WrappedComp => (props) => {
     value,
     coin.pDecimals
   );
-
-  const unlockTime = new Date(new Date().getTime() + coin.lockTime*2592000*1000); // 2592000 = 24*60*60*30 = 1 month
-  const unlockTimeFormat = formatUtil.formatDateTime(unlockTime, 'DD MMM YYYY');
+  
+  let unlockTime = new Date();
+  unlockTime.setMonth(unlockTime.getMonth() + coin.lockTime);
+  const unlockTimeFormat = formatUtil.formatDateTime(unlockTime, LONG_DATE_TIME_FORMAT);
 
   return (
     <WrappedComp
