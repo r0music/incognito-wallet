@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import _ from 'lodash';
+import BigNumber from 'bignumber.js';
 import { ExHandler } from '@services/exception';
 import { MESSAGES } from '@src/constants';
 import { getPoolConfig, getUserPoolData } from '@services/api/pool';
@@ -44,23 +45,23 @@ const withPoolData = (WrappedComp) => (props) => {
         });
 
         if (sameIDItems && sameIDItems.length > 0) {
-          let totalBalance = item.balance;
-          let totalReward = item.rewardBalance;
-          let totalPendingBalance = item.pendingBalance;
-          let totalUnstakePendingBalance = item.unstakePendingBalance;
-          let totalWithdrawPendingBalance = item.withdrawPendingBalance;
+          let totalBalance = new BigNumber(item.balance);
+          let totalReward = new BigNumber(item.rewardBalance);
+          let totalPendingBalance = new BigNumber(item.pendingBalance);
+          let totalUnstakePendingBalance = new BigNumber(item.unstakePendingBalance);
+          let totalWithdrawPendingBalance = new BigNumber(item.withdrawPendingBalance);
           sameIDItems.map(i => {
-            totalBalance += i.balance;
-            totalReward += i.rewardBalance;
-            totalPendingBalance += i.pendingBalance;
-            totalUnstakePendingBalance = i.unstakePendingBalance;
-            totalWithdrawPendingBalance = i.withdrawPendingBalance;
+            totalBalance = totalBalance.plus(new BigNumber(i.balance));
+            totalReward = totalReward.plus(new BigNumber(i.rewardBalance));
+            totalPendingBalance = totalPendingBalance.plus(new BigNumber(i.pendingBalance));
+            totalUnstakePendingBalance = totalUnstakePendingBalance.plus(new BigNumber(i.unstakePendingBalance));
+            totalWithdrawPendingBalance = totalWithdrawPendingBalance.plus(new BigNumber(i.withdrawPendingBalance));
           });
-          newItem.balance = totalBalance;
-          newItem.rewardBalance = totalReward;
-          newItem.pendingBalance = totalPendingBalance;
-          newItem.unstakePendingBalance = totalUnstakePendingBalance;
-          newItem.withdrawPendingBalance = totalWithdrawPendingBalance;
+          newItem.balance = totalBalance.toNumber();
+          newItem.rewardBalance = totalReward.toNumber();
+          newItem.pendingBalance = totalPendingBalance.toNumber();
+          newItem.unstakePendingBalance = totalUnstakePendingBalance.toNumber();
+          newItem.withdrawPendingBalance = totalWithdrawPendingBalance.toNumber();
 
           newItem.displayReward = formatUtils.amountFull(newItem.rewardBalance, COINS.PRV.pDecimals, true);
           newItem.displayBalance = formatUtils.amountFull(newItem.balance, newItem.pDecimals, true);
