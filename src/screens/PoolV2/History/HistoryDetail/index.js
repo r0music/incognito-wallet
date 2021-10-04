@@ -47,13 +47,13 @@ const HistoryDetail = ({ history }) => {
             <ExtraInfo
               style={styles.extra}
               rightStyle={styles.info}
-              left="Lock type:"
+              left="Lock term:"
               right={history?.lockTime + ' Months'}
             />
             <ExtraInfo
               style={styles.extra}
               rightStyle={styles.info}
-              left="Unlock date:"
+              left="Term ends:"
               right={history?.unlockDate}
             />
           </>

@@ -39,7 +39,7 @@ const ConfirmMigration = ({
           </Text>
         </View>
         <ExtraInfo
-          left="Unlock date"
+          left="Term ends"
           right={`${unlockTimeFormat}`}
           style={styles.extra}
           rightStyle={styles.extraRight}

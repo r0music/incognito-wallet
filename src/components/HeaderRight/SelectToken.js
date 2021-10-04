@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { tokenSelector, accountSelector } from '@src/redux/selectors';
 import { COLORS } from '@src/styles';
-import { View, Container, Modal, TouchableOpacity, ScrollView } from '../core';
+import { View, Modal, TouchableOpacity, ScrollView } from '../core';
 import CryptoIcon from '../CryptoIcon';
 import { tokenInfoStyle } from './style';
 import SimpleInfo from '../SimpleInfo';
@@ -25,7 +25,7 @@ class TokenInfo extends Component {
     // const supportTokens = tokens?.filter(token => supportTokenIds?.includes(token.id));
 
     if ((!tokens || tokens.length === 0) && !account) {
-      return <SimpleInfo text='There has no token to display' />;
+      return <SimpleInfo text='There is no investment.' />;
     }
 
     return (

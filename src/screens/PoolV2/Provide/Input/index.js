@@ -53,7 +53,7 @@ const Provide = ({
 
   return (
     <View style={mainStyle.flex}>
-      <Header title={`Provide ${coin.symbol}`} />
+      <Header title='Provide' />
       <View style={mainStyle.coinContainer}>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
@@ -79,7 +79,7 @@ const Provide = ({
         <Text style={mainStyle.error}>{error}</Text>
         
         <RoundCornerButton
-          title="Provide liquidity"
+          title="Provide"
           style={[mainStyle.button, styles.button]}
           onPress={handleProvide}
           disabled={!!error || !inputText}

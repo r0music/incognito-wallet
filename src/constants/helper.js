@@ -49,13 +49,9 @@ const HELPER_CONSTANT = {
     }]
   },
   PROVIDE: {
-    title: 'Provide',
+    title: 'Length of term',
     contents: [{
-      subTitle: 'Lock time',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque dapibus accumsan interdum. Sed ultricies mi ac tortor varius hendrerit. Duis et facilisis leo, eu interdum libero. Vestibulum nec odio dui. Maecenas interdum neque ut eros feugiat, at ultrices mi molestie. Cras porttitor orci tristique est sagittis, ut condimentum turpis accumsan. Aenean sit amet dictum ipsum. Quisque luctus id ante eu cursus. Nullam tempor vulputate finibus. Aenean lobortis ullamcorper congue. Etiam nec ligula in nisl vulputate pulvinar vitae eu urna. Donec varius tempus lectus, non condimentum tortor rhoncus lacinia.',
-    }, {
-      subTitle: 'No lock time',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque dapibus accumsan interdum. Sed ultricies mi ac tortor varius hendrerit. Duis et facilisis leo, eu interdum libero. Vestibulum nec odio dui. Maecenas interdum neque ut eros feugiat, at ultrices mi molestie. Cras porttitor orci tristique est sagittis, ut condimentum turpis accumsan. Aenean sit amet dictum ipsum. Quisque luctus id ante eu cursus. Nullam tempor vulputate finibus. Aenean lobortis ullamcorper congue. Etiam nec ligula in nisl vulputate pulvinar vitae eu urna. Donec varius tempus lectus, non condimentum tortor rhoncus lacinia.'
+      content: 'Choose instant access to withdraw your funds at any time for free. Otherwise, pick a fixed term to get our best rates.',
     }]
   },
 };

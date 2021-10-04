@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
-import { View, Text, TouchableOpacity, ScrollView, Divider, Image } from '@components/core';
+import { View, Text, ScrollView, Divider, Image } from '@components/core';
 import emptyListIcon from '@src/assets/images/icons/empty_list.png';
 import { Row, PRVSymbol } from '@src/components/';
 import { COLORS } from '@src/styles';
@@ -39,7 +39,7 @@ const LockHistory = ({
  
   return (
     <View style={styles.wrapper}>
-      <Header title="Provide PRV lock detail" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
+      <Header title="Investments" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
       { lockHistories.length > 0 
         ? (
           <ScrollView style={mainStyles.coinContainer}>
@@ -50,7 +50,7 @@ const LockHistory = ({
                     <Row>
                       <View>
                         <Text style={mainStyles.coinName}>{item.displayBalance} {item.symbol} </Text>
-                        <Text style={styles.unlockDate}> Unlock </Text>
+                        <Text style={styles.unlockDate}> Term ends </Text>
                       </View>
                       <View style={[mainStyles.flex]}>
                         <Row

@@ -45,7 +45,7 @@ const InputMigration = ({
 
   return (
     <View style={mainStyle.flex}>
-      <Header title={`Migrate ${coin.symbol}`} />
+      <Header title='Migrate' />
       <View style={mainStyle.coinContainer}>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
@@ -58,7 +58,7 @@ const InputMigration = ({
           <BtnInfinite style={mainStyle.symbol} onPress={handleMax} />
         </Row>
         {!!error && <Text style={mainStyle.error}>{error}</Text>}
-        <Text style={mainStyle.coinExtraSmall}>Migrate your non lock PRV to lock in one step.</Text>
+        <Text style={mainStyle.coinExtraSmall}>Migrate your PRV from instant access to a fixed term ({coin?.lockTime} months) to get {coin?.apy}% APY.</Text>
         <RoundCornerButton
           title="Migrate"
           style={[mainStyle.button, styles.button]}
@@ -66,7 +66,7 @@ const InputMigration = ({
           disabled={!!error || !inputText}
         />
         <ExtraInfo
-          left="Non-lock balance"
+          left="Balance"
           right={`${data.displayFullBalance} ${coin.symbol}`}
           style={mainStyle.coinExtraSmall}
         />
