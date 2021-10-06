@@ -1,4 +1,4 @@
-import {COLORS, FONT, UTILS} from '@src/styles';
+import {COLORS, FONT} from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
@@ -67,9 +67,10 @@ export default StyleSheet.create({
     color: COLORS.newGrey,
     fontSize: 14,
     lineHeight: 16,
+    marginBottom: 8,
   },
   divider: {
-    marginBottom: UTILS.heightScale(16),
-    marginTop: UTILS.heightScale(16),
+    marginBottom: 16,
+    marginTop: 16,
   }
 });

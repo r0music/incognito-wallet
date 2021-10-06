@@ -50,6 +50,7 @@ const LockHistory = ({
                     <Row>
                       <View>
                         <Text style={mainStyles.coinName}>{item.displayBalance} {item.symbol} </Text>
+                        <Text style={styles.unlockDate}> {item.coin.displayLockTime} </Text>
                         <Text style={styles.unlockDate}> Term ends </Text>
                       </View>
                       <View style={[mainStyles.flex]}>
@@ -62,6 +63,9 @@ const LockHistory = ({
                             &nbsp;{item.displayReward}
                           </Text>
                         </Row>
+                        <Text style={[mainStyles.textRight, styles.unlockDate]}>
+                          {item.coin.displayInterest}
+                        </Text>
                         <Text style={[mainStyles.textRight, styles.unlockDate]}>
                           {item.displayUnlockDate}
                         </Text>
