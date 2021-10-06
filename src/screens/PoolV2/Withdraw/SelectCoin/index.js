@@ -13,15 +13,15 @@ import { COINS } from '@src/constants';
 
 const SelectCoin = ({
   coins,
-  totalRewards,
-  displayFullTotalRewards,
+  displayFullTotalRewardsNonLock,
+  totalRewardsNonLock,
 }) => {
   const navigation = useNavigation();
 
   const handleWithdrawReward = () =>{
     navigation.navigate(ROUTE_NAMES.PoolV2WithdrawRewards, {
-      totalRewards,
-      displayFullTotalRewards,
+      totalRewardsNonLock,
+      displayFullTotalRewardsNonLock,
     });
   };
 
@@ -38,13 +38,13 @@ const SelectCoin = ({
       <Header title="Withdraw" />
       <ScrollView style={mainStyle.coinContainer}>
         <TouchableOpacity
-          style={[mainStyle.coin, !totalRewards && mainStyle.disabled]}
+          style={[mainStyle.coin, !totalRewardsNonLock && mainStyle.disabled]}
           onPress={handleWithdrawReward}
-          disabled={!totalRewards}
+          disabled={!totalRewardsNonLock}
         >
           <Row spaceBetween>
             <Text style={mainStyle.coinName}>{prv.symbol}</Text>
-            <Text style={mainStyle.coinName}>{displayFullTotalRewards}</Text>
+            <Text style={mainStyle.coinName}>{displayFullTotalRewardsNonLock}</Text>
           </Row>
           <Text style={mainStyle.coinExtra}>Rewards</Text>
         </TouchableOpacity>
@@ -69,8 +69,8 @@ const SelectCoin = ({
 
 SelectCoin.propTypes = {
   coins: PropTypes.array.isRequired,
-  displayFullTotalRewards: PropTypes.string.isRequired,
-  totalRewards: PropTypes.number.isRequired,
+  displayFullTotalRewardsNonLock: PropTypes.string.isRequired,
+  totalRewardsNonLock: PropTypes.number.isRequired,
 };
 
 export default compose(

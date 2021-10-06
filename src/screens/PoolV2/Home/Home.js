@@ -35,18 +35,19 @@ const BtnInfo = React.memo(() => {
 
 const Home = ({
   config,
+  groupedCoins,
   userData,
   groupedUserData,
   withdrawable,
-  totalRewards,
   displayClipTotalRewards,
-  displayFullTotalRewards,
   histories,
   onLoad,
   loading,
   account,
   isLoadingHistories,
-  nativeToken
+  nativeToken,
+  totalRewardsNonLock,
+  displayFullTotalRewardsNonLock
 }) => {
   const renderContent = () => {
     if (!config || !userData) {
@@ -62,9 +63,10 @@ const Home = ({
         <Actions
           buy={!withdrawable}
           coins={config.coins}
+          groupedCoins={groupedCoins}
           data={userData}
-          totalRewards={totalRewards}
-          displayFullTotalRewards={displayFullTotalRewards}
+          totalRewardsNonLock={totalRewardsNonLock}
+          displayFullTotalRewardsNonLock={displayFullTotalRewardsNonLock}
         />
         <CoinList
           coins={config.coins}
@@ -95,24 +97,26 @@ const Home = ({
 
 Home.propTypes = {
   config: PropTypes.object,
+  groupedCoins: PropTypes.array,
   userData: PropTypes.array,
   groupedUserData: PropTypes.array,
   withdrawable: PropTypes.bool.isRequired,
-  displayFullTotalRewards: PropTypes.string.isRequired,
   displayClipTotalRewards: PropTypes.string.isRequired,
-  totalRewards: PropTypes.number.isRequired,
   histories: PropTypes.array.isRequired,
   onLoad: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   account: PropTypes.object.isRequired,
   isLoadingHistories: PropTypes.bool.isRequired,
   nativeToken: PropTypes.object.isRequired,
+  displayFullTotalRewardsNonLock: PropTypes.string.isRequired,
+  totalRewardsNonLock: PropTypes.number.isRequired,
 };
 
 Home.defaultProps = {
   config: null,
   userData: null,
   groupedUserData: null,
+  groupedCoins: null
 };
 
 export default compose(

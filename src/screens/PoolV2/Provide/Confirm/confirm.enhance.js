@@ -32,6 +32,7 @@ const withConfirm = (WrappedComp) => (props) => {
     account,
     isPrv,
     originProvide,
+    selectedTerm,
   } = props;
 
   const handleProvideApi = async (captchaCode) => {
@@ -50,6 +51,7 @@ const withConfirm = (WrappedComp) => (props) => {
         captchaCode,
         tokenId: coin.id,
         locked: coin.locked,
+        termID: coin.locked ? selectedTerm?.termID : coin.termID,
       });
       onSuccess(true);
     } catch (error) {

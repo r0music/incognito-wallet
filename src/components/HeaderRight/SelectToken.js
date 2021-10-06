@@ -25,7 +25,7 @@ class TokenInfo extends Component {
     // const supportTokens = tokens?.filter(token => supportTokenIds?.includes(token.id));
 
     if ((!tokens || tokens.length === 0) && !account) {
-      return <SimpleInfo text='There is no investment.' />;
+      return <SimpleInfo text='There has no token to display.' />;
     }
 
     return (

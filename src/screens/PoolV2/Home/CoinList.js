@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import upToIcon from '@src/assets/images/icons/upto_icon.png';
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from '@components/core';
 import mainStyles from '@screens/PoolV2/style';
 import { Row, PRVSymbol } from '@src/components/';
@@ -17,16 +19,17 @@ import { PRV_ID } from '@src/screens/DexV2/constants';
 import styles from './style';
 
 export const LockTimeComp = React.memo(({ time }) => {
-  if (!time) return null;
-  const arrTime = time.split(' ');
   let timeText = time;
-  if (arrTime && arrTime.length === 2) {
-    timeText = `${arrTime[0]}${arrTime[1].charAt(0)}`;
+  if (time) {
+    const arrTime = time.split(' ');
+    if (arrTime && arrTime.length === 2) {
+      timeText = `${arrTime[0]}${arrTime[1].charAt(0)}`;
+    }
   }
   return (
     <Row style={mainStyles.wrapperLock}>
       <LockIcon />
-      <Text style={mainStyles.lockText}>{timeText}</Text>
+      {time && <Text style={mainStyles.lockText}>{timeText}</Text>}
     </Row>
   );
 });
@@ -127,9 +130,30 @@ const CoinList = ({
     return (
       <View style={mainStyles.wrapTitle}>
         <Text style={[mainStyles.coinName, { marginBottom: 0 }]}>{item.symbol}</Text>
-        {item.locked && <LockTimeComp time={mapCoin.displayLockTime} />}
+        {item.locked && <LockTimeComp />}
         {(!item.locked && mapCoin.id === PRV_ID && !!provideBalance) && renderBtnMirage(item)}
       </View>
+    );
+  };
+
+  const renderUpToAPY = (item) => {
+    return (
+      <Row style={{alignItems: 'center'}}>
+        {
+          item.locked && 
+            (
+              <Image
+                source={upToIcon}
+                style={{
+                  width: 14,
+                  height: 16,
+                  marginBottom: 8,
+                }}
+              />
+            )
+        }
+        <Text style={mainStyles.coinExtra}> {item.coin.displayInterest}</Text>
+      </Row>
     );
   };
 
@@ -163,9 +187,7 @@ const CoinList = ({
                   <Row>
                     <View>
                       {renderMainCoin(item)}
-                      <Text style={mainStyles.coinExtra}>
-                        {mapCoin.displayInterest}
-                      </Text>
+                      {renderUpToAPY(item)}
                     </View>
                     <View style={[mainStyles.flex]}>
                       <Text style={[mainStyles.coinName, mainStyles.textRight]}>

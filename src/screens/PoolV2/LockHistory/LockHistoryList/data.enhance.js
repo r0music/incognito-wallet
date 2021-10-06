@@ -12,11 +12,10 @@ const withData = WrappedComp => (props) => {
   const coin = useNavigationParam('coin');
 
   let lockHistories = userData.filter(item => {
-    return item.id === coin.id && item.locked === coin.locked && 
-      item.lockTime === coin.lockTime && item.active === LockStatus.Active && item.balance > 0;
+    return item.id === coin.id && item.locked === coin.locked && item.active === LockStatus.Active && item.balance > 0;
   });
 
-  lockHistories = _.orderBy(lockHistories, ['unlockDate'], ['desc']);
+  lockHistories = _.orderBy(lockHistories, ['lockDate'], ['desc']);
   
   return (
     <WrappedComp

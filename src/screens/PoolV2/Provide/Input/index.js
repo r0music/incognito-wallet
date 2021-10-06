@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, BaseTextInput, RoundCornerButton } from '@components/core';
+import { View, Text, BaseTextInput, RoundCornerButton, TouchableOpacity, Image } from '@components/core';
 import mainStyle from '@screens/PoolV2/style';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout/index';
@@ -14,6 +14,8 @@ import { Header, Row } from '@src/components/';
 import { BtnInfinite } from '@components/Button/index';
 import convertUtil, { formatTime }from '@utils/convert';
 import formatUtil from '@utils/format';
+import ic_radio from '@src/assets/images/icons/ic_radio.png';
+import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
 import styles from './style';
 
 const Provide = ({
@@ -27,9 +29,12 @@ const Provide = ({
   fee,
   error,
   payOnOrigin,
-  isPrv
+  isPrv,
+  initIndex,
 }) => {
   const navigation = useNavigation();
+  const [i, setI] = React.useState(initIndex);
+  const [selectedTerm, setSelectedTerm] = React.useState(coin.locked && coin.terms ? {apy: coin.terms[i].apy, lockTime: coin.terms[i].lockTime, termID: coin.terms[i].termID} : undefined);
 
   const handleProvide = () => {
     navigation.navigate(ROUTE_NAMES.PoolV2ProvideConfirm, {
@@ -42,6 +47,7 @@ const Provide = ({
       prvBalance,
       payOnOrigin,
       isPrv,
+      selectedTerm,
     });
   };
 
@@ -50,6 +56,12 @@ const Provide = ({
     const fixDecimals = formatUtil.toFixed(humanAmount, coin.pDecimals);
     onChangeInputText(fixDecimals.toString());
   };
+
+  const handlePress = (index) => {
+    setI(index);
+    setSelectedTerm({apy: coin.terms[index].apy, lockTime: coin.terms[index].lockTime, termID: coin.terms[index].termID});
+  };
+
 
   return (
     <View style={mainStyle.flex}>
@@ -68,15 +80,29 @@ const Provide = ({
             onPress={handleMax}
           />
         </Row>
-        <Row center spaceBetween>
-          <Text style={mainStyle.coinExtraSmall}>{coin.displayInterest}</Text>
-          {
-            coin.locked 
-              ? <Text style={[mainStyle.coinExtraSmall, mainStyle.textRight]}>{coin.displayLockTime}</Text>
-              : null
-          }
-        </Row>
+        {!coin.locked &&
+          <Row center spaceBetween>
+            <Text style={mainStyle.coinExtraSmall}>{coin.displayInterest}</Text>
+          </Row>
+        }
         <Text style={mainStyle.error}>{error}</Text>
+        {coin.locked && coin.terms && coin.terms.map((item, index) => {
+          return (
+            <TouchableOpacity
+              style={index === i ? styles.selectedButton : styles.unSelectedButon}
+              key={`key-${index}`}
+              onPress={() => handlePress(index)}
+            >
+              <Row style={styles.contentView}>
+                <Text style={[styles.textLeft, { marginRight: 20}]}>{item.lockTime} Months</Text>               
+                <Row style={styles.contentView}>
+                  <Text style={styles.textRight}>{item.apy}% APY </Text>
+                  <Image style={styles.textRight} source={index === i ? ic_radio_check : ic_radio} />
+                </Row>
+              </Row>
+            </TouchableOpacity>
+          );
+        })}
         
         <RoundCornerButton
           title="Provide"

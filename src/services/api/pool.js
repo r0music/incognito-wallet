@@ -42,6 +42,7 @@ export async function submitProvideRawTx({
   captchaCode,
   tokenId,
   locked,
+  termID
 }) {
   const url = '/pool/staker/submit-rawdata';
   return http.post(url, {
@@ -50,6 +51,7 @@ export async function submitProvideRawTx({
     'IncognitoTx': tx,
     'RawData': rawData,
     'Amount': amount,
+    'TermID': termID,
     'g-recaptcha-response': captchaCode,
     'CaptchaVersion': 'v3',
     'TokenID': tokenId,
@@ -57,13 +59,14 @@ export async function submitProvideRawTx({
   });
 }
 
-export async function migratePRVProvide({paymentAddress, signEncode, verifyCode, amount}) {
+export async function migratePRVProvide({paymentAddress, signEncode, verifyCode, amount, termID}) {
   const url = '/pool/staker/migrate-to-prv-lock';
   return http.post(url, {
     'PStakeAddress': paymentAddress,
     'SignEncode': signEncode,
     'PaymentAddress': paymentAddress,
     'Amount': amount,
+    'TermID': termID,
     'g-recaptcha-response': verifyCode,
     'CaptchaVersion': 'v3',
   });

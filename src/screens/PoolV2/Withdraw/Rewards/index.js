@@ -14,7 +14,7 @@ import withSuccess from './success.enhance';
 import styles from './style';
 
 const Provide = ({
-  displayFullTotalRewards,
+  displayFullTotalRewardsNonLock,
   onConfirm,
   error,
   withdrawing,
@@ -30,7 +30,7 @@ const Provide = ({
             style={mainStyle.input}
             placeholder="0"
             editable={false}
-            value={displayFullTotalRewards}
+            value={displayFullTotalRewardsNonLock}
             keyboardType="decimal-pad"
           />
           <Text style={mainStyle.symbol}>{coin.symbol}</Text>
@@ -54,7 +54,7 @@ const Provide = ({
 };
 
 Provide.propTypes = {
-  displayFullTotalRewards: PropTypes.string.isRequired,
+  displayFullTotalRewardsNonLock: PropTypes.string.isRequired,
   onConfirm: PropTypes.func.isRequired,
   withdrawing: PropTypes.bool,
   error: PropTypes.string,

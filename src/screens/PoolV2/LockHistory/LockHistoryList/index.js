@@ -31,7 +31,7 @@ const LockHistory = ({
           }}
         />
         <Text style={styles.emptyText}>
-          {'There have no providing\nlock PRV details.'}
+          There is no investment.
         </Text>
       </View>
     );

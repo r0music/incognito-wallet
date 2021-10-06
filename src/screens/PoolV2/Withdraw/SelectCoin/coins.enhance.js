@@ -7,8 +7,9 @@ const filterLocked = (item) => {
 
 const withCoinsData = WrappedComp => (props) => {
   const tempCoins = useNavigationParam('data') || [];
-  const totalRewards = useNavigationParam('totalRewards');
-  const displayFullTotalRewards = useNavigationParam('displayFullTotalRewards');
+  const totalRewardsNonLock = useNavigationParam('totalRewardsNonLock');
+  const displayFullTotalRewardsNonLock = useNavigationParam('displayFullTotalRewardsNonLock');
+
 
   const coins = tempCoins.filter(filterLocked);
 
@@ -17,8 +18,8 @@ const withCoinsData = WrappedComp => (props) => {
       {...{
         ...props,
         coins,
-        totalRewards,
-        displayFullTotalRewards,
+        totalRewardsNonLock,
+        displayFullTotalRewardsNonLock,
       }}
     />
   );

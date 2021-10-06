@@ -13,6 +13,7 @@ class CoinConfigModel {
     const token = data.Token;
 
     this.id = token.TokenID;
+    this.termID = data.ID;
     this.name = token.Name;
     this.symbol = token.Symbol;
     this.pDecimals = token.PDecimals;
@@ -51,7 +52,9 @@ export class UserCoinPoolModel {
     this.lockTime = data.LockTime;
     this.stakerTokenBalanceID = data.ID;
     this.unlockDate = data.DaturityDate;
-    this.displayUnlockDate = formatUtil.formatDateTime(this.unlockDate, 'DD MMM YYYY HH:mm A');
+    this.displayUnlockDate = formatUtil.formatDateTime(this.unlockDate, LONG_DATE_TIME_FORMAT);
+    this.lockDate = data.CreatedAt;
+    this.displayLockDate = formatUtil.formatDateTime(this.lockDate, LONG_DATE_TIME_FORMAT);
     this.active = data.Active;
 
     // if (this.id === COINS.PRV_ID) {

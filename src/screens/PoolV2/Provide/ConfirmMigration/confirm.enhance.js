@@ -15,7 +15,7 @@ const withConfirm = (WrappedComp) => (props) => {
   const [disable, setDisable] = React.useState(true);
   const [refreshing, setRefreshing] = React.useState(false);
   const captchaRef = React.useRef(null);
-  const { value, onSuccess, account, wallet } = props;
+  const { value, onSuccess, account, wallet, selectedTerm} = props;
 
   const handleProvideApi = async (captchaCode) => {
     try {
@@ -31,6 +31,7 @@ const withConfirm = (WrappedComp) => (props) => {
         signEncode,
         verifyCode: captchaCode,
         amount: value,
+        termID: selectedTerm?.termID,
       });
       onSuccess(true);
     } catch (error) {
