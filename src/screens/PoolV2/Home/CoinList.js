@@ -36,6 +36,7 @@ export const LockTimeComp = React.memo(({ time }) => {
 
 const CoinList = ({
   coins,
+  groupedCoins,
   userData,
   groupedUserData,
   histories,
@@ -56,9 +57,6 @@ const CoinList = ({
   const renderEmpty = () => {
     return (
       <>
-        <Row style={mainStyles.coin}>
-          <Text style={mainStyles.coinName}>Provide liquidity for pDEX</Text>
-        </Row>
         <ScrollView
           refreshControl={(
             <RefreshControl
@@ -68,18 +66,20 @@ const CoinList = ({
           )}
           style={styles.scrollView}
         >
-          {coins.map((item) => (
+          {groupedCoins.map((item) => (
             <Row style={mainStyles.coin} key={`${item.id} ${item.locked}`}>
               <Text style={mainStyles.coinName}>{item.name}</Text>
-              <Text
-                style={[
-                  mainStyles.coinExtra,
-                  mainStyles.textRight,
-                  mainStyles.flex,
-                ]}
-              >
-                {item.displayInterest}
-              </Text>
+              <Row style={[mainStyles.flex, mainStyles.emptyRight]}>
+                {item.locked &&
+                      (
+                        <Image
+                          source={upToIcon}
+                          style={mainStyles.iconUp}
+                        />
+                      )
+                }
+                <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>{item.displayInterest}</Text>
+              </Row>
             </Row>
           ))}
           {renderRate()}
@@ -124,13 +124,26 @@ const CoinList = ({
     );
   };
 
+  const renderBtnViewDetails = (item) => {
+    return (
+      <TouchableOpacity style={mainStyles.btnMirage} onPress={() => handleShowLockHistory(item)}>
+        <Text style={mainStyles.mirageText}>View details</Text>
+      </TouchableOpacity>
+    );
+  };
+
   const renderMainCoin = (item) => {
     const mapCoin = item.coin;
     const provideBalance = item.balance;
     return (
       <View style={mainStyles.wrapTitle}>
         <Text style={[mainStyles.coinName, { marginBottom: 0 }]}>{item.symbol}</Text>
-        {item.locked && <LockTimeComp />}
+        {item.locked && (
+          <>
+            <LockTimeComp />
+            {renderBtnViewDetails(mapCoin)}
+          </>
+        )}
         {(!item.locked && mapCoin.id === PRV_ID && !!provideBalance) && renderBtnMirage(item)}
       </View>
     );
@@ -140,7 +153,7 @@ const CoinList = ({
     return (
       <Row style={{alignItems: 'center'}}>
         {
-          item.locked && 
+          item.locked &&
             (
               <Image
                 source={upToIcon}
@@ -171,17 +184,10 @@ const CoinList = ({
         {groupedUserData.map((item) => {
           const mapCoin = item.coin;
           if (!mapCoin) return null;
-          const isLock = mapCoin.locked;
-          const isPRV = mapCoin.id === PRV_ID;
-          const provideBalance = item.balance;
-          const COMP = isLock ? TouchableOpacity : View;
           return (
             <View key={`${item.id} ${item.locked}`} style={mainStyles.coin}>
-              <COMP
-                onPress={() => handleShowLockHistory(mapCoin)}
+              <View
                 key={`${item.id} ${item.locked}`}
-                activeOpacity={isLock ? 0.7 : 1}
-                style={[(!isLock && (!isPRV || !provideBalance)) && { opacity: 0.5 }]}
               >
                 <View>
                   <Row>
@@ -220,7 +226,7 @@ const CoinList = ({
                     </View>
                   </Row>
                 </View>
-              </COMP>
+              </View>
             </View>
           );
         })}
@@ -270,6 +276,7 @@ const CoinList = ({
 
 CoinList.propTypes = {
   coins: PropTypes.array,
+  groupedCoins: PropTypes.array,
   groupedUserData: PropTypes.array,
   userData: PropTypes.array,
   histories: PropTypes.array,
@@ -282,6 +289,7 @@ CoinList.propTypes = {
 
 CoinList.defaultProps = {
   coins: [],
+  groupedCoins: [],
   groupedUserData: [],
   userData: [],
   histories: [],

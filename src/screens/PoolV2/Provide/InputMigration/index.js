@@ -95,7 +95,7 @@ const InputMigration = ({
           disabled={!!error || !inputText}
         />
         <ExtraInfo
-          left="Balance"
+          left="Anytime balance"
           right={`${data.displayFullBalance} ${coin.symbol}`}
           style={mainStyle.coinExtraSmall}
         />

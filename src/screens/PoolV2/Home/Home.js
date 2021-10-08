@@ -70,6 +70,7 @@ const Home = ({
         />
         <CoinList
           coins={config.coins}
+          groupedCoins={groupedCoins}
           userData={userData}
           groupedUserData={groupedUserData}
           withdrawable={withdrawable}

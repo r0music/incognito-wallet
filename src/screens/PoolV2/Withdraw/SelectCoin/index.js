@@ -32,6 +32,7 @@ const SelectCoin = ({
   };
 
   const prv = COINS.PRV;
+  const anytime = ' anytime';
 
   return (
     <View style={mainStyle.flex}>
@@ -43,7 +44,7 @@ const SelectCoin = ({
           disabled={!totalRewardsNonLock}
         >
           <Row spaceBetween>
-            <Text style={mainStyle.coinName}>{prv.symbol}</Text>
+            <Text style={mainStyle.coinName}>{prv.symbol} anytime</Text>
             <Text style={mainStyle.coinName}>{displayFullTotalRewardsNonLock}</Text>
           </Row>
           <Text style={mainStyle.coinExtra}>Rewards</Text>
@@ -56,7 +57,7 @@ const SelectCoin = ({
             disabled={!coin.balance}
           >
             <Row spaceBetween>
-              <Text style={mainStyle.coinName}>{coin.symbol}</Text>
+              <Text style={mainStyle.coinName}>{coin.id === prv.id ? coin.symbol + anytime : coin.symbol}</Text>
               <Text style={mainStyle.coinName}>{coin.displayBalance}</Text>
             </Row>
             <Text style={mainStyle.coinExtra}>Provision</Text>

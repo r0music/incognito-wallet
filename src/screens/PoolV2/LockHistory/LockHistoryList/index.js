@@ -31,7 +31,7 @@ const LockHistory = ({
           }}
         />
         <Text style={styles.emptyText}>
-          There is no investment.
+          There is no stake.
         </Text>
       </View>
     );
@@ -39,7 +39,7 @@ const LockHistory = ({
  
   return (
     <View style={styles.wrapper}>
-      <Header title="Investments" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
+      <Header title="Staking service" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
       { lockHistories.length > 0 
         ? (
           <ScrollView style={mainStyles.coinContainer}>

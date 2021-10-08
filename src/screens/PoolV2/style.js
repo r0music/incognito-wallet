@@ -112,5 +112,15 @@ export default StyleSheet.create({
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.small,
     color: COLORS.white,
+  },
+  emptyRight: {
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  iconUp: {
+    width: 14,
+    height: 16,
+    marginBottom: 8,
+    marginRight: 7
   }
 });
