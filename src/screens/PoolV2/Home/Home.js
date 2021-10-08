@@ -49,6 +49,7 @@ const Home = ({
   totalRewardsNonLock,
   displayFullTotalRewardsNonLock
 }) => {
+  const navigation = useNavigation();
   const renderContent = () => {
     if (!config || !userData) {
       return <LoadingContainer />;
@@ -90,6 +91,9 @@ const Home = ({
         title="Provide"
         customHeaderTitle={<BtnInfo />}
         accountSelectable
+        onGoBack={() => {
+          navigation.navigate(routeNames.Home);
+        }}
       />
       {renderContent()}
     </View>
