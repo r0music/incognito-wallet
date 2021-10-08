@@ -18,18 +18,10 @@ import { RefreshControl } from 'react-native';
 import { PRV_ID } from '@src/screens/DexV2/constants';
 import styles from './style';
 
-export const LockTimeComp = React.memo(({ time }) => {
-  let timeText = time;
-  if (time) {
-    const arrTime = time.split(' ');
-    if (arrTime && arrTime.length === 2) {
-      timeText = `${arrTime[0]}${arrTime[1].charAt(0)}`;
-    }
-  }
+export const LockTimeComp = React.memo(() => {
   return (
     <Row style={mainStyles.wrapperLock}>
       <LockIcon />
-      {time && <Text style={mainStyles.lockText}>{timeText}</Text>}
     </Row>
   );
 });
@@ -161,11 +153,12 @@ const CoinList = ({
                   width: 14,
                   height: 16,
                   marginBottom: 8,
+                  marginRight: 4
                 }}
               />
             )
         }
-        <Text style={mainStyles.coinExtra}> {item.coin.displayInterest}</Text>
+        <Text style={mainStyles.coinExtra}>{item.coin.displayInterest}</Text>
       </Row>
     );
   };
@@ -186,9 +179,7 @@ const CoinList = ({
           if (!mapCoin) return null;
           return (
             <View key={`${item.id} ${item.locked}`} style={mainStyles.coin}>
-              <View
-                key={`${item.id} ${item.locked}`}
-              >
+              <View key={`${item.id} ${item.locked}`}>
                 <View>
                   <Row>
                     <View>
@@ -297,10 +288,6 @@ CoinList.defaultProps = {
   onLoad: undefined,
   loading: false,
   isLoadingHistories: false,
-};
-
-LockTimeComp.propTypes = {
-  time: PropTypes.string.isRequired
 };
 
 export default React.memo(CoinList);

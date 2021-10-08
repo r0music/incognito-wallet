@@ -31,21 +31,21 @@ const SelectCoin = ({
 
   const renderUpToAPY = (item) => {
     return (
-      <Row style={{alignItems: 'center'}}>
+      <Row style={{alignItems: 'center', marginBottom: 8}}>
         {
-          item.locked && 
+          item.locked &&
             (
               <Image
                 source={upToIcon}
                 style={{
                   width: 14,
                   height: 16,
-                  marginBottom: 8,
+                  marginRight: 4,
                 }}
               />
             )
         }
-        <Text style={mainStyle.coinExtra}> {item.displayInterest}</Text>
+        <Text style={[mainStyle.coinExtra, { marginBottom: 0, marginTop: 2 }]}>{item.displayInterest}</Text>
       </Row>
     );
   };
@@ -62,13 +62,13 @@ const SelectCoin = ({
             disabled={!coin.balance}
           >
             <View style={coin.balance === 0 && mainStyle.disabled}>
-              <Row spaceBetween>
-                <Row>
-                  <Text style={mainStyle.coinName}>{coin.symbol}</Text>
+              <Row spaceBetween style={{ marginBottom: 8 }}>
+                <Row style={{ alignItems: 'center' }}>
+                  <Text style={[mainStyle.coinName, { marginBottom: 0 }]}>{coin.symbol}</Text>
                   {!!coin.locked && <LockTimeComp />}
                 </Row>
                 {coin.displayBalance ?
-                  <Text style={mainStyle.coinName}>{coin.displayBalance}</Text> :
+                  <Text style={[mainStyle.coinName, { marginBottom: 0 }]}>{coin.displayBalance}</Text> :
                   <ActivityIndicator />
                 }
               </Row>
