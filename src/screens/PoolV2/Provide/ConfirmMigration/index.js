@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { View, Text, RoundCornerButton, ScrollView } from '@components/core';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
-import format from '@utils/format';
 import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header/index';
 import Loading from '@screens/DexV2/components/Loading';
@@ -15,58 +14,39 @@ import withConfirm from './confirm.enhance';
 import withData from './data.enhance';
 import styles from './style';
 
-const Confirm = ({
+const ConfirmMigration = ({
   coin,
-  deposit,
-  provide,
-  fee,
-  feeToken,
+  migrate,
+  unlockTimeFormat,
   onConfirm,
   providing,
   error,
   disable,
   onRefresh,
   refreshing,
-  unlockTimeFormat,
 }) => {
   const renderRefreshControl = () => (
-    <RefreshControl
-      refreshing={refreshing}
-      onRefresh={onRefresh}
-    />
+    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
   );
   return (
     <View style={{ flex: 1 }}>
       <Header title="Confirmation" />
       <ScrollView refreshControl={renderRefreshControl()}>
         <View style={styles.mainInfo}>
-          <Text style={styles.label}>Provide</Text>
-          <Text style={styles.bigText} numberOfLines={3}>{provide} {coin.symbol}</Text>
+          <Text style={styles.label}>Migrate</Text>
+          <Text style={styles.bigText} numberOfLines={3}>
+            {migrate} {coin.symbol}
+          </Text>
         </View>
-        {
-          unlockTimeFormat
-            ? (
-              <>
-                <ExtraInfo
-                  left="Term ends"
-                  right={`${unlockTimeFormat}`}
-                  style={styles.extra}
-                  rightStyle={styles.extraRight}
-                />
-              </>
-            )
-            : null
-        }
         <ExtraInfo
-          left="Deposit"
-          right={`${deposit} ${coin.symbol}`}
+          left="Term ends"
+          right={`${unlockTimeFormat}`}
           style={styles.extra}
           rightStyle={styles.extraRight}
         />
         <ExtraInfo
-          token={feeToken}
-          left="Fee"
-          right={`${format.amount(fee, feeToken.pDecimals)} ${feeToken.symbol}`}
+          left="Migrate"
+          right={`${migrate} ${coin.symbol}`}
           style={styles.extra}
           rightStyle={styles.extraRight}
         />
@@ -83,14 +63,12 @@ const Confirm = ({
   );
 };
 
-Confirm.propTypes = {
+ConfirmMigration.propTypes = {
   coin: PropTypes.object,
-  deposit: PropTypes.string,
-  provide: PropTypes.string,
+  migrate: PropTypes.string,
   onConfirm: PropTypes.func.isRequired,
 
-  fee: PropTypes.number.isRequired,
-  feeToken: PropTypes.object.isRequired,
+  unlockTimeFormat: PropTypes.string.isRequired,
 
   providing: PropTypes.bool.isRequired,
 
@@ -99,16 +77,13 @@ Confirm.propTypes = {
 
   onRefresh: PropTypes.func.isRequired,
   refreshing: PropTypes.bool,
-  unlockTimeFormat: PropTypes.string,
 };
 
-Confirm.defaultProps = {
+ConfirmMigration.defaultProps = {
   coin: null,
-  deposit: '',
-  provide: '',
+  migrate: '',
   error: '',
   refreshing: false,
-  unlockTimeFormat: ''
 };
 
 export default compose(
@@ -117,4 +92,4 @@ export default compose(
   withSuccess,
   withDefaultAccount,
   withConfirm,
-)(Confirm);
+)(ConfirmMigration);

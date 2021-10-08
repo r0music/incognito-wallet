@@ -2,20 +2,20 @@ import React from 'react';
 import { useNavigation } from 'react-navigation-hooks';
 import { SuccessModal } from '@src/components';
 import ROUTE_NAMES from '@routers/routeNames';
-import mainStyle from '@screens/PoolV2/style';
+import mainStyles from '@screens/PoolV2/style';
 
 const withSuccess = WrappedComp => (props) => {
+  const { coins } = props;
   const [success, setSuccess] = React.useState(false);
   const navigation = useNavigation();
-
   const {
-    displayFullTotalRewardsNonLock,
-    account,
+    migrate,
+    coin,
   } = props;
 
   const closeSuccess = () => {
     setSuccess(false);
-    navigation.navigate(ROUTE_NAMES.PoolV2);
+    navigation.navigate(ROUTE_NAMES.PoolV2History, { coins });
   };
 
   return (
@@ -28,12 +28,11 @@ const withSuccess = WrappedComp => (props) => {
       />
       <SuccessModal
         closeSuccessDialog={closeSuccess}
-        title="Withdrawal successful."
-        buttonTitle="Back to dashboard"
-        description={`${displayFullTotalRewardsNonLock} PRV in provider rewards has been withdrawn to ${account.name || account.AccountName}.`}
-        extraInfo="Please wait for your balance to update."
+        title={`You migrated ${migrate} ${coin.symbol}`}
+        buttonTitle="Sure thing"
+        buttonStyle={mainStyles.button}
+        description='Thank you.'
         visible={success}
-        buttonStyle={mainStyle.button}
       />
     </>
   );

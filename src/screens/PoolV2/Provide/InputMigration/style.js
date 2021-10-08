@@ -3,7 +3,7 @@ import { UTILS, COLORS, FONT} from '@src/styles';
 
 export default StyleSheet.create({
   button: {
-    marginTop: UTILS.heightScale(24),
+    marginTop: UTILS.heightScale(32),
     marginBottom: UTILS.heightScale(16),
   },
   contentView: {

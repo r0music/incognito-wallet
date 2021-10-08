@@ -12,7 +12,6 @@ import { PRV_ID } from '@src/constants/common';
 import {MESSAGES} from '@screens/Dex/constants';
 import {useError} from '@components/UseEffect/useError';
 
-
 const withConfirm = (WrappedComp) => (props) => {
   const signPublicKeyEncode = useSelector(
     accountSelector.signPublicKeyEncodeSelector,
@@ -33,6 +32,7 @@ const withConfirm = (WrappedComp) => (props) => {
     account,
     isPrv,
     originProvide,
+    selectedTerm,
   } = props;
 
   const handleProvideApi = async (captchaCode) => {
@@ -50,6 +50,8 @@ const withConfirm = (WrappedComp) => (props) => {
         amount: provideValue,
         captchaCode,
         tokenId: coin.id,
+        locked: coin.locked,
+        termID: coin.locked ? selectedTerm?.termID : coin.termID,
       });
       onSuccess(true);
     } catch (error) {

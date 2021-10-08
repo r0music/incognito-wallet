@@ -26,7 +26,7 @@ export default StyleSheet.create({
     color: COLORS.lightGrey16,
   },
   historyItem: {
-    paddingVertical: 15,
+    marginBottom: 30,
   },
   historyTitle: {
     paddingTop: 30,
@@ -48,4 +48,29 @@ export default StyleSheet.create({
     flex: 1,
     marginRight: 25,
   },
+  emptyListContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    paddingBottom: 80,
+  },
+  emptyText: {
+    marginTop: 16,
+    fontFamily: FONT.NAME.regular,
+    color: COLORS.newGrey,
+    fontSize: 16,
+    lineHeight: 24,
+    textAlign: 'center',
+  },
+  unlockDate: {
+    fontFamily: FONT.NAME.regular,
+    color: COLORS.newGrey,
+    fontSize: 14,
+    lineHeight: 16,
+    marginBottom: 8,
+  },
+  divider: {
+    marginBottom: 16,
+    marginTop: 16,
+  }
 });

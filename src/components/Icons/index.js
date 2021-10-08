@@ -39,3 +39,4 @@ export { default as CheckedIcon } from './icon.checked';
 export { default as RetryIcon } from './icon.retry';
 export { default as ChevronIcon } from './icon.chevron';
 export { default as SimpleCheckedIcon } from './icon.checked-simple';
+export { default as LockIcon } from './icon.lock';

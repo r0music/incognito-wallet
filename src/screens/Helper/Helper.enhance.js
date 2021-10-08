@@ -8,7 +8,7 @@ const enhance = WrappedComp => props => {
 
   const title   = useNavigationParam('title') || '';
   const contents = useNavigationParam('contents') || '';
-
+  const style = useNavigationParam('style') || {};
   return (
     <ErrorBoundary>
       <WrappedComp
@@ -16,7 +16,8 @@ const enhance = WrappedComp => props => {
           ...props,
 
           title,
-          contents
+          contents,
+          style,
         }}
       />
     </ErrorBoundary>

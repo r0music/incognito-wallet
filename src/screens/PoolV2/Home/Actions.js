@@ -10,9 +10,10 @@ import styles from './style';
 const Actions = ({
   buy,
   coins,
+  groupedCoins,
   data,
-  totalRewards,
-  displayFullTotalRewards,
+  totalRewardsNonLock,
+  displayFullTotalRewardsNonLock
 }) => {
   const navigation = useNavigation();
 
@@ -23,14 +24,14 @@ const Actions = ({
   const handleWithdraw = () => {
     navigation.navigate(ROUTE_NAMES.PoolV2WithdrawSelectCoin, {
       data,
-      totalRewards,
-      displayFullTotalRewards,
+      totalRewardsNonLock,
+      displayFullTotalRewardsNonLock,
     });
   };
 
   const handleProvide = () => {
     navigation.navigate(ROUTE_NAMES.PoolV2ProvideSelectCoin, {
-      coins
+      coins: groupedCoins
     });
   };
 
@@ -67,17 +68,19 @@ const Actions = ({
 Actions.propTypes = {
   buy: PropTypes.bool,
   coins: PropTypes.array,
+  groupedCoins: PropTypes.array,
   data: PropTypes.array,
-  totalRewards: PropTypes.number,
-  displayFullTotalRewards: PropTypes.string,
+  totalRewardsNonLock: PropTypes.number,
+  displayFullTotalRewardsNonLock: PropTypes.string,
 };
 
 Actions.defaultProps = {
   buy: false,
   coins: [],
+  groupedCoins: [],
   data: [],
-  totalRewards: 0,
-  displayFullTotalRewards: '',
+  totalRewardsNonLock: 0,
+  displayFullTotalRewardsNonLock: '',
 };
 
 export default React.memo(Actions);

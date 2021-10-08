@@ -14,6 +14,7 @@ import { ArrowRightGreyIcon } from '@components/Icons';
 import withHistories from '@screens/PoolV2/histories.enhance';
 import withDefaultAccount from '@components/Hoc/withDefaultAccount';
 import { LIMIT } from '@screens/PoolV2/constants';
+import {COLORS} from '@src/styles';
 import styles from './style';
 
 const History = ({
@@ -30,12 +31,16 @@ const History = ({
 
   // eslint-disable-next-line react/prop-types
   const renderHistoryItem = ({ item }) => (
-    <TouchableOpacity key={item.id} style={styles.historyItem} onPress={() => viewDetail(item)}>
+    <TouchableOpacity
+      key={item.id}
+      style={[styles.historyItem, { borderBottomColor: COLORS.lightGrey31, borderBottomWidth: 1 }]}
+      onPress={() => viewDetail(item)}
+    >
       <Text style={styles.buttonTitle}>{item.type}</Text>
       <View style={styles.row}>
         <Text style={[styles.content, styles.ellipsis]} numberOfLines={1}>{item.description}</Text>
         <View style={[styles.row, styles.center, styles.status]}>
-          <Text style={[styles.content]} numberOfLines={1}>{item.status}</Text>
+          <Text style={[styles.content, { color: item.statusColor }]} numberOfLines={1}>{item.status}</Text>
           <ArrowRightGreyIcon style={{ marginLeft: 10 }} />
         </View>
       </View>

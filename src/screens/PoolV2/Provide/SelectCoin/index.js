@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity } from '@components/core';
+import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, Image } from '@components/core';
 import mainStyle from '@screens/PoolV2/style';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout/index';
@@ -11,6 +11,8 @@ import ROUTE_NAMES from '@routers/routeNames';
 import { useNavigation } from 'react-navigation-hooks';
 import { Header, Row } from '@src/components/';
 import { COINS } from '@src/constants';
+import {LockTimeComp} from '@screens/PoolV2/Home/CoinList';
+import upToIcon from '@src/assets/images/icons/upto_icon.png';
 
 const SelectCoin = ({
   coins
@@ -27,6 +29,27 @@ const SelectCoin = ({
     });
   };
 
+  const renderUpToAPY = (item) => {
+    return (
+      <Row style={{alignItems: 'center'}}>
+        {
+          item.locked && 
+            (
+              <Image
+                source={upToIcon}
+                style={{
+                  width: 14,
+                  height: 16,
+                  marginBottom: 8,
+                }}
+              />
+            )
+        }
+        <Text style={mainStyle.coinExtra}> {item.displayInterest}</Text>
+      </Row>
+    );
+  };
+
   return (
     <View style={mainStyle.flex}>
       <Header title="Select coin" />
@@ -40,13 +63,16 @@ const SelectCoin = ({
           >
             <View style={coin.balance === 0 && mainStyle.disabled}>
               <Row spaceBetween>
-                <Text style={mainStyle.coinName}>{coin.symbol}</Text>
+                <Row>
+                  <Text style={mainStyle.coinName}>{coin.symbol}</Text>
+                  {!!coin.locked && <LockTimeComp />}
+                </Row>
                 {coin.displayBalance ?
                   <Text style={mainStyle.coinName}>{coin.displayBalance}</Text> :
                   <ActivityIndicator />
                 }
               </Row>
-              <Text style={mainStyle.coinExtra}>{coin.displayInterest}</Text>
+              {renderUpToAPY(coin)}
             </View>
           </TouchableOpacity>
         ))}

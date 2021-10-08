@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { v4 } from 'uuid';
 import withEnhance from './Helper.enhance';
 
-const HelperScreen = ({ title, contents }) => {
+const HelperScreen = ({ title, contents, style }) => {
 
   const renderContent = () => {
     let views = [];
@@ -34,7 +34,7 @@ const HelperScreen = ({ title, contents }) => {
     <View style={styles.container}>
       <Header title={title} />
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.wrapper}>
+        <View style={[styles.wrapper, style]}>
           {renderContent()}
         </View>
       </ScrollView>
@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     ...FONT.STYLE.bold,
     marginTop: 25,
     lineHeight: 25,
+    marginBottom: 5,
     color: COLORS.black,
     fontSize: FONT.SIZE.medium
   },
@@ -66,9 +67,13 @@ const styles = StyleSheet.create({
   }
 });
 
+HelperScreen.defaultProps = {
+  style: null,
+};
 HelperScreen.propTypes = {
   title: PropTypes.string.isRequired,
-  contents: PropTypes.array.isRequired
+  contents: PropTypes.array.isRequired,
+  style: PropTypes.object
 };
 
 export default withEnhance(memo(HelperScreen));

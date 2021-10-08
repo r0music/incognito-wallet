@@ -19,6 +19,7 @@ import NodeStatus from '@screens/Node/components/NodeStatus';
 import { isEmpty } from 'lodash';
 import { compose } from 'recompose';
 import nodeItemDetailEnhanceData from '@screens/Node/components/NodeItemDetail/NodeItemDetail.enhanceData';
+import BottomBar from '@screens/Node/components/NodeBottomBar';
 
 const NodeItemDetail = memo(({
   isLoading,
@@ -189,28 +190,31 @@ const NodeItemDetail = memo(({
   );
 
   return (
-    <View style={styles.containerDetail}>
-      <Header
-        title="Node details"
-        rightHeader={renderRightHeader()}
-      />
-      <ScrollView
-        refreshControl={renderRefreshControl()}
-      >
-        {renderRewards()}
-        {renderButton()}
-        <View style={{ marginTop: 50 }}>
-          {renderItemText('Master key', item.MasterKey)}
-          {renderItemText('Keychain', name)}
-          {renderItemText('IP', ip)}
-          { item?.IsPNode && renderItemText('Version', item?.Firmware) }
-          {(!!item && !!item?.IsSlashing) && renderItemText('Is slashed?', 'True')}
-          { !!item && (<NodeStatus isLoading={isLoading} item={item} />) }
-        </View>
-        {renderStakeInfo()}
-        {renderUpdateNode()}
-      </ScrollView>
-    </View>
+    <>
+      <View style={styles.containerDetail}>
+        <Header
+          title="Node details"
+          rightHeader={renderRightHeader()}
+        />
+        <ScrollView
+          refreshControl={renderRefreshControl()}
+        >
+          {renderRewards()}
+          {renderButton()}
+          <View style={{ marginTop: 50 }}>
+            {renderItemText('Master key', item.MasterKey)}
+            {renderItemText('Keychain', name)}
+            {renderItemText('IP', ip)}
+            { item?.IsPNode && renderItemText('Version', item?.Firmware) }
+            {(!!item && !!item?.IsSlashing) && renderItemText('Is slashed?', 'True')}
+            { !!item && (<NodeStatus isLoading={isLoading} item={item} />) }
+          </View>
+          {renderStakeInfo()}
+          {renderUpdateNode()}
+        </ScrollView>
+      </View>
+      <BottomBar />
+    </>
   );
 });
 
