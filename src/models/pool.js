@@ -30,7 +30,7 @@ class CoinConfigModel {
       this.pDecimals = COINS.PRV.pDecimals;
     }
 
-    this.displayInterest = `${formatUtil.toFixed(this.apy, 2)}%  APY`;
+    this.displayInterest = `${formatUtil.toFixed(this.apy, 2)}%  ${this.locked ? 'APR' : 'APY'}`;
     this.displayLockTime = this.locked ? `${this.lockTime} Months` : '';
   }
 }
