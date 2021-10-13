@@ -113,6 +113,21 @@ export default StyleSheet.create({
     fontSize: FONT.SIZE.small,
     color: COLORS.white,
   },
+  btnViewDetail: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 8,
+    height: 24,
+    paddingHorizontal: 8,
+    borderRadius: 4,
+    borderColor: COLORS.black,
+    borderWidth: 1,
+  },
+  viewDetailText: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
+    color:  COLORS.black,
+  },
   emptyRight: {
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -121,6 +136,6 @@ export default StyleSheet.create({
     width: 14,
     height: 16,
     marginBottom: 8,
-    marginRight: 7
+    marginRight: 9
   }
 });

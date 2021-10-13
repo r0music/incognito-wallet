@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import upToIcon from '@src/assets/images/icons/upto_icon.png';
+import sumIcon from '@src/assets/images/icons/sum_icon.png';
 import {
   View,
   Text,
@@ -26,6 +27,20 @@ export const LockTimeComp = React.memo(() => {
   );
 });
 
+export const SumIconComp = React.memo(() => {
+  return (
+    <Image
+      source={sumIcon}
+      style={{
+        width: 16,
+        height: 16,
+        marginBottom: 8,
+        marginRight: 8
+      }}
+    />
+  );
+});
+
 const CoinList = ({
   coins,
   groupedCoins,
@@ -46,6 +61,15 @@ const CoinList = ({
     });
   };
 
+  const UpToIconComp = () => {
+    return (
+      <Image
+        source={upToIcon}
+        style={mainStyles.iconUp}
+      />
+    ); 
+  };
+
   const renderEmpty = () => {
     return (
       <>
@@ -62,14 +86,7 @@ const CoinList = ({
             <Row style={mainStyles.coin} key={`${item.id} ${item.locked}`}>
               <Text style={mainStyles.coinName}>{item.name}</Text>
               <Row style={[mainStyles.flex, mainStyles.emptyRight]}>
-                {item.locked &&
-                      (
-                        <Image
-                          source={upToIcon}
-                          style={mainStyles.iconUp}
-                        />
-                      )
-                }
+                {item.locked && <UpToIconComp />}
                 <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>{item.displayInterest}</Text>
               </Row>
             </Row>
@@ -118,8 +135,8 @@ const CoinList = ({
 
   const renderBtnViewDetails = (item) => {
     return (
-      <TouchableOpacity style={mainStyles.btnMirage} onPress={() => handleShowLockHistory(item)}>
-        <Text style={mainStyles.mirageText}>View details</Text>
+      <TouchableOpacity style={mainStyles.btnViewDetail} onPress={() => handleShowLockHistory(item)}>
+        <Text style={mainStyles.viewDetailText}>View details</Text>
       </TouchableOpacity>
     );
   };
@@ -144,20 +161,7 @@ const CoinList = ({
   const renderUpToAPY = (item) => {
     return (
       <Row style={{alignItems: 'center'}}>
-        {
-          item.locked &&
-            (
-              <Image
-                source={upToIcon}
-                style={{
-                  width: 14,
-                  height: 16,
-                  marginBottom: 8,
-                  marginRight: 4
-                }}
-              />
-            )
-        }
+        {item.locked && <UpToIconComp />}
         <Text style={mainStyles.coinExtra}>{item.coin.displayInterest}</Text>
       </Row>
     );
@@ -204,6 +208,7 @@ const CoinList = ({
                         style={[mainStyles.textRight, mainStyles.justifyRight]}
                         center
                       >
+                        {item.locked && <SumIconComp />}
                         <PRVSymbol style={mainStyles.coinInterest} />
                         <Text style={mainStyles.coinInterest}>
                           &nbsp;{item.displayReward}
