@@ -96,7 +96,7 @@ const Provide = ({
               <Row style={styles.contentView}>
                 <Text style={[styles.textLeft, { marginRight: 20}]}>{item.lockTime} Months</Text>               
                 <Row style={styles.contentView}>
-                  <Text style={styles.textRight}>{item.apy}% APY </Text>
+                  <Text style={styles.textRight}>{item.apy}% APR</Text>
                   <Image style={styles.textRight} source={index === i ? ic_radio_check : ic_radio} />
                 </Row>
               </Row>

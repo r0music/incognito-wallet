@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { View, Text, ScrollView, Divider, Image } from '@components/core';
 import emptyListIcon from '@src/assets/images/icons/empty_list.png';
+import { SumIconComp } from '@src/screens/PoolV2/Home/CoinList';
 import { Row, PRVSymbol } from '@src/components/';
 import { COLORS } from '@src/styles';
 import { withLayout_2 } from '@components/Layout';
@@ -58,7 +59,8 @@ const LockHistory = ({
                           style={[mainStyles.textRight, mainStyles.justifyRight]}
                           center
                         >
-                          <Text style={mainStyles.coinInterest}>+</Text><PRVSymbol style={mainStyles.coinInterest} />
+                          {item.locked && <SumIconComp />}
+                          <PRVSymbol style={mainStyles.coinInterest} />
                           <Text style={mainStyles.coinInterest}>
                             &nbsp;{item.displayReward}
                           </Text>

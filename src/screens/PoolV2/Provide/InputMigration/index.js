@@ -70,7 +70,7 @@ const InputMigration = ({
           <BtnInfinite style={mainStyle.symbol} onPress={handleMax} />
         </Row>
         {!!error && <Text style={mainStyle.error}>{error}</Text>}
-        <Text style={mainStyle.coinExtraSmall}>Migrate your PRV from instant access to a fixed term ({selectedTerm?.lockTime} months) to get {selectedTerm?.apy}% APY.</Text>
+        <Text style={mainStyle.coinExtraSmall}>Migrate your PRV from instant access to a fixed term ({selectedTerm?.lockTime} months) to get {selectedTerm?.apy}% APR.</Text>
         {coin.terms && coin.terms.map((item, index) => {
           return (
             <TouchableOpacity
@@ -81,7 +81,7 @@ const InputMigration = ({
               <Row style={styles.contentView}>
                 <Text style={[styles.textLeft, { marginRight: 20}]}>{item.lockTime} Months</Text>               
                 <Row style={styles.contentView}>
-                  <Text style={styles.textRight}>{item.apy}% APY </Text>
+                  <Text style={styles.textRight}>{item.apy}% APR </Text>
                   <Image style={styles.textRight} source={index === i ? ic_radio_check : ic_radio} />
                 </Row>
               </Row>

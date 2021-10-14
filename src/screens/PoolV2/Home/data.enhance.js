@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import _, { forEach } from 'lodash';
+import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import { ExHandler } from '@services/exception';
 import { MESSAGES } from '@src/constants';
@@ -7,7 +7,6 @@ import { getPoolConfig, getUserPoolData } from '@services/api/pool';
 import COINS from '@src/constants/coin';
 import formatUtils from '@utils/format';
 import { useFocusEffect } from 'react-navigation-hooks';
-import convert from '@src/utils/convert';
 import { useSelector } from 'react-redux';
 import { PRV_ID } from '@src/screens/DexV2/constants';
 import { selectedPrivacySelector } from '@src/redux/selectors';
@@ -81,8 +80,9 @@ const withPoolData = (WrappedComp) => (props) => {
   const getUserData = async (account, coins) => {
     const userData = await getUserPoolData(account.PaymentAddress, coins);
     let groupedUserDataTmp = [...userData];
+    let groupedUserData = [];
     if (groupedUserDataTmp && groupedUserDataTmp.length > 0) {
-      groupedUserDataTmp.map((item, index) => {
+      groupedUserData = groupedUserDataTmp.map((item, index) => {
         let newItem = {...item};
         const sameIDItems = groupedUserDataTmp.filter((i) => {
           return groupedUserDataTmp.indexOf(i) !== index && i.id === item.id && i.locked === item.locked;
@@ -133,8 +133,6 @@ const withPoolData = (WrappedComp) => (props) => {
           newItem.displayWithdrawReward = formatUtils.amountFull(newItem.withdrawPendingBalance, COINS.PRV.pDecimals, true);
           newItem.terms = terms;
           newItem.coin = mapCoin;
-          groupedUserDataTmp[index] = newItem;
-
           sameIDItems.map((i) => {
             groupedUserDataTmp.splice(groupedUserDataTmp.indexOf(i), 1);
           });
@@ -142,13 +140,11 @@ const withPoolData = (WrappedComp) => (props) => {
 
         return ({
           ...newItem,
-          decimalBalance: convert.toNumber(newItem.displayBalance, true),
         });
       });
-      groupedUserDataTmp = _.orderBy(groupedUserDataTmp, ['coin.locked', 'decimalBalance'], ['desc', 'asc']);
     }
     setUserData(userData);
-    setGroupedUserData(groupedUserDataTmp);
+    setGroupedUserData(groupedUserData);
 
     if (
       userData &&
