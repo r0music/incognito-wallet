@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import formatUtil from '@utils/format';
 import config from '@src/constants/config';
 

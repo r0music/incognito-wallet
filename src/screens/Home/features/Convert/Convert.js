@@ -47,7 +47,7 @@ const Convert = () => {
   return (
     <View style={{ flex: 1 }}>
       <Header
-        title="Convert Transactions"
+        title="Convert Coins"
         onGoBack={handleGoBack}
       />
       <SuccessModal

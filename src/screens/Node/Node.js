@@ -9,12 +9,13 @@ import WelcomeFirstTime from '@screens/Node/components/WelcomeFirstTime';
 import WelcomeNodes from '@screens/Node/components/Welcome';
 import { isEmpty } from 'lodash';
 import Rewards from '@screens/Node/components/Rewards';
-import { ActivityIndicator, RoundCornerButton } from '@components/core';
+import {ActivityIndicator, RoundCornerButton} from '@components/core';
 import theme from '@src/styles/theme';
 import { SuccessModal } from '@src/components';
 import NodeItem from '@screens/Node/components/NodeItem/NodeItem';
 import string from '@src/constants/string';
 import NodeFullDisk from '@screens/Node/components/NodeFullDisk';
+import BottomBar from '@screens/Node/components/NodeBottomBar';
 
 const Node = (props) => {
   const {
@@ -157,11 +158,14 @@ const Node = (props) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      {renderContent()}
-      {renderModalActionsForNodePrevSetup()}
-      <DialogLoader loading={loading} />
-    </View>
+    <>
+      <View style={{ flex: 1 }}>
+        {renderContent()}
+        {renderModalActionsForNodePrevSetup()}
+        <DialogLoader loading={loading} />
+      </View>
+      <BottomBar />
+    </>
   );
 };
 

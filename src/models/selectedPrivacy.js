@@ -1,6 +1,8 @@
+/* eslint-disable import/no-cycle */
 import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
 import { BIG_COINS } from '@src/screens/DexV2/constants';
 import { PRV_ID } from '@screens/Dex/constants';
+import { detectToken } from '@src/utils/misc';
 import PToken from './pToken';
 
 function getNetworkName() {
@@ -53,7 +55,7 @@ function getIconUrl(chainTokenImageUri) {
 
   if (this.isMainCrypto || this.isPToken) {
     let formatedSymbol = String(
-      this.externalSymbol || this.symbol,
+      this.symbol || this.externalSymbol,
     ).toLowerCase();
     uri = `${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${formatedSymbol}@2x.png`;
   } else {
@@ -67,7 +69,7 @@ class SelectedPrivacy {
   constructor(account = {}, token = {}, pTokenData: PToken = {}, _tokenID) {
     const tokenId = pTokenData?.tokenId || token?.id;
 
-    const isUnknown = (_tokenID !== PRV_ID) && !tokenId;
+    const isUnknown = _tokenID !== PRV_ID && !tokenId;
     const unknownText = 'Incognito Token';
 
     this.currencyType = pTokenData.currencyType;
@@ -78,7 +80,9 @@ class SelectedPrivacy {
     this.isPrivateCoin =
       pTokenData?.type === CONSTANT_COMMONS.PRIVATE_TOKEN_TYPE.COIN; // pETH, pBTC, pTOMO,...
     this.isPToken = !!pTokenData.pSymbol; // pToken is private token (pETH <=> ETH, pBTC <=> BTC, ...)
-    this.isIncognitoToken = !this.isPToken && !this.isMainCrypto; // is tokens were issued from users
+    this.isIncognitoToken =
+      (!this.isPToken && !this.isMainCrypto) ||
+      detectToken.ispNEO(this?.tokenId); // is tokens were issued from users
     this.isErc20Token =
       this.isPrivateToken &&
       this.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20;
@@ -108,15 +112,19 @@ class SelectedPrivacy {
       token?.name,
       isUnknown ? unknownText : 'Privacy',
     );
-    this.amount = (this.isToken ? token.amount : account.value) || 0;
-    this.tokenId = _tokenID ? _tokenID : (this.isMainCrypto ? CONSTANT_COMMONS.PRV_TOKEN_ID : tokenId);
+
+    this.tokenId = _tokenID
+      ? _tokenID
+      : this.isMainCrypto
+        ? CONSTANT_COMMONS.PRV_TOKEN_ID
+        : tokenId;
     this.contractId = pTokenData.contractId;
     this.decimals = this.isMainCrypto
       ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
       : pTokenData.decimals;
     this.pDecimals = this.isMainCrypto
       ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
-      : pTokenData.pDecimals;
+      : pTokenData.pDecimals || 0;
     this.externalSymbol = pTokenData.symbol;
     this.paymentAddress = account.PaymentAddress;
     this.isWithdrawable = this.isPToken;
@@ -150,6 +158,16 @@ class SelectedPrivacy {
     this.isUSDT = this.tokenId === BIG_COINS.USDT;
     this.isPRV = this.tokenId === BIG_COINS.PRV;
     this.symbol = this.externalSymbol || this.symbol || '';
+    if (!this.symbol && this.isIncognitoToken && !this.isMainCrypto) {
+      this.symbol = 'INC';
+    }
+    this.amount = token?.amount;
+    if (this.isMainCrypto) {
+      this.amount = account?.value;
+      this.symbol = CONSTANT_COMMONS.PRV.symbol;
+    }
+    this.amount = this.amount || 0;
+    this.listChildToken = pTokenData?.listChildToken;
   }
 }
 

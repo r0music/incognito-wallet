@@ -8,7 +8,7 @@ import {
   RoundCornerButton,
 } from '@components/core';
 import { useWalletConnect } from '@walletconnect/react-native-dapp';
-import { CONSTANT_COMMONS } from '@src/constants';
+import { ANALYTICS, CONSTANT_COMMONS } from '@src/constants';
 import withBridgeConnect from '@screens/Wallet/features/BridgeConnect/WalletConnect.enhance';
 import { ExHandler } from '@services/exception';
 import { useNavigation } from 'react-navigation-hooks';
@@ -24,6 +24,8 @@ import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import styles from '@screens/PoolV2/Provide/Input/style';
 import routeNames from '@routers/routeNames';
 import {COLORS} from '@src/styles';
+import { useDispatch } from 'react-redux';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
 
 const ShieldDecentralized = (props) => {
   const {
@@ -49,6 +51,7 @@ const ShieldDecentralized = (props) => {
   const [refresh, setRefresh] = React.useState(false);
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   // selector
   const connector = useWalletConnect();
   const { externalSymbol, contractId } = selectedPrivacy;
@@ -84,6 +87,7 @@ const ShieldDecentralized = (props) => {
     const convertShieldAmount = shieldAmount.replace(',', '.');
     let shieldAmountNum = parseFloat(convertShieldAmount);
     if (connector.accounts.length > 0 && shieldAmountNum <= balanceLoaded) {
+      dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.SHIELD));
       (async () => {
         let tx;
         let nonce = -1;

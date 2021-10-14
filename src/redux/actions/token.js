@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 /* eslint-disable import/no-cycle */
 import type from '@src/redux/types/token';
 import {
@@ -118,55 +119,35 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
   new Validator('tokenId', tokenId).required().string();
   const state = getState();
   const wallet = state?.wallet;
-  // const isDev = devSelector(state);
   const account = accountSelector.defaultAccount(getState());
-  const token = selectedPrivacySelector.findTokenFollowedByIdSelector(state)(
-    tokenId,
-  );
-  if (!token) {
-    return;
-  }
+  let balance = 0;
   try {
     await dispatch(getBalanceStart(tokenId));
-    const balance = await accountService.getBalance({
+    balance = await accountService.getBalance({
       account,
       wallet,
       tokenID: tokenId,
       version: PrivacyVersion.ver2,
     });
-    // if (isDev) {
-    //   const accountWallet = getDefaultAccountWalletSelector(state);
-    //   const coinsStorage = await accountWallet.getCoinsStorage({
-    //     tokenID: tokenId,
-    //     version: PrivacyVersion.ver2,
-    //   });
-    //   if (coinsStorage) {
-    //     await dispatch(
-    //       actionLogEvent({
-    //         desc: coinsStorage,
-    //       }),
-    //     );
-    //   }
-    // }
     dispatch(
       setToken({
-        ...token,
+        id: tokenId,
         amount: balance,
         loading: false,
       }),
     );
-    return balance;
   } catch (e) {
     dispatch(
       setToken({
-        ...token,
-        amount: null,
+        id: tokenId,
+        amount: 0,
       }),
     );
     throw e;
   } finally {
     dispatch(getBalanceFinish(tokenId));
   }
+  return balance ?? 0;
 };
 
 export const getPTokenList = ({ expiredTime = EXPIRED_TIME } = {}) => async (

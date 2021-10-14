@@ -46,7 +46,7 @@ const enhance = WrappedComp => (props) => {
       {(isConvert && !switchingAccount) && (
         <BottomBar
           onPress={navigateConvert}
-          text="Have unspent coins version 1"
+          text="Looking for your old coins? Convert them to v2"
         />
       )}
     </ErrorBoundary>

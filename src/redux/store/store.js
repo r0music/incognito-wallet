@@ -7,15 +7,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { persistStore, persistReducer } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
-const logger = (store) => (next) => (action) => {
-  console.group(action.type);
-  console.info('dispatching', action);
-  let result = next(action);
-  console.log('next state', store.getState());
-  console.groupEnd();
-  return result;
-};
-
 export default function configureStore(preloadedState) {
   const persistConfig = {
     key: 'root',
@@ -34,6 +25,7 @@ export default function configureStore(preloadedState) {
       'txHistoryDetail',
       'node',
       'trade',
+      'pDexV3',
     ],
     stateReconciler: autoMergeLevel2,
   };

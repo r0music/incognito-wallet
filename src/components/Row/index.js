@@ -8,8 +8,9 @@ const Row = ({
   center,
   children,
   spaceBetween,
+  centerVertical
 }) => (
-  <View style={[styles.row, center && styles.center, spaceBetween && styles.spaceBetween, style]}>
+  <View style={[styles.row, center && styles.center, spaceBetween && styles.spaceBetween, centerVertical && styles.centerVertical, style]}>
     {children}
   </View>
 );
@@ -19,12 +20,14 @@ Row.propTypes = {
   center: PropTypes.bool,
   children: PropTypes.arrayOf(PropTypes.element).isRequired,
   spaceBetween: PropTypes.bool,
+  centerVertical: PropTypes.bool,
 };
 
 Row.defaultProps = {
   style: null,
   center: false,
   spaceBetween: false,
+  centerVertical: false
 };
 
 export default Row;

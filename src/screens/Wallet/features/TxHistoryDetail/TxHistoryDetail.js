@@ -37,6 +37,7 @@ import { getFeeFromTxHistory } from './TxHistoryDetail.utils';
 export const Hook = (props) => {
   const {
     label,
+    labelStyle,
     valueText,
     valueTextStyle,
     copyable = false,
@@ -51,7 +52,8 @@ export const Hook = (props) => {
     handleOpenLink = null,
     moreLines = false,
     flexExtra = 5,
-    notShowRetry
+    notShowRetry,
+    style,
   } = props;
   const shouldShowMsg = !!message;
   const [state, setState] = React.useState({
@@ -75,9 +77,9 @@ export const Hook = (props) => {
 
   const renderComponent = () => (
     <>
-      <View style={[styled.rowText, !moreLines && { height: 30 }]}>
+      <View style={[styled.rowText, style, !moreLines && { height: 30 }]}>
         <Text
-          style={[styled.labelText]}
+          style={[styled.labelText, labelStyle]}
           numberOfLines={1}
           ellipsizeMode="middle"
         >
@@ -402,6 +404,10 @@ const TxHistoryDetail = (props) => {
   );
 };
 
+TxHistoryDetail.defaultProps = {
+  style: undefined
+};
+
 TxHistoryDetail.propTypes = {
   data: PropTypes.shape({
     typeText: PropTypes.string,
@@ -420,6 +426,7 @@ TxHistoryDetail.propTypes = {
   isRefresh: PropTypes.bool.isRequired,
   onPullRefresh: PropTypes.func.isRequired,
   minShield: PropTypes.number.isRequired,
+  style: PropTypes.any
 };
 
 export default React.memo(TxHistoryDetail);

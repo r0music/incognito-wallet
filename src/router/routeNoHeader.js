@@ -12,8 +12,8 @@ import AddManually from '@screens/AddManually';
 import WalletDetail from '@screens/Wallet/features/Detail';
 import ReceiveCrypto from '@screens/Wallet/features/ReceiveCrypto';
 import Send from '@screens/Send';
+import UnshieldPortal from '@screens/UnshieldPortal';
 import TokenSelectScreen from '@components/TokenSelectScreen';
-import Trade from '@screens/DexV2';
 import TradeConfirm from '@screens/DexV2/components/TradeConfirm';
 import TradeHistory from '@screens/DexV2/components/History';
 import TradeHistoryDetail from '@screens/DexV2/components/HistoryDetail';
@@ -23,6 +23,7 @@ import TxHistoryDetail from '@screens/Wallet/features/History';
 import ImportAccount from '@src/screens/Account/features/ImportAccount';
 import CreateAccount from '@src/screens/Account/features/CreateAccount';
 import BackupKeys from '@src/screens/BackupKeys';
+import Standby from '@screens/Keychain/features/Standby';
 import Setting from '@screens/Setting';
 import ExportAccount from '@src/screens/Account/features/ExportAccount';
 import NetworkSetting from '@src/screens/NetworkSetting';
@@ -41,6 +42,7 @@ import {
   PoolV2History,
   PoolV2Provide,
   PoolV2Withdraw,
+  PoolV2LockHistory,
 } from '@src/screens/PoolV2';
 import Profile from '@src/screens/Profile';
 import Receipt from '@src/components/Receipt';
@@ -86,14 +88,54 @@ import ShieldDecentralizeDescription from '@screens/Shield/features/ShieldDecent
 import Convert from '@screens/Home/features/Convert';
 import ConfirmLiquidity from '@screens/Dex/components/Confirm';
 import HistoriesLiquidity from '@screens/Dex/features/Histories';
-import HistoryContributeDetail from '@screens/Dex/features/HistoryContributeDetail';
 import HistoryWithdrawDetail from '@screens/Dex/features/HistoryWithdrawDetail';
 import ConfirmRetryLiquidity from '@screens/Dex/features/ConfirmRetry';
 import TwoTokensSelect from '@screens/Dex/features/TwoTokensSelect';
 import SelectTokenStreamline from '@screens/Streamline/features/SelectTokens';
 import ConvertTokenList from '@screens/Home/features/ConvertTokenList';
 import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
-import Liquidity3 from '@screens/Liquidity3';
+import HomePDexV3 from '@screens/PDexV3/features/Home';
+import { PoolsList } from '@screens/PDexV3/features/Pools';
+import { ReviewOrderSwap, OrdeSwapDetail } from '@screens/PDexV3/features/Swap';
+import Trade, {
+  ReviewOrder,
+  TradeOrderHistory,
+} from '@screens/PDexV3/features/Trade';
+import NFTToken, { MintNFTToken } from '@screens/PDexV3/features/NFTToken';
+import OrderLimit, {
+  ReviewOrderLimit,
+  OrderLimitDetail,
+} from '@src/screens/PDexV3/features/OrderLimit';
+import SelectTokenTrade from '@screens/PDexV3/features/SelectToken';
+import Chart from '@screens/PDexV3/features/Chart';
+import WebView from '@screens/WebView';
+import {
+  LiquidityHistories,
+  ContributeHistoryDetail,
+  RemoveLPDetail,
+  WithdrawFeeLPDetail,
+} from '@screens/PDexV3/features/LiquidityHistories';
+import {
+  Staking,
+  StakingMoreCoins,
+  StakingMoreInput,
+  StakingDetail,
+  StakingMoreConfirm,
+  StakingWithdrawCoins,
+  StakingWithdrawInvest,
+  StakingWithdrawReward,
+  StakingHistories,
+  StakingHistoryDetail,
+} from '@screens/PDexV3/features/Staking';
+import {
+  Contribute,
+  CreatePool,
+  RemovePool,
+  ContributeConfirm,
+  CreatePoolConfirm,
+  RemovePoolConfirm,
+} from '@screens/PDexV3/features/Liquidity';
+import PairList from '@screens/PDexV3/features/PairList';
 
 const masterKeyRoutes = [
   {
@@ -122,17 +164,6 @@ const masterKeyRoutes = [
   },
 ];
 
-const liquidity3Routes = [
-  {
-    screen: Liquidity3.Home,
-    name: routeNames.HomeLiquidity3,
-  },
-  {
-    screen: Liquidity3.PoolList,
-    name: routeNames.PoolListLiquidity3,
-  },
-];
-
 const devRoutes = [
   {
     screen: ManageStorage,
@@ -145,6 +176,149 @@ const devRoutes = [
   {
     screen: RestoreAll,
     name: routeNames.RestoreAllData,
+  },
+];
+
+const pDexV3Routes = [
+  {
+    screen: HomePDexV3,
+    name: routeNames.HomePDexV3,
+  },
+  {
+    screen: PoolsList,
+    name: routeNames.PoolsList,
+  },
+  {
+    screen: Trade,
+    name: routeNames.Trade,
+  },
+  {
+    screen: CreatePool,
+    name: routeNames.CreatePool,
+  },
+  {
+    screen: Contribute,
+    name: routeNames.ContributePool,
+  },
+  {
+    screen: RemovePool,
+    name: routeNames.RemovePool,
+  },
+  {
+    screen: ReviewOrder,
+    name: routeNames.ReviewOrder,
+  },
+  {
+    screen: OrderLimit,
+    name: routeNames.OrderLimit,
+  },
+  {
+    screen: SelectTokenTrade,
+    name: routeNames.SelectTokenTrade,
+  },
+  {
+    screen: Chart,
+    name: routeNames.Chart,
+  },
+  {
+    screen: NFTToken,
+    name: routeNames.NFTToken,
+  },
+  {
+    screen: MintNFTToken,
+    name: routeNames.MintNFTToken,
+  },
+  {
+    screen: ReviewOrderSwap,
+    name: routeNames.ReviewOrderSwap,
+  },
+  {
+    screen: LiquidityHistories,
+    name: routeNames.LiquidityHistories,
+  },
+  {
+    screen: ContributeHistoryDetail,
+    name: routeNames.ContributeHistoryDetail,
+  },
+  {
+    screen: RemoveLPDetail,
+    name: routeNames.RemoveLPDetail,
+  },
+  {
+    screen: WithdrawFeeLPDetail,
+    name: routeNames.WithdrawFeeLPDetail,
+  },
+  {
+    screen: Staking,
+    name: routeNames.Staking,
+  },
+  {
+    screen: StakingMoreCoins,
+    name: routeNames.StakingMoreCoins,
+  },
+  {
+    screen: StakingMoreInput,
+    name: routeNames.StakingMoreInput,
+  },
+  {
+    screen: StakingMoreConfirm,
+    name: routeNames.StakingMoreConfirm,
+  },
+  {
+    screen: StakingDetail,
+    name: routeNames.StakingDetail,
+  },
+  {
+    screen: StakingWithdrawCoins,
+    name: routeNames.StakingWithdrawCoins,
+  },
+  {
+    screen: StakingWithdrawInvest,
+    name: routeNames.StakingWithdrawInvest,
+  },
+  {
+    screen: StakingWithdrawReward,
+    name: routeNames.StakingWithdrawReward,
+  },
+  {
+    screen: StakingHistories,
+    name: routeNames.StakingHistories,
+  },
+  {
+    screen: StakingHistoryDetail,
+    name: routeNames.StakingHistoryDetail,
+  },
+  {
+    screen: TradeOrderHistory,
+    name: routeNames.TradeOrderHistory,
+  },
+  {
+    screen: PairList,
+    name: routeNames.PairList,
+  },
+  {
+    screen: ReviewOrderLimit,
+    name: routeNames.ReviewOrderLimit,
+  },
+  {
+    screen: OrderLimitDetail,
+    name: routeNames.OrderLimitDetail,
+  },
+  {
+    screen: ContributeConfirm,
+    name: routeNames.ContributeConfirm,
+  },
+  {
+    screen: CreatePoolConfirm,
+    name: routeNames.CreatePoolConfirm,
+  },
+  {
+    screen: RemovePoolConfirm,
+    name: routeNames.RemovePoolConfirm,
+  },
+  {
+    screen: OrdeSwapDetail,
+    name: routeNames.OrdeSwapDetail,
   },
 ];
 
@@ -202,16 +376,16 @@ const routes = [
     name: routeNames.Send,
   },
   {
+    screen: UnshieldPortal,
+    name: routeNames.UnshieldPortal,
+  },
+  {
     screen: UnShieldModal,
     name: routeNames.UnShieldModal,
   },
   {
     screen: pApp,
     name: routeNames.pApp,
-  },
-  {
-    screen: Trade,
-    name: routeNames.Trade,
   },
   {
     screen: TradeConfirm,
@@ -306,6 +480,14 @@ const routes = [
     name: routeNames.PoolV2ProvideConfirm,
   },
   {
+    screen: PoolV2Provide.InputMigration,
+    name: routeNames.PoolV2ProvideMigrateInput,
+  },
+  {
+    screen: PoolV2Provide.ConfirmMigration,
+    name: routeNames.PoolV2ProvideMigrateConfirm,
+  },
+  {
     screen: PoolV2Withdraw.SelectCoin,
     name: routeNames.PoolV2WithdrawSelectCoin,
   },
@@ -324,6 +506,10 @@ const routes = [
   {
     screen: PoolV2History.HistoryDetail,
     name: routeNames.PoolV2HistoryDetail,
+  },
+  {
+    screen: PoolV2LockHistory.LockHistoryList,
+    name: routeNames.PoolV2ProvideLockHistory,
   },
   {
     name: routeNames.News,
@@ -429,9 +615,6 @@ const routes = [
     screen: Helper,
     name: routeNames.Helper,
   },
-  ...masterKeyRoutes,
-  ...devRoutes,
-  ...liquidity3Routes,
   {
     screen: UpdateFirmware,
     name: routeNames.UpdateNodeFirmware,
@@ -465,10 +648,6 @@ const routes = [
     name: routeNames.HistoriesLiquidity,
   },
   {
-    screen: HistoryContributeDetail,
-    name: routeNames.HistoryContributeDetail,
-  },
-  {
     screen: HistoryWithdrawDetail,
     name: routeNames.HistoryWithdrawDetail,
   },
@@ -492,6 +671,17 @@ const routes = [
     screen: HistoryConvert,
     name: routeNames.HistoryConvert,
   },
+  {
+    screen: Standby,
+    name: routeNames.Standby,
+  },
+  {
+    screen: WebView,
+    name: routeNames.WebView,
+  },
+  ...masterKeyRoutes,
+  ...devRoutes,
+  ...pDexV3Routes,
 ];
 
 export const getRoutesNoHeader = () =>

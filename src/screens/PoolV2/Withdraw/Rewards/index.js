@@ -14,7 +14,7 @@ import withSuccess from './success.enhance';
 import styles from './style';
 
 const Provide = ({
-  displayFullTotalRewards,
+  displayFullTotalRewardsNonLock,
   onConfirm,
   error,
   withdrawing,
@@ -30,7 +30,7 @@ const Provide = ({
             style={mainStyle.input}
             placeholder="0"
             editable={false}
-            value={displayFullTotalRewards}
+            value={displayFullTotalRewardsNonLock}
             keyboardType="decimal-pad"
           />
           <Text style={mainStyle.symbol}>{coin.symbol}</Text>
@@ -42,10 +42,8 @@ const Provide = ({
           disabled={!!error || disable}
           onPress={onConfirm}
         />
-        <Text style={mainStyle.coinExtra}>
-          Your rewards counter will restart from zero.
-          Please wait a couple of minutes for your main
-          balance to update.
+        <Text style={[mainStyle.coinExtraSmall]}>
+          {'Please wait a couple of minutes for your main balance to update.\n\nIf you have any rewards accrued from fixed term staking, you will be able to withdraw them along with your stake when the term ends.'}
         </Text>
       </View>
       <Loading open={withdrawing} />
@@ -54,7 +52,7 @@ const Provide = ({
 };
 
 Provide.propTypes = {
-  displayFullTotalRewards: PropTypes.string.isRequired,
+  displayFullTotalRewardsNonLock: PropTypes.string.isRequired,
   onConfirm: PropTypes.func.isRequired,
   withdrawing: PropTypes.bool,
   error: PropTypes.string,

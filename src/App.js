@@ -64,7 +64,7 @@ const App = (props) => {
           }
         }}
       />
-      {logApp && <Performance/>}
+      {logApp && <Performance />}
     </>
   );
 };
@@ -123,12 +123,12 @@ export const AppWrapper = (props) => () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <StatusBar currentScreen={currentScreen}/>
+        <StatusBar currentScreen={currentScreen} />
         <AppScreen>
           <App {...{...props, currentScreen, setCurrentScreen}} />
-          {isShowDeviceLog && <DeviceLog/>}
-          <QrScanner/>
-          <Toast/>
+          {isShowDeviceLog && <DeviceLog />}
+          <QrScanner />
+          <Toast />
           <ModalConnection
             isVisible={false}
             onPressSetting={() => {

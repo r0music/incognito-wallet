@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import { useSelector } from 'react-redux';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
-import { shieldDataSelector } from '@screens/Shield/Shield.selector';
+import { shieldDataSelector, shieldDataBscSelector } from '@screens/Shield/Shield.selector';
 import QrCodeGenerate from '@src/components/QrCodeGenerate';
 import PropTypes from 'prop-types';
 import { CopiableTextDefault as CopiableText } from '@src/components/CopiableText';
@@ -17,6 +17,14 @@ import { useNavigation } from 'react-navigation-hooks';
 import { CONSTANT_COMMONS } from '@src/constants';
 import convert from '@utils/convert';
 import routeNames from '@routers/routeNames';
+import { defaultAccountSelector } from '@src/redux/selectors/account';
+import {
+  actionGetPRVBep20FeeToShield,
+} from '@screens/Shield/Shield.actions';
+import ic_radio from '@src/assets/images/icons/ic_radio.png';
+import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
+import { PRV_ID } from '@src/screens/DexV2/constants';
+import { ExHandler } from '@src/services/exception';
 import withGenQRCode from './GenQRCode.enhance';
 import { styled } from './GenQRCode.styled';
 
@@ -30,7 +38,7 @@ const NormalText = React.memo((props) => {
   );
 });
 
-const ShieldError = React.memo(({ handleShield }) => {
+const ShieldError = React.memo(({ handleShield, isPortalCompatible }) => {
   return (
     <View style={styled.errorContainer}>
       <ClockWiseIcon />
@@ -43,24 +51,30 @@ const ShieldError = React.memo(({ handleShield }) => {
         onPress={handleShield}
         title="Try again"
       />
-      <Text style={styled.errorText}>
-        {'If that doesn’t work,\n please come back in 60 minutes.'}
-      </Text>
+      {isPortalCompatible ? (
+        <Text style={styled.errorText}>
+          {
+            'If that doesn’t work,\ncheck the bulletin board for scheduled maintenance.\n\nIf there is none,\nplease come back in an hour.'
+          }
+        </Text>
+      ) : (
+        <Text style={styled.errorText}>
+          {
+            'If that doesn’t work,\nplease make sure your app version is the latest.'
+          }
+        </Text>
+      )}
     </View>
   );
 });
 
-const Extra = () => {
-  const {
-    address,
-    min,
-    expiredAt,
-    decentralized,
-    estimateFee,
-    tokenFee,
-  } = useSelector(shieldDataSelector);
-  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+const Extra = (props) => {
+  const { address, min, expiredAt, decentralized, isPortal } = useSelector(
+    shieldDataSelector,
+  );
+  const { selectedPrivacy, defaultFee } = props;
   const navigation = useNavigation();
+
   const renderMinShieldAmount = () => {
     let minComp;
     if (min) {
@@ -82,6 +96,25 @@ const Extra = () => {
     return minComp;
   };
 
+  const renderMinPortalShieldAmount = () => {
+    let minComp;
+    const symbol = selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol;
+    if (min) {
+      minComp = (
+        <>
+          <NormalText text="Minimum: ">
+            <Text style={[styled.boldText]}>{`${min} ${symbol}`}</Text>
+          </NormalText>
+          <NormalText
+            text={'Smaller amounts will be rejected\nby the network and lost.'}
+            style={styled.smallText}
+          />
+        </>
+      );
+    }
+    return minComp;
+  };
+
   const renderEstimateFee = () => {
     const isNativeToken =
       selectedPrivacy?.currencyType ===
@@ -89,7 +122,7 @@ const Extra = () => {
       selectedPrivacy?.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
     let humanFee = convert.toNumber(
-      (isNativeToken ? estimateFee : tokenFee) || 0,
+      (isNativeToken ? defaultFee?.estimateFee : defaultFee?.tokenFee) || 0,
       true,
     );
     const originalFee = convert.toOriginalAmount(
@@ -182,12 +215,28 @@ const Extra = () => {
     </>
   );
 
+  const renderShieldPortalAddress = () => (
+    <>
+      <NormalText style={styled.title}>
+        {`Send only ${selectedPrivacy?.externalSymbol ||
+          selectedPrivacy?.symbol} \nto this shielding address.`}
+      </NormalText>
+      <View style={styled.qrCode}>
+        <QrCodeGenerate value={address} size={175} />
+      </View>
+      <View style={styled.hook}>{renderMinPortalShieldAmount()}</View>
+      <CopiableText data={address} />
+    </>
+  );
+
   return (
     <ScrollView style={styled.scrollview}>
       <View style={styled.extra}>
-        {decentralized === 2 || decentralized === 3
-          ? renderShieldUserAddress()
-          : renderShieldIncAddress()}
+        {isPortal
+          ? renderShieldPortalAddress()
+          : decentralized === 2 || decentralized === 3
+            ? renderShieldUserAddress()
+            : renderShieldIncAddress()}
       </View>
     </ScrollView>
   );
@@ -204,8 +253,56 @@ const Content = () => {
 };
 
 const GenQRCode = (props) => {
-  const { hasError, handleShield, isFetching } = props;
+  const {
+    handleShield,
+    isFetching,
+    isFetchFailed,
+    isPortalCompatible,
+    data: shieldData,
+  } = props;
+  const shieldDataBsc = useSelector(
+    shieldDataBscSelector,
+  );
+  const { address } = shieldData || {};
   const [toggle, setToggle] = React.useState(true);
+  const platforms = ['ETH', 'BSC'];
+  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const [selectedPlatform, setPlatform] = React.useState(0);
+  const [selectingPlatform, setSelectingPlatform] = React.useState(0);
+  const account = useSelector(defaultAccountSelector);
+  const isPRV = selectedPrivacy?.tokenId === PRV_ID;
+  const [defaultFee, setDefaultFee] = React.useState({
+    estimateFee: 0,
+    tokenFee: 0,
+  });
+  const dispatch = useDispatch();
+  const [ethFee, setEthFee] = React.useState({ estimateFee: 0, tokenFee: 0 });
+  const [bscFee, setBscFee] = React.useState({ estimateFee: 0, tokenFee: 0 });
+  const [isLoadingBsc, setIsLoadingBsc] = React.useState(false);
+  if (
+    (shieldData?.tokenFee || shieldData?.estimateFee) &&
+    (defaultFee?.estimateFee === 0 && defaultFee?.tokenFee === 0)
+  ) {
+    const temp = {
+      estimateFee: shieldData?.estimateFee,
+      tokenFee: shieldData?.tokenFee,
+    };
+    setDefaultFee(temp);
+    if (isPRV) {
+      setEthFee(ethFee);
+    }
+  } else if ((shieldDataBsc?.tokenFee || shieldDataBsc?.estimateFee) &&  
+  (bscFee?.estimateFee === 0 && bscFee?.tokenFee === 0) && isPRV) {
+    const temp = {
+      estimateFee: shieldDataBsc?.estimateFeem,
+      tokenFee: shieldDataBsc?.tokenFee,
+    };
+    setPlatform(selectingPlatform);
+    setDefaultFee(temp);
+    setBscFee(temp);
+    setIsLoadingBsc(false);
+  }
+
   React.useEffect(() => {
     if (toggle) {
       const timeout = setTimeout(() => {
@@ -217,14 +314,93 @@ const GenQRCode = (props) => {
     }
   }, [toggle]);
   const renderComponent = () => {
-    if (isFetching) {
+    if (isFetchFailed) {
+      return (
+        <ShieldError
+          handleShield={handleShield}
+          isPortalCompatible={isPortalCompatible}
+        />
+      );
+    }
+    if (isFetching || !address) {
       return <LoadingContainer />;
     }
-    if (hasError) {
-      return <ShieldError handleShield={handleShield} />;
-    }
-    return <Extra {...props} />;
+    return (
+      <>
+        {isPRV && renderOptionsPRV()}
+        <Extra
+          {...{
+            ...props,
+            selectedPrivacy,
+            defaultFee,
+          }}
+        />
+      </>
+    );
   };
+
+  const handlePress = (index) => {
+    if (index !== selectedPlatform && isPRV) {
+      setIsLoadingBsc(true);
+      if (platforms[index] === 'ETH') {
+        setDefaultFee(ethFee);
+        setPlatform(index);
+        setIsLoadingBsc(false);
+      } else if (platforms[index] === 'BSC' && (shieldDataBsc?.tokenFee || shieldDataBsc?.estimateFee)) {
+        setDefaultFee(bscFee);
+        setPlatform(index);
+        setIsLoadingBsc(false);
+      } else {
+        setSelectingPlatform(index);
+        try {
+          dispatch(
+            actionGetPRVBep20FeeToShield(
+              account,
+              account?.signPublicKeyEncode,
+              selectedPrivacy,
+            ),
+          );
+        } catch (e) {
+          new ExHandler(e).showErrorToast();
+          setIsLoadingBsc(false);
+        }
+      }
+    }
+  };
+
+  const renderOptionsPRV = () => (
+    <View style={styled.selectBox}>
+      {platforms.map((item, index) => {
+        const isSelected = index === selectedPlatform;
+        return (
+          <TouchableOpacity
+            style={[
+              styled.optionBtn,
+              isSelected ? styled.selectedBtn : styled.unSelectBtn,
+            ]}
+            key={`key-${index}`}
+            onPress={() => handlePress(index)}
+            disabled={isLoadingBsc}
+          >
+            <View style={styled.optionContent}>
+              <Image
+                style={styled.icon}
+                source={isSelected ? ic_radio_check : ic_radio}
+              />
+              <Text
+                style={[
+                  styled.textSelectBox,
+                  { color: isSelected ? COLORS.black : COLORS.colorGreyBold },
+                ]}
+              >
+                {item}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
   return (
     <View style={styled.container}>
       {toggle && (
@@ -256,8 +432,11 @@ Extra.propTypes = {};
 
 GenQRCode.propTypes = {
   hasError: PropTypes.bool.isRequired,
+  data: PropTypes.object.isRequired,
   handleShield: PropTypes.func.isRequired,
   isFetching: PropTypes.bool.isRequired,
+  isFetchFailed: PropTypes.bool.isRequired,
+  isPortalCompatible: PropTypes.bool.isRequired,
 };
 
 export default withGenQRCode(GenQRCode);

@@ -1,7 +1,7 @@
 import React from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, FlatListProps } from 'react-native';
 
-export default props => (
+export default (props: FlatListProps) => (
   <FlatList
     {...props}
     showsVerticalScrollIndicator={props?.showsVerticalScrollIndicator || false}

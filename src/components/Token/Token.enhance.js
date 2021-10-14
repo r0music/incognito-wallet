@@ -11,6 +11,7 @@ const enhance = (WrappedComp) => (props) => {
   const token = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID)(
     tokenId,
   );
+
   const gettingBalance = useSelector(sharedSelector.isGettingBalance);
   const isGettingBalance = gettingBalance.includes(tokenId);
   const tokenProps = {

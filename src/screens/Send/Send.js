@@ -22,7 +22,7 @@ const Send = () => {
           selectedPrivacy?.symbol} ${selectedPrivacy?.networkName && selectedPrivacy?.networkName !== 'Unknown' ? '(' + selectedPrivacy?.networkName + ')' : ''}`}
         onGoBack={onGoBack}
       />
-      <SendForm />
+      <SendForm navigation={navigation} />
     </View>
   );
 };

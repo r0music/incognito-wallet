@@ -114,7 +114,7 @@ export const actionConditionConsolidate = ({ version = PrivacyVersion.ver2 } = {
     followed = [{ id: PRV_ID }].concat(followed);
     await accountWallet.getCoinsInMempoolCached();
     const tasks = followed.map(async ({ id: tokenID }) => {
-      const unspentCoins = (await accountWallet.getSpendingCoins({ tokenID, version })) || [];
+      const unspentCoins = (await accountWallet.getUnspentCoinsExcludeSpendingCoins({ tokenID, version })) || [];
       return {
         tokenID,
         address,

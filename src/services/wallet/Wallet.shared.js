@@ -29,6 +29,7 @@ export const getAccountWallet = (account, wallet) => {
     new Validator('wallet.PubsubService', wallet.PubsubService).string();
     new Validator('wallet.AuthToken', wallet.AuthToken).string();
     new Validator('wallet.RpcApiService', wallet.RpcApiService).string();
+    new Validator('wallet.PortalService', wallet.PortalService).string();
     accountWallet.setRPCClient(wallet.RpcClient);
     accountWallet.setStorageServices(wallet.Storage);
     accountWallet.setRPCCoinServices(wallet.RpcCoinService);
@@ -37,6 +38,7 @@ export const getAccountWallet = (account, wallet) => {
     accountWallet.setAuthToken(wallet.AuthToken);
     accountWallet.setRPCApiServices(wallet.RpcApiService, wallet.AuthToken);
     // accountWallet.setUseLegacyEncoding(wallet.UseLegacyEncoding);
+    accountWallet.setRPCPortalServices(wallet.PortalService); 
     return accountWallet;
   } catch (error) {
     console.log('getAccountWallet error', error);

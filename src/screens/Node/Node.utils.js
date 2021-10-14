@@ -277,7 +277,9 @@ export const formatNodeItemFromApi = async (device, listNodeObject, allTokens, l
     IsAutoStake,
     PendingUnstake,
     IsUnstaked,
-    PendingWithdrawal
+    PendingWithdrawal,
+    IsSlash,
+    Description
   } = nodeItem;
 
   if (IsInCommittee) {
@@ -290,6 +292,11 @@ export const formatNodeItemFromApi = async (device, listNodeObject, allTokens, l
     // Nothing to show status => gray
     device.Status = null;
   }
+
+  device.Slashing = {
+    isSlash: IsSlash,
+    desc: Description,
+  };
 
   device.IsAutoStake = IsAutoStake;
 

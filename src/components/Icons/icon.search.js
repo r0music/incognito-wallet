@@ -1,26 +1,29 @@
 import React from 'react';
-import { Image } from 'react-native';
-import srcSearchIcon from '@src/assets/images/icons/search.png';
-import PropTypes from 'prop-types';
+import { Image, StyleSheet } from 'react-native';
+import { View } from '@src/components/core';
+import srcCopy from '@src/assets/images/new-icons/search.png';
 
-const SearchIcon = ({ source = srcSearchIcon, style = null }) => {
+const styled = StyleSheet.create({
+  container: {
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  icon: {
+    width: 14,
+    height: 13.97,
+  },
+});
+
+const IconSearch = (props) => {
   return (
-    <Image
-      source={source}
-      style={[
-        {
-          width: 18,
-          height: 18,
-        },
-        style,
-      ]}
-    />
+    <View style={styled.container}>
+      <Image style={[styled.icon, props?.style]} source={srcCopy} />
+    </View>
   );
 };
 
-SearchIcon.propTypes = {
-  source: PropTypes.string,
-  style: PropTypes.any,
-};
+IconSearch.propTypes = {};
 
-export default SearchIcon;
+export default IconSearch;

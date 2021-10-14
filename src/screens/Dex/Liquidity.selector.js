@@ -300,6 +300,10 @@ export const calculatorShareWithDrawSelector = createSelector(
     const sharePercent = new BigNumber(share).dividedBy(totalShare).toNumber();
     const maxInputShare = new BigNumber(sharePercent).multipliedBy(poolInputValue).toNumber() || 0; // Max_Token_A
     const maxOutputShare = new BigNumber(sharePercent).multipliedBy(poolOutputValue).toNumber() || 0; // Max_Token_B
+
+    // const sharePercent = 0.0025;
+    // const maxInputShare = isInput ? 25000000 : 75000000000;
+    // const maxOutputShare = isInput ? 75000000000 : 25000000;
     let number;
     if (isInput && inputValue === Math.ceil(maxInput)) {
       number = maxOutput;

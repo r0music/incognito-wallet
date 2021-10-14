@@ -7,7 +7,7 @@ import { AddressBookIcon } from '@src/components/Icons';
 import { generateTestId } from '@utils/misc';
 import { SEND } from '@src/constants/elements';
 import { BtnScanQrCode } from '@src/components/Button';
-import { standardizedAddress } from '@src/screens/Send/features/Form/Form.utils';
+import {standardizedAddress} from '@screens/Send/features/Form/Form.utils';
 import createField from './createField';
 
 const styled = StyleSheet.create({

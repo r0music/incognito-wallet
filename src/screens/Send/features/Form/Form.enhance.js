@@ -10,22 +10,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isValid, formValueSelector, change, focus } from 'redux-form';
 import { actionFetchFeeByMax } from '@src/components/EstimateFee/EstimateFee.actions';
 import { useKeyboard } from '@src/components/UseEffect/useKeyboard';
+import { ANALYTICS } from '@src/constants';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { enhanceAddressValidation } from './Form.enhanceAddressValidator';
 import { enhanceAmountValidation } from './Form.enhanceAmountValidator';
 import { enhanceInit } from './Form.enhanceInit';
 import { enhanceSend } from './Form.enhanceSend';
 import { enhanceUnshield } from './Form.enhanceUnShield';
 import { enhanceMemoValidation } from './Form.enhanceMemoValidator';
-import { removeAllSpace, standardizedAddress } from './Form.utils';
+import { enhanceSwitchPortal } from './Form.enhanceSwitchPortal';
+import {removeAllSpace, standardizedAddress} from './Form.utils';
 
 export const formName = 'formSend';
 
 export const enhance = (WrappedComp) => (props) => {
   const [isSending, setIsSending] = React.useState(false);
-  const { handleSendAnonymously, handleUnShieldCrypto } = props;
   const isFormEstimateFeeValid = useSelector((state) =>
     isValid(formEstimateFee)(state),
   );
+  const { handleSendAnonymously, handleUnShieldCrypto } = props;
   const navigation = useNavigation();
   const {
     fee,
@@ -42,9 +45,10 @@ export const enhance = (WrappedComp) => (props) => {
   const amount = useSelector((state) => selector(state, 'amount'));
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
   const memo = useSelector((state) => selector(state, 'memo'));
+  const currencyType = useSelector((state) => selector(state, 'currencyType'));
   const [isKeyboardVisible] = useKeyboard();
   const handleStandardizedAddress = async (value) => {
-    let _value = value;
+    let _value = value || '';
     try {
       const copiedValue = await Clipboard.getString();
       if (copiedValue !== '') {
@@ -63,6 +67,7 @@ export const enhance = (WrappedComp) => (props) => {
     if (field === 'toAddress') {
       _value = await handleStandardizedAddress(value);
     }
+
     dispatch(change(formName, field, String(_value)));
     dispatch(focus(formName, field));
   };
@@ -123,9 +128,11 @@ export const enhance = (WrappedComp) => (props) => {
       }
       await setIsSending(true);
       if (isSend) {
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.SEND));
         await handleSendAnonymously(payload);
       }
       if (isUnShield) {
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.UNSHIELD));
         await handleUnShieldCrypto(payload);
       }
     } catch (error) {
@@ -154,6 +161,7 @@ export const enhance = (WrappedComp) => (props) => {
         handleSend,
         isSending,
         memo,
+        currencyType,
       }}
     />
   );
@@ -167,4 +175,5 @@ export default compose(
   enhanceSend,
   enhanceUnshield,
   enhance,
+  enhanceSwitchPortal,
 );

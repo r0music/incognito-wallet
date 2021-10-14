@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { KeyboardAwareScrollView } from '@src/components/core';
 import { Field } from 'redux-form';
@@ -7,6 +7,7 @@ import {
   InputQRField,
   InputField,
   InputMaxValueField,
+  SelectOptionField,
 } from '@components/core/reduxForm';
 import { SEND } from '@src/constants/elements';
 import { generateTestId } from '@src/utils/misc';
@@ -16,10 +17,13 @@ import { ButtonBasic } from '@src/components/Button';
 import { useSelector } from 'react-redux';
 import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import { selectedPrivacySelector } from '@src/redux/selectors';
+import SelectedPrivacy from '@src/models/selectedPrivacy';
+import { defaultAccountSelector } from '@src/redux/selectors/account';
 import LoadingTx from '@src/components/LoadingTx';
 import format from '@src/utils/format';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import appConstant from '@src/constants/app';
+import { CONSTANT_COMMONS } from '@src/constants';
 import { styledForm as styled } from './Form.styled';
 import withSendForm, { formName } from './Form.enhance';
 
@@ -68,6 +72,9 @@ const SendForm = (props) => {
     isExternalAddress,
     textLoadingTx,
     validateMemo,
+    navigation,
+    isPortalToken,
+    isUnshieldPegPRV,
   } = props;
   const { titleBtnSubmit, isUnShield, editableInput } = useSelector(
     feeDataSelector,
@@ -81,11 +88,27 @@ const SendForm = (props) => {
     appConstant.DISABLED.UNSHIELD_DECENTRALIZED,
     handleSend,
   );
-  const placeholderAddress = `Incognito${
-    selectedPrivacy?.isMainCrypto || selectedPrivacy?.isIncognitoToken
-      ? ' '
-      : ` or ${selectedPrivacy?.rootNetworkName} `
-  }address`;
+  let placeholderAddress = selectedPrivacy?.isMainCrypto 
+    ? 'Incognito or ETH/BSC address' 
+    : `Incognito${
+      selectedPrivacy?.isIncognitoToken
+        ? ' '
+        : ` or ${selectedPrivacy?.rootNetworkName} `
+    }address`;
+
+  const amountValidator = validateAmount;
+  const isDisabled =
+    isUnShield &&
+    ((selectedPrivacy.isCentralized && isCentralizedDisabled) ||
+      (selectedPrivacy.isDecentralized && isDecentralizedDisabled));
+  const handlePressSend = isUnShield
+    ? selectedPrivacy.isCentralized
+      ? onCentralizedPress
+      : onDecentralizedPress
+    : handleSend;
+  const submitHandler = handlePressSend;
+  const [ childSelectedPrivacy, setChildSelectedPrivacy] = useState(null);
+  const account = useSelector(defaultAccountSelector);
 
   const renderMemo = () => {
     if (isUnShield) {
@@ -127,15 +150,53 @@ const SendForm = (props) => {
       />
     );
   };
-  const isDisabled =
-    isUnShield &&
-    ((selectedPrivacy.isCentralized && isCentralizedDisabled) ||
-      (selectedPrivacy.isDecentralized && isDecentralizedDisabled));
-  const handlePressSend = isUnShield
-    ? selectedPrivacy.isCentralized
-      ? onCentralizedPress
-      : onDecentralizedPress
-    : handleSend;
+
+  const renderNetworkType = () => {
+    if (isUnshieldPegPRV) {
+      const platforms = [
+        {
+          label: 'ETH',
+          value: CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20
+        },
+        {
+          label: 'BSC',
+          value: CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20
+        },
+      ];
+
+      return (
+        <Field
+          onChange={(value) => {
+            onChangeField(value, 'currencyType');
+            const childToken = selectedPrivacy.listChildToken.find(item => item.currencyType === value);
+            const childSelectedPrivacy = new SelectedPrivacy(
+              account,
+              null,
+              childToken,
+              selectedPrivacy.tokenId,
+            );
+            setChildSelectedPrivacy(childSelectedPrivacy);
+          }}
+          component={SelectOptionField}
+          items={platforms}
+          name="currencyType"
+          label="Network type"
+        />
+      );
+    }
+    return null;
+  };
+  
+  React.useEffect(() => {
+    const { toAddress, amount } = navigation.state?.params || {};
+    if (toAddress) {
+      onChangeField(toAddress, 'toAddress');
+    }
+    if (amount) {
+      onChangeField(amount, 'amount');
+    }
+  }, [navigation.state?.params]);
+
   return (
     <View style={styled.container}>
       <KeyboardAwareScrollView>
@@ -157,7 +218,7 @@ const SendForm = (props) => {
                   },
                   editable: editableInput,
                 }}
-                validate={validateAmount}
+                validate={amountValidator}
                 {...generateTestId(SEND.AMOUNT_INPUT)}
               />
               <Field
@@ -176,6 +237,7 @@ const SendForm = (props) => {
                 }}
                 {...generateTestId(SEND.ADDRESS_INPUT)}
               />
+              {renderNetworkType()}
               <EstimateFee
                 {...{
                   amount,
@@ -184,6 +246,8 @@ const SendForm = (props) => {
                   memo,
                   isIncognitoAddress,
                   isExternalAddress,
+                  isPortalToken,
+                  childSelectedPrivacy,
                 }}
               />
               {renderMemo()}
@@ -194,7 +258,9 @@ const SendForm = (props) => {
                   isUnShield ? styled.submitBtnUnShield : null,
                 ]}
                 disabled={disabledForm || isDisabled}
-                onPress={handleSubmit(handlePressSend)}
+                onPress={handleSubmit(
+                  submitHandler
+                )}
                 {...generateTestId(SEND.SUBMIT_BUTTON)}
               />
             </>
@@ -202,6 +268,7 @@ const SendForm = (props) => {
         </Form>
       </KeyboardAwareScrollView>
       {isSending && <LoadingTx text={textLoadingTx} />}
+      
     </View>
   );
 };
@@ -229,6 +296,8 @@ SendForm.propTypes = {
   isExternalAddress: PropTypes.bool.isRequired,
   textLoadingTx: PropTypes.string.isRequired,
   validateMemo: PropTypes.any.isRequired,
+  navigation: PropTypes.object.isRequired,
+  isUnshieldPegPRV: PropTypes.bool.isRequired,
 };
 
 export default withSendForm(SendForm);

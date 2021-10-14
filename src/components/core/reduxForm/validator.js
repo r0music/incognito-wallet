@@ -30,6 +30,14 @@ const required = ({ message } = {}) => (value) => {
   return messageHanlder(message, value) ?? 'Required';
 };
 
+const equal = (expectValue, { message } = {}) => (value) => {
+  if (value !== expectValue) {
+    return messageHanlder(message, value) ?? 'Not as expect';
+  }
+
+  return undefined;
+};
+
 const maxLength = (max, { message } = {}) => (value) =>
   value && value.length > max
     ? messageHanlder(message, value, max) ?? `Must be ${max} characters or less`
@@ -342,6 +350,9 @@ const combinedNanoAmount = [
   minValue(1, { message: 'Please enter an amount greater than 1.' }),
 ];
 
+const combinedNumber = [required(), number(), minValue(0)];
+const combinedNanoNumber = [required(), number(), minValue(0), isInteger()];
+
 const combinedIncognitoAddress = [required(), incognitoAddress()];
 const combinedETHAddress = [required(), ethAddress()];
 const combinedTOMOAddress = [required(), tomoAddress()];
@@ -423,6 +434,7 @@ const invalidAddress = (message = '') => () =>
   message ? message : 'Invalid address';
 
 export default {
+  equal,
   required,
   maxLength,
   minLength,
@@ -485,4 +497,6 @@ export default {
   isBNBAddress,
   isZILAddress,
   invalidAddress,
+  combinedNumber,
+  combinedNanoNumber,
 };

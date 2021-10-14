@@ -1,16 +1,27 @@
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
-import srcOpenUrl from '@src/assets/images/icons/open_url.png';
+import { View } from '@src/components/core';
+import srcOpenUrl from '@src/assets/images/new-icons/open-link.png';
 
 const styled = StyleSheet.create({
   container: {
-    width: 15,
-    height: 14,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  icon: {
+    width: 12,
+    height: 12,
   },
 });
 
-const IconOpenUrl = props => {
-  return <Image style={[styled.container, props?.style]} source={srcOpenUrl} />;
+const IconOpenUrl = (props) => {
+  return (
+    <View style={styled.container}>
+      <Image style={[styled.icon, props?.style]} source={srcOpenUrl} />
+    </View>
+  );
 };
 
 IconOpenUrl.propTypes = {};

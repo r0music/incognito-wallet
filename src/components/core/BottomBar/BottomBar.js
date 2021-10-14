@@ -3,7 +3,6 @@ import { View, StyleSheet, Text } from 'react-native';
 import { TouchableOpacity } from '@src/components/core';
 import { Icon } from 'react-native-elements';
 import { COLORS, FONT } from '@src/styles';
-import { hasNotch } from 'react-native-device-info';
 import PropTypes from 'prop-types';
 
 const styled = StyleSheet.create({
@@ -13,13 +12,12 @@ const styled = StyleSheet.create({
     backgroundColor: COLORS.black,
     justifyContent: 'center',
     paddingVertical: 10,
-    marginBottom: hasNotch() ? 30 : 0,
     position: 'relative',
   },
   text: {
     color: COLORS.white,
-    fontSize: 13,
-    lineHeight: 15,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 3,
     fontFamily: FONT.NAME.medium,
   },
 });

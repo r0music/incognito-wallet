@@ -46,7 +46,7 @@ class NetworkSetting extends Component {
       <View style={styled.container}>
         <Header title="Network" />
         <View style={styled.wrapper}>
-          <ScrollView style={{ paddingTop: 42 }}>
+          <ScrollView style={{ paddingTop: 32 }}>
             {networks &&
               networks.map(
                 (network) =>

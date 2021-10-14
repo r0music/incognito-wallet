@@ -5,10 +5,12 @@ export const MAINNET_FULLNODE = 'https://lb-fullnode.incognito.org/fullnode';
 export const MAINNET_1_FULLNODE = 'http://51.83.237.20:9338';
 export const TESTNET_FULLNODE = 'https://testnet.incognito.org/fullnode';
 export const TESTNET1_FULLNODE = 'https://testnet1.incognito.org/fullnode';
-export const DEV_TEST_FULLNODE = 'http://139.162.55.124:8334';
+export const DEV_TEST_FULLNODE = 'http://139.162.55.124:18334';
+// export const DEV_TEST_FULLNODE =
+//   'https://pdexv3test.incognito.corncob.dev/block/f77320ece044035ef7f5c0681bfa921c326ac92707b67bcacce7a78d067df7d9?beacon=true';
 export const DEFAULT_SHARD_NUMBER = 8;
 
-let cachedList = null;
+let cachedList = [];
 
 const TEST_NODE_SERVER = {
   id: 'testnode',
@@ -33,6 +35,8 @@ const MAIN_NET_SERVER = {
   IncContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   IncBSCContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   explorer: 'https://incscan.io',
+  tradeServices: 'https://54ed4c3d-993b-4fc1-accd-7e7e72122248.mock.pstmn.io',
+  portalServices: 'https://api-portalv4.incognito.org',
 };
 const BETA_SERVER = {
   id: 'beta',
@@ -49,6 +53,8 @@ const BETA_SERVER = {
   IncContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   IncBSCContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   explorer: 'https://incscan.io',
+  tradeServices: 'https://54ed4c3d-993b-4fc1-accd-7e7e72122248.mock.pstmn.io',
+  portalServices: 'http://139.162.55.124:8010',
 };
 const TEST_NET_SERVER = {
   id: 'testnet',
@@ -66,7 +72,10 @@ const TEST_NET_SERVER = {
   IncContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   IncBSCContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   explorer: 'https://testnet.incognito.org',
+  tradeServices: 'http://51.161.119.66:7001',
+  portalServices: 'http://139.162.55.124:8010',
 };
+
 const LOCAL_SERVER = {
   id: 'local',
   default: false,
@@ -74,6 +83,7 @@ const LOCAL_SERVER = {
   username: '',
   password: '',
   name: 'Local',
+  portalServices: 'http://139.162.55.124:8010',
 };
 const TEST_NET_1_SERVER = {
   id: 'testnet1',
@@ -91,22 +101,46 @@ const TEST_NET_1_SERVER = {
   IncContractAddress: '0xE0D5e7217c6C4bc475404b26d763fAD3F14D2b86',
   IncBSCContractAddress: '0x1ce57B254DC2DBB41e1aeA296Dc7dBD6fb549241',
   explorer: 'https://testnet1.incognito.org',
+  tradeServices: 'https://54ed4c3d-993b-4fc1-accd-7e7e72122248.mock.pstmn.io',
+  portalServices: 'http://139.162.55.124:8010',
 };
-const DEV_TEST_SERVER = {
+
+export const DEV_TEST_SERVER = {
   id: 'devtest',
   default: false,
   address: DEV_TEST_FULLNODE,
   username: '',
   password: '',
   name: 'Dev test server',
-  coinServices: 'http://51.161.119.66:9009',
-  pubsubServices: 'http://51.161.119.66:8001',
+  coinServices: 'http://51.161.119.66:7001',
+  pubsubServices: 'http://51.161.119.66:7003',
   requestServices: 'http://51.161.119.66:5000',
   apiServices: 'https://privacyv2-api-service.incognito.org',
   shardNumber: 2,
   IncContractAddress: '0xE0D5e7217c6C4bc475404b26d763fAD3F14D2b86',
   IncBSCContractAddress: '0x1ce57B254DC2DBB41e1aeA296Dc7dBD6fb549241',
   explorer: 'https://testnet1.incognito.org',
+  portalServices: 'http://139.162.55.124:8010',
+  tradeServices: 'http://51.161.119.66:7001',
+};
+
+const PORTAL_SERVER = {
+  id: 'portal',
+  default: false,
+  address: 'http://192.168.146.58:9334',
+  username: '',
+  password: '',
+  name: 'Portal',
+  portalServices: 'http://192.168.146.58:8091',
+  coinServices: 'https://api-coinservice-staging.incognito.org',
+  pubsubServices: 'https://api-coinservice-staging.incognito.org/txservice',
+  requestServices:
+    'https://api-coinservice-staging.incognito.org/airdrop-service',
+  apiServices: 'https://staging-api-service.incognito.org',
+  shardNumber: DEFAULT_SHARD_NUMBER,
+  IncContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
+  IncBSCContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
+  explorer: 'https://testnet.incognito.org',
 };
 
 const DEFAULT_LIST_SERVER = [
@@ -117,6 +151,7 @@ const DEFAULT_LIST_SERVER = [
   TEST_NET_1_SERVER,
   DEV_TEST_SERVER,
   BETA_SERVER,
+  PORTAL_SERVER,
 ];
 
 export const KEY = {
@@ -137,13 +172,13 @@ const combineCachedListWithDefaultList = (_cachedList) => {
 
 export default class Server {
   static get() {
-    if (cachedList) {
+    if (cachedList.length > 0) {
       const servers = combineCachedListWithDefaultList(cachedList);
       return Promise.resolve(servers);
     }
     return storage.getItem(KEY.SERVER).then((strData) => {
       cachedList = combineCachedListWithDefaultList(JSON.parse(strData) || []);
-      if (!cachedList || cachedList.length === 0) {
+      if (!cachedList || cachedList?.length === 0) {
         return DEFAULT_LIST_SERVER;
       }
 
@@ -186,8 +221,9 @@ export default class Server {
               requestServices: server?.requestServices || '',
               apiServices: server?.apiServices || '',
               shardNumber: server?.shardNumber || '',
-              IncContractAddress: server?.IncContractAddress,
-              IncBSCContractAddress: server?.IncContractAddress,
+              IncContractAddress: server?.IncContractAddress || '',
+              IncBSCContractAddress: server?.IncContractAddress || '',
+              tradeServices: server?.tradeServices || '',
             };
           }
         }
@@ -222,7 +258,7 @@ export default class Server {
     }
   }
 
-  static isMainnet(network): Boolean {
+  static isMainnet(network) {
     return _.isEqual(network?.id, 'mainnet');
   }
 

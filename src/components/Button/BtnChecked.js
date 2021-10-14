@@ -1,18 +1,24 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { CheckedIcon } from '@src/components/Icons';
 import PropTypes from 'prop-types';
 
 const styled = StyleSheet.create({
   btnStyle: {},
+  row: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
 });
 
 const BtnBack = (props) => {
   const { btnStyle, checked, hook, ...rest } = props;
   return (
     <TouchableOpacity style={[styled.btnStyle, btnStyle]} {...rest}>
-      <CheckedIcon checked={checked} />
-      {hook}
+      <View style={styled.row}>
+        <CheckedIcon checked={checked} />
+        {hook}
+      </View>
     </TouchableOpacity>
   );
 };

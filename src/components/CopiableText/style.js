@@ -4,11 +4,11 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   copyIcon: {
     flexBasis: 20,
-    marginLeft: 3
+    marginLeft: 3,
   },
   text: {
     flex: 1,
-    fontWeight: '400'
+    fontWeight: '400',
   },
   textBox: {
     flexDirection: 'column',
@@ -21,7 +21,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: SPACING.small,
-    width: '100%'
+    width: '100%',
   },
-  desc: {}
+  desc: {},
 });

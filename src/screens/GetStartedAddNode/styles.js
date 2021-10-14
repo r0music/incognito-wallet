@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     height: 70,
   },
   contentWrapper: {
-    paddingTop: 42,
+    paddingTop: 32,
   },
   content_step4_image: {
     alignSelf: 'center',

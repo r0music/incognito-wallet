@@ -19,7 +19,8 @@ import node from '@src/screens/Node/Node.reducer';
 import trade from '@screens/DexV2/components/Trade/TradeV2/Trade.reducer';
 import liquidity from '@screens/Dex/Liquidity.reducer';
 import convert from '@screens/Home/features/Convert/Convert.reducer';
-import liquidity3 from '@screens/Liquidity3/Liquidity3.reducer';
+import { tabReducer as tabs } from '@src/components/core/Tabs';
+import { pDexV3Reducer as pDexV3 } from '@screens/PDexV3';
 import wallet from './wallet';
 import account from './account';
 import server from './server';
@@ -67,7 +68,8 @@ const rootReducer = reduceReducers(
     history,
     liquidity,
     convert,
-    liquidity3,
+    tabs,
+    pDexV3,
   }),
   globalReducer,
 );

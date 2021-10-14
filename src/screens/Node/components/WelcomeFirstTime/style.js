@@ -4,7 +4,7 @@ import screenTheme from '@src/screens/Node/theme';
 
 const style = StyleSheet.create({
   container: {
-    paddingTop: 42,
+    paddingTop: 32,
     backgroundColor: COLORS.white,
   },
   title: {

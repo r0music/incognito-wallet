@@ -1,10 +1,12 @@
+// eslint-disable-next-line import/no-cycle
 import formatUtil from '@utils/format';
 import config from '@src/constants/config';
 
 export const DEX_CHAIN_ACCOUNT = {
-  PaymentAddress: '15pABFiJVeh9D5uiQEhQX4SVibGGbdAVipQxBdxkmDqAJaoG1EdFKHBrNfs'
+  PaymentAddress: '15pABFiJVeh9D5uiQEhQX4SVibGGbdAVipQxBdxkmDqAJaoG1EdFKHBrNfs',
 };
-export const PRV_ID = '0000000000000000000000000000000000000000000000000000000000000004';
+export const PRV_ID =
+  '0000000000000000000000000000000000000000000000000000000000000004';
 
 export const BIG_COINS = {
   PRV: PRV_ID,
@@ -30,7 +32,8 @@ export const BIG_COINS = {
   KCS: '513467653e06af73cd2b2874dd4af948f11f1c6f2689e994c055fd6934349e05',
   OMG: '249ca174b4dce58ea6e1f8eda6e6f74ab6a3de4e4913c4f50c15101001bb467b',
   XMR: 'c01e7dc1d1aba995c19b257412340b057f8ad1482ccb6a9bb0adce61afbf05d4',
-  ETH_TESTNET: 'ffd8d42dc40a8d166ea4848baf8b5f6e9fe0e9c30d60062eb7d44a8df9e00854',
+  ETH_TESTNET:
+    'ffd8d42dc40a8d166ea4848baf8b5f6e9fe0e9c30d60062eb7d44a8df9e00854',
 };
 
 export const PRIORITY_LIST = [
@@ -63,55 +66,86 @@ export const MESSAGES = {
   BALANCE_INSUFFICIENT: 'Your balance is insufficient.',
   NEGATIVE_NUMBER: 'Please enter an amount greater than 0.',
   NOT_NEGATIVE_NUMBER: 'Please enter a number greater than or equal to 0.',
-  GREATER_OR_EQUAL: (number, pDecimals) => `Please enter a number greater than or equal to ${formatUtil.amountFull(number, pDecimals)}.`,
-  GREATER: (number, pDecimals) => `Please enter a number greater than ${formatUtil.amountFull(number, pDecimals)}.`,
+  GREATER_OR_EQUAL: (number, pDecimals) =>
+    `Please enter a number greater than or equal to ${formatUtil.amountFull(
+      number,
+      pDecimals,
+    )}.`,
+  GREATER: (number, pDecimals) =>
+    `Please enter a number greater than ${formatUtil.amountFull(
+      number,
+      pDecimals,
+    )}.`,
   SMALLER_THAN_100: 'Please enter a number less than 100.',
   MUST_BE_NUMBER: 'Must be a positive number.',
   TRADE_ERROR: 'We seem to have hit a snag. Please initiate the trade again.',
-  TRADE_SUCCESS: 'Your balance will update in a couple of minutes after the trade is finalized.',
+  TRADE_SUCCESS:
+    'Your balance will update in a couple of minutes after the trade is finalized.',
   TRADE_SUCCESS_TITLE: 'Trade initiated',
-  DEPOSIT_ERROR: 'We seem to have hit a snag. Please try making a deposit again.',
-  DEPOSIT_SUCCESS: 'Funds are on the way to your pDEX account. Your balance will update in a couple of minutes.',
+  DEPOSIT_ERROR:
+    'We seem to have hit a snag. Please try making a deposit again.',
+  DEPOSIT_SUCCESS:
+    'Funds are on the way to your pDEX account. Your balance will update in a couple of minutes.',
   DEPOSIT_SUCCESS_TITLE: 'Deposit in process',
   WITHDRAW_ERROR: 'We seem to have hit a snag. Please try withdrawing again.',
-  WITHDRAW_SUCCESS: name => `Funds are on the way to ${name}. The account balance will update in a couple of minutes`,
+  WITHDRAW_SUCCESS: (name) =>
+    `Funds are on the way to ${name}. The account balance will update in a couple of minutes`,
   WITHDRAW_SUCCESS_TITLE: 'Withdrawal in process',
-  NOT_ENOUGH_NETWORK_FEE: 'Your balance is currently insufficient. Please adjust your fee settings and try again.',
+  NOT_ENOUGH_NETWORK_FEE:
+    'Your balance is currently insufficient. Please adjust your fee settings and try again.',
   NOT_ENOUGH_PRV_NETWORK_FEE: 'Please top up enough PRV to cover the fee.',
-  NOT_ENOUGH_BALANCE_TO_TRADE: (symbol) => `You don't have enough ${symbol} to complete this trade. Please make a deposit.`,
-  NOT_ENOUGH_BALANCE: (symbol) => `You don't have enough ${symbol}. Please make a deposit.`,
+  NOT_ENOUGH_BALANCE_TO_TRADE: (symbol) =>
+    `You don't have enough ${symbol} to complete this trade. Please make a deposit.`,
+  NOT_ENOUGH_BALANCE: (symbol) =>
+    `You don't have enough ${symbol}. Please make a deposit.`,
   DEPOSIT: 'deposit',
   WITHDRAW: 'withdraw',
   TRADE: 'trade',
   ADD_LIQUIDITY: 'add liquidity',
   REMOVE_LIQUIDITY: 'remove liquidity',
-  RETRY_WITHDRAW: 'Withdraw unsuccessful. Please go into withdraw detail in history to retry.',
-  WITHDRAW_COMPLETED: 'Withdraw successfully. Your balance will update in a couple of minutes',
+  RETRY_WITHDRAW:
+    'Withdraw unsuccessful. Please go into withdraw detail in history to retry.',
+  WITHDRAW_COMPLETED:
+    'Withdraw successfully. Your balance will update in a couple of minutes',
   WITHDRAW_BALANCE: 'PDexWithdraw account balance is insufficient',
   SOMETHING_WRONG: 'Something got stuck. Please make the withdrawal again.',
-  PENDING_TRANSACTIONS: 'Please wait for your previous transaction to finish processing. Simply try again later.',
-  WITHDRAW_PROCESS: 'Withdrawing your funds...\n\nThis may take a couple of minutes. Please do not navigate away from the app.',
+  PENDING_TRANSACTIONS:
+    'Please wait for your previous transaction to finish processing. Simply try again later.',
+  WITHDRAW_PROCESS:
+    'Withdrawing your funds...\n\nThis may take a couple of minutes. Please do not navigate away from the app.',
   SHARE_INSUFFICIENT: 'Your contribute is insufficient.',
   MUST_BE_INTEGER: 'Please enter a whole positive number (not a fraction).',
   NOT_ENOUGH_NETWORK_FEE_ADD: 'Please top up PRV to cover the network fee.',
-  ADD_LIQUIDITY_PROCESS: 'Adding your pair...\n\nThis may take a couple of minutes. Please do not navigate away from the app.',
-  CANCEL_LIQUIDITY_PROCESS: 'Canceling your request...\n\nThis may take a couple of minutes. Please do not navigate away from the app.',
+  ADD_LIQUIDITY_PROCESS:
+    'Adding your pair...\n\nThis may take a couple of minutes. Please do not navigate away from the app.',
+  CANCEL_LIQUIDITY_PROCESS:
+    'Canceling your request...\n\nThis may take a couple of minutes. Please do not navigate away from the app.',
   ACCOUNT_NOT_FOUND: 'Depositing account not found.',
-  NOT_ENOUGH_BALANCE_ADD: (symbol) => `Please top up ${symbol} to complete this action.`,
+  NOT_ENOUGH_BALANCE_ADD: (symbol) =>
+    `Please top up ${symbol} to complete this action.`,
   TX_REJECTED: 'We seem to have hit a snag. Please try again later.',
   REMOVE_LIQUIDITY_SUCCESS_TITLE: 'Liquidity removal initiated',
-  REMOVE_LIQUIDITY_SUCCESS: 'Your balance will update a couple of minutes once liquidity removal is complete.',
+  REMOVE_LIQUIDITY_SUCCESS:
+    'Your balance will update a couple of minutes once liquidity removal is complete.',
   ADD_LIQUIDITY_SUCCESS_TITLE: 'Adding a pair',
   ADD_LIQUIDITY_SUCCESS: 'Your pair will be listed in a couple of minutes.',
   CANCEL_ADD_LIQUIDITY_SUCCESS_TITLE: 'Cancelling your request to add a pair.',
-  CANCEL_ADD_LIQUIDITY_SUCCESS: 'Your balance will update in a couple of minutes after the request is complete.',
+  CANCEL_ADD_LIQUIDITY_SUCCESS:
+    'Your balance will update in a couple of minutes after the request is complete.',
   NO_PAIR: 'You haven\'t added any pairs yet.',
   SLIPPAGE_WARNING: 'Your trade may fail at this range.',
   SLIPPAGE_ERROR: 'Enter a number from 0 to 99.99.',
-  LIQUIDITY_ERROR: 'We seem to have hit a snag. Please initiate the liquidity again.',
-  WITH_DRAW_FEE_MUST_BE_AN_INTERGER_NUMBER: 'Withdraw value must be an interger number',
-  CONVERT_PROCESS: 'Converting your coins...\nThis may take a couple of minutes. Please do not navigate away from the app.',
+  LIQUIDITY_ERROR:
+    'We seem to have hit a snag. Please initiate the liquidity again.',
+  WITH_DRAW_FEE_MUST_BE_AN_INTERGER_NUMBER:
+    'Withdraw value must be an interger number',
+  CONVERT_PROCESS:
+    'Converting your coins...\nThis may take a couple of minutes. Please do not navigate away from the app.',
   EARNED_FEE_INSUFFICIENT: 'Your earned fee is insufficient.',
+  SUBMIT_PROVIDE_RAW_TX_ERROR: 'Cant submit raw transaction, please try again',
+  STAKING_POOL_NOT_FOUND: 'Not found staking pool',
+  STAKING_MAX: (maxStr) => `Maximum withdrawable staking is ${maxStr}.`,
+  REQUEST_MIGRATE_TOKEN_ERROR: 'Cant migrate to lock PRV, please try again',
 };
 export const MILLISECOND = 1;
 export const SECOND = 1000 * MILLISECOND;
@@ -123,4 +157,3 @@ export const REMOVE_LIQUIDITY_TX_SIZE = 20;
 export const LIMIT_HISTORY = 5;
 export const MIN_CANCEL_VALUE = 1;
 export const SHORT_WAIT_TIME = 5 * MINUTE;
-

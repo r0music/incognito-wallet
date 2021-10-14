@@ -3,7 +3,6 @@ import { Image } from 'react-native';
 import srcCheckedIcon from '@src/assets/images/icons/checked.png';
 import srcUnCheckedIcon from '@src/assets/images/icons/un_checked.png';
 import PropTypes from 'prop-types';
-import { isIOS } from '@src/utils/platform';
 
 const CheckedIcon = (props) => {
   const { checked } = props;
@@ -11,8 +10,7 @@ const CheckedIcon = (props) => {
     <Image
       style={{
         width: 20,
-        height: 21,
-        marginBottom: isIOS() ? 0 : 3,
+        height: 20,
       }}
       source={checked ? srcCheckedIcon : srcUnCheckedIcon}
     />

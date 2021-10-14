@@ -52,17 +52,16 @@ const AccountItem = ({
   PrivateKey,
   PaymentAddress,
   MasterKeyName,
+  handleSelectedAccount,
 }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const onSelect = useNavigationParam('onSelect');
   const account = useSelector(defaultAccount);
   const switchingAccount = useSelector(switchAccountSelector);
-
   if (!accountName) {
     return null;
   }
-
   const onSelectAccount = async () => {
     try {
       if (switchingAccount) {
@@ -86,6 +85,11 @@ const AccountItem = ({
         `Can not switch to account "${accountName}", please try again.`,
       ).showErrorToast();
     } finally {
+      await dispatch(actionSwitchAccountFetched());
+      console.log('handleSelectedAccount', handleSelectedAccount);
+      if (typeof handleSelectedAccount === 'function') {
+        handleSelectedAccount();
+      }
       await dispatch(actionSwitchAccountFetched());
     }
   };
@@ -127,6 +131,7 @@ AccountItem.propTypes = {
   PaymentAddress: PropTypes.string.isRequired,
   PrivateKey: PropTypes.string.isRequired,
   MasterKeyName: PropTypes.string.isRequired,
+  handleSelectedAccount: PropTypes.func,
 };
 
 export default AccountItem;

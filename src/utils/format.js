@@ -2,10 +2,12 @@ import moment from 'moment';
 import _ from 'lodash';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { BigNumber } from 'bignumber.js';
+// eslint-disable-next-line import/no-cycle
 import {
   getDecimalSeparator,
   getGroupSeparator,
 } from '@src/resources/separator';
+// eslint-disable-next-line import/no-cycle
 import convertUtil from '@utils/convert';
 
 export const SHORT_DATE_TIME_FORMAT = 'DD MMM hh:mm A';
@@ -175,8 +177,8 @@ const formatWithNotation = (number, noOfDigits = 2) => {
 };
 
 const fixedNumber = (number, digits = 3) => {
-  if (isNaN(number) || isNaN(digits)) return NaN;
-  return Math.trunc(number*Math.pow(10, digits))/Math.pow(10, digits);
+  if (isNaN(number) || isNaN(digits)) return 0;
+  return Math.trunc(new BigNumber(number).multipliedBy(Math.pow(10, digits)).dividedBy(Math.pow(10, digits)).toNumber());
 };
 
 const convertDecimalsToPDecimals = ({ number, decimals, pDecimals }) => {

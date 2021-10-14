@@ -12,21 +12,28 @@ import MainLayout from '@components/MainLayout';
 
 const SelectAccount = () => {
   const ignoredAccounts = useNavigationParam('ignoredAccounts') || [];
+  const handleSelectedAccount = useNavigationParam('handleSelectedAccount');
+  console.log('handleSelectedAccount', handleSelectedAccount);
   const listAccount = useSelector(listAllMasterKeyAccounts);
   const [result, keySearch] = useSearchBox({
     data: listAccount,
     handleFilter: () => [
       ...listAccount.filter(
         (account) =>
-          !ignoredAccounts.includes(accountService.getAccountName(account).toLowerCase()) &&
-          includes(accountService.getAccountName(account).toLowerCase(), keySearch),
+          !ignoredAccounts.includes(
+            accountService.getAccountName(account).toLowerCase(),
+          ) &&
+          includes(
+            accountService.getAccountName(account).toLowerCase(),
+            keySearch,
+          ),
       ),
     ],
   });
 
   const groupAccounts = useMemo(() => {
     if (result && result.length > 0) {
-      const groupedMasterKeys = groupBy(result, item => item.MasterKeyName);
+      const groupedMasterKeys = groupBy(result, (item) => item.MasterKeyName);
       return flatMap(groupedMasterKeys, (child, key) => ({
         name: key,
         child,
@@ -38,7 +45,7 @@ const SelectAccount = () => {
 
   return (
     <MainLayout header="Search keychains" canSearch scrollable>
-      {groupAccounts.map(item => (
+      {groupAccounts.map((item) => (
         <GroupItem
           name={item.name}
           key={item.name}
@@ -49,6 +56,7 @@ const SelectAccount = () => {
               PaymentAddress={account.PaymentAddress}
               PrivateKey={account.PrivateKey}
               MasterKeyName={account.MasterKeyName}
+              handleSelectedAccount={handleSelectedAccount}
             />
           ))}
         />

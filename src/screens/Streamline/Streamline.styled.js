@@ -30,7 +30,7 @@ export const styled = StyleSheet.create({
     color: COLORS.black,
   },
   scrollview: {
-    paddingTop: 42,
+    paddingTop: 32,
   },
   btnStyle: {
     marginVertical: 30,
@@ -58,10 +58,10 @@ export const styled = StyleSheet.create({
   },
   emptyContainer: {
     flex: 1,
-    paddingTop: 42,
+    paddingTop: 32,
   },
   pendingContainer: {
     flex: 1,
-    paddingTop: 42,
+    paddingTop: 32,
   },
 });

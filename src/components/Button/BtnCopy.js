@@ -1,8 +1,8 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { CopyIcon } from '@src/components/Icons';
 
-const BtnCopy = (props) => {
+const BtnCopy = (props: TouchableOpacityProps) => {
   const { ...rest } = props;
   return (
     <TouchableOpacity {...rest}>

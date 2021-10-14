@@ -201,34 +201,34 @@ public class GomobileModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void aesEncrypt(String data, Callback successCallback) {
-        try {
-            Log.d(TAG, "aesEncrypt: begin");
-            successCallback.invoke(null, Gomobile.aesEncrypt(data));
-        } catch (Exception e) {
-            Log.d(TAG, "aesEncrypt: error");
-            successCallback.invoke(e.getMessage(), null);
-        }
-    }
-
-    @ReactMethod
-    public void aesDecrypt(String data, Callback successCallback) {
-        try {
-            Log.d(TAG, "aesDecrypt: begin");
-            successCallback.invoke(null, Gomobile.aesDecrypt(data));
-        } catch (Exception e) {
-            Log.d(TAG, "aesDecrypt: error");
-            successCallback.invoke(e.getMessage(), null);
-        }
-    }
-
-    @ReactMethod
     public void setShardCount(String data, Integer shardNum, Callback successCallback) {
         try {
             Log.d(TAG, "setShardCount: begin");
             successCallback.invoke(null, Gomobile.setShardCount(data, shardNum));
         } catch (Exception e) {
             Log.d(TAG, "maketx: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
+    public void generateBTCMultisigAddress(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "generateBTCMultisigAddress: begin");
+            successCallback.invoke(null, Gomobile.generateBTCMultisigAddress(data));
+        } catch (Exception e) {
+            Log.d(TAG, "generateBTCMultisigAddress: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
+    public void createOTAReceiver(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "createOTAReceiver: begin");
+            successCallback.invoke(null, Gomobile.createOTAReceiver(data));
+        } catch (Exception e) {
+            Log.d(TAG, "createOTAReceiver: error");
             successCallback.invoke(e.getMessage(), null);
         }
     }

@@ -6,7 +6,10 @@ import { QuestionIcon } from '@src/components/Icons';
 const BtnQuestionDefault = (props) => {
   return (
     <TouchableOpacity {...props}>
-      <QuestionIcon icon={props?.icon || srcQuestionIcon} />
+      <QuestionIcon
+        icon={props?.icon || srcQuestionIcon}
+        style={props?.customStyle}
+      />
     </TouchableOpacity>
   );
 };

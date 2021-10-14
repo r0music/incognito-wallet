@@ -1,6 +1,6 @@
 import React from 'react';
-import { Image as RNComponent } from 'react-native';
+import { Image as RNComponent, ImageProps } from 'react-native';
 
-const Image = (props) => <RNComponent {...props} />;
+const Image = (props: ImageProps) => <RNComponent {...props} />;
 
 export default Image;

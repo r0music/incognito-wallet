@@ -11,4 +11,7 @@ export default StyleSheet.create({
   spaceBetween: {
     justifyContent: 'space-between',
   },
+  centerVertical: {
+    alignItems: 'center'
+  }
 });

@@ -37,7 +37,7 @@ const WhyStreamLine = () => {
         {factories.map((item, id) => (
           <Text
             style={[
-              id === 0 ? { paddingTop: 42 } : null,
+              id === 0 ? { paddingTop: 32 } : null,
               styled.text,
               id === 3 ? styled.boldText : null,
             ]}

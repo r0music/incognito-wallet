@@ -57,11 +57,10 @@ const DevSection = () => {
 
   const isStagingConfig = homeConfig === 'staging';
 
-  const onGetMasterKeyRecovery = async () => {
+  const onRemoveCurrentMasterKey = async () => {
     try {
       const wallet = await currentMasterKey.loadWallet();
-      const masterAccountInfo = await wallet.MasterAccount.getDeserializeInformation();
-      return Clipboard.setString(masterAccountInfo.PublicKeyCheckEncode);
+      await wallet.clearWalletStorage({ key: wallet?.Name });
     } catch (error) {
       console.log('ERROR', error);
     }
@@ -189,9 +188,9 @@ const DevSection = () => {
       onPress: clearFakeFullDisk,
     },
     {
-      id: 'master-keys-recovery',
-      desc: 'Get list master key recovery',
-      onPress: onGetMasterKeyRecovery,
+      id: 'master-keys-remove',
+      desc: 'Remove current master key',
+      onPress: onRemoveCurrentMasterKey,
     },
   ];
 

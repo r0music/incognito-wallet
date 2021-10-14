@@ -1,3 +1,5 @@
+import { PRV_ID } from '@src/constants/common';
+import uniq from 'lodash/uniq';
 import { createSelector } from 'reselect';
 
 export const followed = (state) => state?.token?.followed || [];
@@ -85,6 +87,20 @@ export const defaultPTokensIDsSelector = createSelector(
     pTokens.filter((token) => token.default).map((token) => token?.tokenId),
 );
 
+export const allTokensIDsSelector = createSelector(
+  pTokensSelector,
+  internalTokensSelector,
+  (pTokens, internalTokens) => {
+    let result =
+      uniq(
+        [{ tokenID: PRV_ID }, ...pTokens, ...internalTokens]
+          .filter((token) => !!token?.tokenID)
+          .map((token) => token?.tokenID),
+      ) || [];
+    return result;
+  },
+);
+
 export default {
   followed,
   isGettingBalance,
@@ -98,4 +114,5 @@ export default {
   toggleUnVerifiedTokensSelector,
   receiveHistorySelector,
   defaultPTokensIDsSelector,
+  allTokensIDsSelector,
 };

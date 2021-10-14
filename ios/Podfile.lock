@@ -758,7 +758,7 @@ SPEC CHECKSUMS:
   Crashlytics: d3e5090419ddee1003192c98ac0e6dfdb1dba266
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
   EXConstants: c4dd28acc12039c999612507a5f935556f2c86ce
-  EXFileSystem: 1e06c3497f05c622751153f50342c5a993d20081
+  EXFileSystem: dcf2273f49431e5037347c733a2dc5d08e0d0a9e
   EXImageLoader: da941c9399e01ec28f2d5b270bdd21f2c8ca596c
   EXPermissions: 8f8c1c05580c4e02d4ee2c8dd74bfe173ff6a723
   EXSecureStore: 1aa80d49a3a101418bbd2675e2a0d32dceea10c2
@@ -851,17 +851,17 @@ SPEC CHECKSUMS:
   UMBarCodeScannerInterface: 79f92bea5f7af39b381a4c82298105ceb537408a
   UMCameraInterface: 81ff46700da88435f17afedfc88915eaede7e6a6
   UMConstantsInterface: bb94dd46039dcde276ed50225b29e22785e604bf
-  UMCore: 912510bbff567298d738590f17788a8516f9d7f3
+  UMCore: 2f671796d7439604a1cf8ac7bbe5809cd5c50437
   UMFaceDetectorInterface: 791eec55ffca1171992976b7eceb73e69e391c58
   UMFileSystemInterface: f72245e90ce78fa6427180ff0b0904ead13d8161
   UMFontInterface: 5843cff7db85a42ba629aaac53d33091c35524d3
   UMImageLoaderInterface: 9ddffeb644b3f45d4eb0c2f51a2fd95fd5c8d1a4
   UMPermissionsInterface: 40b72935a7d12a3f60dc6b7bb99ce47908380cb1
-  UMReactNativeAdapter: d8e90e5addf650353d4dc2983759d57679e02ff3
+  UMReactNativeAdapter: 65ada852a648fcb6674acfbfe72ccb095f2f5b75
   UMSensorsInterface: a5e9db661e5d9ae214762033d725989880ae6993
   UMTaskManagerInterface: 203c11259d2699b5b3a4eda4adbc466f5cb5c561
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
 
 PODFILE CHECKSUM: 30199d5703c225befeacf785b680a927598d04c1
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.10.1

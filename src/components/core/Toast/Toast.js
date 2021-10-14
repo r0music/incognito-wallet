@@ -6,7 +6,7 @@ import Text from '../Text';
 import styles from './style';
 
 let instance;
-const DURATION = 1500;
+const DURATION = 3000;
 
 class Toast extends Component {
   constructor(props) {

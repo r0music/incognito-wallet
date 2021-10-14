@@ -2,7 +2,7 @@ import {
   ACTION_FETCHING,
   ACTION_FETCHED,
   ACTION_FETCH_FAIL,
-} from './template.constant';
+} from './Template.constant';
 
 const initialState = {
   isFetching: true,
@@ -23,7 +23,7 @@ export default (state = initialState, action) => {
       ...state,
       isFetching: false,
       isFetched: true,
-      data: {...action.payload},
+      data: { ...action.payload },
     };
   }
   case ACTION_FETCH_FAIL: {

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { COLORS, FONT } from '@src/styles';
-import { isAndroid } from '@utils/platform';
+import {isAndroid, isIOS} from '@utils/platform';
 
 const style = StyleSheet.create({
   container: {
@@ -139,6 +139,13 @@ const style = StyleSheet.create({
     alignItems: 'center',
     maxWidth: 60,
     justifyContent: 'space-between',
+  },
+  warningDesc: {
+    color: COLORS.orange,
+    fontSize: 16,
+    lineHeight: isIOS() ? 25 : 30,
+    marginTop: 10,
+    ...FONT.STYLE.medium
   }
 });
 

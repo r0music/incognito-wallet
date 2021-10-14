@@ -1,8 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TouchableOpacity as RNComponent } from 'react-native';
+import {
+  TouchableOpacity as RNComponent,
+  TouchableOpacityProps,
+} from 'react-native';
 
-const TouchableOpacity = ({ onPress, activeOpacity = 0.2, ...props }) => {
+const TouchableOpacity = (props: TouchableOpacityProps) => {
+  const { onPress, activeOpacity = 0.2, ...rest } = props;
   const _onPress = () => {
     requestAnimationFrame(() => {
       if (typeof onPress === 'function') {
@@ -12,7 +16,7 @@ const TouchableOpacity = ({ onPress, activeOpacity = 0.2, ...props }) => {
   };
 
   return (
-    <RNComponent {...props} onPress={_onPress} activeOpacity={activeOpacity} />
+    <RNComponent onPress={_onPress} activeOpacity={activeOpacity} {...rest} />
   );
 };
 

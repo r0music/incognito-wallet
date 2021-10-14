@@ -13,15 +13,15 @@ import { COINS } from '@src/constants';
 
 const SelectCoin = ({
   coins,
-  totalRewards,
-  displayFullTotalRewards,
+  displayFullTotalRewardsNonLock,
+  totalRewardsNonLock,
 }) => {
   const navigation = useNavigation();
 
   const handleWithdrawReward = () =>{
     navigation.navigate(ROUTE_NAMES.PoolV2WithdrawRewards, {
-      totalRewards,
-      displayFullTotalRewards,
+      totalRewardsNonLock,
+      displayFullTotalRewardsNonLock,
     });
   };
 
@@ -32,19 +32,20 @@ const SelectCoin = ({
   };
 
   const prv = COINS.PRV;
+  const anytime = ' anytime';
 
   return (
     <View style={mainStyle.flex}>
       <Header title="Withdraw" />
       <ScrollView style={mainStyle.coinContainer}>
         <TouchableOpacity
-          style={[mainStyle.coin, !totalRewards && mainStyle.disabled]}
+          style={[mainStyle.coin, !totalRewardsNonLock && mainStyle.disabled]}
           onPress={handleWithdrawReward}
-          disabled={!totalRewards}
+          disabled={!totalRewardsNonLock}
         >
           <Row spaceBetween>
-            <Text style={mainStyle.coinName}>{prv.symbol}</Text>
-            <Text style={mainStyle.coinName}>{displayFullTotalRewards}</Text>
+            <Text style={mainStyle.coinName}>{prv.symbol} anytime</Text>
+            <Text style={mainStyle.coinName}>{displayFullTotalRewardsNonLock}</Text>
           </Row>
           <Text style={mainStyle.coinExtra}>Rewards</Text>
         </TouchableOpacity>
@@ -56,7 +57,7 @@ const SelectCoin = ({
             disabled={!coin.balance}
           >
             <Row spaceBetween>
-              <Text style={mainStyle.coinName}>{coin.symbol}</Text>
+              <Text style={mainStyle.coinName}>{coin.id === prv.id ? coin.symbol + anytime : coin.symbol}</Text>
               <Text style={mainStyle.coinName}>{coin.displayBalance}</Text>
             </Row>
             <Text style={mainStyle.coinExtra}>Provision</Text>
@@ -69,8 +70,8 @@ const SelectCoin = ({
 
 SelectCoin.propTypes = {
   coins: PropTypes.array.isRequired,
-  displayFullTotalRewards: PropTypes.string.isRequired,
-  totalRewards: PropTypes.number.isRequired,
+  displayFullTotalRewardsNonLock: PropTypes.string.isRequired,
+  totalRewardsNonLock: PropTypes.number.isRequired,
 };
 
 export default compose(

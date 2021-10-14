@@ -1,18 +1,11 @@
 import { createSelector } from 'reselect';
-
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import memoize from 'memoize-one';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
-import { BIG_COINS } from '@src/screens/Dex/constants';
+import { BIG_COINS, PRIORITY_LIST } from '@src/screens/Dex/constants';
 import { defaultAccount } from './account';
-// eslint-disable-next-line import/no-cycle
-import {
-  tokensFollowedSelector,
-  pTokens,
-  internalTokens,
-  // followed,
-} from './token';
+import { tokensFollowedSelector, pTokens, internalTokens } from './token';
 import { getPrice } from '../utils/selectedPrivacy';
 
 export const selectedPrivacyTokenID = createSelector(
@@ -52,20 +45,21 @@ export const getPrivacyDataByTokenID = createSelector(
           (token) => token?.tokenId === BIG_COINS.USDT,
         );
         const price = getPrice({ token, tokenUSDT });
+        const priority = PRIORITY_LIST.indexOf(tokenID);
         let data = {
           ...token,
           ...price,
           isFollowed: followedTokenData?.id === tokenID,
+          priority,
         };
         return data;
       } catch (e) {
-        new ExHandler(e);
+        console.log('e');
       }
     }),
 );
 
 export const getPrivacyDataBaseOnAccount = createSelector(
-  // defaultAccount,
   internalTokens,
   pTokens,
   tokensFollowedSelector,

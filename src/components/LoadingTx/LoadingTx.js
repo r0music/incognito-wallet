@@ -83,8 +83,15 @@ const LoadingTx = (props) => {
     );
   };
 
+  const initData = async () => {
+    await accountService.resetProgressTx(account, wallet);
+    await setState({ ...state, open: true });
+  };
+
   React.useEffect(() => {
-    setState({ ...state, open: true });
+    if (!open) {
+      initData();
+    }
   }, []);
 
   React.useEffect(() => {

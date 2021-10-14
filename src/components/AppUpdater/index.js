@@ -206,7 +206,7 @@ class AppUpdater extends PureComponent {
               <Text style={styles.title}>Updated new version</Text>
               <Text style={styles.desc}>
                 {
-                  'Congratulation, welcome to the latest Incognito app with Privacy version 2.\n Please back up all keychains in a safe place prior to doing any other actions, it will help you recover funds in unexpected circumstances.\n(Note: take your own risk if you ignore it)'
+                  'Congratulations, welcome to the latest Incognito app with Privacy version 2.\n Please back up all keychains in a safe place prior to doing any other actions, it will help you recover funds in unexpected circumstances.\n(Note: take your own risk if you ignore it)'
                 }
               </Text>
               <ButtonBasic

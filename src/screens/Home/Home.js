@@ -75,10 +75,10 @@ const Home = (props) => {
           onPress={onUpdateApp}
         />
       )} */}
-      <DialogUpdateApp
+      {/* <DialogUpdateApp
         visible={outdatedVersion}
         onPress={onUpdateApp}
-      />
+      /> */}
     </View>
   );
 };

@@ -23,6 +23,10 @@ import {
   getAccountWallet,
 } from '@src/services/wallet/Wallet.shared';
 import { cachePromise, clearAllCaches } from '@src/services/cache';
+import { getPDexV3Instance } from '@src/screens/PDexV3';
+import { delay } from '@src/utils/delay';
+import { v4 } from 'uuid';
+import random from 'lodash/random';
 import { CustomError, ErrorCode, ExHandler } from '../exception';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 
@@ -314,6 +318,13 @@ export default class Account {
     new Validator('wallet', wallet).required();
     const account = this.getAccount(defaultAccount, wallet);
     return account.getProgressTx();
+  }
+
+  static async resetProgressTx(defaultAccount, wallet) {
+    new Validator('defaultAccount', defaultAccount).required();
+    new Validator('wallet', wallet).required();
+    const account = this.getAccount(defaultAccount, wallet);
+    return account.resetProgressTx();
   }
 
   static async getDebugMessage(defaultAccount, wallet) {
@@ -717,11 +728,16 @@ export default class Account {
       if (account) {
         const keyInfo = (await account.getKeyInfo({ version })) || {};
         const otaKey = account.getOTAKey();
+        const pDexV3Inst = await getPDexV3Instance({ account });
+        const keyFollowPoolsDefault = pDexV3Inst.getKeyFollowedDefaultPools();
+        const keyFollowPools = pDexV3Inst.getKeyFollowPools();
         const followedDefaultTokensKey = account.getKeyFollowedDefaultTokens();
         let task = [
           account.removeStorageCoinsV1(),
           account.clearAccountStorage(otaKey),
           account.clearAccountStorage(followedDefaultTokensKey),
+          pDexV3Inst.clearStorage(keyFollowPoolsDefault),
+          pDexV3Inst.clearStorage(keyFollowPools),
         ];
         clearAllCaches();
         if (keyInfo?.coinindex) {
@@ -732,6 +748,15 @@ export default class Account {
                 version,
               };
               return account.clearCacheStorage(params);
+            }),
+          );
+          task = task.concat(
+            Object.keys(keyInfo.coinindex).map((tokenID) => {
+              const params = {
+                tokenID,
+                version,
+              };
+              return account.getKeyTxHistoryByTokenId(params);
             }),
           );
         }
@@ -1003,12 +1028,118 @@ export default class Account {
     });
   }
 
+  static async createBurningPegPRVRequest({
+    wallet,
+    account,
+    fee,
+    tokenId,
+    burnAmount,
+    prvPayments,
+    info,
+    remoteAddress,
+    txHashHandler,
+    burningType,
+    version = PrivacyVersion.ver2,
+  } = {}) {
+    new Validator('account', account).required();
+    new Validator('wallet', wallet).required();
+    new Validator('fee', fee).required().amount();
+    new Validator('tokenId', tokenId).required().string();
+    new Validator('burnAmount', burnAmount).required().amount();
+    new Validator('prvPayments', prvPayments).required().array();
+    new Validator('remoteAddress', remoteAddress).required().string();
+    new Validator('info', info).string();
+    new Validator('burningType', burningType).required().number();
+
+    const accountWallet = getAccountWallet(account, wallet);
+    return accountWallet.createAndSendBurningPegPRVRequestTx({
+      transfer: {
+        fee,
+        tokenID: tokenId,
+        prvPayments,
+        info,
+      },
+      extra: {
+        remoteAddress,
+        burnAmount,
+        txHashHandler,
+        burningType,
+        version,
+      },
+    });
+  }
+
+  static async createPortalUnshieldRequest({
+    wallet,
+    account,
+    fee,
+    tokenId,
+    unshieldAmount,
+    prvPayments,
+    info,
+    remoteAddress,
+    txHashHandler,
+    burningType,
+    version = PrivacyVersion.ver2,
+  } = {}) {
+    new Validator('account', account).required();
+    new Validator('wallet', wallet).required();
+    new Validator('fee', fee).required().amount();
+    new Validator('tokenId', tokenId).required().string();
+    new Validator('unshieldAmount', unshieldAmount).required().amount();
+    new Validator('prvPayments', prvPayments).required().array();
+    new Validator('remoteAddress', remoteAddress).required().string();
+    new Validator('info', info).string();
+    new Validator('burningType', burningType).required().number();
+
+    const accountWallet = getAccountWallet(account, wallet);
+    return accountWallet.createAndSendUnshieldPortalV4RequestTx({
+      transfer: {
+        fee,
+        tokenID: tokenId,
+        prvPayments,
+        info,
+      },
+      extra: {
+        remoteAddress,
+        unshieldAmount,
+        txHashHandler,
+        burningType,
+        version,
+      },
+    });
+  }
+
   static async getSignPublicKeyEncode({ account, wallet }) {
     try {
       new Validator('getSignPublicKeyEncode-account', account).required();
       new Validator('getSignPublicKeyEncode-wallet', wallet).required();
       const accountWallet = getAccountWallet(account, wallet);
       return accountWallet.getSignPublicKeyEncode();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getNFTTokenData({ account, wallet }) {
+    try {
+      new Validator('getNFTTokenData-account', account).required();
+      new Validator('getNFTTokenData-wallet', wallet).required();
+      const accountWallet = getAccountWallet(account, wallet);
+      // return accountWallet.getNFTTokenData({ version: PrivacyVersion.ver2 });
+      const list = [...Array(5)].map((item) => ({
+        nftToken: v4(),
+        amount: random(0, 1),
+      }));
+      await delay(1000);
+      const result = {
+        nftToken: list.find((i) => i.amount === 1),
+        // nftToken: '',
+        initNFTToken: true,
+        list,
+      };
+      console.log('result', result);
+      return result;
     } catch (error) {
       throw error;
     }

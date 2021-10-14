@@ -13,17 +13,19 @@ import {
 } from '@src/redux/selectors/masterKey';
 import { switchMasterKey, updateMasterKey } from '@src/redux/actions/masterKey';
 import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
-import { devSelector } from '@src/screens/Dev';
 import {
-  // tokenSelector,
   accountSelector,
 } from '@src/redux/selectors';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import { PRV } from '@src/constants/common';
 import { ExHandler } from '@src/services/exception';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
-import { burnerAddressSelector } from '@src/redux/selectors/account';
+import {
+  burnerAddressSelector,
+  defaultAccountSelector,
+} from '@src/redux/selectors/account';
 import { defaultPTokensIDsSelector } from '@src/redux/selectors/token';
+import { actionGetPDexV3Inst } from '@src/screens/PDexV3';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
 /**
@@ -123,20 +125,55 @@ const updateDefaultAccount = (account) => {
   };
 };
 
-export const setDefaultAccount = (account) => async (dispatch, getState) => {
+export const actionSetSignPublicKeyEncode = (defaultAccount) => async (
+  dispatch,
+  getState,
+) => {
   try {
-    await dispatch(updateDefaultAccount(account));
     const state = getState();
     const wallet = walletSelector(state);
+    const account = defaultAccount || defaultAccountSelector(state);
     const signPublicKeyEncode = await accountService.getSignPublicKeyEncode({
       wallet,
       account,
     });
+    console.log('signPublicKeyEncode', signPublicKeyEncode);
     if (signPublicKeyEncode) {
-      await dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
+      dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
     }
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
+
+export const actionSetFetchingNFT = () => ({
+  type: type.ACTION_FETCHING_NFT,
+  data: { isFetching: true },
+});
+
+export const actionSetNFTTokenData = () => async (dispatch) => {
+  try {
+    dispatch(actionSetFetchingNFT());
+    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+    const nftPayload = await pDexV3Inst.getNFTTokenData({
+      version: PrivacyVersion.ver2,
+    });
+    dispatch(actionFetchedNFT(nftPayload));
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
+
+export const setDefaultAccount = (account) => async (dispatch) => {
+  try {
+    await dispatch(updateDefaultAccount(account));
+    let task = [
+      dispatch(actionSetSignPublicKeyEncode(account)),
+      dispatch(actionSetNFTTokenData(account)),
+    ];
+    await Promise.all(task);
   } catch (e) {
-    console.debug('SET DEFAULT ACCOUNT WITH ERROR: ', e);
+    new ExHandler(e).showErrorToast();
   }
 };
 
@@ -147,7 +184,6 @@ export const getBalance = (account) => async (dispatch, getState) => {
     const state = getState();
     await dispatch(getBalanceStart(account?.name));
     const wallet = walletSelector(state);
-    // const isDev = devSelector(state);
     if (!wallet) {
       throw new Error('Wallet is not exist');
     }
@@ -157,20 +193,6 @@ export const getBalance = (account) => async (dispatch, getState) => {
       tokenID: PRV.id,
       version: PrivacyVersion.ver2,
     });
-    // if (isDev) {
-    //   const accountWallet = getDefaultAccountWalletSelector(state);
-    //   const coinsStorage = await accountWallet.getCoinsStorage({
-    //     tokenID: PRV.id,
-    //     version: PrivacyVersion.ver2,
-    //   });
-    //   if (coinsStorage) {
-    //     await dispatch(
-    //       actionLogEvent({
-    //         desc: coinsStorage,
-    //       }),
-    //     );
-    //   }
-    // }
     const accountMerge = {
       ...account,
       value: balance,
@@ -443,3 +465,8 @@ export const actionFetchBurnerAddress = () => async (dispatch, getState) => {
     new ExHandler(error).showErrorToast();
   }
 };
+
+export const actionFetchedNFT = (payload) => ({
+  type: type.ACTION_FETCHED_NFT,
+  payload,
+});

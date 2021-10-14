@@ -5,7 +5,7 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import Wizard from '@screens/Wizard';
 import { useSelector, useDispatch } from 'react-redux';
 import { login } from '@src/services/auth';
-import { CONSTANT_KEYS } from '@src/constants';
+import { ANALYTICS, CONSTANT_KEYS } from '@src/constants';
 import { reloadWallet } from '@src/redux/actions/wallet';
 import { getPTokenList, getInternalTokenList } from '@src/redux/actions/token';
 import { loadPin } from '@src/redux/actions/pin';
@@ -32,6 +32,7 @@ import KeepAwake from 'react-native-keep-awake';
 import { COLORS, FONT } from '@src/styles';
 import { accountServices } from '@src/services/wallet';
 import { actionLogEvent } from '@src/screens/Performance';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
 import {
   wizardSelector,
   isFollowedDefaultPTokensSelector,
@@ -71,7 +72,7 @@ const SubComponent = React.memo((props) => {
             <Text style={{ ...subStyled.mainText, marginTop: 30 }}>
               This may take a couple of minutes.
             </Text>
-            {statusConfigs === 'Load all master keys' && (
+            {statusConfigs === 'loading all master keys' && (
               <Text style={subStyled.mainText}>
                 Please do not navigate away from the app.
               </Text>
@@ -204,6 +205,7 @@ const enhance = (WrappedComp) => (props) => {
         isCreating: false,
         errorMsg: errorMessage,
       });
+      dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));
     }
   };
 
@@ -215,21 +217,21 @@ const enhance = (WrappedComp) => (props) => {
           desc: 'CONFIGS_APP',
         }),
       );
-      await setStatusConfigs('Load pin');
+      await setStatusConfigs('loading pin');
       await dispatch(loadPin());
       await dispatch(
         actionLogEvent({
           desc: 'LOAD_PIN',
         }),
       );
-      await setStatusConfigs('Get info');
+      await setStatusConfigs('getting info');
       await login();
       await dispatch(
         actionLogEvent({
           desc: 'LOGIN',
         }),
       );
-      await setStatusConfigs('Get configs');
+      await setStatusConfigs('getting configs');
       const [servers] = await new Promise.all([
         serverService.get(),
         getFunctionConfigs().catch((e) => e),
@@ -246,14 +248,14 @@ const enhance = (WrappedComp) => (props) => {
           desc: 'CONFIGS',
         }),
       );
-      await setStatusConfigs('Load all master keys');
+      await setStatusConfigs('loading all master keys');
       await dispatch(loadAllMasterKeys());
       await dispatch(
         actionLogEvent({
           desc: 'LOAD_ALL_MASTER_KEYS',
         }),
       );
-      await setStatusConfigs('Load all master keys keychain');
+      await setStatusConfigs('loading all master keys keychain');
       await dispatch(loadAllMasterKeyAccounts());
       await dispatch(
         actionLogEvent({

@@ -36,6 +36,11 @@ const Setting = () => {
           onReloadedNetworks: actionFetchServers,
         }),
     },
+    {
+      title: 'NFT Token',
+      desc: 'Manage keychain\'s nft token',
+      handlePress: () => navigation?.navigate(routeNames.NFTToken),
+    },
   ];
 
   const handlePressExportCSV = () => {
@@ -58,10 +63,13 @@ const Setting = () => {
         <ConvertCoinsSection />
         <RemoveStorage />
         <RemoveBalanceCached />
+
         {global.isDebug() && <DevSection />}
       </View>
       <Text style={settingStyle.textVersion}>
-        {`v${AppUpdater.appVersion}${global.isDebug() ? ` (${DeviceInfo.getBuildNumber()})` : ''}`}
+        {`v${AppUpdater.appVersion}${
+          global.isDebug() ? ` (${DeviceInfo.getBuildNumber()})` : ''
+        }`}
       </Text>
     </MainLayout>
   );

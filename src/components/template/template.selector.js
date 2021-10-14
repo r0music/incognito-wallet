@@ -1,6 +1,6 @@
-import {createSelector} from 'reselect';
+import { createSelector } from 'reselect';
 
 export const templateSelector = createSelector(
-  state => state.template,
-  template => template,
+  (state) => state.template,
+  (template) => template,
 );

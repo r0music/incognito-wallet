@@ -81,6 +81,7 @@ export const enhanceSend = (WrappedComp) => (props) => {
   };
 
   const handleSendAnonymously = async (values) => {
+    let params;
     try {
       const { toAddress, amount } = values;
       const { fee, feeUnit, feePDecimals } = feeData;
@@ -106,9 +107,8 @@ export const enhanceSend = (WrappedComp) => (props) => {
       if (selectedPrivacy?.isMainCrypto) {
         res = await handleSendMainCrypto(payload);
       }
-      console.log('res', res);
       if (res) {
-        const params = {
+        params = {
           ...res,
           originalAmount: _originalAmount,
           fee: _fee,
@@ -122,7 +122,9 @@ export const enhanceSend = (WrappedComp) => (props) => {
             res?.tokenSymbol,
           keySaveAddressBook: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
         };
-        navigation.navigate(routeNames.Receipt, { params });
+        setTimeout(() => {
+          navigation.navigate(routeNames.Receipt, { params });
+        }, 1000);
         await dispatch(reset(formName));
       }
     } catch (e) {

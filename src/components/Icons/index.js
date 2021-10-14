@@ -1,3 +1,5 @@
+import AddGroupIcon from '@components/Icons/icon.addGroup';
+
 export { default as SearchIcon } from './icon.search';
 export { default as ClearIcon } from './icon.clear';
 export { default as DeleteIcon } from './icon.delete';
@@ -39,3 +41,14 @@ export { default as CheckedIcon } from './icon.checked';
 export { default as RetryIcon } from './icon.retry';
 export { default as ChevronIcon } from './icon.chevron';
 export { default as SimpleCheckedIcon } from './icon.checked-simple';
+export { default as CalendarClockIcon } from './icon.calendarClock';
+export { default as ArrowDown } from './icon.arrowDown';
+export { default as EmptyBookIcon } from './icon.emptyBook';
+export { default as SwapIcon } from './icon.swap';
+export { default as LockIcon } from './icon.lock';
+export { default as ArrowGreyDown } from './icon.arrowGreyDown';
+export { default as AppIcon } from './icon.app';
+export { default as StarIcon } from './icon.star';
+export { default as ChainIcon } from './icon.chain';
+export { default as MaxIcon } from './icon.max';
+export { default as AddGroupIcon } from './icon.addGroup';

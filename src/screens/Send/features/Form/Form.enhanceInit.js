@@ -17,6 +17,7 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useDispatch, useSelector } from 'react-redux';
 import { formValueSelector, reset } from 'redux-form';
 import { estimateFeeSelector } from '@src/components/EstimateFee/EstimateFee.selector';
+import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 import { formName } from './Form.enhance';
 
 export const enhanceInit = (WrappedComp) => (props) => {
@@ -33,6 +34,9 @@ export const enhanceInit = (WrappedComp) => (props) => {
   const amount = useSelector((state) => selector(state, 'amount'));
   const gettingBalance = useSelector(sharedSelector.isGettingBalance);
   const isGettingBalance = gettingBalance.includes(selectedPrivacy?.tokenId);
+  const [ isPortalToken, setIsPortalToken ] = React.useState(false);
+  const [ isChecking, setIsChecking ] = React.useState(false);
+  const accountWallet = useSelector(getDefaultAccountWalletSelector);
   const initData = async () => {
     try {
       setInit(true);
@@ -59,6 +63,17 @@ export const enhanceInit = (WrappedComp) => (props) => {
       console.debug(error);
     }
   };
+  const checkPortalToken = async () => {
+    try {
+      setIsChecking(true);
+      const _isPortalToken = await accountWallet.handleCheckIsPortalToken({ tokenID: selectedPrivacy.tokenId });
+      setIsPortalToken(_isPortalToken);
+    } catch (e) {
+      console.log(`Checking for portal token failed ${e && e.message}`);
+    } finally {
+      setIsChecking(false);
+    }
+  };
 
   React.useEffect(() => {
     updateData();
@@ -68,12 +83,16 @@ export const enhanceInit = (WrappedComp) => (props) => {
     initData();
   }, [selectedPrivacy?.tokenId]);
 
-  if (!selectedPrivacy || !estimateFee.init || init || isGettingBalance) {
+  React.useEffect(() => {
+    checkPortalToken();
+  }, []);
+
+  if (!selectedPrivacy || !estimateFee.init || init || isGettingBalance || isChecking) {
     return <LoadingContainer />;
   }
   return (
     <ErrorBoundary>
-      <WrappedComp {...props} />
+      <WrappedComp {...props} isPortalToken={isPortalToken} />
     </ErrorBoundary>
   );
 };

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import _ from 'lodash';
 import { getDecimalSeparator } from '@src/resources/separator';
 import BigNumber from 'bignumber.js';
@@ -31,7 +32,6 @@ const replaceDecimals = (text, autoCorrect = false) => {
 
 const toNumber = (text, autoCorrect = false) => {
   const number = replaceDecimals(text, autoCorrect);
-
   return _.toNumber(number);
 };
 
@@ -47,10 +47,6 @@ export default {
       if (!originAmount) {
         return 0;
       }
-      // const amount = toNumber(originAmount);
-      // checkAmount(amount);
-      // const decision_rate = Number(decimals) ? 10 ** Number(decimals) : 1;
-      // return amount / decision_rate;
       const amount = new BigNumber(originAmount).dividedBy(
         new BigNumber('10').pow(Number(decimals) ? decimals : 0),
       );

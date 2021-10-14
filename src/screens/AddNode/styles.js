@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
   container: {
   },
   content: {
-    paddingTop: 42,
+    paddingTop: 32,
   },
   contentItem: {
     marginBottom: 30,

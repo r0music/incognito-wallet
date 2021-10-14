@@ -10,6 +10,7 @@ import {
   mappingTxPTokenSelector,
   mappingTxReceiverSelector,
   mappingTxTransactorSelector,
+  mappingTxPortalSelector,
 } from '@src/redux/selectors/history';
 import { selectedPrivacy } from '@src/redux/selectors/selectedPrivacy';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
@@ -112,6 +113,22 @@ export const actionFetchTx = () => async (dispatch, getState) => {
         return tx;
       }
       tx = mappingTxPTokenSelector(state)(txp);
+      break;
+    }
+    case ACCOUNT_CONSTANT.TX_TYPE.SHIELDPORTAL: {
+      const txp = await accountWallet.updateStatusShieldPortalTx(tx, tokenID);
+      if (!txp) {
+        return tx;
+      }
+      tx = mappingTxPortalSelector(state)(txp);
+      break;
+    }
+    case ACCOUNT_CONSTANT.TX_TYPE.UNSHIELDPORTAL: {
+      const txp = await accountWallet.updateStatusUnShieldPortalTx(tx);
+      if (!txp) {
+        return tx;
+      }
+      tx = mappingTxPortalSelector(state)(txp);
       break;
     }
     default: {

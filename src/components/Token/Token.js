@@ -47,12 +47,12 @@ NormalText.defaultProps = {
 };
 
 export const Name = (props) => {
-  const { name, isVerified, tokenId, shouldShowFollowed } = props;
+  const { name, isVerified, tokenId, shouldShowInfo } = props;
   return (
     <View style={[styled.name, props?.styledContainerName]}>
       <NormalText text={name} style={[styled.boldText, props?.styledName]} />
       {isVerified && <TokenVerifiedIcon />}
-      {shouldShowFollowed && <BtnInfo tokenId={tokenId} />}
+      {shouldShowInfo && <BtnInfo tokenId={tokenId} />}
     </View>
   );
 };
@@ -61,14 +61,14 @@ Name.propTypes = {
   name: PropTypes.string,
   isVerified: PropTypes.bool,
   tokenId: PropTypes.string,
-  shouldShowFollowed: PropTypes.bool,
+  shouldShowInfo: PropTypes.bool,
 };
 
 Name.defaultProps = {
   name: 'Incognito Token',
   isVerified: false,
   tokenId: null,
-  shouldShowFollowed: false,
+  shouldShowInfo: true,
 };
 
 export const AmountBasePRV = (props) => {

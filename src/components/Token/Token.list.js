@@ -14,8 +14,6 @@ const ListToken = (props) => {
       data={data}
       renderItem={renderItem}
       keyExtractor={(token) => token?.tokenId}
-      removeClippedSubvfiews
-      initialNumToRender={10}
     />
   );
 };

@@ -25,6 +25,9 @@ const ETHERSCAN_URL = isMainnet
 const BSCSCAN_URL = isMainnet
   ? 'https://bscscan.com'
   : 'https://testnet.bscscan.com';
+const BTC_EXPLORER_URL = isMainnet
+  ? 'https://live.blockcypher.com/btc'
+  : 'https://live.blockcypher.com/btc-testnet';  
 const DEX_BINANCE_TOKEN_URL = isMainnet
   ? 'https://dex.binance.org/api/v1/tokens'
   : 'https://testnet-dex.binance.org/api/v1/tokens';
@@ -109,6 +112,7 @@ export default {
   BUILD_VERSION,
   ETHERSCAN_URL,
   BSCSCAN_URL,
+  BTC_EXPLORER_URL,
   BINANCE_EXPLORER_URL,
   USDT_TOKEN_ID,
   NODE_URL,

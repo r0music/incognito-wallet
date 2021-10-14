@@ -4,10 +4,12 @@ import { withdrawReward } from '@services/api/pool';
 import ReCaptchaV3 from '@haskkor/react-native-recaptchav3';
 import appConstant from '@src/constants/app';
 import { accountServices } from '@services/wallet';
+import {useError} from '@components/UseEffect/useError';
 
 const withConfirm = WrappedComp => (props) => {
   const captchaRef = React.useRef(null);
   const [error, setError] = React.useState('');
+  const errorMessage = useError(error);
   const [disable, setDisable] = React.useState(true);
   const [withdrawing, setWithdrawing] = React.useState(false);
   const { account, wallet, onSuccess } = props;
@@ -56,7 +58,7 @@ const withConfirm = WrappedComp => (props) => {
           ...props,
           withdrawing,
           onConfirm: onConfirmPress,
-          error,
+          error: errorMessage,
           disable,
         }}
       />

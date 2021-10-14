@@ -3,6 +3,7 @@ const COLORS = {
   orange: '#FF9500',
   white: 'white',
   black: '#000000',
+  black1: '#515151',
   black2: '#333335',
   blue: '#25CDD6',
   blue1: '#0A3A3C',
@@ -11,7 +12,9 @@ const COLORS = {
   blue4: '#004AA9',
   blue5: '#5995F0',
   blue6: '#00407E',
-  red: '#FE4D4D',
+  red: '#FF443A',
+  red2: '#FF443A',
+  red1: '#FF443A',
   green: '#34C759',
   pink: '#E5006D',
   dark1: '#101111',
@@ -43,6 +46,8 @@ const COLORS = {
   lightGrey30: '#F5F5F5',
   lightGrey31: '#7B7B7B',
   lightGrey32: '#B2B2B6',
+  lightGrey33: '#A6A6A6',
+  lightGrey34: '#858383',
   newGrey: '#8A8A8E',
   manateeGrey: '#959599',
 
@@ -61,11 +66,19 @@ const COLORS = {
   colorGreyBold: '#8A8A8E',
   colorPrimary: '#33373A',
   colorGreyLight: '#D8D8D8',
+  colorGreyLight1: '#F4F4F4',
+
+  colorGrey1: '#A6A6A6',
+  colorGrey2: '#ECECEC',
+  colorGrey3: '#858383',
+  colorGrey4: '#F7F7F7',
 
   colorBlue: '#5995F0',
   green2: '#64A121',
   green3: '#018775',
   green4: '#6DD400',
+
+  colorTradeBlue: '#5995F0',
 };
 
 export default {

@@ -1,6 +1,8 @@
 import _ from 'lodash';
+// eslint-disable-next-line import/no-cycle
 import convert from '@utils/convert';
 import { COINS } from '@src/constants';
+// eslint-disable-next-line import/no-cycle
 import { PRV_ID } from '@screens/Dex/constants';
 
 export const parseNodeRewardsToArray = (rewards, allTokens) => {

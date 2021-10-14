@@ -1,21 +1,15 @@
 import React from 'react';
-import {
-  Modal,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  SafeAreaView,
-} from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { COLORS } from '@src/styles';
+import Modal from 'react-native-modal';
 import { modalSelector, modalLoadingSelector } from './modal.selector';
 import { actionToggleModal } from './modal.actions';
 import LoadingModal from './features/LoadingModal';
 
 const styled = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: COLORS.overlayBlackDark,
-    width: '100%',
+    margin: 0,
+    flexDirection: 'column',
   },
 });
 const ModalComponent = () => {
@@ -32,27 +26,29 @@ const ModalComponent = () => {
     shouldCloseModalWhenTapOverlay ? await dispatch(actionToggleModal()) : null;
   const onRequestClose = async () => {
     await dispatch(actionToggleModal());
-
     if (typeof onBack === 'function') {
       onBack();
     }
   };
+  React.useEffect(() => {
+    return () => {
+      dispatch(actionToggleModal());
+    };
+  }, []);
+  if (!visible) {
+    return null;
+  }
   return (
     <Modal
-      presentationStyle="overFullScreen"
-      animationType="fade"
-      visible={visible}
-      transparent
-      onRequestClose={onRequestClose}
+      isVisible={visible}
+      onBackdropPress={handleToggle}
+      onModalWillHide={onRequestClose}
+      style={styled.container}
     >
-      <TouchableWithoutFeedback onPress={handleToggle}>
-        <SafeAreaView style={styled.container}>
-          {data}
-          {toggleLoading && (
-            <LoadingModal title={titleLoading} desc={descLoading} />
-          )}
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
+      {data}
+      {toggleLoading && (
+        <LoadingModal title={titleLoading} desc={descLoading} />
+      )}
     </Modal>
   );
 };

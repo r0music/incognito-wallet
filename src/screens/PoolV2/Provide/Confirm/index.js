@@ -26,7 +26,8 @@ const Confirm = ({
   error,
   disable,
   onRefresh,
-  refreshing
+  refreshing,
+  unlockTimeFormat,
 }) => {
   const renderRefreshControl = () => (
     <RefreshControl
@@ -36,22 +37,38 @@ const Confirm = ({
   );
   return (
     <View style={{ flex: 1 }}>
-      <Header title="Order preview" />
+      <Header title="Confirmation" />
       <ScrollView refreshControl={renderRefreshControl()}>
         <View style={styles.mainInfo}>
-          <Text style={styles.bigText}>Provide</Text>
+          <Text style={styles.label}>Provide</Text>
           <Text style={styles.bigText} numberOfLines={3}>{provide} {coin.symbol}</Text>
         </View>
+        {
+          unlockTimeFormat
+            ? (
+              <>
+                <ExtraInfo
+                  left="Term ends"
+                  right={`${unlockTimeFormat}`}
+                  style={styles.extra}
+                  rightStyle={styles.extraRight}
+                />
+              </>
+            )
+            : null
+        }
         <ExtraInfo
           left="Deposit"
           right={`${deposit} ${coin.symbol}`}
-          style={{ ...styles.extra, ...styles.bold }}
+          style={styles.extra}
+          rightStyle={styles.extraRight}
         />
         <ExtraInfo
           token={feeToken}
           left="Fee"
           right={`${format.amount(fee, feeToken.pDecimals)} ${feeToken.symbol}`}
           style={styles.extra}
+          rightStyle={styles.extraRight}
         />
         {!!error && <Text style={styles.error}>{error}</Text>}
         <RoundCornerButton
@@ -82,6 +99,7 @@ Confirm.propTypes = {
 
   onRefresh: PropTypes.func.isRequired,
   refreshing: PropTypes.bool,
+  unlockTimeFormat: PropTypes.string,
 };
 
 Confirm.defaultProps = {
@@ -89,7 +107,8 @@ Confirm.defaultProps = {
   deposit: '',
   provide: '',
   error: '',
-  refreshing: false
+  refreshing: false,
+  unlockTimeFormat: ''
 };
 
 export default compose(

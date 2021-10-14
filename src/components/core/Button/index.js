@@ -1,1 +1,2 @@
-export { default,ButtonExtension } from './Component';
+export { default, ButtonExtension } from './Component';
+export * from './Button';

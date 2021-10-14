@@ -2,6 +2,7 @@ import orderBy from 'lodash/orderBy';
 import {
   Validator,
   ACCOUNT_CONSTANT,
+  PRVIDSTR
 } from 'incognito-chain-web-js/build/wallet';
 import { createSelector } from 'reselect';
 import formatUtil from '@src/utils/format';
@@ -11,9 +12,11 @@ import {
   getStatusColorShield,
   getStatusColorUnshield,
   TX_STATUS_COLOR,
+  getPortalStatusColor,
+  getPortalStatusDetail,
 } from '@src/redux/utils/history';
 import { PRV } from '@src/constants/common';
-import { CONSTANT_CONFIGS } from '@src/constants';
+import { CONSTANT_CONFIGS, CONSTANT_COMMONS } from '@src/constants';
 import { selectedPrivacy } from './selectedPrivacy';
 import { burnerAddressSelector } from './account';
 
@@ -45,7 +48,7 @@ export const mappingTxTransactorSelector = createSelector(
   decimalDigitsSelector,
   (selectedPrivacy, decimalDigits) => (txt) => {
     new Validator('txt', txt).required().object();
-    const { pDecimals } = selectedPrivacy;
+    const { pDecimals, symbol } = selectedPrivacy;
     let { time, amount, fee, status } = txt;
     const timeStr = formatUtil.formatDateTime(time);
     const amountStr = renderAmount({
@@ -63,6 +66,7 @@ export const mappingTxTransactorSelector = createSelector(
       amountStr,
       timeStr,
       statusColor: TX_STATUS_COLOR[status],
+      symbol,
     };
     return result;
   },
@@ -106,7 +110,7 @@ export const historyReceiverSelector = createSelector(
 export const mappingTxPTokenSelector = createSelector(
   selectedPrivacy,
   decimalDigitsSelector,
-  ({ pDecimals, symbol, decimals }, decimalDigits) => (txp) => {
+  ({ pDecimals, symbol, decimals, tokenId }, decimalDigits) => (txp) => {
     const {
       status,
       currencyType,
@@ -152,6 +156,9 @@ export const mappingTxPTokenSelector = createSelector(
           decimalDigits,
         })
         : '';
+    const network = tokenId === PRVIDSTR && currencyType && currencyType !== 0 
+      ? CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_NAME[currencyType]
+      : '';
     const result = {
       ...txp,
       timeStr: formatUtil.formatDateTime(time),
@@ -179,6 +186,7 @@ export const mappingTxPTokenSelector = createSelector(
       }),
       receivedFundsStr,
       shieldingFeeStr,
+      network,
     };
     return result;
   },
@@ -191,14 +199,75 @@ export const historyPTokenSelector = createSelector(
     history.txsPToken.map((txp) => mappingTxPToken(txp)),
 );
 
+export const mappingTxPortalSelector = createSelector(
+  selectedPrivacy,
+  decimalDigitsSelector,
+  ({ pDecimals, symbol }, decimalDigits) => (txp) => {
+    const {
+      amount,
+      fee,
+      time,
+      txType,
+      externalFee,
+      txId,
+      reqTxID,
+      externalTxID,
+    } = txp;
+
+    const isShieldTx = txType === ACCOUNT_CONSTANT.TX_TYPE.SHIELDPORTAL;
+    const statusColor = getPortalStatusColor(txp);
+    const statusDetail = getPortalStatusDetail(txp);
+    let inchainTxId = isShieldTx ? reqTxID : txId;
+    let result = {
+      ...txp,
+      timeStr: formatUtil.formatDateTime(time),
+      amountStr: renderAmount({
+        amount,
+        pDecimals,
+        decimalDigits,
+      }),
+      symbol,
+      statusColor,
+      statusDetail,
+      inchainTx: inchainTxId ? `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${inchainTxId}` : '',
+      outchainTx: externalTxID ? `${CONSTANT_CONFIGS.BTC_EXPLORER_URL}/tx/${externalTxID}` : '', 
+    };
+
+    if (!isShieldTx) {
+      result = {
+        ...result,
+        inchainFeeStr: renderAmount({
+          amount: fee,
+          pDecimals: PRV.pDecimals,
+          decimalDigits,
+        }),
+        outchainFeeStr: renderAmount({
+          amount: externalFee,
+          pDecimals,
+          decimalDigits,
+        }),
+      };
+    }
+    return result;
+  },
+);
+
+export const historyPortalSelector = createSelector(
+  historySelector,
+  mappingTxPortalSelector,
+  (history, mappingTxPortal) =>
+    history.txsPortal.map((txp) => mappingTxPortal(txp)),
+);
+
 export const historyTxsSelector = createSelector(
   historySelector,
   historyTransactorSelector,
   historyReceiverSelector,
   historyPTokenSelector,
-  (history, txsTransactor, txsReceiver, txsPToken) => {
+  historyPortalSelector,
+  (history, txsTransactor, txsReceiver, txsPToken, txsPortal) => {
     const { isFetching, isFetched } = history;
-    const histories = [...txsTransactor, ...txsReceiver, ...txsPToken] || [];
+    const histories = [...txsTransactor, ...txsReceiver, ...txsPToken, ...txsPortal] || [];
     const sort = orderBy(histories, 'time', 'desc');
     return {
       ...history,
@@ -298,7 +367,8 @@ export const historyDetailFactoriesSelector = createSelector(
           receivedFundsStr,
           shieldingFeeStr,
           txReceive,
-          canRetryInvalidAmountShield
+          canRetryInvalidAmountShield,
+          network
         } = tx;
         return [
           {
@@ -380,6 +450,11 @@ export const historyDetailFactoriesSelector = createSelector(
             value: symbol,
             disabled: !symbol,
           },
+          {
+            label: 'Network',
+            value: network,
+            disabled: !network,
+          },
         ];
       }
       case ACCOUNT_CONSTANT.TX_TYPE.UNSHIELD: {
@@ -402,7 +477,9 @@ export const historyDetailFactoriesSelector = createSelector(
           inchainFeeStr,
           outchainFeeStr,
           memo,
+          network,
         } = tx;
+        
         return [
           {
             label: 'ID',
@@ -418,7 +495,7 @@ export const historyDetailFactoriesSelector = createSelector(
           {
             label: 'Inchain fee',
             value: `${inchainFeeStr} ${PRV.symbol}`,
-            disabled: !inchainFee,
+            disabled: !inchainFee || !inchainFeeStr,
           },
           {
             label: 'Outchain fee',
@@ -474,6 +551,155 @@ export const historyDetailFactoriesSelector = createSelector(
             value: memo,
             copyable: true,
             disabled: !memo,
+          },
+          {
+            label: 'Coin',
+            value: symbol,
+            disabled: !symbol,
+          },
+          {
+            label: 'Network',
+            value: network,
+            disabled: !network,
+          },
+        ];
+      }
+      case ACCOUNT_CONSTANT.TX_TYPE.SHIELDPORTAL: {
+        const {
+          statusStr,
+          timeStr,
+          amountStr,
+          symbol,
+          statusColor,
+          inchainTx,
+          outchainTx,
+          incognitoAddress,
+          statusDetail
+        } = tx;
+        return [
+          {
+            label: 'Shield',
+            value: `${amountStr} ${symbol}`,
+            disabled: !amountStr,
+          },
+          {
+            label: 'Status',
+            value: statusStr,
+            disabled: !statusStr,
+            valueTextStyle: { color: statusColor },
+            detail: statusDetail,
+            showDetail: !!statusDetail,
+          },
+          {
+            label: 'Time',
+            value: timeStr,
+            disabled: !timeStr,
+          },
+          {
+            label: 'To address',
+            value: incognitoAddress,
+            disabled: !incognitoAddress,
+            copyable: true,
+          },
+          {
+            label: 'Inchain TxID',
+            value: inchainTx,
+            disabled: !inchainTx,
+            openUrl: !!inchainTx,
+            handleOpenUrl: () => LinkingService.openUrl(inchainTx),
+          },
+          {
+            label: 'Outchain TxID',
+            value: outchainTx,
+            disabled: !outchainTx,
+            openUrl: !!outchainTx,
+            handleOpenUrl: () => LinkingService.openUrl(outchainTx),
+          },
+          {
+            label: 'Coin',
+            value: symbol,
+            disabled: !symbol,
+          },
+        ];
+      }
+      case ACCOUNT_CONSTANT.TX_TYPE.UNSHIELDPORTAL: {
+        const {
+          statusStr,
+          timeStr,
+          amountStr,
+          symbol,
+          statusColor,
+          inchainFeeStr,
+          outchainFeeStr,
+          inchainTx,
+          outchainTx,
+          externalAddress,
+          incognitoAddress,
+          statusDetail,
+          txId,
+        } = tx;
+      
+        return [
+          {
+            label: 'Unshield',
+            value: `${amountStr} ${symbol}`,
+            disabled: !amountStr,
+          },
+          {
+            label: 'Inchain fee',
+            value: `${inchainFeeStr} ${PRV.symbol}`,
+            disabled: !inchainFeeStr,
+          },
+          {
+            label: 'Outchain fee',
+            value: `${outchainFeeStr} ${symbol}`,
+            disabled: !outchainFeeStr,
+          },
+          {
+            label: 'Status',
+            value: statusStr,
+            disabled: !statusStr,
+            valueTextStyle: { color: statusColor },
+            // detail: statusDetail,
+            // showDetail: !!statusDetail,
+          },
+          {
+            label: 'Time',
+            value: timeStr,
+            disabled: !timeStr,
+          },
+          {
+            label: 'From address',
+            value: incognitoAddress,
+            disabled: !incognitoAddress,
+            copyable: true,
+          },
+          {
+            label: 'To address',
+            value: externalAddress,
+            disabled: !externalAddress,
+            copyable: true,
+          },
+          inchainTx ? 
+            {
+              label: 'Inchain TxID',
+              value: inchainTx,
+              disabled: !inchainTx,
+              openUrl: !!inchainTx,
+              handleOpenUrl: () => LinkingService.openUrl(inchainTx),
+            } :
+            {
+              label: 'TxID',
+              value: txId,
+              disabled: !txId,
+              copyable: true,
+            },
+          {
+            label: 'Outchain TxID',
+            value: outchainTx,
+            disabled: !outchainTx,
+            openUrl: !!outchainTx,
+            handleOpenUrl: () => LinkingService.openUrl(outchainTx),
           },
           {
             label: 'Coin',

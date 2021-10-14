@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { styled } from './template.styled';
+import { styled } from './Template.styled';
 
 const Template = (props) => {
   return <View style={styled.container} />;
