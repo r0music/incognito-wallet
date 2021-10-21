@@ -20,6 +20,7 @@ import { isEmpty } from 'lodash';
 import { compose } from 'recompose';
 import nodeItemDetailEnhanceData from '@screens/Node/components/NodeItemDetail/NodeItemDetail.enhanceData';
 import BottomBar from '@screens/Node/components/NodeBottomBar';
+import SlashStatus from '@screens/Node/components/SlashStatus';
 
 const NodeItemDetail = memo(({
   isLoading,
@@ -206,7 +207,7 @@ const NodeItemDetail = memo(({
             {renderItemText('Keychain', name)}
             {renderItemText('IP', ip)}
             { item?.IsPNode && renderItemText('Version', item?.Firmware) }
-            {(!!item && !!item?.IsSlashing) && renderItemText('Is slashed?', 'True')}
+            { !!item &&  <SlashStatus device={item} /> }
             { !!item && (<NodeStatus isLoading={isLoading} item={item} />) }
           </View>
           {renderStakeInfo()}
