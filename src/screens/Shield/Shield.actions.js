@@ -20,7 +20,7 @@ import {
   ACTION_BSC_FEE_FETCHING,
 } from './Shield.constant';
 import { shieldSelector } from './Shield.selector';
-import { PRV_ID } from '../DexV2/constants';
+import { PDEX_ID, PRV_ID } from '../DexV2/constants';
 
 export const actionReset = () => ({
   type: ACTION_RESET,
@@ -73,11 +73,10 @@ export const actionGetAddressToShield = async ({
         currencyType: selectedPrivacy?.currencyType,
         signPublicKeyEncode,
       });
-    } else if (selectedPrivacy?.isErc20Token || selectedPrivacy?.tokenId === PRV_ID) {
+    } else if (selectedPrivacy?.isErc20Token || selectedPrivacy?.tokenId === PRV_ID || selectedPrivacy?.tokenId === PDEX_ID) {
       let currencyType_ = selectedPrivacy?.currencyType;
       let tokenContractID_ = selectedPrivacy?.contractId;
-      if (selectedPrivacy?.tokenId === PRV_ID) {
-        console.log({selectedPrivacy});
+      if (selectedPrivacy?.tokenId === PRV_ID || selectedPrivacy?.tokenId === PDEX_ID) {
         if (selectedPrivacy?.listChildToken) {
           const tokenChild = selectedPrivacy?.listChildToken.find(x => x.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20);
           currencyType_ = tokenChild?.currencyType;
@@ -135,24 +134,35 @@ export const actionGetPRVBep20FeeToShield = (account, signPublicKeyEncode, selec
   dispatch,
   getState,
 ) => {
-  let generateResult = await genBSCDepositAddress({
-    paymentAddress: account.PaymentAddress,
-    walletAddress: account.PaymentAddress,
-    tokenId: selectedPrivacy?.tokenId,
-    tokenContractID: selectedPrivacy?.contractId,
-    currencyType: selectedPrivacy?.currencyType,
-    signPublicKeyEncode,
-  });
-  let {
-    tokenFee,
-    estimateFee,
-  } = generateResult;
-  await dispatch(
-    actionBSCFetch({
+  try {
+    let generateResult = await genBSCDepositAddress({
+      paymentAddress: account.PaymentAddress,
+      walletAddress: account.PaymentAddress,
+      tokenId: selectedPrivacy?.tokenId,
+      tokenContractID: selectedPrivacy?.contractId,
+      currencyType: selectedPrivacy?.currencyType,
+      signPublicKeyEncode,
+    });
+    let {
       tokenFee,
       estimateFee,
-    }),
-  );
+    } = generateResult;
+    await dispatch(
+      actionBSCFetch({
+        tokenFee,
+        estimateFee,
+        err: '',
+      }),
+    );
+  } catch (e) {
+    await dispatch(
+      actionBSCFetch({
+        tokenFee: 0,
+        estimateFee: 0,
+        err: e,
+      })
+    );
+  } 
 };
 
 export const actionFetch = ({ tokenId, selectedPrivacy, account }) => async (

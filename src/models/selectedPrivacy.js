@@ -1,5 +1,5 @@
 import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
-import { BIG_COINS } from '@src/screens/DexV2/constants';
+import { BIG_COINS, PDEX_ID } from '@src/screens/DexV2/constants';
 import { PRV_ID } from '@screens/Dex/constants';
 import PToken from './pToken';
 
@@ -11,16 +11,17 @@ function getNetworkName() {
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
   const isBNB =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
-  if (this.isPrivateCoin) {
-    name = `${this.name}`;
+
+  if (this.isIncognitoToken || this.isMainCrypto || this.isPdexToken) {
+    name = 'Incognito';
   } else if (this.isErc20Token) {
     name = 'ERC20';
   } else if (this.isBep20Token) {
     name = 'BEP20';
   } else if (this.isBep2Token) {
     name = 'BEP2';
-  } else if (this.isIncognitoToken || this.isMainCrypto) {
-    name = 'Incognito';
+  } else if (this.isPrivateCoin) {
+    name = `${this.name}`;
   }
   let rootNetworkName = name;
   if (isETH || this?.isErc20Token) {
@@ -144,6 +145,7 @@ class SelectedPrivacy {
     this.change = pTokenData?.change || '0';
     this.pricePrv = pTokenData?.pricePrv || 0;
     this.pairWithPrv = pTokenData?.pairPrv;
+    this.isPdexToken = this.tokenId === PDEX_ID;
     const { networkName, rootNetworkName } = getNetworkName.call(this);
     this.networkName = networkName;
     this.rootNetworkName = rootNetworkName;
