@@ -72,7 +72,7 @@ class SelectedPrivacy {
     const unknownText = 'Incognito Token';
 
     this.currencyType = pTokenData.currencyType;
-    this.isToken = tokenId !== CONSTANT_COMMONS.PRV_TOKEN_ID && !!tokenId; // all kind of tokens (private tokens, incognito tokens)
+    this.isToken = tokenId !== CONSTANT_COMMONS.PRV_TOKEN_ID && !!tokenId && token; // all kind of tokens (private tokens, incognito tokens)
     this.isMainCrypto = _tokenID === PRV_ID; // PRV
     this.isPrivateToken =
       pTokenData?.type === CONSTANT_COMMONS.PRIVATE_TOKEN_TYPE.TOKEN; // ERC20 tokens, BEP2 tokens

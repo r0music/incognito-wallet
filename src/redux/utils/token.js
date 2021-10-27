@@ -67,6 +67,8 @@ const normalizedHistories = ({
         case 251:
         case 271:
         case 273:
+        case 321:
+        case 323:
         case 81: {
           const requestTxId = metaData?.RequestedTxID;
           const index = _historiesFromApi.findIndex(
