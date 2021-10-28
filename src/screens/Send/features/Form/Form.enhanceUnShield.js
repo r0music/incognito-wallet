@@ -113,7 +113,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const account = useSelector(defaultAccountSelector);
   const wallet = useSelector(walletSelector);
-  const handleBurningToken = async (payload = {}, txHashHandler) => {
+  const handleBurningToken = async (payload = {}, txHashHandler, bscRequestMeta, ethRequestMeta) => {
     try {
       const { originalAmount, feeForBurn, paymentAddress, isBSC } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
@@ -133,7 +133,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         info,
         remoteAddress: paymentAddress,
         txHashHandler,
-        burningType: isBSC ? BurningPBSCRequestMeta : BurningRequestMeta,
+        burningType: isBSC ? bscRequestMeta : ethRequestMeta,
         version: PrivacyVersion.ver2,
       });
       if (res.txId) {
@@ -217,12 +217,12 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       let tx;
       if (isUnshieldPegPRV) {
         if (isPdexToken) {
-          tx = await handleBurningPegToken(payload, txHashHandler, BurningPDEXBEP20RequestMeta, BurningPDEXERC20RequestMeta);
+          tx = await handleBurningToken(payload, txHashHandler, BurningPDEXBEP20RequestMeta, BurningPDEXERC20RequestMeta);
         } else {
           tx = await handleBurningPegToken(payload, txHashHandler, BurningPRVBEP20RequestMeta, BurningPRVERC20RequestMeta);
         }
       } else {
-        tx = await handleBurningToken(payload, txHashHandler);
+        tx = await handleBurningToken(payload, txHashHandler, BurningPBSCRequestMeta, BurningRequestMeta);
       }
       if (toggleDecentralized) {
         await setState({
