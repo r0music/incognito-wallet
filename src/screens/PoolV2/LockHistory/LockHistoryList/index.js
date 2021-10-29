@@ -12,7 +12,7 @@ import Header from '@components/Header/index';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import mainStyles from '@screens/PoolV2/style';
-import withData from './data.enhance';
+import withData, { LockStatus } from './data.enhance';
 import styles from './style';
 
 const LockHistory = ({
@@ -71,6 +71,13 @@ const LockHistory = ({
                         <Text style={[mainStyles.textRight, styles.unlockDate]}>
                           {item.displayUnlockDate}
                         </Text>
+                        {item.active === LockStatus.Finished && 
+                          (
+                            <Text style={[mainStyles.textRight, styles.endTermText]}>
+                              End Term.
+                            </Text>
+                          )
+                        }
                       </View>
                     </Row>
                   </View>

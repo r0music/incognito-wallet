@@ -72,5 +72,13 @@ export default StyleSheet.create({
   divider: {
     marginBottom: 16,
     marginTop: 16,
-  }
+  },
+  endTermText: {
+    fontFamily: FONT.NAME.regular,
+    color: COLORS.black,
+    fontSize: 14,
+    lineHeight: 16,
+    marginBottom: 8,
+    fontWeight: 'bold'
+  },
 });
