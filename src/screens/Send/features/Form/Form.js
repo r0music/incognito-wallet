@@ -88,7 +88,7 @@ const SendForm = (props) => {
     appConstant.DISABLED.UNSHIELD_DECENTRALIZED,
     handleSend,
   );
-  let placeholderAddress = selectedPrivacy?.isMainCrypto 
+  let placeholderAddress = (selectedPrivacy?.isMainCrypto || selectedPrivacy?.isPdexToken)
     ? 'Incognito or ETH/BSC address' 
     : `Incognito${
       selectedPrivacy?.isIncognitoToken

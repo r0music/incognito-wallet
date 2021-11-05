@@ -19,11 +19,12 @@ import convert from '@utils/convert';
 import routeNames from '@routers/routeNames';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import {
+  actionBSCFetch,
   actionGetPRVBep20FeeToShield,
 } from '@screens/Shield/Shield.actions';
 import ic_radio from '@src/assets/images/icons/ic_radio.png';
 import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
-import { PRV_ID } from '@src/screens/DexV2/constants';
+import { PDEX_ID, PRV_ID } from '@src/screens/DexV2/constants';
 import { ExHandler } from '@src/services/exception';
 import withGenQRCode from './GenQRCode.enhance';
 import { styled } from './GenQRCode.styled';
@@ -270,7 +271,7 @@ const GenQRCode = (props) => {
   const [selectedPlatform, setPlatform] = React.useState(0);
   const [selectingPlatform, setSelectingPlatform] = React.useState(0);
   const account = useSelector(defaultAccountSelector);
-  const isPRV = selectedPrivacy?.tokenId === PRV_ID;
+  const isPRV = selectedPrivacy?.tokenId === PRV_ID || selectedPrivacy?.tokenId === PDEX_ID;
   const [defaultFee, setDefaultFee] = React.useState({
     estimateFee: 0,
     tokenFee: 0,
@@ -301,6 +302,18 @@ const GenQRCode = (props) => {
     setDefaultFee(temp);
     setBscFee(temp);
     setIsLoadingBsc(false);
+  }
+
+  if(shieldDataBsc?.err) {
+    new ExHandler(shieldDataBsc?.err).showErrorToast();
+    setIsLoadingBsc(false);
+    dispatch(
+      actionBSCFetch({
+        tokenFee: 0,
+        estimateFee: 0,
+        err: '',
+      })
+    );
   }
 
   React.useEffect(() => {
@@ -352,18 +365,13 @@ const GenQRCode = (props) => {
         setIsLoadingBsc(false);
       } else {
         setSelectingPlatform(index);
-        try {
-          dispatch(
-            actionGetPRVBep20FeeToShield(
-              account,
-              account?.signPublicKeyEncode,
-              selectedPrivacy,
-            ),
-          );
-        } catch (e) {
-          new ExHandler(e).showErrorToast();
-          setIsLoadingBsc(false);
-        }
+        dispatch(
+          actionGetPRVBep20FeeToShield(
+            account,
+            account?.signPublicKeyEncode,
+            selectedPrivacy,
+          ),
+        );
       }
     }
   };

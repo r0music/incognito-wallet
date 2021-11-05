@@ -28,6 +28,7 @@ const initialState = {
   databsc: {
     tokenFee: 0,
     estimateFee: 0,
+    err: '',
   },
   storage: {
     guide: false,

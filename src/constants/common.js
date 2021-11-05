@@ -114,7 +114,7 @@ const NETWORK_NAME = {
   ETHEREUM: 'Ethereum',
   TOMO: 'TomoChain',
   BSC: 'Binance Smart Chain',
-  PRV: 'Privacy',
+  PRV: 'Incognito',
 };
 
 export const PRV = {

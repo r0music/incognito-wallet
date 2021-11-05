@@ -9,7 +9,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import format from '@src/utils/format';
 import { CONSTANT_CONFIGS, CONSTANT_COMMONS } from '@src/constants';
 import routeNames from '@src/router/routeNames';
-import { PRV_ID } from '@src/screens/DexV2/constants';
+import { PDEX_ID, PRV_ID } from '@src/screens/DexV2/constants';
 
 const enhance = (WrappedComp) => (props) => {
   const [state, setState] = React.useState({
@@ -99,7 +99,7 @@ const enhance = (WrappedComp) => (props) => {
     },
   ];
 
-  if (tokenId === PRV_ID) {
+  if (tokenId === PRV_ID || tokenId === PDEX_ID) {
     const tokenChildETH = selectedPrivacy?.listChildToken.find(
       (x) =>
         x.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20,

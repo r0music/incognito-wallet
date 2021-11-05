@@ -33,8 +33,9 @@ import {
   BurningRequestMeta,
   BurningPRVERC20RequestMeta,
   BurningPRVBEP20RequestMeta,
+  BurningPDEXERC20RequestMeta,
+  BurningPDEXBEP20RequestMeta,
   PrivacyVersion,
-  PRVIDSTR,
 } from 'incognito-chain-web-js/build/wallet';
 import { formName } from './Form.enhance';
 
@@ -87,6 +88,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     pDecimals,
     isDecentralized,
     name,
+    isPdexToken,
   } = childSelectedPrivacy ? childSelectedPrivacy : selectedPrivacy;
   const keySave = isDecentralized
     ? CONSTANT_KEYS.UNSHIELD_DATA_DECENTRALIZED
@@ -111,7 +113,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const account = useSelector(defaultAccountSelector);
   const wallet = useSelector(walletSelector);
-  const handleBurningToken = async (payload = {}, txHashHandler) => {
+  const handleBurningToken = async (payload = {}, txHashHandler, bscRequestMeta, ethRequestMeta) => {
     try {
       const { originalAmount, feeForBurn, paymentAddress, isBSC } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
@@ -131,7 +133,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         info,
         remoteAddress: paymentAddress,
         txHashHandler,
-        burningType: isBSC ? BurningPBSCRequestMeta : BurningRequestMeta,
+        burningType: isBSC ? bscRequestMeta : ethRequestMeta,
         version: PrivacyVersion.ver2,
       });
       if (res.txId) {
@@ -144,7 +146,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     }
   };
 
-  const handleBurningPegPRV = async (payload = {}, txHashHandler) => {
+  const handleBurningPegToken = async (payload = {}, txHashHandler, bscRequestMeta, ethRequestMeta) => {
     try {
       const { originalAmount, feeForBurn, paymentAddress, isBSC } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
@@ -163,7 +165,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         info,
         remoteAddress: paymentAddress,
         txHashHandler,
-        burningType: isBSC ? BurningPRVBEP20RequestMeta : BurningPRVERC20RequestMeta,
+        burningType: isBSC ? bscRequestMeta : ethRequestMeta,
         version: PrivacyVersion.ver2,
       });
       if (res.txId) {
@@ -214,9 +216,13 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       };
       let tx;
       if (isUnshieldPegPRV) {
-        tx = await handleBurningPegPRV(payload, txHashHandler);
+        if (isPdexToken) {
+          tx = await handleBurningToken(payload, txHashHandler, BurningPDEXBEP20RequestMeta, BurningPDEXERC20RequestMeta);
+        } else {
+          tx = await handleBurningPegToken(payload, txHashHandler, BurningPRVBEP20RequestMeta, BurningPRVERC20RequestMeta);
+        }
       } else {
-        tx = await handleBurningToken(payload, txHashHandler);
+        tx = await handleBurningToken(payload, txHashHandler, BurningPBSCRequestMeta, BurningRequestMeta);
       }
       if (toggleDecentralized) {
         await setState({
