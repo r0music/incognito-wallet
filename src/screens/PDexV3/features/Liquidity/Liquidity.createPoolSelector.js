@@ -109,6 +109,7 @@ export const ampValueSelector = createSelector(
       token1Value: input.originalInputAmount,
       token2Value: output.originalInputAmount,
     });
+    rawRate = convert.toNumber(rawRate, true);
     rawRate = convert.toNumber(format.amountFull(rawRate, 0, false), true);
     let estOutputStr = undefined;
     const estRate = new BigNumber(rawRate).minus(rate).abs();
