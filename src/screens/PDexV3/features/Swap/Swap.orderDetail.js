@@ -77,26 +77,28 @@ const SwapOrderDetail = () => {
         value: order?.networkfeeAmountStr,
       });
     }
-    if (order?.responseTxs?.length > 0) {
+    if (order?.respondTxs?.length > 0) {
       ft.push({
         label: 'Response Tx',
         customValue: (
-          <View style={{ flex: 1 }}>
-            {order?.responseTxs.map((responseTx) => (
+          <Row
+            style={{ ...orderDetailStyled.rowValue, flexDirection: 'column' }}
+          >
+            {order?.respondTxs.map((responseTx) => (
               <Text
                 style={{ ...orderDetailStyled.value, marginBottom: 15 }}
                 ellipsizeMode="middle"
                 numberOfLines={1}
               >
-                {responseTx}
+                {`#${responseTx}`}
               </Text>
             ))}
-          </View>
+          </Row>
         ),
         hookStyled: {
           alignItems: 'flex-start',
         },
-        value: order?.responseTxs.map((responseTx) => `\n${responseTx}`).join(),
+        value: order?.respondTxs.map((responseTx) => `\n${responseTx}`).join(),
       });
     }
     return ft.filter(

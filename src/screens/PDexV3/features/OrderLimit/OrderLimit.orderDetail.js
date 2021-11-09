@@ -20,13 +20,6 @@ import { actionFetchDataOrderDetail } from './OrderLimit.actions';
 const styled = StyleSheet.create({
   container: { flex: 1 },
   scrollview: { flex: 1, paddingTop: 32 },
-  value: {
-    fontFamily: FONT.NAME.medium,
-    color: COLORS.black,
-    fontSize: FONT.SIZE.small,
-    textAlign: 'left',
-    flex: 1,
-  },
 });
 
 const OrderDetail = () => {
@@ -88,26 +81,26 @@ const OrderDetail = () => {
         value: order?.networkfeeAmountStr,
       },
     ];
-    if (order?.responseTxs?.length > 0) {
+    if (order?.respondTxs?.length > 0) {
       ft.push({
         label: 'Response Tx',
         customValue: (
-          <View style={{ flex: 1 }}>
-            {order?.responseTxs.map((responseTx) => (
+          <Row style={{ ...orderItemStyled.rowValue, flexDirection: 'column' }}>
+            {order?.respondTxs.map((responseTx) => (
               <Text
-                style={{ ...styled.value, marginBottom: 15 }}
+                style={{ ...orderItemStyled.value, marginBottom: 15 }}
                 ellipsizeMode="middle"
                 numberOfLines={1}
               >
-                {responseTx}
+                {`#${responseTx}`}
               </Text>
             ))}
-          </View>
+          </Row>
         ),
         hookStyled: {
           alignItems: 'flex-start',
         },
-        value: order?.responseTxs.map((responseTx) => `\n${responseTx}`).join(),
+        value: order?.respondTxs.map((responseTx) => `\n${responseTx}`).join(),
       });
     }
     return ft.filter(
