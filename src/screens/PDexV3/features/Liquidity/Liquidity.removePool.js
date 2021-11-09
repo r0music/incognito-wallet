@@ -135,8 +135,8 @@ const RemoveLPButton = React.memo(({ onSubmit }) => {
       poolPairID: poolId,
       shareAmount: inputAmount.withdraw,
       nftID: nftId,
-      amount1: inputAmount.originalInputAmount,
-      amount2: outputAmount.originalInputAmount
+      amount1: String(inputAmount.originalInputAmount),
+      amount2: String(outputAmount.originalInputAmount)
     };
     onSubmit(params);
   };

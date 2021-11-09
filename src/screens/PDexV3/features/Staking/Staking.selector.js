@@ -427,7 +427,7 @@ export const withdrawCoinsSelector = createSelector(
             new BigNumber(inputValue).minus(amountCount);
         prev.push({
           fee: feeAmount,
-          unstakingAmount: unstakeAmount.toNumber(),
+          unstakingAmount: unstakeAmount.toString(),
           nftID: nftId,
           stakingTokenID: tokenId,
           stakingPoolID: tokenId,

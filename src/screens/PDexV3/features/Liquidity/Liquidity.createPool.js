@@ -198,11 +198,11 @@ const ButtonCreatePool = React.memo(({ onSubmit }) => {
   const handleSubmit = () => {
     if (disabled) return;
     const params = {
-      fee: feeAmount / 2,
+      fee: String(feeAmount / 2),
       tokenId1: inputAmount.tokenId,
       tokenId2: outputAmount.tokenId,
-      amount1: inputAmount.originalInputAmount,
-      amount2: outputAmount.originalInputAmount,
+      amount1: String(inputAmount.originalInputAmount),
+      amount2: String(outputAmount.originalInputAmount),
       amp,
     };
     onSubmit(params);
