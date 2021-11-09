@@ -173,10 +173,6 @@ export const detailsSelector = createSelector(
         value: poolSizeStr,
       },
       {
-        label: 'Exchange rate',
-        value: exchangeRateStr,
-      },
-      {
         label: 'Price change',
         value: `${priceChangeToAmountStr} (${perChange24hToStr})`,
         color: perChange24hColor,

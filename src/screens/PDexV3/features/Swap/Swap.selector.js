@@ -259,7 +259,7 @@ export const swapInfoSelector = createSelector(
       const buyInputAmountStr = `${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
       const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
       const showPRVBalance = !sellInputAmount?.isMainCrypto;
-      const prvBalance = format.amountFull(prv.amount, PRV.pDecimals, false);
+      const prvBalance = format.amountVer2(prv.amount, PRV.pDecimals);
       const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
       const maxPriceStr = getExchangeRate(
         sellInputAmount.tokenData,
@@ -335,8 +335,8 @@ export const mappingOrderHistorySelector = createSelector(
         const indexBuyToken = respondTokens.findIndex((t) => t === buyTokenId);
         price = respondAmounts[indexBuyToken];
       }
-      const amountStr = format.amountFull(amount, sellToken.pDecimals, false);
-      const priceStr = format.amountFull(price, buyToken.pDecimals, false);
+      const amountStr = format.amountVer2(amount, sellToken.pDecimals);
+      const priceStr = format.amountVer2(price, buyToken.pDecimals);
       const sellStr = `${amountStr} ${sellToken.symbol}`;
       const buyStr = `${priceStr} ${buyToken.symbol}`;
       const timeStr = format.formatDateTime(
@@ -367,10 +367,9 @@ export const mappingOrderHistorySelector = createSelector(
         rateStr,
         timeStr,
         rate,
-        networkfeeAmountStr: `${format.amountFull(
+        networkfeeAmountStr: `${format.amountVer2(
           networkFee,
           PRV.pDecimals,
-          false,
         )} ${PRV.symbol}`,
         tradingFeeStr,
         statusStr: capitalize(status),

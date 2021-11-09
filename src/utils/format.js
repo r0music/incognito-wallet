@@ -88,10 +88,41 @@ const amountFull = amountCreator();
 
 const amount = amountCreator(CONSTANT_COMMONS.AMOUNT_MAX_FRACTION_DIGITS);
 
-const amountSuffix = (
-  amount,
-  decimals
-) => {
+const amountVer2 = (amount, decimals) => {
+  try {
+    const fmt = {
+      decimalSeparator: getDecimalSeparator(),
+      groupSeparator: getGroupSeparator(),
+      groupSize: 3,
+    };
+    let _decimals;
+    let _amount = convertUtil.toHumanAmount(amount, decimals);
+    if (_amount > 1e3) {
+      _decimals = 1;
+    } else if (_amount > 1e2) {
+      _decimals = 2;
+    } else if (_amount > 10) {
+      _decimals = 3;
+    } else if (_amount > 1) {
+      _decimals = 4;
+    } else if (_amount > 1e-1) {
+      _decimals = 5;
+    } else if (_amount >= 1e-6) {
+      _decimals = 6;
+    } else {
+      _decimals = undefined;
+    }
+    return _amount
+      ? removeTrailingZeroes(
+        new BigNumber(_amount).toFormat(_decimals, BigNumber.ROUND_DOWN, fmt),
+      )
+      : 0;
+  } catch (e) {
+    return amount;
+  }
+};
+
+const amountSuffix = (amount, decimals) => {
   try {
     const fmt = {
       decimalSeparator: getDecimalSeparator(),
@@ -120,15 +151,17 @@ const amountSuffix = (
     if (_amount > 0 && _amount < 1) {
       _maxDigits = 5;
     }
-    return (_amount
-      ? removeTrailingZeroes(
-        new BigNumber(_amount).toFormat(
-          _maxDigits,
-          BigNumber.ROUND_DOWN,
-          fmt,
-        ),
-      )
-      : 0) + _suffix;
+    return (
+      (_amount
+        ? removeTrailingZeroes(
+          new BigNumber(_amount).toFormat(
+            _maxDigits,
+            BigNumber.ROUND_DOWN,
+            fmt,
+          ),
+        )
+        : 0) + _suffix
+    );
   } catch {
     return amount;
   }
@@ -264,4 +297,5 @@ export default {
   convertDecimalsToPDecimals,
   convertDecimalsHumanAmount,
   amountSuffix,
+  amountVer2,
 };

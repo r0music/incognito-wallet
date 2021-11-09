@@ -164,7 +164,7 @@ export const getInputAmount = (
       loadingBalance: isGettingBalance.includes(token.tokenId),
 
       balance: token.amount,
-      balanceStr: format.amountFull(token.amount, token.pDecimals, false),
+      balanceStr: format.amountVer2(token.amount, token.pDecimals),
 
       tokenData: token,
     };

@@ -69,7 +69,7 @@ export const stakingCoinsSelector = createSelector(
       const user = { userBalance, userBalanceStr, userBalanceSymbolStr };
       /**---------------------------------------------------------*/
       const stakingAmount = coins.reduce((prev, curr) => new BigNumber(prev).plus(curr.amount).toNumber(), 0);
-      const stakingAmountStr = formatUtil.amount(stakingAmount, token.pDecimals);
+      const stakingAmountStr = formatUtil.amountVer2(stakingAmount, token.pDecimals);
       const stakingAmountSymbolStr = `${stakingAmountStr} ${token.symbol}`;
       const staking = { stakingAmount, stakingAmountStr, stakingAmountSymbolStr };
       /**---------------------------------------------------------*/
@@ -89,7 +89,7 @@ export const stakingCoinsSelector = createSelector(
       }, []);
       const totalRewardUSD = rewardsMerged.reduce((prev, curr) => new BigNumber(prev).plus(curr.rewardUSD).toNumber(), 0);
       const totalRewardAmount = Math.ceil(new BigNumber(totalRewardUSD).multipliedBy(Math.pow(10, token.pDecimals || 9)).toNumber());
-      const totalRewardUSDStr = `${CONSTANT_COMMONS.USD_SPECIAL_SYMBOL}${formatUtil.amount(totalRewardAmount, token.pDecimals)}`;
+      const totalRewardUSDStr = `${CONSTANT_COMMONS.USD_SPECIAL_SYMBOL}${formatUtil.amountVer2(totalRewardAmount, token.pDecimals)}`;
       const reward = { rewardsCoins, rewardTokenIds, rewardsMerged, totalRewardUSD, totalRewardAmount, totalRewardUSDStr };
       /**---------------------------------------------------------*/
       const withdrawableCoins = orderBy(coins.filter(coin => (!!validNFT(coin.nftId)) && coin.amount), 'amount', 'asc');
@@ -136,9 +136,9 @@ const stakingRewardSelector = createSelector(
   (coins, getPrivacyDataByTokenID) => {
     const prvToken = getPrivacyDataByTokenID(PRV.id);
     const rewardUSD = coins.reduce((prev, curr) => new BigNumber(prev).plus(curr.reward.totalRewardAmount), new BigNumber(0)).toNumber();
-    const rewardUSDStr = `${formatUtil.amount(rewardUSD, prvToken.pDecimals)} $ `;
+    const rewardUSDStr = `${formatUtil.amountVer2(rewardUSD, prvToken.pDecimals)} $ `;
     const rewardPRV = Math.floor(new BigNumber(rewardUSD).dividedBy(prvToken.priceUsd).toNumber());
-    const rewardPRVStr = `${formatUtil.amount(rewardPRV, prvToken.pDecimals)} ${prvToken.symbol}`;
+    const rewardPRVStr = `${formatUtil.amountVer2(rewardPRV, prvToken.pDecimals)} ${prvToken.symbol}`;
     return { rewardUSDStr, rewardPRVStr };
   }
 );
