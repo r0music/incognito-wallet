@@ -452,13 +452,13 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       transfer: { fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX, info: '' },
       extra: {
         tokenIDToSell,
-        sellAmount,
+        sellAmount: String(sellAmount),
         tokenIDToBuy,
         tradingFee,
         tradePath,
         feetoken,
         version: PrivacyVersion.ver2,
-        minAcceptableAmount,
+        minAcceptableAmount: String(minAcceptableAmount),
       },
     };
     console.log('params', params);

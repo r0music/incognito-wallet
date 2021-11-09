@@ -42,6 +42,7 @@ const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.small + 5,
     color: COLORS.black,
     marginRight: 15,
+    flex: 1,
   },
   statusStr: {
     fontFamily: FONT.NAME.regular,
