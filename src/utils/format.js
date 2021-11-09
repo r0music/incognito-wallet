@@ -88,6 +88,26 @@ const amountFull = amountCreator();
 
 const amount = amountCreator(CONSTANT_COMMONS.AMOUNT_MAX_FRACTION_DIGITS);
 
+const getDecimalsFromHumanAmount = (humanAmount) => {
+  let decimals;
+  if (humanAmount > 1e3) {
+    decimals = 1;
+  } else if (humanAmount > 1e2) {
+    decimals = 2;
+  } else if (humanAmount > 10) {
+    decimals = 3;
+  } else if (humanAmount > 1) {
+    decimals = 4;
+  } else if (humanAmount > 1e-1) {
+    decimals = 5;
+  } else if (humanAmount >= 1e-6) {
+    decimals = 6;
+  } else {
+    decimals = undefined;
+  }
+  return decimals;
+};
+
 const amountVer2 = (amount, decimals) => {
   try {
     const fmt = {
@@ -95,23 +115,8 @@ const amountVer2 = (amount, decimals) => {
       groupSeparator: getGroupSeparator(),
       groupSize: 3,
     };
-    let _decimals;
     let _amount = convertUtil.toHumanAmount(amount, decimals);
-    if (_amount > 1e3) {
-      _decimals = 1;
-    } else if (_amount > 1e2) {
-      _decimals = 2;
-    } else if (_amount > 10) {
-      _decimals = 3;
-    } else if (_amount > 1) {
-      _decimals = 4;
-    } else if (_amount > 1e-1) {
-      _decimals = 5;
-    } else if (_amount >= 1e-6) {
-      _decimals = 6;
-    } else {
-      _decimals = undefined;
-    }
+    const _decimals = getDecimalsFromHumanAmount(_amount);
     return _amount
       ? removeTrailingZeroes(
         new BigNumber(_amount).toFormat(_decimals, BigNumber.ROUND_DOWN, fmt),
@@ -298,4 +303,5 @@ export default {
   convertDecimalsHumanAmount,
   amountSuffix,
   amountVer2,
+  getDecimalsFromHumanAmount,
 };

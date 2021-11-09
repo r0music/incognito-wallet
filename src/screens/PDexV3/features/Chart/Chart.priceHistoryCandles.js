@@ -12,6 +12,8 @@ import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import { ScreenWidth } from '@src/utils/devices';
 import Server from '@src/services/wallet/Server';
 import { ActivityIndicator } from '@src/components/core';
+import format from '@src/utils/format';
+import minBy from 'lodash/minBy';
 import { poolSelectedSelector } from './Chart.selector';
 
 const styled = StyleSheet.create({
@@ -117,49 +119,65 @@ const PriceHistoryCandles = () => {
         break;
       }
       const { poolId: poolid } = pool;
+      const { pDecimals }: SelectedPrivacy = pool?.token2;
       const res =
         (await pdexV3Inst.getPriceHistory({
           poolid,
           period,
           intervals,
         })) || [];
-      const candles = res.map((c) => ({ ...c, time: c?.timestamp }));
+      const candles = res.map((c, index) => {
+        const { open, close, high, low, timestamp } = c;
+        const result = {
+          open: convert.toHumanAmountVer2(open, pDecimals),
+          close: convert.toHumanAmountVer2(close, pDecimals),
+          high: convert.toHumanAmountVer2(high, pDecimals),
+          low: convert.toHumanAmountVer2(low, pDecimals),
+          time: timestamp,
+        };
+        return result;
+      });
       if (candles) {
-        handlePostMessage(`candles|${JSON.stringify(candles)}`);
+        let width = Number(ScreenWidth) - 50;
+        const minLow = minBy(candles, (c) => c?.low)?.low || 0;
+        const precision = format.getDecimalsFromHumanAmount(minLow) || token2?.pDecimals;
+        const minMove = 1 / Math.pow(10, precision);
+        handlePostMessage(
+          `configsChart|${JSON.stringify({
+            chartConfigs: {
+              lwChartConfigs: {
+                width,
+                height: 250,
+              },
+              lwChartOptions: {
+                timeScale: {
+                  timeVisible: true,
+                },
+              },
+              candlesStickConfigs: {
+                upColor: '#53B987',
+                downColor: '#EC4D5C',
+              },
+              candlesStickOptions: {
+                priceFormat: {
+                  precision,
+                  minMove,
+                },
+              },
+            },
+            candles,
+          })}`,
+        );
       }
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
   };
-  const handleOnMessage = (e) => {
+  const handleOnMessage = async (e) => {
     const data = e.nativeEvent.data;
     const parseData = JSON.parse(data);
     if (parseData?.initted) {
-      setInitted(true);
-      let width = Number(ScreenWidth) - 50;
-      handlePostMessage(
-        `chartConfigs|${JSON.stringify({
-          lwChartConfigs: {
-            width,
-            height: 250,
-          },
-          lwChartOptions: {
-            timeScale: {
-              timeVisible: true,
-            },
-          },
-          candlesStickConfigs: {
-            upColor: '#53B987',
-            downColor: '#EC4D5C',
-          },
-          candlesStickOptions: {
-            priceFormat: {
-              precision: token2?.pDecimals,
-              minMove: convert.toHumanAmount(1, token2?.pDecimals),
-            },
-          },
-        })}`,
-      );
+      await setInitted(true);
       handleFetchData(periods[0]);
     }
   };
