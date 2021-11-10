@@ -152,6 +152,11 @@ const amountSuffix = (amount, decimals) => {
       _suffix = 'M';
     }
 
+    if (_amount > 1e9 && _amount < 1e12) {
+      _amount = Math.floor(_amount) / 1e9;
+      _suffix = 'B';
+    }
+
     // if amount is too small, show 4 digits
     if (_amount > 0 && _amount < 1) {
       _maxDigits = 5;
