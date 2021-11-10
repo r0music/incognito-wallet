@@ -35,7 +35,15 @@ const styled = StyleSheet.create({
   },
 });
 
-const periods = ['15m', '1h', '4h', '1d', 'W', 'M', 'Y'];
+const periods = [
+  '15m',
+  '1h',
+  '4h',
+  '1d',
+  'W',
+  'M',
+  // 'Y'
+];
 
 export const Period = React.memo(({ handleFetchData }) => {
   const [actived, setActived] = React.useState(periods[0]);
@@ -93,11 +101,11 @@ const PriceHistoryCandles = () => {
         break;
       case '1h':
         period = 'PT1H';
-        intervals = 'P3D';
+        intervals = 'P7D';
         break;
       case '4h':
         period = 'PT4H';
-        intervals = 'P7D';
+        intervals = 'P30D';
         break;
       case '1d':
         period = 'P1D';
@@ -105,16 +113,16 @@ const PriceHistoryCandles = () => {
         break;
       case 'W':
         period = 'P1W';
-        intervals = 'P12M';
+        intervals = 'P1Y';
         break;
       case 'M':
         period = 'P1M';
-        intervals = 'P12M';
+        intervals = 'P1Y';
         break;
-      case 'Y':
-        period = 'P1M';
-        intervals = 'P12M';
-        break;
+        // case 'Y':
+        //   period = 'P1M';
+        //   intervals = 'P12M';
+        //   break;
       default:
         break;
       }
@@ -140,7 +148,8 @@ const PriceHistoryCandles = () => {
       if (candles) {
         let width = Number(ScreenWidth) - 50;
         const minLow = minBy(candles, (c) => c?.low)?.low || 0;
-        const precision = format.getDecimalsFromHumanAmount(minLow) || token2?.pDecimals;
+        const precision =
+          format.getDecimalsFromHumanAmount(minLow) || token2?.pDecimals;
         const minMove = 1 / Math.pow(10, precision);
         handlePostMessage(
           `configsChart|${JSON.stringify({
