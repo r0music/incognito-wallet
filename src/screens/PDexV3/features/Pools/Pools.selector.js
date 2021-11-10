@@ -94,6 +94,7 @@ export const listPoolsSelector = createSelector(
           true,
         );
         const priceStr = format.amountVer2(originalPrice, token2?.pDecimals);
+        const poolStr = `${token1?.symbol || ''} / ${token2?.symbol || ''}`;
         return {
           ...pool,
           token1,
@@ -124,6 +125,7 @@ export const listPoolsSelector = createSelector(
             [token2Id]: virtual2Value,
           },
           priceStr,
+          poolStr,
         };
       });
     } catch (error) {

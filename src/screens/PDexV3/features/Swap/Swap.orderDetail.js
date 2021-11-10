@@ -11,6 +11,7 @@ import ClipboardService from '@src/services/clipboard';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import TradeOrderDetail, {
   styled as orderDetailStyled,
+  OrderDetailValue,
 } from '@screens/PDexV3/features/Trade/Trade.orderDetail';
 import { Row } from '@src/components';
 import { orderDetailSelector } from './Swap.selector';
@@ -82,16 +83,23 @@ const SwapOrderDetail = () => {
         label: 'Response Tx',
         customValue: (
           <Row
-            style={{ ...orderDetailStyled.rowValue, flexDirection: 'column' }}
+            style={{
+              ...orderDetailStyled.rowValue,
+              marginLeft: 0,
+              flexDirection: 'column',
+            }}
           >
             {order?.respondTxs.map((responseTx) => (
-              <Text
-                style={{ ...orderDetailStyled.value, marginBottom: 15 }}
-                ellipsizeMode="middle"
-                numberOfLines={1}
-              >
-                {`#${responseTx}`}
-              </Text>
+              <OrderDetailValue
+                copiable
+                openUrl
+                handleOpenUrl={() =>
+                  LinkingService.openUrl(
+                    `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${responseTx}`,
+                  )
+                }
+                value={`#${responseTx}`}
+              />
             ))}
           </Row>
         ),

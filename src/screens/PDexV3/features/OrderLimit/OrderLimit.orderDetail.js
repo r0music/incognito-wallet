@@ -5,13 +5,13 @@ import { withLayout_2 } from '@src/components/Layout';
 import Header from '@components/Header';
 import { ScrollView, RefreshControl, Text } from '@components/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { COLORS, FONT } from '@src/styles';
 import { BtnCopy } from '@src/components/Button';
 import { ExHandler } from '@src/services/exception';
 import LinkingService from '@src/services/linking';
 import ClipboardService from '@src/services/clipboard';
 import OrderItem, {
   styled as orderItemStyled,
+  OrderDetailValue,
 } from '@screens/PDexV3/features/Trade/Trade.orderDetail';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import { orderDetailSelector } from './OrderLimit.selector';
@@ -85,15 +85,24 @@ const OrderDetail = () => {
       ft.push({
         label: 'Response Tx',
         customValue: (
-          <Row style={{ ...orderItemStyled.rowValue, flexDirection: 'column' }}>
+          <Row
+            style={{
+              ...orderItemStyled.rowValue,
+              marginLeft: 0,
+              flexDirection: 'column',
+            }}
+          >
             {order?.respondTxs.map((responseTx) => (
-              <Text
-                style={{ ...orderItemStyled.value, marginBottom: 15 }}
-                ellipsizeMode="middle"
-                numberOfLines={1}
-              >
-                {`#${responseTx}`}
-              </Text>
+              <OrderDetailValue
+                copiable
+                openUrl
+                handleOpenUrl={() =>
+                  LinkingService.openUrl(
+                    `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${responseTx}`,
+                  )
+                }
+                value={`#${responseTx}`}
+              />
             ))}
           </Row>
         ),

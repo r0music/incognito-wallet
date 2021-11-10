@@ -14,7 +14,6 @@ import isEmpty from 'lodash/isEmpty';
 import { change, reset } from 'redux-form';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import { batch } from 'react-redux';
-import { actionFetchOrderBook } from '@screens/PDexV3/features/Chart';
 import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
 import {
   ACTION_FETCHING,
@@ -215,7 +214,6 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
         dispatch(actionSetNFTTokenData()),
         dispatch(actionFetchWithdrawOrderTxs());
         dispatch(actionFetchOrdersHistory());
-        dispatch(actionFetchOrderBook());
       }
     });
     const activedTab = activedTabSelector(state)(ROOT_TAB_ORDER_LIMIT);
