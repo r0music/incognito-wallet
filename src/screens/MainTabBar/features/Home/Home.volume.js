@@ -48,15 +48,15 @@ const BigVolume = () => {
   }, [pools]);
 
   const onItemPress = (poolId) => {
-    navigation.navigate(routeNames.Trade);
+    navigation.navigate(routeNames.Trade, { tabIndex: 1 });
+    dispatch(
+      actionChangeTab({
+        rootTabID: ROOT_TAB_TRADE,
+        tabID: TAB_LIMIT_ID,
+      }),
+    );
     setTimeout(() => {
       batch(() => {
-        dispatch(
-          actionChangeTab({
-            rootTabID: ROOT_TAB_TRADE,
-            tabID: TAB_LIMIT_ID,
-          }),
-        );
         dispatch(actionSetPoolSelected(poolId));
         dispatch(actionInit());
       });

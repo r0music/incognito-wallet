@@ -107,16 +107,16 @@ const MainTab = () => {
   const navigation = useNavigation();
   const pools = useSelector(listPoolsVerifySelector);
   const onItemPress = (poolId) => {
-    navigation.navigate(routeNames.Trade);
+    navigation.navigate(routeNames.Trade, { tabIndex: 1 });
+    dispatch(
+      actionChangeTab({
+        rootTabID: ROOT_TAB_TRADE,
+        tabID: TAB_LIMIT_ID,
+      }),
+    );
     setTimeout(() => {
       batch(() => {
         dispatch(actionInit());
-        dispatch(
-          actionChangeTab({
-            rootTabID: ROOT_TAB_TRADE,
-            tabID: TAB_LIMIT_ID,
-          }),
-        );
         dispatch(actionSetPoolSelected(poolId));
       });
     }, 300);
