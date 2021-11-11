@@ -2,7 +2,7 @@ import React from 'react';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { COLORS } from '@src/styles';
 import TabHome from '@screens/MainTabBar/features/Home';
-import TabShield from '@screens/MainTabBar/features/Shield';
+import More from '@screens/MainTabBar/features/More';
 import TabAssets from '@screens/MainTabBar/features/Assets';
 import TabTrade from '@screens/MainTabBar/features/Trade';
 import TabHomeLP from '@screens/MainTabBar/features/HomeLP';
@@ -66,13 +66,13 @@ const TabNavigator = createMaterialBottomTabNavigator(
         inactiveColor: COLORS.lightGrey34,
       },
     },
-    Shield: {
-      screen: TabShield,
+    More: {
+      screen: More,
       navigationOptions: {
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
             <MoreIcon active={focused} />
-            <Text style={[styled.label, { color: tintColor }]}>Shield</Text>
+            <Text style={[styled.label, { color: tintColor }]}>More</Text>
           </View>
         ),
       },

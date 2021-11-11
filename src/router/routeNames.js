@@ -198,4 +198,5 @@ export default {
   MainTabBar: 'MainTabBar',
   PoolsTab: 'PoolsTab',
   SelectTokenModal: 'SelectTokenModal',
+  More: 'More'
 };

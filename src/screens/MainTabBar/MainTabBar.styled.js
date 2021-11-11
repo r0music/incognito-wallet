@@ -178,3 +178,45 @@ export const homeStyled = StyleSheet.create({
   }
 });
 
+export const moreStyled = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+    paddingHorizontal: DEFAULT_PADDING,
+    paddingTop: 10
+  },
+  wrapBar: {
+    width: ScreenWidth / 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  label: {
+    ...FONT.STYLE.normal,
+    fontSize: FONT.SIZE.superSmall,
+    lineHeight: FONT.SIZE.superSmall + 6,
+    marginTop: 2
+  },
+  category: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  regularBlack: {
+    ...FONT.STYLE.normal,
+    fontSize: FONT.SIZE.superSmall,
+    color: COLORS.black,
+    lineHeight: FONT.SIZE.superSmall + 6,
+    marginTop: 2,
+  },
+  wrapCategory: {
+    marginTop: 30,
+  },
+  sectionLabel: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.regular,
+    color: COLORS.black,
+    lineHeight: FONT.SIZE.regular + 6,
+    marginBottom: 20,
+  }
+});
+
