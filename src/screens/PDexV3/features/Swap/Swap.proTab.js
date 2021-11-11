@@ -35,7 +35,6 @@ import {
   calMintAmountExpected,
 } from './Swap.utils';
 import { useTabFactories } from './Swap.simpleTab';
-import SwapInputsGroup from './Swap.inputsGroup';
 
 const styled = StyleSheet.create({
   container: {
@@ -164,13 +163,6 @@ const TabPro = React.memo(({ handleConfirm }) => {
   ];
   return (
     <View style={styled.container}>
-      <SwapInputsGroup />
-      <ButtonTrade
-        btnStyle={styled.btnTrade}
-        onPress={handleConfirm}
-        title={swapInfo?.btnSwapText || ''}
-        disabled={!!swapInfo?.disabledBtnSwap}
-      />
       <View style={styled.extraWrapper}>
         {extraFactories.map((extra) => (
           <Extra {...extra} key={extra.label} />

@@ -1,4 +1,4 @@
-import { BtnOrderHistory, ButtonRefresh } from '@src/components/Button';
+import { BtnOrderHistory, ButtonRefresh, ButtonTrade } from '@src/components/Button';
 import React from 'react';
 import { View } from 'react-native';
 import PropTypes from 'prop-types';
@@ -21,6 +21,7 @@ import TabSimple from './Swap.simpleTab';
 import TabPro from './Swap.proTab';
 import withSwap from './Swap.enhance';
 import { swapInfoSelector } from './Swap.selector';
+import SwapInputsGroup from './Swap.inputsGroup';
 
 const initialFormValues = {
   selltoken: '',
@@ -77,19 +78,17 @@ const Swap = (props) => {
         <Form>
           {({ handleSubmit }) => (
             <>
+              <SwapInputsGroup />
+              <ButtonTrade
+                btnStyle={styled.btnTrade}
+                onPress={handleConfirm}
+                title={swapInfo?.btnSwapText || ''}
+                disabled={!!swapInfo?.disabledBtnSwap}
+              />
               <Tabs1
                 rootTabID={ROOT_TAB_ID}
                 styledTabList={tabsStyled.styledTabList}
                 containerStyled={{ marginTop: 24 }}
-                rightCustom={
-                  <Row>
-                    <ButtonRefresh
-                      style={styled.btnRefresh}
-                      onPress={initSwapForm}
-                    />
-                    <BtnOrderHistory onPress={handleNavOrderHistory} />
-                  </Row>
-                }
               >
                 {tabsFactories.map(({ tab, ...rest }) => (
                   <View key={rest.tabID} {...rest}>

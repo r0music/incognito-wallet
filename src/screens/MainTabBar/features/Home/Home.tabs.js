@@ -12,11 +12,11 @@ import { homeStyled } from '@screens/MainTabBar/MainTabBar.styled';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import orderBy from 'lodash/orderBy';
-import {actionInit, actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
+import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
 import { actionChangeTab } from '@components/core/Tabs/Tabs.actions';
 import {
   ROOT_TAB_TRADE,
-  TAB_LIMIT_ID,
+  TAB_SWAP_ID,
 } from '@screens/PDexV3/features/Trade/Trade.constant';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
@@ -29,10 +29,10 @@ const Item = React.memo(({ pool, onItemPress, popular }) => {
     perChange24hBGColor,
     poolId,
     poolTitle,
-    volumeSuffix
+    volumeSuffix,
   } = pool;
   return (
-    <TouchableOpacity onPress={() => onItemPress(poolId)}>
+    <TouchableOpacity onPress={() => onItemPress(pool)}>
       <Row centerVertical style={homeStyled.wrapPoolBox}>
         <Text style={[homeStyled.mediumBlack, homeStyled.itemBox]}>
           {poolTitle}
@@ -54,14 +54,14 @@ const Item = React.memo(({ pool, onItemPress, popular }) => {
             popular && {
               paddingHorizontal: 0,
               backgroundColor: 'transparent',
-            }
+            },
           ]}
         >
           <Text
             style={[
               homeStyled.mediumBlack,
               { color: COLORS.white, fontSize: 11 },
-              popular && homeStyled.volText
+              popular && homeStyled.volText,
             ]}
             numberOfLines={0}
           >
@@ -106,23 +106,30 @@ const MainTab = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const pools = useSelector(listPoolsVerifySelector);
-  const onItemPress = (poolId) => {
-    navigation.navigate(routeNames.Trade, { tabIndex: 1 });
-    dispatch(
-      actionChangeTab({
-        rootTabID: ROOT_TAB_TRADE,
-        tabID: TAB_LIMIT_ID,
-      }),
-    );
-    setTimeout(() => {
-      batch(() => {
-        dispatch(actionInit());
-        dispatch(actionSetPoolSelected(poolId));
-      });
-    }, 300);
+  const onItemPress = (pool) => {
+    navigation.navigate(routeNames.Trade, { tabIndex: 0 });
+    batch(() => {
+      dispatch(
+        actionChangeTab({
+          rootTabID: ROOT_TAB_TRADE,
+          tabID: TAB_SWAP_ID,
+        }),
+      );
+      dispatch(
+        actionSetDefaultPair({
+          selltoken: pool?.token1?.tokenId,
+          buytoken: pool?.token2?.tokenId,
+        }),
+      );
+    });
   };
   const renderItem = (pool, popular) => (
-    <Item pool={pool} key={pool.poolId} onItemPress={onItemPress} popular={popular} />
+    <Item
+      pool={pool}
+      key={pool.poolId}
+      onItemPress={onItemPress}
+      popular={popular}
+    />
   );
   React.useEffect(() => {
     dispatch(actionFetchPools());
@@ -130,21 +137,21 @@ const MainTab = () => {
   if (!pools || pools.length === 0) return null;
   return (
     <Tabs rootTabID={TABS.TAB_HOME_ID} useTab1 styledTabList={homeStyled.tab}>
-      <View
-        tabID={TABS.TAB_HOME_INCREASE_ID}
-        label="Gainers"
-        {...tabStyle}
-      >
+      <View tabID={TABS.TAB_HOME_INCREASE_ID} label="Gainers" {...tabStyle}>
         <Header />
-        {orderBy(pools, 'priceChange24H', 'desc').map(item => renderItem(item, false))}
+        {orderBy(pools, 'priceChange24H', 'desc').map((item) =>
+          renderItem(item, false),
+        )}
       </View>
       <View tabID={TABS.TAB_HOME_REDUCE_ID} label="Losers" {...tabStyle}>
         <Header />
-        {orderBy(pools, 'priceChange24H', 'asc').map(item => renderItem(item, false))}
+        {orderBy(pools, 'priceChange24H', 'asc').map((item) =>
+          renderItem(item, false),
+        )}
       </View>
       <View tabID={TABS.TAB_HOME_POPULAR_ID} label="24h Vol" {...tabStyle}>
         <Header popular />
-        {orderBy(pools, 'volume', 'desc').map(item => renderItem(item, true))}
+        {orderBy(pools, 'volume', 'desc').map((item) => renderItem(item, true))}
       </View>
     </Tabs>
   );
