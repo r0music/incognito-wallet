@@ -40,6 +40,7 @@ import {
   ACTION_FETCH_FAIL_ORDERS_HISTORY,
   ACTION_FETCHING_ORDER_DETAIL,
   ACTION_FETCHED_ORDER_DETAIL,
+  ACTION_RESET_ORDERS_HISTORY,
 } from './OrderLimit.constant';
 import {
   poolSelectedDataSelector,
@@ -48,6 +49,10 @@ import {
   orderDetailSelector,
   rateDataSelector,
 } from './OrderLimit.selector';
+
+export const actionResetOrdersHistory = () => ({
+  type: ACTION_RESET_ORDERS_HISTORY,
+});
 
 export const actionSetPercent = (payload) => ({
   type: ACTION_SET_PERCENT,

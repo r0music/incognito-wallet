@@ -33,8 +33,8 @@ const styled = StyleSheet.create({
     flex: 1,
   },
   btnWithdraw: {
-    width: 83,
-    height: 24,
+    width: 60,
+    height: 18,
     backgroundColor: COLORS.colorGrey4,
   },
   btnTitleWithdraw: {

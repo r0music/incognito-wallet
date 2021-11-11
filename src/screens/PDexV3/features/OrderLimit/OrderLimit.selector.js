@@ -484,11 +484,13 @@ export const mappingOrderHistorySelector = createSelector(
         buyStr = `${buyAmount} ${buyToken.symbol}`;
         infoStr = poolStr;
       }
-      const percent = floor(
+
+      const percent = convert.toNumber(
         new BigNumber(matched)
           .dividedBy(new BigNumber(amount))
           .multipliedBy(100)
-          .toNumber(),
+          .toFixed(2),
+        true,
       );
       const percentStr = `Filled ${percent}%`;
       const percentStr1 = `${percent}%`;

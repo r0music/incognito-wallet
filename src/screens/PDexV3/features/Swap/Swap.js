@@ -1,4 +1,4 @@
-import { ButtonTrade } from '@src/components/Button';
+import { BtnOrderHistory, ButtonTrade } from '@src/components/Button';
 import React from 'react';
 import { View } from 'react-native';
 import PropTypes from 'prop-types';
@@ -91,6 +91,9 @@ const Swap = (props) => {
                   marginTop: 0,
                   marginBottom: 0,
                 }}
+                rightCustom={
+                  <BtnOrderHistory onPress={handleNavOrderHistory} />
+                }
               >
                 {tabsFactories.map(({ tab, ...rest }) => (
                   <View key={rest.tabID} {...rest}>
