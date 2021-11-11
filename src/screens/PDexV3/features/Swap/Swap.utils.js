@@ -259,8 +259,8 @@ async function getBestRate(sourceToken, destToken, amount, chainID) {
   }
 
   for (let i = 0; i < listReserved.length; i+=2) {
-    const reserve0 = new BigNumber('0x' + listReserved[i].returnData.substring(2, 66), 16);
-    const reserve1 = new BigNumber('0x' + listReserved[i].returnData.substring(66, 130), 16);
+    const reserve0 = JSBI.BigInt('0x' + listReserved[i].returnData.substring(2, 66), 16);
+    const reserve1 = JSBI.BigInt('0x' + listReserved[i].returnData.substring(66, 130), 16);
     const token0 = '0x' + listReserved[i + 1].returnData.substring(26);
     let token1 = token_pair[i / 2].token1;
     if (token_pair[i / 2].token0.toLowerCase() !== token0.toLowerCase()) {
