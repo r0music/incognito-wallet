@@ -209,7 +209,7 @@ const MULTI_CALL_INST = new web3.eth.Contract(MULTI_CALL_ABI, MULTI_CALL_CONTRAC
 const FACTORY_INST = new web3.eth.Contract(PANCAKE_FACOTRY_ABI, PANCAKE_FACTORY_ADDRESS);
 const PANCKAE_ROUTER_INST = new web3.eth.Contract(PANCAKE_ABI, PANCAKE_ROUTER_V2);
 
-async function getBestRate(sourceToken, destToken, amount, chainID) {
+async function getBestRate(sourceToken, destToken, amount, chainID, isSwapExactOut) {
   let pairList = [];
   // get list LPs
   let abiCallGetLPs = [];
@@ -273,13 +273,22 @@ async function getBestRate(sourceToken, destToken, amount, chainID) {
   const sellAmount = JSBI.BigInt(amount * 10 ** sourceToken.decimals);
   const seltTokenInst = new Token(chainID, sourceToken.address, sourceToken.decimals, sourceToken.symbol);
   const buyTokenInst = new Token(chainID, destToken.address, destToken.decimals, destToken.symbol);
-  const result = Trade.bestTradeExactIn(
-    pairList,
-    new TokenAmount(seltTokenInst, sellAmount),
-    buyTokenInst,
-    { maxNumResults: 1 },
-  );
-  
+  let result;
+  if (!isSwapExactOut) {  
+    result = Trade.bestTradeExactIn(
+      pairList,
+      new TokenAmount(seltTokenInst, sellAmount),
+      buyTokenInst,
+      { maxNumResults: 1 },
+    );
+  } else {
+    result = Trade.bestTradeExactOut(
+      pairList,
+      seltTokenInst,
+      new TokenAmount(buyTokenInst, sellAmount),
+      { maxNumResults: 1 },
+    );
+  }
   if (result.length === 0) {
     console.log('something went wrong');
     return null, null;
@@ -293,7 +302,12 @@ async function getBestRate(sourceToken, destToken, amount, chainID) {
     }
   );
 
-  const outputs = await PANCKAE_ROUTER_INST.methods.getAmountsOut(sellAmount.toString(), paths).call();
+  let outputs;
+  if (!isSwapExactOut) {
+    outputs = await PANCKAE_ROUTER_INST.methods.getAmountsOut(sellAmount.toString(), paths).call();
+  } else {
+    outputs = await PANCKAE_ROUTER_INST.methods.getAmountsIn(sellAmount.toString(), paths).call();
+  }
   return paths, outputs;
 }
 
