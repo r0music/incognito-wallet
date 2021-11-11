@@ -7,8 +7,8 @@ import TabAssets from '@screens/MainTabBar/features/Assets';
 import TabTrade from '@screens/MainTabBar/features/Trade';
 import TabHomeLP from '@screens/MainTabBar/features/HomeLP';
 import {
-  HomeIcon,
-  ShieldIcon,
+  MarketIcon,
+  MoreIcon,
   TradeIcon,
   LiquidityIcon,
   AssetsIcon,
@@ -18,24 +18,13 @@ import { styled } from './MainTabBar.styled';
 
 const TabNavigator = createMaterialBottomTabNavigator(
   {
-    Home: {
+    Market: {
       screen: TabHome,
       navigationOptions: {
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
-            <HomeIcon active={focused} />
-            <Text style={[styled.label, { color: tintColor }]}>Home</Text>
-          </View>
-        ),
-      },
-    },
-    Shield: {
-      screen: TabShield,
-      navigationOptions: {
-        tabBarIcon: ({ focused, tintColor }) => (
-          <View style={styled.wrapBar}>
-            <ShieldIcon active={focused} />
-            <Text style={[styled.label, { color: tintColor }]}>Shield</Text>
+            <MarketIcon active={focused} />
+            <Text style={[styled.label, { color: tintColor }]}>Market</Text>
           </View>
         ),
       },
@@ -77,9 +66,20 @@ const TabNavigator = createMaterialBottomTabNavigator(
         inactiveColor: COLORS.lightGrey34,
       },
     },
+    Shield: {
+      screen: TabShield,
+      navigationOptions: {
+        tabBarIcon: ({ focused, tintColor }) => (
+          <View style={styled.wrapBar}>
+            <MoreIcon active={focused} />
+            <Text style={[styled.label, { color: tintColor }]}>Shield</Text>
+          </View>
+        ),
+      },
+    }
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Market',
     activeColor: COLORS.colorBlue,
     inactiveColor: COLORS.lightGrey34,
     barStyle: {

@@ -40,7 +40,7 @@ export default {
   pApps: 'pApps',
   AddPin: 'AddPin',
   BackupKeys: 'BackupKeys',
-  Home: 'Home',
+  Home: 'Market',
   Community: 'Community',
   Shield: 'Shield',
   WhyShield: 'WhyShield',
