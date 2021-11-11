@@ -4,7 +4,7 @@ import { FlatList } from '@src/components/core';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import { ExHandler } from '@src/services/exception';
-import { orderHistorySelector, poolIdSelector } from './OrderLimit.selector';
+import { orderHistorySelector } from './OrderLimit.selector';
 import Order from './OrderLimit.order';
 import {
   actionFetchOrdersHistory,
@@ -21,7 +21,6 @@ const styled = StyleSheet.create({
 });
 
 const OrderHistory = () => {
-  const poolId = useSelector(poolIdSelector);
   const dispatch = useDispatch();
   const onRefresh = async () => {
     try {
@@ -37,7 +36,7 @@ const OrderHistory = () => {
   const { history = [] } = useSelector(orderHistorySelector);
   React.useEffect(() => {
     onRefresh();
-  }, [poolId]);
+  }, []);
   return (
     <View style={styled.container}>
       <FlatList

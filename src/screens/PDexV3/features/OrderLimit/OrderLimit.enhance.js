@@ -95,7 +95,7 @@ const enhance = (WrappedComp) => (props) => {
   const callback = async (poolId) => {
     dispatch(actionResetOrdersHistory());
     await dispatch(actionSetPoolSelected(poolId));
-    dispatch(actionInit());
+    dispatch(actionInit(true));
   };
   React.useEffect(() => {
     handleInitOrderLimit();

@@ -48,6 +48,7 @@ import {
   orderLimitDataSelector,
   orderDetailSelector,
   rateDataSelector,
+  orderHistorySelector,
 } from './OrderLimit.selector';
 
 export const actionResetOrdersHistory = () => ({
@@ -312,7 +313,8 @@ export const actionFetchOrdersHistory = () => async (dispatch, getState) => {
     const state = getState();
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const pool = poolSelectedDataSelector(state);
-    if (!pool) {
+    const { isFetching } = orderHistorySelector(state);
+    if (!pool || isFetching) {
       return;
     }
     const orders =
