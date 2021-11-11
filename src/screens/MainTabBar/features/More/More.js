@@ -20,6 +20,7 @@ import {
   StakeIcon
 } from '@components/Icons';
 import {Row} from '@src/components';
+import PropTypes from 'prop-types';
 
 const Categories = [
   {
@@ -135,6 +136,10 @@ const TabAssets = () => {
       {Categories.map(renderSections)}
     </View>
   );
+};
+
+CategoryItem.propTypes = {
+  item: PropTypes.object.isRequired
 };
 
 export default withTab(memo(TabAssets));
