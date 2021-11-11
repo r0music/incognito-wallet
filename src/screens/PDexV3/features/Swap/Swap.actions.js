@@ -20,12 +20,7 @@ import BigNumber from 'bignumber.js';
 import floor from 'lodash/floor';
 import difference from 'lodash/difference';
 import { isUsePRVToPayFeeSelector } from '@screens/Setting';
-import { actionSetPoolSelected } from '@screens/PDexV3/features/OrderLimit';
-import {
-  findPoolByPairSelector,
-  getDataByPoolIdSelector,
-} from '@screens/PDexV3/features/Pools';
-import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
+import { getDataByPoolIdSelector } from '@screens/PDexV3/features/Pools';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -288,7 +283,6 @@ export const actionInitSwapForm = ({
 } = {}) => async (dispatch, getState) => {
   try {
     const state = getState();
-    const findPoolByPair = findPoolByPairSelector(state);
     const isUsePRVToPayFee = isUsePRVToPayFeeSelector(state);
     await dispatch(actionInitingSwapForm(true));
     await dispatch(reset(formConfigs.formName));
@@ -328,12 +322,6 @@ export const actionInitSwapForm = ({
         dispatch(actionSetFeeToken(PRV.id));
       }
       dispatch(actionSetInputToken({ selltoken, buytoken }));
-      const pool = findPoolByPair(pair);
-      const defaultPoolId = pool?.poolId;
-      if (defaultPoolId) {
-        dispatch(actionSetPoolSelected(defaultPoolId));
-        pDexV3Inst.setDefaultPool(pool?.poolId);
-      }
     });
   } catch (error) {
     new ExHandler(error).showErrorToast();
