@@ -35,7 +35,9 @@ export const homeStyled = StyleSheet.create({
     marginRight: 16
   },
   wrapBanner: {
-    marginTop: 8
+    marginTop: 8,
+    borderRadius: 8,
+    overflow: 'hidden'
   },
   mainCategory: {
     flex: 1,
