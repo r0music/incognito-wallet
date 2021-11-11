@@ -1,12 +1,15 @@
 import React, { memo } from 'react';
-import {RefreshControl, SafeAreaView, ScrollView} from 'react-native';
+import { RefreshControl, SafeAreaView, ScrollView } from 'react-native';
 import { homeStyled } from '@screens/MainTabBar/MainTabBar.styled';
 import { COLORS } from '@src/styles';
 import MainTab from '@screens/MainTabBar/features/Home/Home.tabs';
 import withTab from '@screens/MainTabBar/MainTabBar.enhanceTab';
-import {compose} from 'recompose';
-import {useDispatch, useSelector} from 'react-redux';
-import {actionFetchPools, isFetchingSelector} from '@screens/PDexV3/features/Pools';
+import { compose } from 'recompose';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  actionFetchPools,
+  isFetchingSelector,
+} from '@screens/PDexV3/features/Pools';
 import AppMaintain from '@components/AppMaintain';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import appConstant from '@src/constants/app';
@@ -19,7 +22,7 @@ const TabHome = () => {
   const dispatch = useDispatch();
   const [_, isDisabled] = useFeatureConfig(appConstant.DISABLED.HOME);
   if (isDisabled) {
-    return  <AppMaintain />;
+    return <AppMaintain />;
   }
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.white, flex: 1 }}>
@@ -29,14 +32,14 @@ const TabHome = () => {
       <ScrollView
         style={homeStyled.wrapHeader}
         showsVerticalScrollIndicator={false}
-        refreshControl={(
+        refreshControl={
           <RefreshControl
             refreshing={isFetching}
             onRefresh={() => {
               dispatch(actionFetchPools());
             }}
           />
-        )}
+        }
       >
         <Banner />
         {/*<NotificationBar />*/}
@@ -50,5 +53,5 @@ const TabHome = () => {
 
 export default compose(
   withHome,
-  withTab
+  withTab,
 )(memo(TabHome));
