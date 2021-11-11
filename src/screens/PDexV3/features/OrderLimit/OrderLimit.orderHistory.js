@@ -43,7 +43,6 @@ const OrderHistory = () => {
   );
   return (
     <View style={styled.container}>
-      <Header title="Order history" />
       <FlatList
         refreshControl={
           <RefreshControl refreshing={isFetching} onRefresh={onRefresh} />

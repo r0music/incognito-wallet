@@ -123,7 +123,6 @@ const SwapInputsGroup = React.memo(() => {
         loadingBalance={!!sellInputAmount?.loadingBalance}
         editableInput={!!swapInfo?.editableInput}
         visibleHeader
-        label="From"
         rightHeader={(
           <Row style={styled.rightHeaderSell}>
             <Text
@@ -156,18 +155,17 @@ const SwapInputsGroup = React.memo(() => {
         validate={[...validator.combinedAmount]}
         loadingBalance={!!buyInputAmount?.loadingBalance}
         editableInput={!!swapInfo?.editableInput}
-        visibleHeader
-        label="To"
+        visibleHeader={false}
         onChange={(value) => onChange(formConfigs.buytoken, value)}
       />
       <Hook
         label="Rate"
         value={swapInfo?.maxPriceStr}
         hasQuestionIcon
-        styledHook={{ marginTop: 32, marginBottom: 0 }}
+        styledHook={{ marginTop: 24, marginBottom: 24 }}
         customStyledLabel={{
           color: COLORS.black,
-          fontSize: FONT.SIZE.regular,
+          fontSize: FONT.SIZE.small,
         }}
         customStyledValue={{
           color: COLORS.colorGrey3,

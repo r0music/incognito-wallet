@@ -10,9 +10,6 @@ const styled = StyleSheet.create({
     flex: 1,
     marginTop: 24,
   },
-  hookWrapper: {
-    marginTop: 40,
-  },
 });
 
 export const useTabFactories = () => {
@@ -61,11 +58,9 @@ const TabSimple = React.memo(() => {
   const { hooksFactories } = useTabFactories();
   return (
     <View style={styled.container}>
-      <View style={styled.hookWrapper}>
-        {hooksFactories.map((item) => (
-          <Hook {...item} key={item.label} />
-        ))}
-      </View>
+      {hooksFactories.map((item) => (
+        <Hook {...item} key={item.label} />
+      ))}
     </View>
   );
 });

@@ -5,14 +5,19 @@ import { Tabs, FlatList, ActivityIndicator } from '@src/components/core';
 import { OrderBook } from '@screens/PDexV3/features/Chart/Chart.orderBook';
 import { openOrdersSelector } from './OrderLimit.selector';
 import Order from './OrderLimit.order';
+import History from './OrderLimit.orderHistory';
 import {
   TAB_OPEN_ORDER,
   TAB_ORDER_BOOK,
   ROOT_TAB_SUB_INFO,
+  TAB_HISTORY_ID,
 } from './OrderLimit.constant';
 
 const styled = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+    marginTop: 24,
+  },
   wrapper: {
     paddingVertical: 24,
   },
@@ -63,6 +68,9 @@ const GroupSubInfo = () => {
           onChangeTab={() => null}
         >
           <TabOpenOrder />
+        </View>
+        <View tabID={TAB_HISTORY_ID} label="History" onChangeTab={() => null}>
+          <History />
         </View>
       </Tabs>
     </View>

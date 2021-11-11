@@ -18,7 +18,6 @@ import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
 import { PRV } from '@src/constants/common';
 import format from '@src/utils/format';
 import convert from '@src/utils/convert';
-import { ButtonTrade } from '@src/components/Button';
 import {
   feetokenDataSelector,
   feeTypesSelector,
@@ -41,16 +40,9 @@ const styled = StyleSheet.create({
     flex: 1,
     marginTop: 24,
   },
-  extraWrapper: {
-    marginTop: 40,
-  },
-  btnTrade: {
-    marginTop: 24,
-    height: 50,
-  },
 });
 
-const TabPro = React.memo(({ handleConfirm }) => {
+const TabPro = React.memo(() => {
   const swapInfo = useSelector(swapInfoSelector);
   const { maxGet } = swapInfo;
   const feeTypes = useSelector(feeTypesSelector);
@@ -163,11 +155,9 @@ const TabPro = React.memo(({ handleConfirm }) => {
   ];
   return (
     <View style={styled.container}>
-      <View style={styled.extraWrapper}>
-        {extraFactories.map((extra) => (
-          <Extra {...extra} key={extra.label} />
-        ))}
-      </View>
+      {extraFactories.map((extra) => (
+        <Extra {...extra} key={extra.label} />
+      ))}
     </View>
   );
 });

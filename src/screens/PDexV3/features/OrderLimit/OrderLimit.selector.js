@@ -47,13 +47,7 @@ export const poolIdSelector = createSelector(
 export const poolSelectedDataSelector = createSelector(
   orderLimitSelector,
   getDataByPoolIdSelector,
-  ({ poolId }, getDataByPoolId) => {
-    try {
-      return getDataByPoolId(poolId);
-    } catch (error) {
-      console.log('poolSelectedDataSelector-error', error);
-    }
-  },
+  ({ poolId }, getDataByPoolId) => getDataByPoolId(poolId) || {},
 );
 
 // group inputs

@@ -8,7 +8,7 @@ export const styled = StyleSheet.create({
     marginRight: 12,
   },
   btnTrade: {
-    marginBottom: 30,
+    marginBottom: 40,
   },
 });
 
@@ -33,7 +33,7 @@ export const tabsStyled = StyleSheet.create({
     color: COLORS.colorGrey3,
   },
   styledTabList: {
-    maxWidth: 120,
+    maxWidth: 132,
   },
 });
 
@@ -66,18 +66,6 @@ export const inputGroupStyled = StyleSheet.create({
     lineHeight: FONT.SIZE.superSmall + 3,
   },
   inputGroups: {
-    // margin: 4,
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 0,
-    // },
-    // shadowOpacity: 0.1,
-    // shadowRadius: 6,
-    // borderRadius: 8,
-    // backgroundColor: COLORS.white,
-    // borderWidth: 1,
-    // borderColor: COLORS.colorGrey4,
-    // paddingVertical: 24,
-    // paddingHorizontal: 16,
+    marginTop: 24,
   },
 });

@@ -75,7 +75,7 @@ const Swap = (props) => {
         }
       >
         <Form>
-          {({ handleSubmit }) => (
+          {() => (
             <>
               <SwapInputsGroup />
               <ButtonTrade
@@ -87,7 +87,10 @@ const Swap = (props) => {
               <Tabs1
                 rootTabID={ROOT_TAB_ID}
                 styledTabList={tabsStyled.styledTabList}
-                containerStyled={{ marginTop: 24 }}
+                containerStyled={{
+                  marginTop: 0,
+                  marginBottom: 0,
+                }}
               >
                 {tabsFactories.map(({ tab, ...rest }) => (
                   <View key={rest.tabID} {...rest}>
