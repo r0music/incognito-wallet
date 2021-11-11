@@ -9,7 +9,6 @@ import {
 } from '@screens/PDexV3/features/Pools';
 import { Row } from '@src/components';
 import { homeStyled } from '@screens/MainTabBar/MainTabBar.styled';
-import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import orderBy from 'lodash/orderBy';
 import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
@@ -20,14 +19,13 @@ import {
 } from '@screens/PDexV3/features/Trade/Trade.constant';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
+import {COLORS} from '@src/styles';
 
 const Item = React.memo(({ pool, onItemPress, popular }) => {
   const {
     priceStr,
     perChange24hToStr,
     perChange24hColor,
-    perChange24hBGColor,
-    poolId,
     poolTitle,
     volumeSuffix,
   } = pool;
@@ -41,7 +39,8 @@ const Item = React.memo(({ pool, onItemPress, popular }) => {
           style={[
             homeStyled.mediumBlack,
             homeStyled.itemBox,
-            { color: perChange24hColor, textAlign: 'right', marginRight: 15 },
+            homeStyled.right,
+            { color: perChange24hColor },
           ]}
         >
           {priceStr}
@@ -50,17 +49,12 @@ const Item = React.memo(({ pool, onItemPress, popular }) => {
           style={[
             !popular && homeStyled.percentBox,
             homeStyled.percentBoxWidth,
-            { backgroundColor: perChange24hBGColor },
-            popular && {
-              paddingHorizontal: 0,
-              backgroundColor: 'transparent',
-            },
           ]}
         >
           <Text
             style={[
               homeStyled.mediumBlack,
-              { color: COLORS.white, fontSize: 11 },
+              { color: perChange24hColor, textAlign: 'right' },
               popular && homeStyled.volText,
             ]}
             numberOfLines={0}
@@ -68,6 +62,11 @@ const Item = React.memo(({ pool, onItemPress, popular }) => {
             {popular ? volumeSuffix : perChange24hToStr}
           </Text>
         </View>
+        {!popular && (
+          <TouchableOpacity style={[homeStyled.btnTrade]} onPress={() => onItemPress(pool)}>
+            <Text style={homeStyled.labelTrade}>Trade</Text>
+          </TouchableOpacity>
+        )}
       </Row>
     </TouchableOpacity>
   );
@@ -80,7 +79,7 @@ const Header = React.memo(({ popular }) => (
       style={[
         homeStyled.itemBox,
         homeStyled.tabHeaderText,
-        { textAlign: 'right', marginRight: 15 },
+        homeStyled.right,
       ]}
     >
       Price
@@ -94,6 +93,7 @@ const Header = React.memo(({ popular }) => (
     >
       {popular ? 'Vol(USD)' : 'Change'}
     </Text>
+    {!popular && <View style={[homeStyled.btnTrade, { backgroundColor: COLORS.white }]} />}
   </Row>
 ));
 
@@ -138,13 +138,13 @@ const MainTab = () => {
   return (
     <Tabs rootTabID={TABS.TAB_HOME_ID} useTab1 styledTabList={homeStyled.tab}>
       <View tabID={TABS.TAB_HOME_INCREASE_ID} label="Gainers" {...tabStyle}>
-        <Header />
+        <Header popular={false} />
         {orderBy(pools, 'priceChange24H', 'desc').map((item) =>
           renderItem(item, false),
         )}
       </View>
       <View tabID={TABS.TAB_HOME_REDUCE_ID} label="Losers" {...tabStyle}>
-        <Header />
+        <Header popular={false} />
         {orderBy(pools, 'priceChange24H', 'asc').map((item) =>
           renderItem(item, false),
         )}
@@ -160,6 +160,7 @@ const MainTab = () => {
 Item.propTypes = {
   pool: PropTypes.object.isRequired,
   onItemPress: PropTypes.func.isRequired,
+  popular: PropTypes.bool.isRequired,
 };
 
 Header.propTypes = {

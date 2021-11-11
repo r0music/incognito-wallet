@@ -61,7 +61,7 @@ export const homeStyled = StyleSheet.create({
   },
   mediumBlack: {
     ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.regular,
+    fontSize: FONT.SIZE.small,
     color: COLORS.black,
     lineHeight: FONT.SIZE.regular + 8,
   },
@@ -70,7 +70,7 @@ export const homeStyled = StyleSheet.create({
     color: COLORS.newGrey,
     alignSelf: 'flex-end',
     width: '100%',
-    fontSize: FONT.SIZE.regular,
+    fontSize: FONT.SIZE.small,
   },
   regularGray: {
     ...FONT.STYLE.normal,
@@ -103,10 +103,10 @@ export const homeStyled = StyleSheet.create({
   },
   percentBoxWidth: {
     width: 68,
+    alignItems: 'flex-end'
   },
   percentBox: {
     height: 24,
-    paddingHorizontal: 10,
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center'
@@ -122,6 +122,10 @@ export const homeStyled = StyleSheet.create({
   },
   tabDisable: {
     color: COLORS.lightGrey35
+  },
+  right: {
+    textAlign: 'right',
+    marginRight: 15
   },
   tabHeaderText: {
     ...FONT.STYLE.medium,
@@ -158,6 +162,19 @@ export const homeStyled = StyleSheet.create({
     paddingBottom: 18
   },
   wrapMainVolume: {
+  },
+  btnTrade: {
+    width: 46,
+    height: 21,
+    backgroundColor: COLORS.blue5,
+    marginLeft: 15,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  labelTrade: {
+    color: COLORS.white,
+    fontSize: FONT.SIZE.superSmall,
   }
 });
 
