@@ -12,7 +12,7 @@ import { homeStyled } from '@screens/MainTabBar/MainTabBar.styled';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import orderBy from 'lodash/orderBy';
-import { actionSetPoolSelected } from '@screens/PDexV3/features/OrderLimit';
+import {actionInit, actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
 import { actionChangeTab } from '@components/core/Tabs/Tabs.actions';
 import {
   ROOT_TAB_TRADE,
@@ -21,7 +21,7 @@ import {
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 
-const Item = React.memo(({ pool, onItemPress }) => {
+const Item = React.memo(({ pool, onItemPress, popular }) => {
   const {
     priceStr,
     perChange24hToStr,
@@ -29,6 +29,7 @@ const Item = React.memo(({ pool, onItemPress }) => {
     perChange24hBGColor,
     poolId,
     poolTitle,
+    volumeSuffix
   } = pool;
   return (
     <TouchableOpacity onPress={() => onItemPress(poolId)}>
@@ -47,18 +48,24 @@ const Item = React.memo(({ pool, onItemPress }) => {
         </Text>
         <View
           style={[
-            homeStyled.percentBox,
+            !popular && homeStyled.percentBox,
             homeStyled.percentBoxWidth,
             { backgroundColor: perChange24hBGColor },
+            popular && {
+              paddingHorizontal: 0,
+              backgroundColor: 'transparent',
+            }
           ]}
         >
           <Text
             style={[
               homeStyled.mediumBlack,
-              { color: COLORS.white, fontSize: 12 },
+              { color: COLORS.white, fontSize: 11 },
+              popular && homeStyled.volText
             ]}
+            numberOfLines={0}
           >
-            {perChange24hToStr}
+            {popular ? volumeSuffix : perChange24hToStr}
           </Text>
         </View>
       </Row>
@@ -66,7 +73,7 @@ const Item = React.memo(({ pool, onItemPress }) => {
   );
 });
 
-const Header = React.memo(() => (
+const Header = React.memo(({ popular }) => (
   <Row>
     <Text style={[homeStyled.itemBox, homeStyled.tabHeaderText]}>Name</Text>
     <Text
@@ -85,7 +92,7 @@ const Header = React.memo(() => (
         { textAlign: 'right' },
       ]}
     >
-      Change
+      {popular ? 'Vol(USD)' : 'Change'}
     </Text>
   </Row>
 ));
@@ -100,19 +107,22 @@ const MainTab = () => {
   const navigation = useNavigation();
   const pools = useSelector(listPoolsVerifySelector);
   const onItemPress = (poolId) => {
-    batch(() => {
-      dispatch(
-        actionChangeTab({
-          rootTabID: ROOT_TAB_TRADE,
-          tabID: TAB_LIMIT_ID,
-        }),
-      );
-      dispatch(actionSetPoolSelected(poolId));
-      navigation.navigate(routeNames.Trade);
-    });
+    navigation.navigate(routeNames.Trade, { tabIndex: 1 });
+    dispatch(
+      actionChangeTab({
+        rootTabID: ROOT_TAB_TRADE,
+        tabID: TAB_LIMIT_ID,
+      }),
+    );
+    setTimeout(() => {
+      batch(() => {
+        dispatch(actionInit());
+        dispatch(actionSetPoolSelected(poolId));
+      });
+    }, 300);
   };
-  const renderItem = (pool) => (
-    <Item pool={pool} key={pool.poolId} onItemPress={onItemPress} />
+  const renderItem = (pool, popular) => (
+    <Item pool={pool} key={pool.poolId} onItemPress={onItemPress} popular={popular} />
   );
   React.useEffect(() => {
     dispatch(actionFetchPools());
@@ -126,15 +136,15 @@ const MainTab = () => {
         {...tabStyle}
       >
         <Header />
-        {orderBy(pools, 'priceChange24H', 'desc').map(renderItem)}
+        {orderBy(pools, 'priceChange24H', 'desc').map(item => renderItem(item, false))}
       </View>
       <View tabID={TABS.TAB_HOME_REDUCE_ID} label="Losers" {...tabStyle}>
         <Header />
-        {orderBy(pools, 'priceChange24H', 'asc').map(renderItem)}
+        {orderBy(pools, 'priceChange24H', 'asc').map(item => renderItem(item, false))}
       </View>
       <View tabID={TABS.TAB_HOME_POPULAR_ID} label="24h Vol" {...tabStyle}>
-        <Header />
-        {orderBy(pools, 'volume', 'desc').map(renderItem)}
+        <Header popular />
+        {orderBy(pools, 'volume', 'desc').map(item => renderItem(item, true))}
       </View>
     </Tabs>
   );
@@ -143,6 +153,10 @@ const MainTab = () => {
 Item.propTypes = {
   pool: PropTypes.object.isRequired,
   onItemPress: PropTypes.func.isRequired,
+};
+
+Header.propTypes = {
+  popular: PropTypes.bool.isRequired,
 };
 
 export default memo(MainTab);

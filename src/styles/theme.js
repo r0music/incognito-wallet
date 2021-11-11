@@ -353,7 +353,7 @@ const INPUT = {
 
 const BUTTON = {
   BLACK_TYPE: {
-    backgroundColor: COLORS.blue6,
+    backgroundColor: COLORS.blue5,
     borderRadius: 25,
     width: '100%',
     height: SIZES.button.height,
@@ -365,14 +365,14 @@ const BUTTON = {
     height: SIZES.button.height,
   },
   BLUE_TYPE: {
-    backgroundColor: COLORS.blue6,
+    backgroundColor: COLORS.blue5,
     borderRadius: 25,
     width: '100%',
     height: SIZES.button.height,
   },
 
   NODE_BUTTON: {
-    backgroundColor: COLORS.blue6,
+    backgroundColor: COLORS.blue5,
   },
 
   GRAY_TYPE_DISABLE: {

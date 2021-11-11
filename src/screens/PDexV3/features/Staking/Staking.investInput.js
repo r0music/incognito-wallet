@@ -69,7 +69,7 @@ const StakingMoreInput = React.memo(({ onSymbolPress, onStaking, error }) => {
     const params = {
       fee: feeAmount,
       tokenID: tokenId,
-      tokenAmount: inputValue,
+      tokenAmount: String(inputValue),
       nftID: nftStaking,
       stakingAmountStr: inputSymbolStr
     };

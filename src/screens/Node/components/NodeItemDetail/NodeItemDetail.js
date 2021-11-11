@@ -28,6 +28,7 @@ const NodeItemDetail = memo(({
   rewardsList,
   name,
   ip,
+  port,
   hasAccount,
   shouldShowStake,
   shouldShowWithdraw,
@@ -205,7 +206,7 @@ const NodeItemDetail = memo(({
           <View style={{ marginTop: 50 }}>
             {renderItemText('Master key', item.MasterKey)}
             {renderItemText('Keychain', name)}
-            {renderItemText('IP', ip)}
+            {renderItemText('IP', `${ip}${!item.IsPNode ? (':' + port) : ''}`)}
             { item?.IsPNode && renderItemText('Version', item?.Firmware) }
             { !!item &&  <SlashStatus device={item} /> }
             { !!item && (<NodeStatus isLoading={isLoading} item={item} />) }
@@ -224,6 +225,7 @@ NodeItemDetail.propTypes = {
   item: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
   ip: PropTypes.string.isRequired,
+  port: PropTypes.string.isRequired,
   rewardsList: PropTypes.array.isRequired,
   hasAccount: PropTypes.bool.isRequired,
   shouldShowStake: PropTypes.bool.isRequired,

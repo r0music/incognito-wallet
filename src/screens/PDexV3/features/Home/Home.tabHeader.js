@@ -1,7 +1,8 @@
 import React from 'react';
-import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import { COLORS, FONT } from '@src/styles';
 import PropTypes from 'prop-types';
+import {ActivityIndicator} from '@components/core';
 
 export const styled = StyleSheet.create({
   container: {

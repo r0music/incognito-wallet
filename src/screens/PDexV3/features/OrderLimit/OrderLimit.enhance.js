@@ -5,6 +5,7 @@ import { compose } from 'recompose';
 import { COLORS, FONT } from '@src/styles';
 import { actionToggleModal } from '@src/components/Modal';
 import { TradeSuccessModal } from '@screens/PDexV3/features/Trade';
+import { actionReset as actionResetChart } from '@screens/PDexV3/features/Chart';
 import { orderLimitDataSelector } from './OrderLimit.selector';
 import {
   actionInit,
@@ -17,7 +18,12 @@ import { TAB_BUY_ID, TAB_SELL_ID } from './OrderLimit.constant';
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const handleInitOrderLimit = (refresh) => dispatch(actionInit(refresh));
-  const handleUnmount = () => dispatch(actionReset());
+  const handleUnmount = () => {
+    batch(() => {
+      dispatch(actionReset());
+      dispatch(actionResetChart());
+    });
+  };
   const actionChangeTab = () => handleInitOrderLimit(false);
   const { sellColor, buyColor, cfmTitle } = useSelector(orderLimitDataSelector);
   const tabsFactories = [

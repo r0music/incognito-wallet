@@ -8,15 +8,11 @@ import { actionSetPoolSelected } from '@screens/PDexV3/features/OrderLimit';
 import {
   actionFetch,
   actionSetSelectedPool,
-  actionFetchPriceHistory,
-  actionFetchOrderBook,
-  actionReset,
 } from './Chart.actions';
 
 const enhance = (WrappedComp) => (props) => {
   const poolid = useNavigationParam('poolId');
   const dispatch = useDispatch();
-  const unmountChart = () => dispatch(actionReset());
   const fetchData = async () => {
     if (!poolid) {
       return;
@@ -29,14 +25,11 @@ const enhance = (WrappedComp) => (props) => {
       await dispatch(actionSetPoolSelected(poolId));
       await dispatch(actionSetSelectedPool(poolId));
       dispatch(actionFetch());
-      dispatch(actionFetchPriceHistory());
-      dispatch(actionFetchOrderBook());
     });
   };
   React.useEffect(() => {
     fetchData();
     return () => {
-      unmountChart();
     };
   }, [poolid]);
   return (

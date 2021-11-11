@@ -9,7 +9,7 @@ import {homeStyled} from '@screens/MainTabBar/MainTabBar.styled';
 import {PriceDownIcon, PriceUpIcon} from '@components/Icons/icon.arrowPrice';
 import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
 import {ROOT_TAB_TRADE, TAB_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
-import {actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
+import {actionInit, actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
 import routeNames from '@routers/routeNames';
 import {useNavigation} from 'react-navigation-hooks';
 
@@ -48,16 +48,19 @@ const BigVolume = () => {
   }, [pools]);
 
   const onItemPress = (poolId) => {
-    batch(() => {
-      dispatch(
-        actionChangeTab({
-          rootTabID: ROOT_TAB_TRADE,
-          tabID: TAB_LIMIT_ID,
-        }),
-      );
-      dispatch(actionSetPoolSelected(poolId));
-      navigation.navigate(routeNames.Trade);
-    });
+    navigation.navigate(routeNames.Trade, { tabIndex: 1 });
+    dispatch(
+      actionChangeTab({
+        rootTabID: ROOT_TAB_TRADE,
+        tabID: TAB_LIMIT_ID,
+      }),
+    );
+    setTimeout(() => {
+      batch(() => {
+        dispatch(actionSetPoolSelected(poolId));
+        dispatch(actionInit());
+      });
+    }, 300);
   };
 
   const renderItem = (item) => <Item item={item} key={item.poolId} onItemPress={onItemPress} />;

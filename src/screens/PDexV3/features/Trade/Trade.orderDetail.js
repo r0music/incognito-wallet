@@ -15,11 +15,13 @@ export const styled = StyleSheet.create({
   },
   row: {
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: 8,
+    minHeight: 24,
   },
   btn: {
-    // marginLeft: 2,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   value: {
     fontFamily: FONT.NAME.medium,
@@ -29,11 +31,30 @@ export const styled = StyleSheet.create({
     flex: 1,
   },
   rowValue: {
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
     marginLeft: 15,
     flex: 1,
   },
 });
+
+export const OrderDetailValue = React.memo(
+  ({ copiable, openUrl, handleOpenUrl, value }) => {
+    const handleCopy = () => ClipboardService.set(value);
+    return (
+      <Row style={styled.rowValue}>
+        <Text style={styled.value} ellipsizeMode="middle" numberOfLines={1}>
+          {value}
+        </Text>
+        {copiable && (
+          <BtnCopy onPress={handleCopy} containerStyle={styled.btn} />
+        )}
+        {openUrl && (
+          <BtnOpenUrl onPress={handleOpenUrl} containerStyle={styled.btn} />
+        )}
+      </Row>
+    );
+  },
+);
 
 const OrderDetail = ({
   label,
@@ -44,7 +65,6 @@ const OrderDetail = ({
   customValue,
   hookStyled,
 }) => {
-  const handleCopy = () => ClipboardService.set(value);
   return (
     <Row style={{ ...styled.row, ...hookStyled }}>
       <Text style={styled.label} ellipsizeMode="middle" numberOfLines={1}>
@@ -53,13 +73,7 @@ const OrderDetail = ({
       {customValue ? (
         customValue
       ) : (
-        <Row style={styled.rowValue}>
-          <Text style={styled.value} ellipsizeMode="middle" numberOfLines={1}>
-            {value}
-          </Text>
-          {copiable && <BtnCopy onPress={handleCopy} style={styled.btn} />}
-          {openUrl && <BtnOpenUrl onPress={handleOpenUrl} style={styled.btn} />}
-        </Row>
+        <OrderDetailValue {...{ copiable, openUrl, handleOpenUrl, value }} />
       )}
     </Row>
   );

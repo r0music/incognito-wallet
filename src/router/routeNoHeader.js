@@ -96,14 +96,13 @@ import ConvertTokenList from '@screens/Home/features/ConvertTokenList';
 import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
 import HomePDexV3 from '@screens/PDexV3/features/Home';
 import { PoolsList, PoolsTab } from '@screens/PDexV3/features/Pools';
-import { ReviewOrderSwap, OrdeSwapDetail } from '@screens/PDexV3/features/Swap';
+import { OrdeSwapDetail } from '@screens/PDexV3/features/Swap';
 import Trade, {
   ReviewOrder,
   TradeOrderHistory,
 } from '@screens/PDexV3/features/Trade';
 import NFTToken, { MintNFTToken } from '@screens/PDexV3/features/NFTToken';
 import OrderLimit, {
-  ReviewOrderLimit,
   OrderLimitDetail,
 } from '@src/screens/PDexV3/features/OrderLimit';
 import SelectTokenTrade, {
@@ -232,10 +231,6 @@ const pDexV3Routes = [
     name: routeNames.MintNFTToken,
   },
   {
-    screen: ReviewOrderSwap,
-    name: routeNames.ReviewOrderSwap,
-  },
-  {
     screen: LiquidityHistories,
     name: routeNames.LiquidityHistories,
   },
@@ -298,10 +293,6 @@ const pDexV3Routes = [
   {
     screen: PairList,
     name: routeNames.PairList,
-  },
-  {
-    screen: ReviewOrderLimit,
-    name: routeNames.ReviewOrderLimit,
   },
   {
     screen: OrderLimitDetail,

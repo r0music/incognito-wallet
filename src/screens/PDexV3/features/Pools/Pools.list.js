@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row } from '@src/components';
 import Pool from '@screens/PDexV3/features/Pool';
 import PropTypes from 'prop-types';
+import orderBy from 'lodash/orderBy';
 import { actionFetchPools } from './Pools.actions';
 import { handleFilterPoolByKeySeach } from './Pools.utils';
 import { isFetchingSelector } from './Pools.selector';
@@ -32,7 +33,7 @@ const HEADER_FACTORIES = [
   {
     text: '#Name / Vol',
     style: {
-      flex: 0.7,
+      flex: 1,
       marginRight: 15,
       justifyContent: 'flex-start',
       alignItems: 'flex-start',
@@ -41,7 +42,7 @@ const HEADER_FACTORIES = [
   {
     text: '#APY',
     style: {
-      flex: 0.2,
+      width: 80,
       flexDirection: 'row',
       alignItems: 'flex-end',
       marginRight: 5,
@@ -51,7 +52,7 @@ const HEADER_FACTORIES = [
   {
     text: ' ',
     style: {
-      flex: 0.1,
+      width: 30,
     },
   },
 ];
@@ -72,6 +73,9 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
   const refreshing = useSelector(isFetchingSelector);
   const dispatch = useDispatch();
   const onRefresh = () => dispatch(actionFetchPools());
+  const data = React.useMemo(() => {
+    return orderBy(pools, 'isFollowed', 'desc');
+  }, [pools]);
   return (
     <KeyboardAwareScrollView
       refreshControl={
@@ -79,7 +83,7 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
       }
     >
       <FlatList
-        data={pools}
+        data={data}
         renderItem={({ item }) => (
           <Pool
             poolId={item.poolId}

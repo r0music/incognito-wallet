@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { FlatList, RefreshControl } from '@src/components/core';
 import { Header } from '@src/components';
-import { useDispatch, useSelector } from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import { ExHandler } from '@src/services/exception';
 import { useFocusEffect } from 'react-navigation-hooks';
@@ -26,11 +26,12 @@ const OrderHistory = () => {
   const dispatch = useDispatch();
   const onRefresh = async () => {
     try {
-      dispatch(actionFetchOrdersHistory());
-      dispatch(actionFetchWithdrawOrderTxs());
-      dispatch(actionSetNFTTokenData());
+      batch(() => {
+        dispatch(actionFetchOrdersHistory());
+        dispatch(actionFetchWithdrawOrderTxs());
+        dispatch(actionSetNFTTokenData());
+      });
     } catch (error) {
-      console.log('ERROR HERE', error);
       new ExHandler(error).showErrorToast();
     }
   };

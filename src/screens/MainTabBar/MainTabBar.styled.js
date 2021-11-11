@@ -63,6 +63,13 @@ export const homeStyled = StyleSheet.create({
     color: COLORS.black,
     lineHeight: FONT.SIZE.regular + 8,
   },
+  volText: {
+    textAlign: 'right',
+    color: COLORS.newGrey,
+    alignSelf: 'flex-end',
+    width: '100%',
+    fontSize: FONT.SIZE.regular,
+  },
   regularGray: {
     ...FONT.STYLE.normal,
     fontSize: FONT.SIZE.superSmall,

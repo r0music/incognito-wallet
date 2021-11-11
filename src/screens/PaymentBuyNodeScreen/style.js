@@ -27,10 +27,10 @@ export default StyleSheet.create({
   button: {
     marginTop: 30,
     marginBottom: 20,
-    backgroundColor: COLORS.blue6,
+    backgroundColor: COLORS.blue5,
   },
   buttonColor: {
-    backgroundColor: COLORS.blue6,
+    backgroundColor: COLORS.blue5,
   },
   feeText: {
     textAlign: 'center',

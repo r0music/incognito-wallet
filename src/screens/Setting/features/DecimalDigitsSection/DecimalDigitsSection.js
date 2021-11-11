@@ -7,7 +7,7 @@ import {
   decimalDigitsSelector,
   actionToggleDecimalDigits,
 } from '@screens/Setting';
-import {DecimalDigitIcon} from '@components/Icons';
+import { DecimalDigitIcon } from '@components/Icons';
 
 const DecimalDigitsSection = () => {
   const toggle = useSelector(decimalDigitsSelector);

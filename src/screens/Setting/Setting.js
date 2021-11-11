@@ -1,16 +1,16 @@
 import { Text, View } from '@src/components/core';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import AppUpdater from '@components/AppUpdater/index';
-import {useNavigation, useNavigationParam} from 'react-navigation-hooks';
+import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { useSelector } from 'react-redux';
 import CurrencySection from '@screens/Setting/features/CurrencySection/CurrencySection';
 import RemoveStorage from '@screens/Setting/features/RemoveStorage/RemoveStorage';
 import ConvertCoinsSection from '@screens/Setting/features/ConvertCoinsSection';
 import DeviceInfo from 'react-native-device-info';
-import {SafeAreaView, ScrollView} from 'react-native';
-import {NetworkIcon, SecurityIcon} from '@components/Icons';
-import {Header} from '@src/components';
+import { SafeAreaView, ScrollView } from 'react-native';
+import { NetworkIcon, SecurityIcon } from '@components/Icons';
+import { Header } from '@src/components';
 import codePush from 'react-native-code-push';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
@@ -25,6 +25,7 @@ import withSetting from './Setting.enhance';
 import DecimalDigitsSection from './features/DecimalDigitsSection';
 import ExportCSVSection from './features/ExportCSVSection';
 import RemoveBalanceCached from './features/RemoveBalanceCached';
+import PayFeeByPRV from './features/PayFeeByPRV';
 
 const Setting = () => {
   const navigation = useNavigation();
@@ -40,13 +41,13 @@ const Setting = () => {
         navigation?.navigate(routeNames.NetworkSetting, {
           onReloadedNetworks: actionFetchServers,
         }),
-      icon: <NetworkIcon />
+      icon: <NetworkIcon />,
     },
     {
       title: 'NFT Token',
       desc: 'Manage keychain\'s nft token',
       handlePress: () => navigation?.navigate(routeNames.NFTToken),
-      icon: <SecurityIcon />
+      icon: <SecurityIcon />,
     },
   ];
 
@@ -55,7 +56,7 @@ const Setting = () => {
   };
 
   const getCodePushVer = async () => {
-    const { label } = await codePush.getUpdateMetadata() || {};
+    const { label } = (await codePush.getUpdateMetadata()) || {};
     if (label) {
       setCodepushVersion(label);
     }
@@ -68,13 +69,17 @@ const Setting = () => {
   return (
     <SafeAreaView>
       {!!showHeader && (
-        <Header title="Setting" style={{  paddingHorizontal: 25 }} />
+        <Header title="Setting" style={{ paddingHorizontal: 25 }} />
       )}
-      <ScrollView style={{ paddingHorizontal: 25 }} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={{ paddingHorizontal: 25 }}
+        showsVerticalScrollIndicator={false}
+      >
         <View>
           {sectionItemFactories.map((item) => (
             <SectionItem data={item} key={`${item.title} ${item.desc}`} />
           ))}
+          <PayFeeByPRV />
           <PINSection />
           <SeparatorSection />
           <DecimalDigitsSection />

@@ -8,6 +8,7 @@ import {
   ACTION_TOGGLE_CURRENCY,
   ACTION_TOGGLE_DECIMAL_DIGITS,
   ACTION_UPDATE_SHOW_WALLET_BALANCE,
+  ACTION_TOGGLE_USE_PRV_TO_PAY_FEE,
 } from './Setting.constant';
 
 const actionFetchedDevices = (payload) => ({
@@ -22,6 +23,10 @@ const actionFetchedServer = (payload) => ({
 
 export const actionToggleDecimalDigits = () => ({
   type: ACTION_TOGGLE_DECIMAL_DIGITS,
+});
+
+export const actionToggleUsePRVToPayFee = () => ({
+  type: ACTION_TOGGLE_USE_PRV_TO_PAY_FEE,
 });
 
 export const actionFetchDevices = () => async (dispatch) => {

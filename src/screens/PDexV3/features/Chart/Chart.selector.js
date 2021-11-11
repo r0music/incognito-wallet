@@ -30,7 +30,7 @@ export const priceHistorySelector = createSelector(
     const xSpace = Math.ceil(size / space);
     const token2: SelectedPrivacy = pool?.token2;
     let history = data.map(({ open, close, timestamp }, index) => {
-      const x = timestamp * 1000;
+      const x = timestamp;
       const isBeforeCurDate = moment(x).isBefore(moment(), 'date');
       const y = new BigNumber(open)
         .plus(close)
@@ -101,6 +101,22 @@ export const priceHistorySelector = createSelector(
   },
 );
 
+export const priceHistoryCandlesSelector = createSelector(
+  chartSelector,
+  poolSelectedSelector,
+  ({ priceHistory }, pool) => {
+    const { data } = priceHistory;
+    let history = data.map(({ timestamp, ...rest }) => ({
+      ...rest,
+      time: timestamp,
+    }));
+    return {
+      history,
+      pool,
+    };
+  },
+);
+
 export const orderBookSelector = createSelector(
   chartSelector,
   poolSelectedSelector,
@@ -142,28 +158,15 @@ export const detailsSelector = createSelector(
     const {
       volumeToAmountStr,
       poolSizeStr,
-      exchangeRateStr,
-      priceChangeToAmountStr,
-      perChange24hToStr,
-      perChange24hColor,
     } = pool;
     const factories = [
       {
-        label: 'Trading volume 24h',
+        label: 'Trading volume',
         value: volumeToAmountStr,
       },
       {
         label: 'Pool size',
         value: poolSizeStr,
-      },
-      {
-        label: 'Exchange rate',
-        value: exchangeRateStr,
-      },
-      {
-        label: 'Price change',
-        value: `${priceChangeToAmountStr} (${perChange24hToStr})`,
-        color: perChange24hColor,
       },
     ];
     return {

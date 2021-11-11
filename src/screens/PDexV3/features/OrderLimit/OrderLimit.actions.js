@@ -14,7 +14,6 @@ import isEmpty from 'lodash/isEmpty';
 import { change, reset } from 'redux-form';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import { batch } from 'react-redux';
-import { actionFetchOrderBook } from '@screens/PDexV3/features/Chart';
 import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
 import {
   ACTION_FETCHING,
@@ -215,7 +214,6 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
         dispatch(actionSetNFTTokenData()),
         dispatch(actionFetchWithdrawOrderTxs());
         dispatch(actionFetchOrdersHistory());
-        dispatch(actionFetchOrderBook());
       }
     });
     const activedTab = activedTabSelector(state)(ROOT_TAB_ORDER_LIMIT);
@@ -348,7 +346,7 @@ export const actionWithdrawOrder = ({ requestTx, txType, nftid }) => async (
       withdrawTokenIDs: [sellTokenId, buyTokenId],
       poolPairID: poolid,
       orderID: requestTx,
-      amount: 0,
+      amount: '0',
       version: PrivacyVersion.ver2,
       txType,
       nftID: nftid,
@@ -390,9 +388,9 @@ export const actionBookOrder = () => async (dispatch, getState) => {
     const extra = {
       tokenIDToSell,
       poolPairID,
-      sellAmount,
+      sellAmount: String(sellAmount),
       version: PrivacyVersion.ver2,
-      minAcceptableAmount,
+      minAcceptableAmount: String(minAcceptableAmount),
       tokenIDToBuy,
     };
     const tx = await pDexV3Inst.createAndSendOrderRequestTx({ extra });

@@ -1,14 +1,13 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacityProps } from 'react-native';
+import { TouchableOpacityProps } from 'react-native';
 import { TouchableOpacity } from '@src/components/core';
 import IconOpenUrl from '@src/components/Icons/icon.openUrl';
 
-const styled = StyleSheet.create({});
-
 const BtnOpenUrl = (props: TouchableOpacityProps) => {
+  const { containerStyle, iconStyle, ...rest } = props;
   return (
-    <TouchableOpacity {...props}>
-      <IconOpenUrl />
+    <TouchableOpacity {...rest}>
+      <IconOpenUrl containerStyle={containerStyle} style={iconStyle} />
     </TouchableOpacity>
   );
 };

@@ -8,6 +8,7 @@ import {
   ACTION_TOGGLE_CURRENCY,
   ACTION_UPDATE_SHOW_WALLET_BALANCE,
   ACTION_TOGGLE_BACKUP_ALL_KEYS,
+  ACTION_TOGGLE_USE_PRV_TO_PAY_FEE,
 } from './Setting.constant';
 
 const initialState = {
@@ -18,10 +19,17 @@ const initialState = {
   isToggleUSD: true,
   showWalletBlance: false,
   toggleBackupAllKeys: true,
+  usePRVToPayFee: false,
 };
 
 const settingReducer = (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_TOGGLE_USE_PRV_TO_PAY_FEE: {
+    return {
+      ...state,
+      usePRVToPayFee: !state.usePRVToPayFee,
+    };
+  }
   case ACTION_TOGGLE_BACKUP_ALL_KEYS: {
     return {
       ...state,
@@ -66,7 +74,12 @@ const settingReducer = (state = initialState, action) => {
 const persistConfig = {
   key: 'setting',
   storage: AsyncStorage,
-  whitelist: ['decimalDigits', 'isToggleUSD', 'toggleBackupAllKeys'],
+  whitelist: [
+    'decimalDigits',
+    'isToggleUSD',
+    'toggleBackupAllKeys',
+    'usePRVToPayFee',
+  ],
   stateReconciler: autoMergeLevel2,
 };
 

@@ -90,7 +90,7 @@ export const getInputAmount = (
     } else if (token.tokenId === pool?.token2Id) {
       poolValue = pool?.token2Value;
     }
-    let poolValueStr = format.amountFull(poolValue, token.pDecimals, false);
+    let poolValueStr = format.amountVer2(poolValue, token.pDecimals);
     const data = {
       tokenId: token.tokenId,
       symbol: token.symbol,
@@ -111,7 +111,7 @@ export const getInputAmount = (
       loadingBalance: isGettingBalance.includes(token.tokenId),
 
       balance: token.amount,
-      balanceStr: format.amountFull(token?.amount || 0, token.pDecimals, false),
+      balanceStr: format.amountVer2(token?.amount || 0, token.pDecimals),
 
       poolValue,
       poolValueStr,
@@ -168,7 +168,7 @@ export const availablePayFeeByPRVValidator = ({
   return undefined;
 };
 
-export const calDefaultPairOrderLimit = ({ pool, x, y, x0 }) => {
+export const calDefaultPairOrderLimit = ({ pool, x, y }) => {
   let y0 = new BigNumber(0);
   let rate = '';
   let y0Fixed = '';
@@ -178,6 +178,7 @@ export const calDefaultPairOrderLimit = ({ pool, x, y, x0 }) => {
     if (pool) {
       const { virtualValue } = pool;
       const x_v = new BigNumber(virtualValue[(x?.tokenId)]);
+      const x0 = x_v.dividedBy(100);
       const y_v = new BigNumber(virtualValue[(y?.tokenId)]);
       const L = x_v.multipliedBy(y_v);
       y0 = y_v.minus(L.dividedBy(x_v.plus(x0)));
@@ -201,7 +202,7 @@ export const calDefaultPairOrderLimit = ({ pool, x, y, x0 }) => {
         rawRate = rawRate.isNaN() ? 0 : rawRate.toNumber();
         rate = format.toFixed(rawRate, y?.pDecimals);
         const originalRate = convert.toOriginalAmount(rate, y?.pDecimals);
-        rateStr = format.amountFull(originalRate, y?.pDecimals, false);
+        rateStr = format.amountVer2(originalRate, y?.pDecimals);
       }
     }
   } catch (error) {

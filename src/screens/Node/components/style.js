@@ -47,7 +47,7 @@ const style = StyleSheet.create({
     height: 6,
     borderRadius: 3,
     marginTop: 20,
-    backgroundColor: COLORS.blue6,
+    backgroundColor: COLORS.blue5,
   },
   balance: {
     fontSize: 20,

@@ -26,10 +26,7 @@ import {
   TAB_BUY_ID,
   TAB_SELL_ID,
 } from './OrderLimit.constant';
-import {
-  calDefaultPairOrderLimit,
-  getInputAmount as getInputTokenAmount,
-} from './OrderLimit.utils';
+import { getInputAmount as getInputTokenAmount } from './OrderLimit.utils';
 
 const BTN_WITHDRAW_ORDER = {
   [ACCOUNT_CONSTANT.TX_STATUS.PROCESSING]: 'ing',
@@ -182,7 +179,6 @@ export const rateDataSelector = createSelector(
     let rate = '';
     let rateStr = '';
     let customRate = '';
-    let defaultRate = {};
     let rateToken = {};
     try {
       const sellInputAmount = getInputAmount(formConfigs.selltoken);
@@ -195,15 +191,15 @@ export const rateDataSelector = createSelector(
         };
       }
       rateToken = pool?.token2;
-      defaultRate = calDefaultPairOrderLimit({
-        pool,
-        x: pool?.token1,
-        y: pool?.token2,
-        x0: convert.toOriginalAmount(1, pool?.token1?.pDecimals, true),
-      });
-      const { rateStr: _rateStr, rate: _rate } = defaultRate;
-      rateStr = _rateStr;
-      rate = _rate;
+      const rateAmount = pool?.price || 0;
+      const originalRateAmount = convert.toOriginalAmount(
+        rateAmount,
+        rateToken?.pDecimals,
+        true,
+      );
+      rateStr = format.amountVer2(originalRateAmount, rateToken?.pDecimals);
+      const rateToNumber = convert.toNumber(rateStr, true);
+      rate = format.toFixed(rateToNumber, rateToken?.pDecimals);
       const selector = formValueSelector(formConfigs.formName);
       customRate = selector(state, formConfigs.rate);
       customRate = customRate || rate;
@@ -284,11 +280,7 @@ export const orderLimitDataSelector = createSelector(
     const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
     const showPRVBalance =
       !sellInputAmount?.isMainCrypto && !buyInputAmount.isMainCrypto;
-    const prvBalance = format.amountFull(
-      prv?.amount || 0,
-      PRV.pDecimals,
-      false,
-    );
+    const prvBalance = format.amountVer2(prv?.amount || 0, PRV.pDecimals);
     const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
     const balanceStr = `${sellInputAmount?.balanceStr ||
       '0'} ${sellInputAmount?.symbol || ''}`;
@@ -306,11 +298,6 @@ export const orderLimitDataSelector = createSelector(
       btnActionTitle = 'Calculating...';
     }
     const tradingFeeStr = `${feeTokenData?.feeAmountText} ${feeTokenData?.symbol}`;
-    const rateStr = `1 ${sellInputAmount?.symbol} = ${format.amountFull(
-      rateData.customRate,
-      0,
-      false,
-    )} ${buyInputAmount?.symbol}`;
     const refreshing = initing;
     const poolStr = `${token1?.symbol || ''} / ${token2?.symbol || ''}`;
     const priceChange24h = pool?.priceChange24h || 0;
@@ -336,7 +323,6 @@ export const orderLimitDataSelector = createSelector(
       disabledBtn,
       percent,
       tradingFeeStr,
-      rateStr,
       reviewOrderTitle,
       reviewOrderDesc,
       reviewOrderDescValue,
@@ -478,14 +464,10 @@ export const mappingOrderHistorySelector = createSelector(
           token1: sellToken,
           token2: buyToken,
         });
-        priceStr = format.amountFull(originalPrice, buyToken?.pDecimals, true);
+        priceStr = format.amountVer2(originalPrice, buyToken?.pDecimals);
         rateStr = getExchangeRate(sellToken, buyToken, amount, price);
-        const sellAmount = format.amountFull(
-          amount,
-          sellToken.pDecimals,
-          false,
-        );
-        const buyAmount = format.amountFull(price, buyToken.pDecimals, false);
+        const sellAmount = format.amountVer2(amount, sellToken.pDecimals);
+        const buyAmount = format.amountVer2(price, buyToken.pDecimals, false);
         amountStr = sellAmount;
         sellStr = `${sellAmount} ${sellToken.symbol}`;
         buyStr = `${buyAmount} ${buyToken.symbol}`;
@@ -499,14 +481,10 @@ export const mappingOrderHistorySelector = createSelector(
           token1: buyToken,
           token2: sellToken,
         });
-        priceStr = format.amountFull(originalPrice, sellToken?.pDecimals, true);
+        priceStr = format.amountVer2(originalPrice, sellToken?.pDecimals);
         rateStr = getExchangeRate(buyToken, sellToken, price, amount);
-        const sellAmount = format.amountFull(
-          amount,
-          sellToken.pDecimals,
-          false,
-        );
-        const buyAmount = format.amountFull(price, buyToken.pDecimals, false);
+        const sellAmount = format.amountVer2(amount, sellToken.pDecimals);
+        const buyAmount = format.amountVer2(price, buyToken.pDecimals);
         amountStr = buyAmount;
         sellStr = `${sellAmount} ${sellToken.symbol}`;
         buyStr = `${buyAmount} ${buyToken.symbol}`;
@@ -552,7 +530,7 @@ export const mappingOrderHistorySelector = createSelector(
         sellStr,
         rate,
         rateStr,
-        networkfeeAmountStr: `${format.amountFull(1, PRV.pDecimals, false)} ${
+        networkfeeAmountStr: `${format.amountVer2(1, PRV.pDecimals)} ${
           PRV.symbol
         }`,
         token1,

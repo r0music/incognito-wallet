@@ -19,6 +19,7 @@ import { getPancakeTokens } from '@services/api/pancakeswap';
 import BigNumber from 'bignumber.js';
 import floor from 'lodash/floor';
 import difference from 'lodash/difference';
+import { isUsePRVToPayFeeSelector } from '@screens/Setting';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -283,6 +284,8 @@ export const actionInitSwapForm = ({
   defaultPair = {},
 } = {}) => async (dispatch, getState) => {
   try {
+    const state = getState();
+    const isUsePRVToPayFee = isUsePRVToPayFeeSelector(state);
     await dispatch(actionInitingSwapForm(true));
     await dispatch(reset(formConfigs.formName));
     let pair = defaultPair;
@@ -307,7 +310,12 @@ export const actionInitSwapForm = ({
       dispatch(
         change(formConfigs.formName, formConfigs.slippagetolerance, '1'),
       );
-      dispatch(actionSetFeeToken(PRV.id));
+      const useFeeByToken = selltoken !== PRV_ID && !isUsePRVToPayFee;
+      if (useFeeByToken) {
+        dispatch(actionSetFeeToken(selltoken));
+      } else {
+        dispatch(actionSetFeeToken(PRV.id));
+      }
       dispatch(actionSetInputToken({ selltoken, buytoken }));
     });
   } catch (error) {
@@ -373,21 +381,15 @@ export const actionSelectToken = (token: SelectedPrivacy, field) => async (
       if (buytoken.tokenId === token.tokenId) {
         await dispatch(actionSwapToken());
       } else {
-        batch(() => {
-          dispatch(change(formConfigs.formName, formConfigs.selltoken, ''));
-          dispatch(change(formConfigs.formName, formConfigs.buytoken, ''));
-          dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
-          dispatch(actionSetSellTokenFetched(token.tokenId));
-          dispatch(actionSetFocusToken(''));
-          dispatch(actionSetFeeToken(PRV.id));
-        });
         await dispatch(
-          actionSetInputToken({
-            selltoken: token.tokenId,
-            buytoken: buytoken.tokenId,
+          actionInitSwapForm({
+            refresh: true,
+            defaultPair: {
+              selltoken: token.tokenId,
+              buytoken: buytoken.tokenId,
+            },
           }),
         );
-        await dispatch(actionEstimateTrade());
       }
       break;
     }
@@ -398,21 +400,15 @@ export const actionSelectToken = (token: SelectedPrivacy, field) => async (
       if (selltoken.tokenId === token.tokenId) {
         await dispatch(actionSwapToken());
       } else {
-        batch(() => {
-          dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
-          dispatch(change(formConfigs.formName, formConfigs.buytoken, ''));
-          dispatch(actionSetBuyTokenFetched(token.tokenId));
-          dispatch(actionSetBuyToken(token.tokenId));
-          dispatch(actionSetFocusToken(''));
-          dispatch(actionSetFeeToken(PRV.id));
-        });
         await dispatch(
-          actionSetInputToken({
-            selltoken: selltoken.tokenId,
-            buytoken: token.tokenId,
+          actionInitSwapForm({
+            refresh: true,
+            defaultPair: {
+              selltoken: selltoken.tokenId,
+              buytoken: token.tokenId,
+            },
           }),
         );
-        await dispatch(actionEstimateTrade());
       }
       break;
     }
@@ -420,7 +416,6 @@ export const actionSelectToken = (token: SelectedPrivacy, field) => async (
       break;
     }
   } catch (error) {
-    console.log('actionSetSelectingToken-error', error);
     new ExHandler(error).showErrorToast();
   } finally {
     await dispatch(actionSetSelectingToken(false));
@@ -462,13 +457,13 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       transfer: { fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX, info: '' },
       extra: {
         tokenIDToSell,
-        sellAmount,
+        sellAmount: String(sellAmount),
         tokenIDToBuy,
         tradingFee,
         tradePath,
         feetoken,
         version: PrivacyVersion.ver2,
-        minAcceptableAmount,
+        minAcceptableAmount: String(minAcceptableAmount),
       },
     };
     console.log('params', params);

@@ -88,6 +88,95 @@ const amountFull = amountCreator();
 
 const amount = amountCreator(CONSTANT_COMMONS.AMOUNT_MAX_FRACTION_DIGITS);
 
+const getDecimalsFromHumanAmount = (humanAmount) => {
+  let decimals;
+  if (humanAmount > 1e3) {
+    decimals = 1;
+  } else if (humanAmount > 1e2) {
+    decimals = 2;
+  } else if (humanAmount > 10) {
+    decimals = 3;
+  } else if (humanAmount > 1) {
+    decimals = 4;
+  } else if (humanAmount > 1e-1) {
+    decimals = 5;
+  } else if (humanAmount >= 1e-6) {
+    decimals = 6;
+  } else {
+    decimals = undefined;
+  }
+  return decimals;
+};
+
+const amountVer2 = (amount, decimals) => {
+  try {
+    const fmt = {
+      decimalSeparator: getDecimalSeparator(),
+      groupSeparator: getGroupSeparator(),
+      groupSize: 3,
+    };
+    let _amount = convertUtil.toHumanAmount(amount, decimals);
+    const _decimals = getDecimalsFromHumanAmount(_amount);
+    return _amount
+      ? removeTrailingZeroes(
+        new BigNumber(_amount).toFormat(_decimals, BigNumber.ROUND_DOWN, fmt),
+      )
+      : 0;
+  } catch (e) {
+    return amount;
+  }
+};
+
+const amountSuffix = (amount, decimals) => {
+  try {
+    const fmt = {
+      decimalSeparator: getDecimalSeparator(),
+      groupSeparator: getGroupSeparator(),
+      groupSize: 3,
+    };
+
+    let _maxDigits = 2;
+    let _amount = convertUtil.toHumanAmount(amount, decimals);
+    let _suffix = '';
+
+    if (!Number.isFinite(_amount))
+      throw new Error('Can not format invalid amount');
+
+    if (_amount > 1e3 && _amount < 1e6) {
+      _amount = Math.floor(_amount) / 1e3;
+      _suffix = 'K';
+    }
+
+    if (_amount > 1e6 && _amount < 1e9) {
+      _amount = Math.floor(_amount) / 1e6;
+      _suffix = 'M';
+    }
+
+    if (_amount > 1e9 && _amount < 1e12) {
+      _amount = Math.floor(_amount) / 1e9;
+      _suffix = 'B';
+    }
+
+    // if amount is too small, show 4 digits
+    if (_amount > 0 && _amount < 1) {
+      _maxDigits = 5;
+    }
+    return (
+      (_amount
+        ? removeTrailingZeroes(
+          new BigNumber(_amount).toFormat(
+            _maxDigits,
+            BigNumber.ROUND_DOWN,
+            fmt,
+          ),
+        )
+        : 0) + _suffix
+    );
+  } catch {
+    return amount;
+  }
+};
+
 const formatDateTime = (dateTime, formatPattern) =>
   moment(dateTime).format(formatPattern || 'DD MMM hh:mm A');
 
@@ -217,4 +306,7 @@ export default {
   fixedNumber,
   convertDecimalsToPDecimals,
   convertDecimalsHumanAmount,
+  amountSuffix,
+  amountVer2,
+  getDecimalsFromHumanAmount,
 };

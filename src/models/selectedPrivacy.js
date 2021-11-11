@@ -147,7 +147,6 @@ class SelectedPrivacy {
       token?.verified,
       !isUnknown,
     ); // PRV always is verified
-    this.iconUrl = getIconUrl.call(this, token?.image);
     this.priceUsd = pTokenData?.priceUsd || 0;
     this.change = pTokenData?.change || '0';
     this.pricePrv = pTokenData?.pricePrv || 0;
@@ -168,6 +167,7 @@ class SelectedPrivacy {
     }
     this.amount = this.amount || 0;
     this.listChildToken = pTokenData?.listChildToken;
+    this.iconUrl = getIconUrl.call(this, token?.image);
   }
 }
 

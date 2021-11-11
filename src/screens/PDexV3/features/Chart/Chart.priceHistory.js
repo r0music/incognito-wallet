@@ -1,5 +1,4 @@
 import React from 'react';
-import format from '@src/utils/format';
 import { View, StyleSheet } from 'react-native';
 import {
   VictoryLine,
@@ -40,7 +39,7 @@ const styled = StyleSheet.create({
 
 const periods = ['15m', '1h', '4h', '1d', 'W', 'M', 'Y'];
 
-const Period = React.memo(() => {
+export const Period = React.memo(() => {
   const dispatch = useDispatch();
   const { period: actived } = useSelector(priceHistorySelector);
   return (

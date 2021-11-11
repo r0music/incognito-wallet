@@ -191,12 +191,12 @@ const FollowToken = React.memo((props) => {
     <View style={styledFollow.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={
+        refreshControl={(
           <RefreshControl
             refreshing={isReloading}
             onRefresh={() => onRefresh(true)}
           />
-        }
+        )}
         nestedScrollEnabled
       >
         <Token
@@ -290,7 +290,6 @@ const RightHeader = React.memo(() => {
 const Wallet = React.memo(({ hideBackButton }) => {
   const navigation = useNavigation();
   const onGoBack = () => navigation.navigate(routeNames.MainTabBar);
-  const dispatch = useDispatch();
   return (
     <View style={[styled.container, { backgroundColor: COLORS.white }]}>
       <Header

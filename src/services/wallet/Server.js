@@ -37,6 +37,7 @@ const MAIN_NET_SERVER = {
   explorer: 'https://incscan.io',
   tradeServices: 'https://api-coinservice.incognito.org',
   portalServices: 'https://api-portalv4.incognito.org',
+  webviewChartServices: '',
 };
 const BETA_SERVER = {
   id: 'beta',
@@ -55,6 +56,7 @@ const BETA_SERVER = {
   explorer: 'https://incscan.io',
   tradeServices: 'https://api-coinservice-beta.incognito.org',
   portalServices: 'http://139.162.55.124:8010',
+  webviewChartServices: 'https://chart-webview.incognito.org',
 };
 const TEST_NET_SERVER = {
   id: 'testnet',
@@ -73,7 +75,8 @@ const TEST_NET_SERVER = {
   IncBSCContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   explorer: 'https://testnet.incognito.org',
   tradeServices: 'https://api-coinservice-staging.incognito.org',
-  portalServices: 'http://139.162.55.124:8010',
+  portalServices: 'http://51.161.119.66:8020',
+  webviewChartServices: 'https://chart-webview-staging.incognito.org',
 };
 
 const LOCAL_SERVER = {
@@ -122,6 +125,7 @@ export const DEV_TEST_SERVER = {
   explorer: 'https://testnet1.incognito.org',
   portalServices: 'http://139.162.55.124:8010',
   tradeServices: 'http://51.161.119.66:7001',
+  webviewChartServices: 'https://chart-webview-staging.incognito.org',
 };
 
 const PORTAL_SERVER = {
@@ -141,6 +145,7 @@ const PORTAL_SERVER = {
   IncContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   IncBSCContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   explorer: 'https://testnet.incognito.org',
+  webviewChartServices: 'https://chart-webview-staging.incognito.org',
 };
 
 const DEFAULT_LIST_SERVER = [
@@ -224,6 +229,7 @@ export default class Server {
               IncContractAddress: server?.IncContractAddress || '',
               IncBSCContractAddress: server?.IncContractAddress || '',
               tradeServices: server?.tradeServices || '',
+              webviewChartServices: server?.webviewChartServices || '',
             };
           }
         }

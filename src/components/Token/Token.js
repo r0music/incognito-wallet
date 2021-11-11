@@ -68,7 +68,7 @@ Name.defaultProps = {
   name: 'Incognito Token',
   isVerified: false,
   tokenId: null,
-  shouldShowInfo: true,
+  shouldShowInfo: false,
 };
 
 export const AmountBasePRV = (props) => {

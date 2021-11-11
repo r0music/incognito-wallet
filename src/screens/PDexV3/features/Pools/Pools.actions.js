@@ -3,6 +3,7 @@ import { ExHandler } from '@src/services/exception';
 import { getPDexV3Instance } from '@screens/PDexV3';
 import uniq from 'lodash/uniq';
 import BigNumber from 'bignumber.js';
+import orderBy from 'lodash/orderBy';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -80,7 +81,7 @@ export const actionFetchListPools = () => async (dispatch, getState) => {
         .map((poolId) => pools.find((pool) => pool?.poolId === poolId))
         .filter((pool) => !!pool)
         .filter((pool) => !!pool.isVerify) || [];
-    await dispatch(actionFetchedListPools(payload));
+    await dispatch(actionFetchedListPools(orderBy(payload, 'volume', 'desc')));
     await dispatch(actionFetchedTradingVolume24h(originalVolume));
   } catch (error) {
     throw error;

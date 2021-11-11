@@ -14,6 +14,8 @@ import routeNames from '@routers/routeNames';
 import {useNavigation} from 'react-navigation-hooks';
 import withFetch from '@screens/PDexV3/features/Staking/Staking.enhanceFetch';
 import {HeaderRow, OneRowCoin} from '@screens/PDexV3/features/Staking/Staking.item';
+import orderBy from 'lodash/orderBy';
+import {PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
 
 const CoinItem = React.memo(({ coin }) => {
   const dispatch = useDispatch();
@@ -36,7 +38,7 @@ const CoinItem = React.memo(({ coin }) => {
 });
 
 const StakingMoreCoins = ({ handleFetchStakingPools }) => {
-  const coins = useSelector(stakingSelector.stakingPoolSelector);
+  const coins = orderBy(useSelector(stakingSelector.stakingPoolSelector), [(c) => c.tokenId === PRVIDSTR, 'userBalanceStr'], ['desc', 'asc']);
   const isFetching = useSelector(stakingSelector.isFetchingPoolSelector);
   const renderItem = (coin) => <CoinItem coin={coin} />;
   const onRefresh = () => {

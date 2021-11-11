@@ -24,3 +24,8 @@ export const isToggleBackupAllKeysSelector = createSelector(
   settingSelector,
   (setting) => setting.toggleBackupAllKeys,
 );
+
+export const isUsePRVToPayFeeSelector = createSelector(
+  settingSelector,
+  ({ usePRVToPayFee }) => usePRVToPayFee,
+);

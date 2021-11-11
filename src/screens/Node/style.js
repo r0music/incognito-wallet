@@ -85,7 +85,7 @@ const style = StyleSheet.create({
     color:'#FFFFFF'
   },
   button:{
-    backgroundColor: COLORS.blue6,
+    backgroundColor: COLORS.blue5,
   },
   dot: {
     width: 6,
@@ -101,7 +101,7 @@ const style = StyleSheet.create({
     borderRadius: 3,
     marginTop: 10,
     margin: 10,
-    backgroundColor: COLORS.blue6,
+    backgroundColor: COLORS.blue5,
   },
   balance: {
     fontFamily: FONT.NAME.specialRegular,

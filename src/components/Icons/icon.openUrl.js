@@ -18,7 +18,7 @@ const styled = StyleSheet.create({
 
 const IconOpenUrl = (props) => {
   return (
-    <View style={styled.container}>
+    <View style={[styled.container, props?.containerStyle]}>
       <Image style={[styled.icon, props?.style]} source={srcOpenUrl} />
     </View>
   );

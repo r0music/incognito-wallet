@@ -30,10 +30,9 @@ export const mappingOrderBook = (params) => {
           token2?.pDecimals,
           true,
         );
-        const priceStr = format.amountFull(
+        const priceStr = format.amountVer2(
           priceOriginalAmount,
           token2?.pDecimals,
-          true,
         );
         if (isBuy) {
           volumeOriginalAmount = token2Balance;
@@ -48,10 +47,9 @@ export const mappingOrderBook = (params) => {
             volume,
             token2.pDecimals,
           );
-          volumeStr = format.amountFull(
+          volumeStr = format.amountVer2(
             volumeOriginalAmount,
             token2?.pDecimals,
-            true,
           );
         } else if (isSell) {
           volumeOriginalAmount = token1Balance;
@@ -59,10 +57,9 @@ export const mappingOrderBook = (params) => {
             volumeOriginalAmount,
             token1?.pDecimals,
           );
-          volumeStr = format.amountFull(
+          volumeStr = format.amountVer2(
             volumeOriginalAmount,
             token1?.pDecimals,
-            true,
           );
         }
         const res = {

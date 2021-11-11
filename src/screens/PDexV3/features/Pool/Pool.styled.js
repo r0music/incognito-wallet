@@ -26,19 +26,19 @@ export const styled = StyleSheet.create({
     marginBottom: 8,
   },
   block1: {
-    flex: 0.7,
+    flex: 1,
     marginRight: 15,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
   },
   block2: {
-    flex: 0.2,
     flexDirection: 'column',
     alignItems: 'flex-end',
     marginRight: 5,
+    width: 80,
   },
   block3: {
-    flex: 0.1,
+    width: 30,
     justifyContent: 'flex-end',
     flexDirection: 'row',
     alignItems: 'flex-start',

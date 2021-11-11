@@ -28,6 +28,7 @@ const nodeItemDetailEnhanceData = WrappedComp => props => {
   if (!device) return null;
 
   const ip          = device?.Host;
+  const port        = device?.Port;
   const name        = device?.Name;
   const hasAccount  = !!device?.AccountName;
   const rewardsList = device?.AllRewards || [];
@@ -58,6 +59,7 @@ const nodeItemDetailEnhanceData = WrappedComp => props => {
           rewardsList,
           name,
           ip,
+          port,
           withdrawable,
           hasAccount,
           shouldShowStake,
