@@ -1,4 +1,4 @@
-import { BtnOrderHistory, ButtonRefresh, ButtonTrade } from '@src/components/Button';
+import { ButtonTrade } from '@src/components/Button';
 import React from 'react';
 import { View } from 'react-native';
 import PropTypes from 'prop-types';
@@ -6,7 +6,6 @@ import { Tabs1 } from '@src/components/core/Tabs';
 import { createForm } from '@components/core/reduxForm';
 import { useSelector } from 'react-redux';
 import LoadingTx from '@src/components/LoadingTx';
-import { Row } from '@src/components';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { KeyboardAwareScrollView, RefreshControl } from '@src/components/core';
