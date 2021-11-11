@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { FlatList, RefreshControl } from '@src/components/core';
+import { FlatList } from '@src/components/core';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import { ExHandler } from '@src/services/exception';
@@ -34,16 +34,13 @@ const OrderHistory = () => {
       new ExHandler(error).showErrorToast();
     }
   };
-  const { history = [], isFetching } = useSelector(orderHistorySelector);
+  const { history = [] } = useSelector(orderHistorySelector);
   React.useEffect(() => {
     onRefresh();
   }, [poolId]);
   return (
     <View style={styled.container}>
       <FlatList
-        refreshControl={
-          <RefreshControl refreshing={isFetching} onRefresh={onRefresh} />
-        }
         data={history}
         keyExtractor={(item) => item?.requestTx}
         renderItem={({ item, index }) => (
