@@ -9,7 +9,21 @@ import floor from 'lodash/floor';
 import Web3 from 'web3';
 import { CONSTANTS } from '@screens/Wallet/features/BridgeConnect/WalletConnect.constants';
 import { Token, TokenAmount, JSBI, Trade, Pair } from '@pancakeswap/sdk';
-import { formConfigs } from './Swap.constant';
+import secp256k1 from 'secp256k1';
+import bs58 from 'bs58';
+import eutil from 'ethereumjs-util';
+import Wallet from 'ethereumjs-wallet';
+import { 
+  formConfigs, 
+  listDecimals, 
+  MULTI_CALL_ABI, 
+  MULTI_CALL_CONTRACT, 
+  PANCAKE_ABI, 
+  PANCAKE_FACOTRY_ABI, 
+  PANCAKE_FACTORY_ADDRESS, 
+  PANCAKE_PAIR_ABI, 
+  PANCAKE_ROUTER_V2 
+} from './Swap.constant';
 
 export const minFeeValidator = (feetokenData) => {
   if (!feetokenData) {
@@ -189,26 +203,10 @@ export const calMintAmountExpected = ({ maxGet, slippagetolerance } = {}) => {
   return maxGet;
 };
 
-const listDecimals = {
-  '0x2170ed0880ac9a755fd29b2688956bd959f933f8': {decimals: 18, symbol: 'eth'},
-  '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3': {decimals: 18, symbol: 'dai'},
-  '0x55d398326f99059ff775485246999027b3197955': {decimals: 18, symbol: 'usdt'},
-  '0xe9e7cea3dedca5984780bafc599bd69add087d56': {decimals: 18, symbol: 'busd'},
-  '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c': {decimals: 18, symbol: 'wbnb'},
-};
 const listCommon = Object.keys(listDecimals);
 const web3 = new Web3(CONSTANTS.BSC_HOST);
-const MULTI_CALL_CONTRACT_TESTNET = '0xff6fd90a470aaa0c1b8a54681746b07acdfedc9b';
-const MULTI_CALL_ABI = [{'inputs':[{'components':[{'internalType':'address','name':'target','type':'address'},{'internalType':'bytes','name':'callData','type':'bytes'}],'internalType':'struct Multicall2.Call[]','name':'calls','type':'tuple[]'}],'name':'aggregate','outputs':[{'internalType':'uint256','name':'blockNumber','type':'uint256'},{'internalType':'bytes[]','name':'returnData','type':'bytes[]'}],'stateMutability':'nonpayable','type':'function'},{'inputs':[{'components':[{'internalType':'address','name':'target','type':'address'},{'internalType':'bytes','name':'callData','type':'bytes'}],'internalType':'struct Multicall2.Call[]','name':'calls','type':'tuple[]'}],'name':'blockAndAggregate','outputs':[{'internalType':'uint256','name':'blockNumber','type':'uint256'},{'internalType':'bytes32','name':'blockHash','type':'bytes32'},{'components':[{'internalType':'bool','name':'success','type':'bool'},{'internalType':'bytes','name':'returnData','type':'bytes'}],'internalType':'struct Multicall2.Result[]','name':'returnData','type':'tuple[]'}],'stateMutability':'nonpayable','type':'function'},{'inputs':[{'internalType':'uint256','name':'blockNumber','type':'uint256'}],'name':'getBlockHash','outputs':[{'internalType':'bytes32','name':'blockHash','type':'bytes32'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'getBlockNumber','outputs':[{'internalType':'uint256','name':'blockNumber','type':'uint256'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'getCurrentBlockCoinbase','outputs':[{'internalType':'address','name':'coinbase','type':'address'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'getCurrentBlockDifficulty','outputs':[{'internalType':'uint256','name':'difficulty','type':'uint256'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'getCurrentBlockGasLimit','outputs':[{'internalType':'uint256','name':'gaslimit','type':'uint256'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'getCurrentBlockTimestamp','outputs':[{'internalType':'uint256','name':'timestamp','type':'uint256'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'address','name':'addr','type':'address'}],'name':'getEthBalance','outputs':[{'internalType':'uint256','name':'balance','type':'uint256'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'getLastBlockHash','outputs':[{'internalType':'bytes32','name':'blockHash','type':'bytes32'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'bool','name':'requireSuccess','type':'bool'},{'components':[{'internalType':'address','name':'target','type':'address'},{'internalType':'bytes','name':'callData','type':'bytes'}],'internalType':'struct Multicall2.Call[]','name':'calls','type':'tuple[]'}],'name':'tryAggregate','outputs':[{'components':[{'internalType':'bool','name':'success','type':'bool'},{'internalType':'bytes','name':'returnData','type':'bytes'}],'internalType':'struct Multicall2.Result[]','name':'returnData','type':'tuple[]'}],'stateMutability':'nonpayable','type':'function'},{'inputs':[{'internalType':'bool','name':'requireSuccess','type':'bool'},{'components':[{'internalType':'address','name':'target','type':'address'},{'internalType':'bytes','name':'callData','type':'bytes'}],'internalType':'struct Multicall2.Call[]','name':'calls','type':'tuple[]'}],'name':'tryBlockAndAggregate','outputs':[{'internalType':'uint256','name':'blockNumber','type':'uint256'},{'internalType':'bytes32','name':'blockHash','type':'bytes32'},{'components':[{'internalType':'bool','name':'success','type':'bool'},{'internalType':'bytes','name':'returnData','type':'bytes'}],'internalType':'struct Multicall2.Result[]','name':'returnData','type':'tuple[]'}],'stateMutability':'nonpayable','type':'function'}];
-const MULTI_CALL_INST = new web3.eth.Contract(MULTI_CALL_ABI, MULTI_CALL_CONTRACT_TESTNET);
-
-const PANCAKE_PAIR_ABI = [{'inputs':[],'name':'MINIMUM_LIQUIDITY','outputs':[{'internalType':'uint256','name':'','type':'uint256'}],'stateMutability':'pure','type':'function'},{'inputs':[],'name':'factory','outputs':[{'internalType':'address','name':'','type':'address'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'getReserves','outputs':[{'internalType':'uint112','name':'reserve0','type':'uint112'},{'internalType':'uint112','name':'reserve1','type':'uint112'},{'internalType':'uint32','name':'blockTimestampLast','type':'uint32'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'kLast','outputs':[{'internalType':'uint256','name':'','type':'uint256'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'price0CumulativeLast','outputs':[{'internalType':'uint256','name':'','type':'uint256'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'price1CumulativeLast','outputs':[{'internalType':'uint256','name':'','type':'uint256'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'token0','outputs':[{'internalType':'address','name':'','type':'address'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'token1','outputs':[{'internalType':'address','name':'','type':'address'}],'stateMutability':'view','type':'function'}];
-const PANCAKE_FACTORY_ADDRESS = '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73';
-const PANCAKE_FACOTRY_ABI = [{'inputs':[{'internalType':'address','name':'_feeToSetter','type':'address'}],'payable':false,'stateMutability':'nonpayable','type':'constructor'},{'anonymous':false,'inputs':[{'indexed':true,'internalType':'address','name':'token0','type':'address'},{'indexed':true,'internalType':'address','name':'token1','type':'address'},{'indexed':false,'internalType':'address','name':'pair','type':'address'},{'indexed':false,'internalType':'uint256','name':'','type':'uint256'}],'name':'PairCreated','type':'event'},{'constant':true,'inputs':[],'name':'INIT_CODE_PAIR_HASH','outputs':[{'internalType':'bytes32','name':'','type':'bytes32'}],'payable':false,'stateMutability':'view','type':'function'},{'constant':true,'inputs':[{'internalType':'uint256','name':'','type':'uint256'}],'name':'allPairs','outputs':[{'internalType':'address','name':'','type':'address'}],'payable':false,'stateMutability':'view','type':'function'},{'constant':true,'inputs':[],'name':'allPairsLength','outputs':[{'internalType':'uint256','name':'','type':'uint256'}],'payable':false,'stateMutability':'view','type':'function'},{'constant':false,'inputs':[{'internalType':'address','name':'tokenA','type':'address'},{'internalType':'address','name':'tokenB','type':'address'}],'name':'createPair','outputs':[{'internalType':'address','name':'pair','type':'address'}],'payable':false,'stateMutability':'nonpayable','type':'function'},{'constant':true,'inputs':[],'name':'feeTo','outputs':[{'internalType':'address','name':'','type':'address'}],'payable':false,'stateMutability':'view','type':'function'},{'constant':true,'inputs':[],'name':'feeToSetter','outputs':[{'internalType':'address','name':'','type':'address'}],'payable':false,'stateMutability':'view','type':'function'},{'constant':true,'inputs':[{'internalType':'address','name':'','type':'address'},{'internalType':'address','name':'','type':'address'}],'name':'getPair','outputs':[{'internalType':'address','name':'','type':'address'}],'payable':false,'stateMutability':'view','type':'function'},{'constant':false,'inputs':[{'internalType':'address','name':'_feeTo','type':'address'}],'name':'setFeeTo','outputs':[],'payable':false,'stateMutability':'nonpayable','type':'function'},{'constant':false,'inputs':[{'internalType':'address','name':'_feeToSetter','type':'address'}],'name':'setFeeToSetter','outputs':[],'payable':false,'stateMutability':'nonpayable','type':'function'}];
+const MULTI_CALL_INST = new web3.eth.Contract(MULTI_CALL_ABI, MULTI_CALL_CONTRACT);
 const FACTORY_INST = new web3.eth.Contract(PANCAKE_FACOTRY_ABI, PANCAKE_FACTORY_ADDRESS);
-
-const PANCAKE_ABI = [{'inputs':[{'internalType':'uint256','name':'amountOut','type':'uint256'},{'internalType':'uint256','name':'reserveIn','type':'uint256'},{'internalType':'uint256','name':'reserveOut','type':'uint256'}],'name':'getAmountIn','outputs':[{'internalType':'uint256','name':'amountIn','type':'uint256'}],'stateMutability':'pure','type':'function'},{'inputs':[{'internalType':'uint256','name':'amountIn','type':'uint256'},{'internalType':'uint256','name':'reserveIn','type':'uint256'},{'internalType':'uint256','name':'reserveOut','type':'uint256'}],'name':'getAmountOut','outputs':[{'internalType':'uint256','name':'amountOut','type':'uint256'}],'stateMutability':'pure','type':'function'},{'inputs':[{'internalType':'uint256','name':'amountOut','type':'uint256'},{'internalType':'address[]','name':'path','type':'address[]'}],'name':'getAmountsIn','outputs':[{'internalType':'uint256[]','name':'amounts','type':'uint256[]'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'uint256','name':'amountIn','type':'uint256'},{'internalType':'address[]','name':'path','type':'address[]'}],'name':'getAmountsOut','outputs':[{'internalType':'uint256[]','name':'amounts','type':'uint256[]'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'uint256','name':'amountA','type':'uint256'},{'internalType':'uint256','name':'reserveA','type':'uint256'},{'internalType':'uint256','name':'reserveB','type':'uint256'}],'name':'quote','outputs':[{'internalType':'uint256','name':'amountB','type':'uint256'}],'stateMutability':'pure','type':'function'}];
-const PANCAKE_ROUTER_V2 =  '0x10ed43c718714eb63d5aa57b78b54704e256024e';
 const PANCKAE_ROUTER_INST = new web3.eth.Contract(PANCAKE_ABI, PANCAKE_ROUTER_V2);
 
 async function getBestRate(sourceToken, destToken, amount, chainID) {
@@ -297,4 +295,31 @@ async function getBestRate(sourceToken, destToken, amount, chainID) {
 
   const outputs = await PANCKAE_ROUTER_INST.methods.getAmountsOut(sellAmount.toString(), paths).call();
   return paths, outputs;
+}
+
+// generated eth from incKey success
+function genETHAccFromIncPrivKey(incPrivKey) {
+  const web3 = new Web3();
+  let bytes = bs58.decode(incPrivKey);
+  bytes = bytes.slice(1, bytes.length - 4);
+  const privHexStr = web3.utils.bytesToHex(bytes);
+  let privKey = web3.utils.keccak256(privHexStr);
+  let temp, temp2;
+  temp = web3.utils.hexToBytes(privKey);
+  temp2 = new Uint8Array(temp);
+  while (!secp256k1.privateKeyVerify(temp2)) {
+    privKey = web3.utils.keccak256(privKey);
+    temp = web3.utils.hexToBytes(privKey);
+    temp2 = new Uint8Array(temp);
+  }
+  const fixturePrivateBuffer = Buffer.from(privKey.replace('0x', ''), 'hex');
+  const fixtureWallet = Wallet.fromPrivateKey(fixturePrivateBuffer);
+  return fixtureWallet;
+}
+
+function signMessage(mess, privateKey) {
+  let dataToSigBuff = Buffer.from(mess.replace('0x', ''), 'hex');
+  let privateKeyBuff = Buffer.from(privateKey.replace('0x', ''), 'hex');
+  let signature = eutil.ecsign(dataToSigBuff, privateKeyBuff);
+  return '0x' + signature.r.toString('hex') + signature.s.toString('hex') + '0' + (signature.v - 27).toString(16);
 }
