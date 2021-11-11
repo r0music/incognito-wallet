@@ -15,6 +15,7 @@ import uniq from 'lodash/uniq';
 import { PRV, PRV_ID } from '@src/constants/common';
 import convert from '@src/utils/convert';
 import format from '@src/utils/format';
+import { getPancakeTokens } from '@services/api/pancakeswap';
 import BigNumber from 'bignumber.js';
 import floor from 'lodash/floor';
 import difference from 'lodash/difference';
@@ -259,13 +260,17 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
     if (!refresh && listPairs.length > 0) {
       return listPairs;
     }
-    pairs = (await pDexV3Inst.getListPair()) || [];
-    pairs = pairs.reduce(
+    let [pDEXPairs = [], pancakeTokens = []] = await Promise.all([
+      pDexV3Inst.getListPair(),
+      getPancakeTokens()
+    ]);
+    pDEXPairs = pDEXPairs.reduce(
       (prev, current) =>
         (prev = prev.concat([current.tokenId1, current.tokenId2])),
       [],
     );
-    pairs = uniq(pairs);
+    pancakeTokens = pancakeTokens.map(item => item.tokenID);
+    pairs = uniq([...pDEXPairs, ...pancakeTokens]);
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }

@@ -10,6 +10,7 @@ export const KEYS = {
   PDEX_HISTORY: 'history-pdex-trade',
   P_TOKEN: 'ptoken',
   P_CUSTOM_TOKEN: 'pcustomtoken',
+  PancakeTokens: 'pancake-tokens',
 };
 
 /**
