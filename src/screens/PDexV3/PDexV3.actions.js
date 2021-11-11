@@ -6,7 +6,7 @@ import { PDexV3, Validator } from 'incognito-chain-web-js/build/wallet';
 export const getPDexV3Instance = async ({ account }) => {
   try {
     const server = await Server.getDefault();
-    // new Validator('getPDexV3Instance-account', account).required().object();
+    new Validator('getPDexV3Instance-account', account).required().object();
     let pDexV3Inst = new PDexV3();
     pDexV3Inst.setRPCTradeService(server.tradeServices);
     pDexV3Inst.setStorageServices(storage);

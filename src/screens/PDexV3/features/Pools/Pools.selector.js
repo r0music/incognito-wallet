@@ -5,6 +5,8 @@ import { COLORS } from '@src/styles';
 import { getExchangeRate } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
 import convert from '@src/utils/convert';
+import SelectedPrivacy from '@src/models/selectedPrivacy';
+import xor from 'lodash/xor';
 
 export const poolsSelector = createSelector(
   (state) => state.pDexV3,
@@ -159,4 +161,17 @@ export const defaultPoolSelector = createSelector(
 export const listPoolsVerifySelector = createSelector(
   listPoolsSelector,
   (pools) => pools.filter(({ isVerify }) => !!isVerify),
+);
+
+export const findPoolByPairSelector = createSelector(
+  listPoolsVerifySelector,
+  (pools) => ({ selltoken, buytoken }) =>
+    pools.find((pool) => {
+      const token1: SelectedPrivacy = pool?.token1;
+      const token2: SelectedPrivacy = pool?.token2;
+      return (
+        xor([token1?.tokenId, token2?.tokenId], [selltoken, buytoken])
+          .length === 0
+      );
+    }),
 );

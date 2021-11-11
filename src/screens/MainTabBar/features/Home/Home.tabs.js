@@ -105,19 +105,19 @@ const MainTab = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const pools = useSelector(listPoolsVerifySelector);
-  const onItemPress = (pool) => {
+  const onItemPress = async (pool) => {
     navigation.navigate(routeNames.Trade, { tabIndex: 0 });
     batch(() => {
-      dispatch(
-        actionChangeTab({
-          rootTabID: ROOT_TAB_TRADE,
-          tabID: TAB_SWAP_ID,
-        }),
-      );
       dispatch(
         actionSetDefaultPair({
           selltoken: pool?.token1?.tokenId,
           buytoken: pool?.token2?.tokenId,
+        }),
+      );
+      dispatch(
+        actionChangeTab({
+          rootTabID: ROOT_TAB_TRADE,
+          tabID: TAB_SWAP_ID,
         }),
       );
     });

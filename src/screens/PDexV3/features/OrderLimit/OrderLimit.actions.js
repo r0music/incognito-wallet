@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import { activedTabSelector } from '@src/components/core/Tabs/Tabs.selector';
 import { PRV } from '@src/constants/common';
