@@ -485,13 +485,11 @@ export const mappingOrderHistorySelector = createSelector(
         infoStr = poolStr;
       }
 
-      const percent = convert.toNumber(
-        new BigNumber(matched)
-          .dividedBy(new BigNumber(amount))
-          .multipliedBy(100)
-          .toFixed(2),
-        true,
-      );
+      const percentToNumber = new BigNumber(matched)
+        .dividedBy(new BigNumber(amount))
+        .multipliedBy(100)
+        .toNumber();
+      const percent = format.toFixed(percentToNumber, 2);
       const percentStr = `Filled ${percent}%`;
       const percentStr1 = `${percent}%`;
       const time = fromStorage ? requestime : requestime * 1000;

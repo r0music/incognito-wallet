@@ -8,7 +8,7 @@ import { Row } from '@src/components';
 import { homeStyled } from '@screens/MainTabBar/MainTabBar.styled';
 import PropTypes from 'prop-types';
 import orderBy from 'lodash/orderBy';
-import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
+import { actionInitSwapForm } from '@screens/PDexV3/features/Swap';
 import { actionChangeTab } from '@components/core/Tabs/Tabs.actions';
 import {
   ROOT_TAB_TRADE,
@@ -16,7 +16,7 @@ import {
 } from '@screens/PDexV3/features/Trade/Trade.constant';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
-import {COLORS} from '@src/styles';
+import { COLORS } from '@src/styles';
 
 const Item = React.memo(({ pool, onItemPress, popular }) => {
   const {
@@ -25,7 +25,6 @@ const Item = React.memo(({ pool, onItemPress, popular }) => {
     perChange24hColor,
     poolTitle,
     volumeSuffix,
-    priceChange24H,
   } = pool;
   return (
     <TouchableOpacity onPress={() => onItemPress(pool)}>
@@ -57,12 +56,17 @@ const Item = React.memo(({ pool, onItemPress, popular }) => {
             ]}
             numberOfLines={0}
           >
-            {popular ? volumeSuffix : `${priceChange24H > 0 ? '+' : ''}${perChange24hToStr}`}
+            {popular ? volumeSuffix : perChange24hToStr}
           </Text>
         </View>
-        <TouchableOpacity style={[homeStyled.btnTrade]} onPress={() => onItemPress(pool)}>
-          <Text style={homeStyled.labelTrade}>Trade</Text>
-        </TouchableOpacity>
+        {!popular && (
+          <TouchableOpacity
+            style={[homeStyled.btnTrade]}
+            onPress={() => onItemPress(pool)}
+          >
+            <Text style={homeStyled.labelTrade}>Trade</Text>
+          </TouchableOpacity>
+        )}
       </Row>
     </TouchableOpacity>
   );
@@ -72,11 +76,7 @@ const Header = React.memo(({ popular }) => (
   <Row>
     <Text style={[homeStyled.itemBox, homeStyled.tabHeaderText]}>Name</Text>
     <Text
-      style={[
-        homeStyled.itemBox,
-        homeStyled.tabHeaderText,
-        homeStyled.right,
-      ]}
+      style={[homeStyled.itemBox, homeStyled.tabHeaderText, homeStyled.right]}
     >
       Price
     </Text>
@@ -89,7 +89,9 @@ const Header = React.memo(({ popular }) => (
     >
       {popular ? 'Vol(USD)' : 'Change'}
     </Text>
-    <View style={[homeStyled.btnTrade, { backgroundColor: COLORS.white }]} />
+    {!popular && (
+      <View style={[homeStyled.btnTrade, { backgroundColor: COLORS.white }]} />
+    )}
   </Row>
 ));
 
@@ -106,9 +108,12 @@ const MainTab = () => {
     navigation.navigate(routeNames.Trade, { tabIndex: 0 });
     batch(() => {
       dispatch(
-        actionSetDefaultPair({
-          selltoken: pool?.token1?.tokenId,
-          buytoken: pool?.token2?.tokenId,
+        actionInitSwapForm({
+          refresh: true,
+          defaultPair: {
+            selltoken: pool?.token1?.tokenId,
+            buytoken: pool?.token2?.tokenId,
+          },
         }),
       );
       dispatch(
