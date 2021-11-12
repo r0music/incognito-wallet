@@ -235,7 +235,7 @@ export const CONSTANTS = {
     : 'https://kovan.infura.io/v3/8c1ae0e623704f288eab73928a9243f5',
   BSC_HOST: isMainnet
     ? 'https://bsc-dataseed1.ninicoin.io'
-    : 'https://data-seed-prebsc-1-s1.binance.org:8545',
+    : 'https://data-seed-prebsc-1-s3.binance.org:8545',
   ETH_ERC20_DEPOSIT_GAS: 100000,
 };
 

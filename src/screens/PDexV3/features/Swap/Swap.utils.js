@@ -275,7 +275,7 @@ export async function getBestRateFromPancake(sourceToken, destToken, amount, cha
     pairList.push(pair);
   }
 
-  const sellAmount = JSBI.BigInt(amount * 10 ** sourceToken.decimals);
+  const sellAmount = JSBI.BigInt(amount * 10 ** (isSwapExactOut ? destToken.decimals : sourceToken.decimals));
   const seltTokenInst = new Token(chainID, sourceToken.address, sourceToken.decimals, sourceToken.symbol);
   const buyTokenInst = new Token(chainID, destToken.address, destToken.decimals, destToken.symbol);
   let result;
