@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   btnSmall: {
     height: 28,
-    width: 89,
+    width: 125,
     marginLeft: 5,
     borderRadius: 14,
     backgroundColor: COLORS.lightGrey19
@@ -106,7 +106,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
         <Row style={styles.row} centerVertical>
           <Text style={styles.title}>{`${token1.symbol} / ${token2.symbol}`}</Text>
           <BTNPrimary
-            title="Withdraw"
+            title="Remove liquidity"
             textStyle={styles.btnText}
             wrapperStyle={styles.btnSmall}
             onPress={onWithdrawPress}
@@ -122,7 +122,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
         <Row spaceBetween style={{ marginTop: 10 }}>
           {!!withdrawable && (
             <BTNBorder
-              title={withdrawing ? 'Claiming' : 'Claim'}
+              title="Withdraw rewards"
               onPress={onClaimReward}
               wrapperStyle={[{flex: 1}, !!share && { marginRight: 8 }]}
               textStyle={{color: COLORS.colorBlue}}

@@ -42,13 +42,13 @@ const HeaderView = React.memo(() => {
     if (activedTab === TAB_PORTFOLIO_ID) return (
       <Row spaceBetween style={styled.headerRow}>
         <ReturnLP />
-        <LPHistoryIcon style={{ position: 'relative', paddingRight: 0, justifyContent: 'flex-start' }} />
+        {/*<LPHistoryIcon style={{ position: 'relative', paddingRight: 0, justifyContent: 'flex-start' }} />*/}
       </Row>
     );
     return (
       <Row spaceBetween style={styled.headerRow}>
         <TradingVol24h />
-        <AddGroupIcon onPress={() => navigation.navigate(routeNames.CreatePool)} />
+        {/*<AddGroupIcon onPress={() => navigation.navigate(routeNames.CreatePool)} />*/}
       </Row>
     );
   };
