@@ -4,6 +4,7 @@ import { FONT, COLORS } from '@src/styles';
 export const styled = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.white,
   },
   groupButtonContainer: {
     marginTop: 50,
@@ -40,12 +41,12 @@ export const styled = StyleSheet.create({
   disabled: {
     opacity: 0.5,
   },
-  contentShieldBlance: {
-    flexDirection: 'row', 
+  contentShieldBalance: {
+    flexDirection: 'row',
     alignItems: 'center',
     marginTop: 10,
   },
-  btnHideBlance: {
+  btnHideBalance: {
     position: 'absolute',
     right: -15,
     top: -15,
@@ -87,40 +88,6 @@ export const styledHook = StyleSheet.create({
   },
 });
 
-export const styledBalance = StyleSheet.create({
-  container: {
-    marginTop: 42,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    color: COLORS.colorGreyBold,
-  },
-  balance: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superLarge,
-    lineHeight: FONT.SIZE.superLarge + 6,
-    color: COLORS.black,
-    maxWidth: '85%',
-    height: '100%',
-  },
-  pSymbol: {
-    fontFamily: FONT.NAME.specialRegular,
-    fontSize: FONT.SIZE.veryLarge,
-    lineHeight: FONT.SIZE.veryLarge + 6,
-    color: COLORS.black,
-    height: '100%',
-  },
-  balanceContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
-    width: '100%',
-  },
-});
-
 export const styledAddToken = StyleSheet.create({
   container: {
     marginTop: 35,
@@ -142,13 +109,6 @@ export const styledFollow = StyleSheet.create({
   },
 });
 
-export const extraStyled = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    flex: 1,
-  },
-});
-
 export const styledToken = StyleSheet.create({
   lastChild: {
     marginBottom: 0,
@@ -162,5 +122,62 @@ export const rightHeaderStyled = StyleSheet.create({
   },
   btnExportKey: {
     marginRight: 15,
+  },
+});
+
+export const headerStyled = StyleSheet.create({
+  container: {
+    height: 45,
+  },
+  icon: {
+    marginRight: 16
+  },
+  notify: {
+    position: 'absolute',
+    width: 8,
+    height: 8,
+    backgroundColor: COLORS.blue5,
+    right: 15,
+    borderRadius: 4
+  },
+});
+
+export const extraStyled = StyleSheet.create({
+  container: {
+  },
+});
+
+export const styledBalance = StyleSheet.create({
+  container: {
+    marginTop: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    fontFamily: FONT.NAME.regular,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
+    color: COLORS.lightGrey36,
+  },
+  balance: {
+    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.superLarge,
+    lineHeight: FONT.SIZE.superLarge + 6,
+    color: COLORS.black,
+    maxWidth: '85%',
+    height: '100%',
+  },
+  pSymbol: {
+    fontFamily: FONT.NAME.specialRegular,
+    fontSize: FONT.SIZE.veryLarge,
+    lineHeight: FONT.SIZE.veryLarge + 6,
+    color: COLORS.black,
+    height: '100%',
+  },
+  balanceContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    width: '100%',
   },
 });
