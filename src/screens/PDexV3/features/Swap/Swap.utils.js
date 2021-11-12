@@ -219,9 +219,9 @@ export async function getBestRateFromPancake(sourceToken, destToken, amount, cha
 
   [sourceToken, destToken].forEach(
     function(item) {
-      if (!listTokenDecimals[item.address]) {
+      if (!listTokenDecimals[item.address.toLowerCase()]) {
         listTokenDecimals[item.address] = {decimals: item.decimals, symbol: item.symbol};
-        listTokens.push[item.address];
+        listTokens.push(item.address);
       }
     }
   );
@@ -244,6 +244,10 @@ export async function getBestRateFromPancake(sourceToken, destToken, amount, cha
       continue;
     }
     const contractLPAddress = '0x' + listLPs[i].returnData.substring(26);
+    if (contractLPAddress === '0x0000000000000000000000000000000000000000') {
+      token_pair.splice(i, 1);
+      continue;
+    }
     const contractTemp = new web3.eth.Contract(PANCAKE_PAIR_ABI, contractLPAddress);
     const temp = contractTemp.methods.getReserves().encodeABI();
     const temp2 = contractTemp.methods.token0().encodeABI();
@@ -292,7 +296,7 @@ export async function getBestRateFromPancake(sourceToken, destToken, amount, cha
     );
   }
   if (result.length === 0) {
-    console.log('something went wrong');
+    console.log('Can not find the best path for this pair');
     return null, null;
   }
 
