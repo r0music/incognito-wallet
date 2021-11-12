@@ -89,7 +89,7 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
             poolId={item.poolId}
             onPressPool={() => {
               console.log(item.poolId);
-              onPressPool(item.poolId);
+              onPressPool(item.poolId, item);
             }}
           />
         )}

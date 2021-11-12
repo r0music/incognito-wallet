@@ -176,6 +176,21 @@ export const homeStyled = StyleSheet.create({
   labelTrade: {
     color: COLORS.white,
     fontSize: FONT.SIZE.superSmall,
+  },
+  tabStyled: {
+    backgroundColor: 'transparent',
+    borderRadius: 0,
+    padding: 0,
+    marginRight: 16,
+  },
+  titleStyled: {
+    color: COLORS.black,
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
+  },
+  tabStyledEnabled: {
+    borderBottomColor: COLORS.colorBlue,
+    borderBottomWidth: 2,
   }
 });
 
@@ -216,7 +231,6 @@ export const moreStyled = StyleSheet.create({
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.regular,
     color: COLORS.black,
-    lineHeight: FONT.SIZE.regular + 6,
     marginBottom: 20,
   }
 });

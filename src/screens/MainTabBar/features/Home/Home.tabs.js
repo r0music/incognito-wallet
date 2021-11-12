@@ -3,7 +3,7 @@ import { TouchableOpacity, View } from 'react-native';
 import { Tabs, Text } from '@src/components/core';
 import { TABS } from '@screens/MainTabBar/features/Home/Home.constant';
 import { batch, useDispatch, useSelector } from 'react-redux';
-import { listPoolsVerifySelector } from '@screens/PDexV3/features/Pools';
+import {listPoolsSelector, listPoolsVerifySelector, PoolsList} from '@screens/PDexV3/features/Pools';
 import { Row } from '@src/components';
 import { homeStyled } from '@screens/MainTabBar/MainTabBar.styled';
 import PropTypes from 'prop-types';
@@ -17,6 +17,7 @@ import {
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import { COLORS } from '@src/styles';
+import {liquidityActions} from '@screens/PDexV3/features/Liquidity';
 
 const Item = React.memo(({ pool, onItemPress, popular }) => {
   const {
@@ -96,8 +97,10 @@ const Header = React.memo(({ popular }) => (
 ));
 
 const tabStyle = {
-  titleStyled: homeStyled.mediumBlack,
+  titleStyled: homeStyled.titleStyled,
   titleDisabledStyled: homeStyled.tabDisable,
+  tabStyled: homeStyled.tabStyled,
+  tabStyledEnabled: homeStyled.tabStyledEnabled
 };
 
 const MainTab = () => {
@@ -123,6 +126,9 @@ const MainTab = () => {
         }),
       );
     });
+  };
+  const onPressPoolCell = (_, pool) => {
+    onItemPress(pool);
   };
   const renderItem = (pool, popular) => (
     <Item
@@ -150,6 +156,9 @@ const MainTab = () => {
       <View tabID={TABS.TAB_HOME_POPULAR_ID} label="24h Vol" {...tabStyle}>
         <Header popular />
         {orderBy(pools, 'volume', 'desc').map((item) => renderItem(item, true))}
+      </View>
+      <View tabID={TABS.TAB_HOME_FAVORITE_ID} label="Favorites" {...tabStyle}>
+        <PoolsList onPressPool={onPressPoolCell} listPools={pools} />
       </View>
     </Tabs>
   );
