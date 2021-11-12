@@ -17,7 +17,6 @@ import {
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import { COLORS } from '@src/styles';
-import {liquidityActions} from '@screens/PDexV3/features/Liquidity';
 
 const Item = React.memo(({ pool, onItemPress, popular }) => {
   const {
@@ -109,23 +108,25 @@ const MainTab = () => {
   const pools = useSelector(listPoolsVerifySelector);
   const onItemPress = async (pool) => {
     navigation.navigate(routeNames.Trade, { tabIndex: 0 });
-    batch(() => {
-      dispatch(
-        actionInitSwapForm({
-          refresh: true,
-          defaultPair: {
-            selltoken: pool?.token1?.tokenId,
-            buytoken: pool?.token2?.tokenId,
-          },
-        }),
-      );
-      dispatch(
-        actionChangeTab({
-          rootTabID: ROOT_TAB_TRADE,
-          tabID: TAB_SWAP_ID,
-        }),
-      );
-    });
+    setTimeout(() => {
+      batch(() => {
+        dispatch(
+          actionInitSwapForm({
+            refresh: true,
+            defaultPair: {
+              selltoken: pool?.token1?.tokenId,
+              buytoken: pool?.token2?.tokenId,
+            },
+          }),
+        );
+        dispatch(
+          actionChangeTab({
+            rootTabID: ROOT_TAB_TRADE,
+            tabID: TAB_SWAP_ID,
+          }),
+        );
+      });
+    }, 200);
   };
   const onPressPoolCell = (_, pool) => {
     onItemPress(pool);
