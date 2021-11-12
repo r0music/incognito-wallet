@@ -6,123 +6,6 @@ export const styled = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
   },
-  groupButtonContainer: {
-    marginTop: 50,
-    marginBottom: 35,
-  },
-  groupButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  btnStyle: {
-    width: '100%',
-    maxWidth: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 100,
-    padding: 13,
-  },
-  titleStyle: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-  },
-  themeBtnStyle: {
-    backgroundColor: COLORS.white,
-  },
-  themeBtnTitleStyle: {
-    color: COLORS.black,
-  },
-  guide: {
-    marginTop: 20,
-  },
-  hook: {
-    marginHorizontal: 25,
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-  contentShieldBalance: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  btnHideBalance: {
-    position: 'absolute',
-    right: -15,
-    top: -15,
-    width: 50,
-    height: 50,
-  },
-  iconHide:{
-    marginLeft: 5,
-  }
-});
-
-export const styledHook = StyleSheet.create({
-  btnClose: {
-    position: 'absolute',
-    top: 5,
-    right: 0,
-    width: 32,
-    height: 32,
-    zIndex: 1,
-    // backgroundColor: 'red',
-    alignItems: 'center',
-  },
-  title: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 3,
-    color: COLORS.white,
-    marginBottom: 5,
-  },
-  desc: {
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.small + 1,
-    lineHeight: FONT.SIZE.small + 6,
-    color: COLORS.white,
-  },
-  container: {
-    padding: 20,
-    paddingBottom: 0,
-  },
-});
-
-export const styledAddToken = StyleSheet.create({
-  container: {
-    marginTop: 35,
-    marginBottom: 30,
-  },
-  title: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    color: COLORS.black,
-  },
-});
-
-export const styledFollow = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  token: {
-    paddingHorizontal: 25,
-  },
-});
-
-export const styledToken = StyleSheet.create({
-  lastChild: {
-    marginBottom: 0,
-  },
-});
-
-export const rightHeaderStyled = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  btnExportKey: {
-    marginRight: 15,
-  },
 });
 
 export const headerStyled = StyleSheet.create({
@@ -142,11 +25,6 @@ export const headerStyled = StyleSheet.create({
   },
 });
 
-export const extraStyled = StyleSheet.create({
-  container: {
-  },
-});
-
 export const styledBalance = StyleSheet.create({
   container: {
     marginTop: 16,
@@ -160,17 +38,18 @@ export const styledBalance = StyleSheet.create({
     color: COLORS.lightGrey36,
   },
   balance: {
-    fontFamily: FONT.NAME.bold,
+    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superLarge,
-    lineHeight: FONT.SIZE.superLarge + 6,
+    lineHeight: FONT.SIZE.superLarge + 12,
     color: COLORS.black,
     maxWidth: '85%',
     height: '100%',
+    textAlign: 'center'
   },
   pSymbol: {
     fontFamily: FONT.NAME.specialRegular,
-    fontSize: FONT.SIZE.veryLarge,
-    lineHeight: FONT.SIZE.veryLarge + 6,
+    fontSize: FONT.SIZE.superLarge,
+    lineHeight: FONT.SIZE.superLarge + 12,
     color: COLORS.black,
     height: '100%',
   },
@@ -179,5 +58,124 @@ export const styledBalance = StyleSheet.create({
     alignItems: 'center',
     textAlign: 'center',
     width: '100%',
+  },
+  wrapBalance: {
+    minHeight: FONT.SIZE.superLarge + 12,
+  }
+});
+
+export const groupButtonStyled = StyleSheet.create({
+  container: {
+    marginTop: 24
+  },
+  tooltip: {
+    backgroundColor: COLORS.black,
+    borderRadius: 11,
+    marginBottom: 20,
+  },
+  triangleStyle: {
+    bottom: -30,
+    left: '48%',
+    borderBottomColor: COLORS.black,
+  },
+  btnClose: {
+    position: 'absolute',
+    top: 5,
+    right: 0,
+    width: 32,
+    height: 32,
+    zIndex: 1,
+    alignItems: 'center',
+  },
+  title: {
+    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 3,
+    color: COLORS.white,
+    marginBottom: 5,
+  },
+  desc: {
+    fontFamily: FONT.NAME.regular,
+    fontSize: FONT.SIZE.small + 1,
+    lineHeight: FONT.SIZE.small + 6,
+    color: COLORS.white,
+  },
+  wrapHook: {
+    padding: 20,
+    paddingBottom: 0,
+  },
+});
+
+export const tokenStyled = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+  },
+  wrapFirst: {
+    flex: 1,
+    paddingRight: 10
+  },
+  wrapSecond: {
+    flex: 1,
+    paddingRight: 10
+  },
+  wrapThird: {
+    flex: 1
+  },
+  rowHeight: {
+    height: FONT.SIZE.regular + 8,
+  },
+  blackText: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small + 1,
+    lineHeight: FONT.SIZE.regular + 8,
+    textAlign: 'left',
+  },
+  grayText: {
+    ...FONT.STYLE.regular,
+    fontSize: FONT.SIZE.small + 1,
+    lineHeight: FONT.SIZE.regular + 8,
+    color: COLORS.lightGrey36
+  },
+  centerVertical: {
+    justifyContent: 'center'
+  },
+  icon: {
+    width: 12,
+    height: 12
+  },
+  btnTrade: {
+    backgroundColor: COLORS.blue5,
+    height: 32,
+    width: 55,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4
+  },
+  labelTrade: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small + 1,
+    lineHeight: FONT.SIZE.regular + 8,
+    color: COLORS.white
+  },
+  headerLabel: {
+    ...FONT.STYLE.regular,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.regular,
+    color: COLORS.lightGrey36,
+  },
+  wrapHeader: {
+    marginTop: 5,
+    marginBottom: 10
+  }
+});
+
+export const styledAddToken = StyleSheet.create({
+  container: {
+    marginVertical: 10
+  },
+  title: {
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.regular,
+    color: COLORS.black,
   },
 });

@@ -31,7 +31,7 @@ import PropTypes from 'prop-types';
 import { showWalletBalanceSelector } from '@src/screens/Setting/Setting.selector';
 import { actionUpdateShowWalletBalance } from '@src/screens/Setting/Setting.actions';
 import srcHideBalanceIcon from '@src/assets/images/icons/ic_hide_blance.png';
-import srcShowBalanceIcon from '@src/assets/images/icons/ic_show_blance.png';
+import srcShowBalanceIcon from '@src/assets/images/icons/ic_show_blacne.png';
 import appConstant from '@src/constants/app';
 import StreamLineBottomBar from '@screens/Streamline/features/StreamLineBottomBar';
 import { actionRemoveFollowToken } from '@src/redux/actions/token';
@@ -45,7 +45,7 @@ import {
   extraStyled,
   styledToken,
   rightHeaderStyled,
-} from './Wallet.styled';
+} from './_Wallet.styled';
 import withWallet, { WalletContext } from './Wallet.enhance';
 
 const GroupButton = React.memo(() => {
