@@ -21,6 +21,7 @@ import {
 } from '@components/Icons';
 import {Row} from '@src/components';
 import PropTypes from 'prop-types';
+import {VectorSettingColor} from '@components/Icons/icon.setting';
 
 const Categories = [
   {
@@ -84,6 +85,15 @@ const Categories = [
         params: {
           showHeader: true
         },
+      },
+      {
+        route: routeNames.Setting,
+        label: routeNames.Setting,
+        icon: VectorSettingColor,
+        key: appConstant.DISABLED.SETTING,
+        params: {
+          showHeader: true
+        },
       }
     ]
   }
@@ -109,13 +119,13 @@ const CategoryItem = ({ item }) => {
   const Icon = item.icon;
   return (
     <TouchableOpacity
-      style={[homeStyled.category, isDisabled && { opacity: 0.7 }]}
+      style={[moreStyled.category, isDisabled && { opacity: 0.7 }]}
       onPress={onFeaturePress}
     >
       <View style={{ height: 32 }}>
         <Icon />
       </View>
-      <Text style={homeStyled.regularBlack}>{item.label}</Text>
+      <Text style={moreStyled.regularBlack}>{item.label}</Text>
     </TouchableOpacity>
   );
 };
@@ -126,13 +136,13 @@ const TabAssets = () => {
   const renderSections = (item) => (
     <View style={moreStyled.wrapCategory} key={item.label}>
       <Text style={moreStyled.sectionLabel}>{item.label}</Text>
-      <Row>
+      <Row style={{ flexWrap: 'wrap' }}>
         {item.data.map(renderCategory)}
       </Row>
     </View>
   );
   return (
-    <View style={styled.container}>
+    <View style={[styled.container, { paddingTop: 20 }]}>
       {Categories.map(renderSections)}
     </View>
   );

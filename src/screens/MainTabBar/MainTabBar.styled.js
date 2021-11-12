@@ -199,7 +199,7 @@ export const moreStyled = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
     paddingHorizontal: DEFAULT_PADDING,
-    paddingTop: 10
+    paddingTop: 10,
   },
   wrapBar: {
     width: ScreenWidth / 5,
@@ -213,9 +213,10 @@ export const moreStyled = StyleSheet.create({
     marginTop: 2
   },
   category: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    width: (ScreenWidth - (DEFAULT_PADDING * 2)) / 4,
+    marginBottom: 20
   },
   regularBlack: {
     ...FONT.STYLE.normal,
@@ -225,7 +226,7 @@ export const moreStyled = StyleSheet.create({
     marginTop: 2,
   },
   wrapCategory: {
-    marginTop: 30,
+    marginTop: 10,
   },
   sectionLabel: {
     ...FONT.STYLE.medium,
