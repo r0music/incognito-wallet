@@ -14,9 +14,11 @@ import replace from 'lodash/replace';
 import round from 'lodash/round';
 import {COLORS} from '@src/styles';
 import {TokenVerifiedIcon} from '@components/Icons';
+import {ActivityIndicator} from '@components/core';
 
 const TokenDefault = React.memo((props) => {
-  const { symbol, name, priceUsd, amount, pDecimals, decimalDigits, pricePrv, tokenId, change, onPress, isVerified } = props;
+  const { symbol, name, priceUsd, amount, pDecimals, decimalDigits, pricePrv, tokenId, change, onPress, isVerified, isGettingBalance, showGettingBalance } = props;
+  const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
   const isToggleUSD = useSelector(currencySelector);
   const balance = React.useMemo(() => {
     const price = isToggleUSD ? priceUsd : pricePrv;
@@ -44,7 +46,11 @@ const TokenDefault = React.memo((props) => {
         <Text numberOfLines={1} style={tokenStyled.grayText}>{name}</Text>
       </View>
       <View style={tokenStyled.wrapSecond}>
-        <Text numberOfLines={1} style={tokenStyled.blackText}>{balance.tokenAmount}</Text>
+        {shouldShowGettingBalance ?
+          <ActivityIndicator />
+          : (
+            <Text numberOfLines={1} style={tokenStyled.blackText}>{balance.tokenAmount}</Text>
+          )}
         <Text numberOfLines={1} style={tokenStyled.grayText}>{`${balance.amountCompare} ${symbol}`}</Text>
       </View>
       <View style={tokenStyled.wrapThird}>
