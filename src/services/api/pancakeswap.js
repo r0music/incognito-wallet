@@ -10,3 +10,19 @@ export async function getPancakeTokensNoCache() {
 export async function getPancakeTokens() {
   return cachePromise(KEYS.PancakeTokens, getPancakeTokensNoCache, 10);
 }
+
+export async function getPancakeTradingFee({paymentAddress, srcTokenID, destTokenID, srcAmt, destAmt}) {
+  let body = {
+    WalletAddress: paymentAddress,
+    SrcTokens: srcTokenID,
+    DestTokens: destTokenID,
+    SrcQties: srcAmt,
+    MaxAmountOut: destAmt,
+  };
+  return http.post('/trade/estimate-fees', body)
+    .then(res => {
+      console.log('res: ', res);
+      return res;
+    });
+}
+

@@ -5,7 +5,7 @@ import {
   ACCOUNT_CONSTANT,
   PrivacyVersion,
 } from 'incognito-chain-web-js/build/wallet';
-import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
+import { defaultAccountWalletSelector, defaultAccountSelector } from '@src/redux/selectors/account';
 import { ExHandler } from '@src/services/exception';
 import { change, reset } from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
@@ -16,7 +16,7 @@ import uniq from 'lodash/uniq';
 import { PRV, PRV_ID } from '@src/constants/common';
 import convert from '@src/utils/convert';
 import format from '@src/utils/format';
-import { getPancakeTokens } from '@services/api/pancakeswap';
+import { getPancakeTokens, getPancakeTradingFee } from '@services/api/pancakeswap';
 import BigNumber from 'bignumber.js';
 import floor from 'lodash/floor';
 import difference from 'lodash/difference';
@@ -44,6 +44,7 @@ import {
   ACTION_FETCHING_ORDER_DETAIL,
   ACTION_FETCHED_ORDER_DETAIL,
   ACTION_SET_DEFAULT_PAIR,
+  PANCAKE_CHAIN_ID,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -56,8 +57,9 @@ import {
   slippagetoleranceSelector,
   swapSelector,
   defaultPairSelector,
+  getPancakeTokenParamReqByTokenIDSelector,
 } from './Swap.selector';
-import { calMintAmountExpected } from './Swap.utils';
+import { calMintAmountExpected, getBestRateFromPancake } from './Swap.utils';
 
 export const actionSetPercent = (payload) => ({
   type: ACTION_SET_PERCENT,
@@ -126,6 +128,7 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
       selltoken,
       buytoken,
     };
+    
     const slippagetolerance = slippagetoleranceSelector(state);
     switch (field) {
     case formConfigs.selltoken: {
@@ -158,6 +161,10 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
       return;
     }
     await dispatch(actionFetching());
+
+    // get estimate trade from pancake
+    // const {paths, outputs, tradingFee} =  await estimateTradePancake(state, payload);
+
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const data = await pDexV3Inst.getEstimateTrade(payload);
     await dispatch(actionFetched(data));
@@ -202,6 +209,63 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
     new ExHandler(error).showErrorToast();
   } finally {
     dispatch(actionSetFocusToken(''));
+  }
+};
+
+const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buyamount}) => {
+  try {
+    console.log('selltoken: ', selltoken);
+    console.log('buytoken: ', buytoken);
+    console.log('sellamount: ', sellamount);
+    console.log('buyamount: ', buyamount);
+    
+    const getPancakeTokenParamReq = getPancakeTokenParamReqByTokenIDSelector(state);
+    const tokenSellPancake = getPancakeTokenParamReq(selltoken);
+    const tokenBuyPancake = getPancakeTokenParamReq(buytoken);
+    if (tokenSellPancake == null || tokenBuyPancake == null) {
+      console.log('This pair is not existed on pancake');
+      return null;
+    }
+
+    let payloadPancake = {
+      sourceToken: tokenSellPancake,
+      destToken: tokenBuyPancake,
+      chainID: PANCAKE_CHAIN_ID,
+    };
+    if (sellamount) {
+      payloadPancake.amount = sellamount;
+      payloadPancake.isSwapExactOut = false; 
+    } else if (buyamount) {
+      payloadPancake.amount = buyamount;
+      payloadPancake.isSwapExactOut = true; 
+    }
+    const {sourceToken, destToken, amount, chainID, isSwapExactOut} = payloadPancake;
+    console.log('payloadPancake: ', payloadPancake);
+    const [paths, outputs] = await getBestRateFromPancake(sourceToken, destToken, amount, chainID, isSwapExactOut);
+    
+    if (!paths || paths.length === 0) {
+      console.log('Can not found best route for this pair');
+      return null;
+    }
+
+    const account = defaultAccountSelector(state);
+    console.log('account: ', account);
+    const tradingFee = await getPancakeTradingFee({
+      paymentAddress: account.PaymentAddress,
+      srcTokenID: selltoken, 
+      destTokenID: buytoken, 
+      srcAmt: sellamount, 
+      destAmt: buyamount,
+    });
+    console.log('tradingFee: ', tradingFee);
+    return {
+      paths, 
+      outputs,
+      tradingFee,
+    };
+  }catch(e) {
+    console.log('Error when get best route on pancake: ', e);
+    return null;
   }
 };
 
@@ -256,6 +320,8 @@ export const actionFetchedPairs = (payload) => ({
 
 export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
   let pairs = [];
+  let pDEXPairs = [];
+  let pancakeTokens = [];
   try {
     let state = getState();
     const account = defaultAccountWalletSelector(state);
@@ -264,7 +330,7 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
     if (!refresh && listPairs.length > 0) {
       return listPairs;
     }
-    let [pDEXPairs = [], pancakeTokens = []] = await Promise.all([
+    [pDEXPairs = [], pancakeTokens = []] = await Promise.all([
       pDexV3Inst.getListPair(),
       getPancakeTokens()
     ]);
@@ -273,12 +339,12 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
         (prev = prev.concat([current.tokenId1, current.tokenId2])),
       [],
     );
-    pancakeTokens = pancakeTokens.map(item => item.tokenID);
-    pairs = uniq([...pDEXPairs, ...pancakeTokens]);
+    const pancakeTokenIDs = pancakeTokens.map(item => item.tokenID);
+    pairs = uniq([...pDEXPairs, ...pancakeTokenIDs]);
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
-  await dispatch(actionFetchedPairs(pairs));
+  await dispatch(actionFetchedPairs({pairs, pancakeTokens}));
   return pairs;
 };
 

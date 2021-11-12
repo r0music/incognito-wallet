@@ -209,7 +209,7 @@ const MULTI_CALL_INST = new web3.eth.Contract(MULTI_CALL_ABI, MULTI_CALL_CONTRAC
 const FACTORY_INST = new web3.eth.Contract(PANCAKE_FACOTRY_ABI, PANCAKE_FACTORY_ADDRESS);
 const PANCKAE_ROUTER_INST = new web3.eth.Contract(PANCAKE_ABI, PANCAKE_ROUTER_V2);
 
-async function getBestRate(sourceToken, destToken, amount, chainID, isSwapExactOut) {
+export async function getBestRateFromPancake(sourceToken, destToken, amount, chainID, isSwapExactOut) {
   let pairList = [];
   // get list LPs
   let abiCallGetLPs = [];
@@ -236,6 +236,7 @@ async function getBestRate(sourceToken, destToken, amount, chainID, isSwapExactO
   }
 
   const listLPs = await MULTI_CALL_INST.methods.tryAggregate(false, abiCallGetLPs).call();
+  console.log('listLPs: ', listLPs);
   let getPairResrved = [];
   for (let i = 0; i < listLPs.length; i++) {
     if (!listLPs[i].success) {
@@ -251,6 +252,7 @@ async function getBestRate(sourceToken, destToken, amount, chainID, isSwapExactO
   }
 
   const listReserved = await MULTI_CALL_INST.methods.tryAggregate(false, getPairResrved).call();
+  console.log('listReserved: ', listReserved);
   if (listReserved.length < 2) {
     console.log('no LPs exist!!!');
     return null, null;

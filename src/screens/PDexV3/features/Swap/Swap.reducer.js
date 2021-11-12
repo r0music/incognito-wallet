@@ -38,6 +38,7 @@ const initialState = {
   percent: 0,
   swaping: false,
   pairs: [],
+  pancakeTokens: [],
   swapHistory: {
     isFetching: false,
     isFetched: false,
@@ -113,7 +114,8 @@ export default (state = initialState, action) => {
   case ACTION_FETCHED_LIST_PAIRS: {
     return {
       ...state,
-      pairs: action.payload,
+      pairs: action.payload.pairs,
+      pancakeTokens: action.payload.pancakeTokens,
     };
   }
   case ACTION_FETCH_SWAP: {

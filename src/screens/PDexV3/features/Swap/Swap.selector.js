@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import isNaN from 'lodash/isNaN';
+import memoize from 'memoize-one';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import format from '@src/utils/format';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
@@ -411,4 +412,28 @@ export const orderDetailSelector = createSelector(
 export const defaultPairSelector = createSelector(
   swapSelector,
   ({ selltoken, buytoken }) => ({ selltoken, buytoken }),
+);
+
+export const getPancakeTokenByTokenIDSelector = createSelector(
+  swapSelector,
+  ({pancakeTokens}) =>
+    memoize((tokenID) => {
+      return pancakeTokens.find((item) => item.tokenID === tokenID);
+    }),
+);
+
+export const getPancakeTokenParamReqByTokenIDSelector = createSelector(
+  getPancakeTokenByTokenIDSelector,
+  (getPancakeTokenByTokenID) =>
+    memoize((tokenID) => {
+      const token = getPancakeTokenByTokenID(tokenID);
+      if (token) {
+        return {
+          address: token.contractID,
+          decimals: token.decimals,
+          symbol: token.symbol,
+        };
+      }
+      return null;
+    }),
 );
