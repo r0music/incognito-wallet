@@ -214,8 +214,8 @@ export async function getBestRateFromPancake(sourceToken, destToken, amount, cha
   // get list LPs
   let abiCallGetLPs = [];
   let token_pair = [];
-  let listTokens = listCommon;
-  let listTokenDecimals = listDecimals;
+  let listTokens = listCommon.slice();
+  let listTokenDecimals = Object.assign({}, listDecimals);
 
   [sourceToken, destToken].forEach(
     function(item) {
@@ -236,16 +236,14 @@ export async function getBestRateFromPancake(sourceToken, destToken, amount, cha
   }
 
   const listLPs = await MULTI_CALL_INST.methods.tryAggregate(false, abiCallGetLPs).call();
-  console.log('listLPs: ', listLPs);
+  let listPairExist = [];
   let getPairResrved = [];
   for (let i = 0; i < listLPs.length; i++) {
     if (!listLPs[i].success) {
-      token_pair.splice(i, 1);
       continue;
     }
     const contractLPAddress = '0x' + listLPs[i].returnData.substring(26);
     if (contractLPAddress === '0x0000000000000000000000000000000000000000') {
-      token_pair.splice(i, 1);
       continue;
     }
     const contractTemp = new web3.eth.Contract(PANCAKE_PAIR_ABI, contractLPAddress);
@@ -253,6 +251,7 @@ export async function getBestRateFromPancake(sourceToken, destToken, amount, cha
     const temp2 = contractTemp.methods.token0().encodeABI();
     getPairResrved.push([contractLPAddress, temp]);
     getPairResrved.push([contractLPAddress, temp2]);
+    listPairExist.push(token_pair[i]);
   }
 
   const listReserved = await MULTI_CALL_INST.methods.tryAggregate(false, getPairResrved).call();
@@ -266,9 +265,9 @@ export async function getBestRateFromPancake(sourceToken, destToken, amount, cha
     const reserve0 = JSBI.BigInt('0x' + listReserved[i].returnData.substring(2, 66), 16);
     const reserve1 = JSBI.BigInt('0x' + listReserved[i].returnData.substring(66, 130), 16);
     const token0 = '0x' + listReserved[i + 1].returnData.substring(26);
-    let token1 = token_pair[i / 2].token1;
-    if (token_pair[i / 2].token0.toLowerCase() !== token0.toLowerCase()) {
-      token1 = token_pair[i / 2].token0;
+    let token1 = listPairExist[i / 2].token1;
+    if (listPairExist[i / 2].token0.toLowerCase() !== token0.toLowerCase()) {
+      token1 = listPairExist[i / 2].token0;
     }
     const token0Ins = new Token(chainID, token0, listTokenDecimals[token0].decimals, listTokenDecimals[token0].symbol);
     const token1Ins = new Token(chainID, token1, listTokenDecimals[token1].decimals, listTokenDecimals[token1].symbol);
