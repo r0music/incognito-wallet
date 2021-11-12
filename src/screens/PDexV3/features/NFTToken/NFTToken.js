@@ -57,11 +57,11 @@ const NFTToken = (props) => {
     () => [
       {
         value:
-          'Tickets play a special role on pDEX. They unlock actions like swapping, placing limit orders, or providing liquidity. Because every ticket is unique, and because only you can access your tickets, your actions are kept private, and none of them can be linked to each other.',
+          'Tickets play a special role on pDEX. They allow you to perform actions like placing limit orders and investing in pools. They also act as receipts for those actions. With these tickets, you are able to withdraw the liquidity you provided, or cancel your limit order before it fills.',
       },
       {
         value:
-          'A ticket is freed up once an action is complete. If you wish to make multiple transactions at the same time, you may want to mint more tickets. You don\'t have to keep track of them, and you can mint as many as you like.',
+          'A ticket is freed up once an action is complete. If you wish to make multiple transactions at the same time, you will be prompted to mint more tickets. You don\'t have to keep track of them, and you can mint as many as you like.',
       },
     ],
     [],

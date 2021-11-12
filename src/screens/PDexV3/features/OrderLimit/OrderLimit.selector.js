@@ -528,6 +528,7 @@ export const mappingOrderHistorySelector = createSelector(
         priceStr,
         amountStr,
         visibleBtnAction,
+        cancelTxId,
       };
       return result;
     } catch (error) {
