@@ -39,6 +39,7 @@ const InputsGroup = React.memo(() => {
   const onChangeInput = (newText) => dispatch(liquidityActions.actionChangeInputContribute(newText));
   const onChangeOutput = (newText) => dispatch(liquidityActions.actionChangeOutputContribute(newText));
   const onMaxInput = () => dispatch(liquidityActions.actionChangeInputContribute(inputAmount.maxOriginalAmountText));
+  const onMaxOutput = () => dispatch(liquidityActions.actionChangeOutputContribute(outputAmount.maxOriginalAmountText));
   const amountSelector = useSelector(contributeSelector.inputAmountSelector);
   const inputAmount = amountSelector(formConfigsContribute.formName, formConfigsContribute.inputToken);
   const outputAmount = amountSelector(formConfigsContribute.formName, formConfigsContribute.outputToken);
@@ -93,7 +94,10 @@ const InputsGroup = React.memo(() => {
           editableInput={!outputAmount.loadingBalance}
           loadingBalance={outputAmount.loadingBalance}
           rightHeader={(!!outputAmount && !!outputAmount?.balanceStr) && (
-            <Text style={styled.balanceStr}>{`Balance: ${outputAmount?.balanceStr}`}</Text>
+            <Row centerVertical>
+              <Text style={styled.balanceStr}>{`Balance: ${outputAmount?.balanceStr}`}</Text>
+              <MaxIcon onPress={onMaxOutput} />
+            </Row>
           )}
         />
       </View>

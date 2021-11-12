@@ -143,7 +143,9 @@ const TabAssets = () => {
   );
   return (
     <View style={[styled.container, { paddingTop: 20 }]}>
-      {Categories.map(renderSections)}
+      <ScrollView>
+        {Categories.map(renderSections)}
+      </ScrollView>
     </View>
   );
 };
