@@ -31,7 +31,7 @@ const styled = StyleSheet.create({
 
 const HEADER_FACTORIES = [
   {
-    text: '#Name / Vol',
+    text: 'Name / Vol',
     style: {
       flex: 1,
       marginRight: 15,
@@ -40,7 +40,7 @@ const HEADER_FACTORIES = [
     },
   },
   {
-    text: '#APY',
+    text: 'APY',
     style: {
       width: 80,
       flexDirection: 'row',

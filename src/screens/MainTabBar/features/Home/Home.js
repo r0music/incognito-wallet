@@ -10,6 +10,7 @@ import {actionFetchPools, isFetchingSelector} from '@screens/PDexV3/features/Poo
 import AppMaintain from '@components/AppMaintain';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import appConstant from '@src/constants/app';
+import BigVolume from '@screens/MainTabBar/features/Home/Home.volume';
 import Banner from './Home.banner';
 import withHome from './Home.enhance';
 
@@ -39,7 +40,7 @@ const TabHome = () => {
       >
         <Banner />
         {/*<NotificationBar />*/}
-        {/*<BigVolume />*/}
+        <BigVolume />
         {/*<Category />*/}
         <MainTab />
       </ScrollView>

@@ -68,7 +68,7 @@ const Home = ({ hideBackButton }) => {
     </View>
   ), []);
   const _TabPortfolio = React.useMemo(() => (
-    <View tabID={TAB_PORTFOLIO_ID} label="Your portfolio" {...tabStyled}>
+    <View tabID={TAB_PORTFOLIO_ID} label="My Portfolio" {...tabStyled}>
       <Portfolio />
     </View>
   ), []);

@@ -159,7 +159,8 @@ export const homeStyled = StyleSheet.create({
   mainVolume: {
     paddingHorizontal: 16,
     paddingTop: 14,
-    paddingBottom: 18
+    paddingBottom: 18,
+    marginTop: 20
   },
   wrapMainVolume: {
   },

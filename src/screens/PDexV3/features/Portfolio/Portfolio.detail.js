@@ -118,7 +118,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
             <Hook key={hook?.label} {...hook} labelStyle={styles.leftText} valueTextStyle={styles.rightText} style={styles.wrapHook} />
           ))}
         </ScrollView>
-        {!validNFT && <Text style={styles.warning}>You cant withdraw your liquidity and reward now, your current NFT amount is zero</Text>}
+        {!validNFT && <Text style={styles.warning}>You don&apos;t have any spare tickets to make this transaction. Wait for one to free up, or mint another.</Text>}
         <Row spaceBetween style={{ marginTop: 10 }}>
           {!!withdrawable && (
             <BTNBorder
