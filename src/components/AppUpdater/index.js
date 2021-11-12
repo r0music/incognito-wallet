@@ -136,14 +136,9 @@ class AppUpdater extends PureComponent {
   };
 
   async checkNewVersion() {
-    const { logEvent } = this.props;
     if (ignored) {
       return;
     }
-
-    const metadata = await codePush.getUpdateMetadata();
-    logEvent(JSON.stringify(metadata));
-
     try {
       await codePush.sync(
         {
