@@ -50,58 +50,43 @@ const InputsGroup = React.memo(() => {
     return outputAmount.error;
   }, [outputAmount.error]);
   return (
-    <>
-      <Row centerVertical spaceBetween style={[styled.padding, styled.headerBox]}>
-        {(!!inputToken && !!outputToken) && (<Text style={styled.mediumText}>{`${inputToken.symbol} / ${outputToken.symbol}`}</Text>)}
-        <LPHistoryIcon />
-      </Row>
-      <View style={styled.inputBox}>
-        <Field
-          component={TradeInputAmount}
-          name={formConfigsContribute.inputToken}
-          symbol={inputToken && inputToken?.symbol}
-          srcIcon={inputToken && inputToken?.iconUrl}
-          validate={[
-            _validateInput,
-            ...validator.combinedAmount,
-          ]}
-          visibleHeader
-          label="Amount"
-          onChange={onChangeInput}
-          editableInput={!inputAmount.loadingBalance}
-          loadingBalance={inputAmount.loadingBalance}
-          rightHeader={((!!inputAmount && !!inputAmount.balanceStr)) && (
-            <Row centerVertical>
-              <Text style={styled.balanceStr}>{`Balance: ${inputAmount?.balanceStr}`}</Text>
-              <MaxIcon onPress={onMaxInput} />
-            </Row>
-          )}
-        />
-        <AddBreakLine />
-        <Field
-          component={TradeInputAmount}
-          name={formConfigsContribute.outputToken}
-          hasInfinityIcon={outputAmount.maxOriginalAmount}
-          symbol={outputToken && outputToken?.symbol}
-          srcIcon={outputToken && outputToken?.iconUrl}
-          validate={[
-            _validateOutput,
-            ...validator.combinedAmount,
-          ]}
-          visibleHeader
-          label="Amount"
-          onChange={onChangeOutput}
-          editableInput={!outputAmount.loadingBalance}
-          loadingBalance={outputAmount.loadingBalance}
-          rightHeader={(!!outputAmount && !!outputAmount?.balanceStr) && (
-            <Row centerVertical>
-              <Text style={styled.balanceStr}>{`Balance: ${outputAmount?.balanceStr}`}</Text>
-              <MaxIcon onPress={onMaxOutput} />
-            </Row>
-          )}
-        />
-      </View>
-    </>
+    <View style={styled.inputBox}>
+      <Field
+        component={TradeInputAmount}
+        name={formConfigsContribute.inputToken}
+        symbol={inputToken && inputToken?.symbol}
+        srcIcon={inputToken && inputToken?.iconUrl}
+        validate={[
+          _validateInput,
+          ...validator.combinedAmount,
+        ]}
+        visibleHeader
+        label="Amount"
+        hasInfinityIcon
+        onChange={onChangeInput}
+        editableInput={!inputAmount.loadingBalance}
+        loadingBalance={inputAmount.loadingBalance}
+        onPressInfinityIcon={onMaxInput}
+      />
+      <AddBreakLine />
+      <Field
+        component={TradeInputAmount}
+        name={formConfigsContribute.outputToken}
+        hasInfinityIcon
+        symbol={outputToken && outputToken?.symbol}
+        srcIcon={outputToken && outputToken?.iconUrl}
+        validate={[
+          _validateOutput,
+          ...validator.combinedAmount,
+        ]}
+        visibleHeader
+        label="Amount"
+        onChange={onChangeOutput}
+        editableInput={!outputAmount.loadingBalance}
+        loadingBalance={outputAmount.loadingBalance}
+        onPressInfinityIcon={onMaxOutput}
+      />
+    </View>
   );
 });
 
@@ -173,7 +158,7 @@ const Contribute = ({
   return (
     <>
       <View style={styled.container}>
-        <Header style={styled.padding} title={LIQUIDITY_MESSAGES.addLiquidity} />
+        <Header style={styled.padding} />
         <ScrollView
           refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onInitContribute} />)}
           showsVerticalScrollIndicator={false}

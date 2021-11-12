@@ -70,7 +70,7 @@ const enhance = (WrappedComp) => (props) => {
     await setLoading(false);
     console.timeEnd('CONFIGS_APP');
     if (!hasError) {
-      navigation.navigate(routeNames.Home);
+      navigation.navigate(routeNames.CreatePool);
     }
   };
 
