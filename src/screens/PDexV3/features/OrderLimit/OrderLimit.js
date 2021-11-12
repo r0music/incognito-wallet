@@ -66,7 +66,7 @@ const OrderLimit = (props) => {
           )}
         </Form>
         <ButtonBasic
-          btnStyle={{ backgroundColor: mainColor }}
+          btnStyle={{ backgroundColor: mainColor, borderRadius: 8 }}
           title={btnActionTitle}
           disabled={disabledBtn}
           onPress={handleConfirm}

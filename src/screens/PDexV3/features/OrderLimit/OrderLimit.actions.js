@@ -12,7 +12,7 @@ import {
 } from '@screens/PDexV3/features/Pools';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import isEmpty from 'lodash/isEmpty';
-import { change, reset } from 'redux-form';
+import { change, destroy, reset } from 'redux-form';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import { batch } from 'react-redux';
 import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
@@ -188,8 +188,8 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
   try {
     await dispatch(actionIniting(true));
     batch(() => {
-      dispatch(actionSetPercent(0));
       dispatch(reset(formConfigs.formName));
+      dispatch(actionSetPercent(0));
     });
     let state = getState();
     const pools = listPoolsIDsSelector(state);
@@ -313,8 +313,7 @@ export const actionFetchOrdersHistory = () => async (dispatch, getState) => {
     const state = getState();
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const pool = poolSelectedDataSelector(state);
-    const { isFetching } = orderHistorySelector(state);
-    if (!pool || isFetching) {
+    if (!pool) {
       return;
     }
     const orders =

@@ -6,6 +6,7 @@ import { COLORS, FONT } from '@src/styles';
 import { actionToggleModal } from '@src/components/Modal';
 import { TradeSuccessModal } from '@screens/PDexV3/features/Trade';
 import { actionReset as actionResetChart } from '@screens/PDexV3/features/Chart';
+import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import { orderLimitDataSelector } from './OrderLimit.selector';
 import {
   actionInit,
@@ -15,9 +16,12 @@ import {
   actionResetOrdersHistory,
 } from './OrderLimit.actions';
 import { TAB_BUY_ID, TAB_SELL_ID } from './OrderLimit.constant';
+import { NFTTokenModal } from '../NFTToken';
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
+  const { sellColor, buyColor, cfmTitle } = useSelector(orderLimitDataSelector);
+  const { nftTokenAvailable } = useSelector(nftTokenDataSelector);
   const handleInitOrderLimit = (refresh) => dispatch(actionInit(refresh));
   const handleUnmount = () => {
     batch(() => {
@@ -26,7 +30,6 @@ const enhance = (WrappedComp) => (props) => {
     });
   };
   const actionChangeTab = () => handleInitOrderLimit(false);
-  const { sellColor, buyColor, cfmTitle } = useSelector(orderLimitDataSelector);
   const tabsFactories = [
     {
       tabID: TAB_BUY_ID,
@@ -67,6 +70,15 @@ const enhance = (WrappedComp) => (props) => {
   ];
   const handleConfirm = async () => {
     try {
+      if (!nftTokenAvailable) {
+        return dispatch(
+          actionToggleModal({
+            visible: true,
+            shouldCloseModalWhenTapOverlay: true,
+            data: <NFTTokenModal />,
+          }),
+        );
+      }
       const tx = await dispatch(actionBookOrder());
       if (tx) {
         dispatch(

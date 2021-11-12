@@ -7,7 +7,7 @@ import incognito from '@assets/images/new-icons/incognito.png';
 export const Icon = React.memo((props) => {
   const { iconUrl: uri, style } = props;
   const [error, setError] = React.useState(false);
-  if (error) {
+  if (error || !uri) {
     return (
       <Image
         style={[{ width: 20, height: 20, borderRadius: 20 }, style]}

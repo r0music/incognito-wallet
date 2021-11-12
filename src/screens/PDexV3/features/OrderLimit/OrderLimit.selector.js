@@ -229,7 +229,6 @@ export const orderLimitDataSelector = createSelector(
     feeTokenData,
     rateData,
     pool,
-    { nftTokenAvailable },
   ) => {
     const sellInputAmount = getInputAmount(formConfigs.selltoken);
     const buyInputAmount = getInputAmount(formConfigs.buytoken);
@@ -281,13 +280,7 @@ export const orderLimitDataSelector = createSelector(
     const poolSizeStr = `${sellInputAmount?.poolValueStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.poolValueStr} ${buyInputAmount?.symbol}`;
     const editableInput = !initing;
     const calculating = initing;
-    const disabledBtn =
-      calculating ||
-      !isValid(formConfigs.formName)(state) ||
-      !nftTokenAvailable;
-    if (!nftTokenAvailable) {
-      btnActionTitle = 'Not enough NFT token';
-    }
+    const disabledBtn = calculating || !isValid(formConfigs.formName)(state);
     if (calculating) {
       btnActionTitle = 'Calculating...';
     }
@@ -493,7 +486,10 @@ export const mappingOrderHistorySelector = createSelector(
       const percentStr = `Filled ${percent}%`;
       const percentStr1 = `${percent}%`;
       const time = fromStorage ? requestime : requestime * 1000;
-      const timeStr = format.formatDateTime(new Date(time).getTime());
+      const timeStr = format.formatDateTime(
+        new Date(time).getTime(),
+        'DD MMM HH:mm',
+      );
       const withdrawing = withdrawingOrderTxs.includes(requestTx);
       const rate = getPairRate({
         token1Value: amount,

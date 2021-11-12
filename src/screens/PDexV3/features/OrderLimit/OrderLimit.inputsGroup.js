@@ -392,6 +392,8 @@ const InputsGroup = React.memo(() => {
     case TAB_SELL_ID: {
       return (
         <>
+          <RateInput />
+
           <SellInput />
           <SelectPercentAmountInput />
           <BuyInput />
@@ -401,6 +403,7 @@ const InputsGroup = React.memo(() => {
     case TAB_BUY_ID: {
       return (
         <>
+          <RateInput />
           <BuyInput />
           <SelectPercentAmountInput />
           <SellInput />
@@ -413,7 +416,6 @@ const InputsGroup = React.memo(() => {
   };
   return (
     <View style={styled.container}>
-      <RateInput />
       {renderMain()}
       <Balance />
     </View>
