@@ -1,18 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import incognito from '@assets/images/new-icons/incognito.png';
-import ImageCached from '@src/components/ImageCached';
+import { Image } from 'react-native';
 
-export const Icon = React.memo((props) => {
-  const { iconUrl: uri, style } = props;
+export const Icon = (props) => {
+  const { iconUrl, style } = props;
   return (
-    <ImageCached
+    <Image
       style={[{ width: 20, height: 20 }, style]}
-      uri={uri}
-      defaultImage={incognito}
+      source={{ uri: iconUrl }}
+      defaultSource={incognito}
     />
   );
-});
+};
 
 Icon.defaultProps = {
   style: null,
