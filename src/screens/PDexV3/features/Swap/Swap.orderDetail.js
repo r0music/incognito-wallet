@@ -61,7 +61,7 @@ const SwapOrderDetail = () => {
       },
       {
         label: 'Rate',
-        customValue: (
+        customValue: order?.rateStr && (
           <Row style={orderDetailStyled.rowValue}>
             <Text style={orderDetailStyled.value}>{order?.rateStr}</Text>
           </Row>

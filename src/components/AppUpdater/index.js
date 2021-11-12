@@ -208,16 +208,16 @@ class AppUpdater extends PureComponent {
     const disabled = !(updating || downloading || !!news) && !news;
     return (
       <View>
-        <Dialog visible={updating || downloading} dialogStyle={styles.dialog}>
-          <DialogContent>
-            <View style={styles.hook}>
-              <Text style={styles.title}>Update new version</Text>
-              {!downloading
-                ? this.renderDownloadModal()
-                : this.renderInstallModal()}
-            </View>
-          </DialogContent>
-        </Dialog>
+        {/*<Dialog visible={updating || downloading} dialogStyle={styles.dialog}>*/}
+        {/*  <DialogContent>*/}
+        {/*    <View style={styles.hook}>*/}
+        {/*      <Text style={styles.title}>Update new version</Text>*/}
+        {/*      {!downloading*/}
+        {/*        ? this.renderDownloadModal()*/}
+        {/*        : this.renderInstallModal()}*/}
+        {/*    </View>*/}
+        {/*  </DialogContent>*/}
+        {/*</Dialog>*/}
         <Dialog
           visible={!!news}
           onTouchOutside={this.closeNewsDialog}

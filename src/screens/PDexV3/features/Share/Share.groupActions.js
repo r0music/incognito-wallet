@@ -99,14 +99,7 @@ export const GroupActions = ({
         </TouchableOpacity>
         {hasChart && (
           <Row style={styled.block2}>
-            <ButtonRefresh
-              style={{ marginRight: 10 }}
-              onPress={onPressRefresh}
-            />
             <ButtonChart style={{ marginRight: 10 }} onPress={onPressChart} />
-            <BtnOrderHistory
-              onPress={() => navigation.navigate(routeNames.TradeOrderHistory)}
-            />
           </Row>
         )}
       </Row>

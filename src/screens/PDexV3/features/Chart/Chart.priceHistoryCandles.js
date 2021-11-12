@@ -23,9 +23,10 @@ const styled = StyleSheet.create({
     marginBottom: 16,
   },
   btnStyle: {
-    minWidth: 40,
     height: 24,
     backgroundColor: COLORS.lightGrey19,
+    flex: 1,
+    marginRight: 10,
   },
   titleStyle: {
     fontFamily: FONT.NAME.medium,
@@ -41,7 +42,7 @@ const periods = [
   '4h',
   '1d',
   'W',
-  'M',
+  // 'M',
   // 'Y'
 ];
 
@@ -55,9 +56,12 @@ export const Period = React.memo(({ handleFetchData }) => {
         marginTop: 10,
       }}
     >
-      {periods?.map((period) => (
+      {periods?.map((period, index, arr) => (
         <ButtonBasic
-          btnStyle={styled.btnStyle}
+          btnStyle={{
+            ...styled.btnStyle,
+            ...(index === arr.length - 1 ? { marginRight: 0 } : {}),
+          }}
           titleStyle={{
             ...styled.titleStyle,
             ...(period === actived ? { color: COLORS.colorTradeBlue } : {}),
@@ -115,10 +119,10 @@ const PriceHistoryCandles = () => {
         period = 'P1W';
         intervals = 'P1Y';
         break;
-      case 'M':
-        period = 'P1M';
-        intervals = 'P1Y';
-        break;
+        // case 'M':
+        //   period = 'P1M';
+        //   intervals = 'P1Y';
+        //   break;
         // case 'Y':
         //   period = 'P1M';
         //   intervals = 'P12M';

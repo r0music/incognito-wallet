@@ -1,4 +1,4 @@
-import { BtnOrderHistory, ButtonRefresh } from '@src/components/Button';
+import { BtnOrderHistory, ButtonTrade } from '@src/components/Button';
 import React from 'react';
 import { View } from 'react-native';
 import PropTypes from 'prop-types';
@@ -6,7 +6,6 @@ import { Tabs1 } from '@src/components/core/Tabs';
 import { createForm } from '@components/core/reduxForm';
 import { useSelector } from 'react-redux';
 import LoadingTx from '@src/components/LoadingTx';
-import { Row } from '@src/components';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { KeyboardAwareScrollView, RefreshControl } from '@src/components/core';
@@ -21,6 +20,7 @@ import TabSimple from './Swap.simpleTab';
 import TabPro from './Swap.proTab';
 import withSwap from './Swap.enhance';
 import { swapInfoSelector } from './Swap.selector';
+import SwapInputsGroup from './Swap.inputsGroup';
 
 const initialFormValues = {
   selltoken: '',
@@ -75,20 +75,24 @@ const Swap = (props) => {
         }
       >
         <Form>
-          {({ handleSubmit }) => (
+          {() => (
             <>
+              <SwapInputsGroup />
+              <ButtonTrade
+                btnStyle={styled.btnTrade}
+                onPress={handleConfirm}
+                title={swapInfo?.btnSwapText || ''}
+                disabled={!!swapInfo?.disabledBtnSwap}
+              />
               <Tabs1
                 rootTabID={ROOT_TAB_ID}
                 styledTabList={tabsStyled.styledTabList}
-                containerStyled={{ marginTop: 24 }}
+                containerStyled={{
+                  marginTop: 0,
+                  marginBottom: 0,
+                }}
                 rightCustom={
-                  <Row>
-                    <ButtonRefresh
-                      style={styled.btnRefresh}
-                      onPress={initSwapForm}
-                    />
-                    <BtnOrderHistory onPress={handleNavOrderHistory} />
-                  </Row>
+                  <BtnOrderHistory onPress={handleNavOrderHistory} />
                 }
               >
                 {tabsFactories.map(({ tab, ...rest }) => (

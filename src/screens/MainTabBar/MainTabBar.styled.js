@@ -35,7 +35,9 @@ export const homeStyled = StyleSheet.create({
     marginRight: 16
   },
   wrapBanner: {
-    marginTop: 8
+    marginTop: 8,
+    borderRadius: 8,
+    overflow: 'hidden'
   },
   mainCategory: {
     flex: 1,
@@ -59,7 +61,7 @@ export const homeStyled = StyleSheet.create({
   },
   mediumBlack: {
     ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.regular,
+    fontSize: FONT.SIZE.small,
     color: COLORS.black,
     lineHeight: FONT.SIZE.regular + 8,
   },
@@ -68,7 +70,7 @@ export const homeStyled = StyleSheet.create({
     color: COLORS.newGrey,
     alignSelf: 'flex-end',
     width: '100%',
-    fontSize: FONT.SIZE.regular,
+    fontSize: FONT.SIZE.small,
   },
   regularGray: {
     ...FONT.STYLE.normal,
@@ -101,10 +103,10 @@ export const homeStyled = StyleSheet.create({
   },
   percentBoxWidth: {
     width: 68,
+    alignItems: 'flex-end'
   },
   percentBox: {
     height: 24,
-    paddingHorizontal: 10,
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center'
@@ -120,6 +122,10 @@ export const homeStyled = StyleSheet.create({
   },
   tabDisable: {
     color: COLORS.lightGrey35
+  },
+  right: {
+    textAlign: 'right',
+    marginRight: 15
   },
   tabHeaderText: {
     ...FONT.STYLE.medium,
@@ -156,6 +162,61 @@ export const homeStyled = StyleSheet.create({
     paddingBottom: 18
   },
   wrapMainVolume: {
+  },
+  btnTrade: {
+    width: 46,
+    height: 21,
+    backgroundColor: COLORS.blue5,
+    marginLeft: 15,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  labelTrade: {
+    color: COLORS.white,
+    fontSize: FONT.SIZE.superSmall,
+  }
+});
+
+export const moreStyled = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+    paddingHorizontal: DEFAULT_PADDING,
+    paddingTop: 10
+  },
+  wrapBar: {
+    width: ScreenWidth / 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  label: {
+    ...FONT.STYLE.normal,
+    fontSize: FONT.SIZE.superSmall,
+    lineHeight: FONT.SIZE.superSmall + 6,
+    marginTop: 2
+  },
+  category: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  regularBlack: {
+    ...FONT.STYLE.normal,
+    fontSize: FONT.SIZE.superSmall,
+    color: COLORS.black,
+    lineHeight: FONT.SIZE.superSmall + 6,
+    marginTop: 2,
+  },
+  wrapCategory: {
+    marginTop: 30,
+  },
+  sectionLabel: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.regular,
+    color: COLORS.black,
+    lineHeight: FONT.SIZE.regular + 6,
+    marginBottom: 20,
   }
 });
 

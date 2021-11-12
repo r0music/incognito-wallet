@@ -3,21 +3,12 @@ import { View, StyleSheet } from 'react-native';
 import { Hook } from '@screens/PDexV3/features/Extra';
 import { useSelector } from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
-import { ButtonTrade } from '@src/components/Button';
 import { feetokenDataSelector, swapInfoSelector } from './Swap.selector';
-import SwapInputsGroup from './Swap.inputsGroup';
 
 const styled = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 24,
-  },
-  hookWrapper: {
-    marginTop: 40,
-  },
-  btnTrade: {
-    marginTop: 24,
-    height: 50,
   },
 });
 
@@ -63,26 +54,15 @@ export const useTabFactories = () => {
   };
 };
 
-const TabSimple = React.memo(({ handleConfirm }) => {
+const TabSimple = React.memo(() => {
   const { hooksFactories } = useTabFactories();
-  const swapInfo = useSelector(swapInfoSelector);
   return (
     <View style={styled.container}>
-      <SwapInputsGroup />
-      <ButtonTrade
-        btnStyle={styled.btnTrade}
-        onPress={handleConfirm}
-        title={swapInfo?.btnSwapText || ''}
-        disabled={!!swapInfo?.disabledBtnSwap}
-      />
-      <View style={styled.hookWrapper}>
-        {hooksFactories.map((item) => (
-          <Hook {...item} key={item.label} />
-        ))}
-      </View>
+      {hooksFactories.map((item) => (
+        <Hook {...item} key={item.label} />
+      ))}
     </View>
   );
 });
 
 export default React.memo(TabSimple);
-0;

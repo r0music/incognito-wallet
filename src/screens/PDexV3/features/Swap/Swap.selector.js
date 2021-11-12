@@ -241,7 +241,7 @@ export const swapInfoSelector = createSelector(
       const networkfeeAmountStr = `${networkfeeAmount} ${PRV.symbol}`;
       const editableInput =
         !swapingToken && !initing && !selecting && !isFetching;
-      let btnSwapText = 'Confirm';
+      let btnSwapText = 'Convert';
       const calculating = swapingToken || initing || selecting || isFetching;
       const disabledBtnSwap =
         calculating ||
@@ -367,10 +367,9 @@ export const mappingOrderHistorySelector = createSelector(
         rateStr,
         timeStr,
         rate,
-        networkfeeAmountStr: `${format.amountVer2(
-          networkFee,
-          PRV.pDecimals,
-        )} ${PRV.symbol}`,
+        networkfeeAmountStr: `${format.amountVer2(networkFee, PRV.pDecimals)} ${
+          PRV.symbol
+        }`,
         tradingFeeStr,
         statusStr: capitalize(status),
         swapStr,
@@ -407,4 +406,9 @@ export const orderDetailSelector = createSelector(
       order: mappingOrderHistory(order),
     };
   },
+);
+
+export const defaultPairSelector = createSelector(
+  swapSelector,
+  ({ selltoken, buytoken }) => ({ selltoken, buytoken }),
 );

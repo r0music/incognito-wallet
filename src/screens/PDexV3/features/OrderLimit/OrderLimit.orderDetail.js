@@ -70,7 +70,7 @@ const OrderDetail = () => {
       },
       {
         label: 'Rate',
-        customValue: (
+        customValue: order?.rateStr && (
           <Row style={orderItemStyled.rowValue}>
             <Text style={orderItemStyled.value}>{order?.rateStr}</Text>
           </Row>

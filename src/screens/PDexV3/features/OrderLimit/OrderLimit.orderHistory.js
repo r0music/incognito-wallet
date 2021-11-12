@@ -1,11 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { FlatList, RefreshControl } from '@src/components/core';
-import { Header } from '@src/components';
+import { FlatList } from '@src/components/core';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import { ExHandler } from '@src/services/exception';
-import { useFocusEffect } from 'react-navigation-hooks';
 import { orderHistorySelector } from './OrderLimit.selector';
 import Order from './OrderLimit.order';
 import {
@@ -35,19 +33,13 @@ const OrderHistory = () => {
       new ExHandler(error).showErrorToast();
     }
   };
-  const { history = [], isFetching } = useSelector(orderHistorySelector);
-  useFocusEffect(
-    React.useCallback(() => {
-      onRefresh();
-    }, []),
-  );
+  const { history = [] } = useSelector(orderHistorySelector);
+  React.useEffect(() => {
+    onRefresh();
+  }, []);
   return (
     <View style={styled.container}>
-      <Header title="Order history" />
       <FlatList
-        refreshControl={
-          <RefreshControl refreshing={isFetching} onRefresh={onRefresh} />
-        }
         data={history}
         keyExtractor={(item) => item?.requestTx}
         renderItem={({ item, index }) => (

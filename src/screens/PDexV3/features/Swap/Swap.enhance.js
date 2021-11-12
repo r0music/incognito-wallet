@@ -3,7 +3,6 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import { TradeSuccessModal } from '@src/screens/PDexV3/features/Trade';
-import { useFocusEffect } from 'react-navigation-hooks';
 import {
   actionInitSwapForm,
   actionReset,

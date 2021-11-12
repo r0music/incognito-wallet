@@ -26,6 +26,7 @@ const ImageCached = (props) => {
         source={{
           uri: uri,
           priority: FastImage.priority.high,
+          cache: FastImage.cacheControl.web
         }}
         resizeMode={FastImage.resizeMode.stretch}
         onLoadStart={() => setState(value => ({ ...value, loading: true }))}

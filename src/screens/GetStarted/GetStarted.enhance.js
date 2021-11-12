@@ -16,6 +16,8 @@ import {
   loadAllMasterKeyAccounts,
 } from '@src/redux/actions/masterKey';
 import { getBanners } from '@src/redux/actions/settings';
+import { actionFetchPairs } from '@screens/PDexV3/features/Swap';
+import { actionFetchPools } from '@screens/PDexV3/features/Pools';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { ANALYTICS } from '@src/constants';
 import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
@@ -55,7 +57,11 @@ const enhance = (WrappedComp) => (props) => {
         await serverService.setDefaultList();
       }
       await dispatch(actionLoadDefaultWallet());
-      dispatch(loadAllMasterKeyAccounts());
+      batch(() => {
+        dispatch(loadAllMasterKeyAccounts());
+        dispatch(actionFetchPools());
+        dispatch(actionFetchPairs(true));
+      });
     } catch (error) {
       hasError = !!error;
       await setError(getErrorMsg(error));

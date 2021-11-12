@@ -12,6 +12,7 @@ import {
   actionBookOrder,
   actionSetPoolSelected,
   actionReset,
+  actionResetOrdersHistory,
 } from './OrderLimit.actions';
 import { TAB_BUY_ID, TAB_SELL_ID } from './OrderLimit.constant';
 
@@ -92,8 +93,9 @@ const enhance = (WrappedComp) => (props) => {
     dispatch(actionInit());
   };
   const callback = async (poolId) => {
+    dispatch(actionResetOrdersHistory());
     await dispatch(actionSetPoolSelected(poolId));
-    dispatch(actionInit());
+    dispatch(actionInit(true));
   };
   React.useEffect(() => {
     handleInitOrderLimit();
