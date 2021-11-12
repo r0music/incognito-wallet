@@ -15,9 +15,11 @@ export const styled = StyleSheet.create({
 export const tabsStyled = StyleSheet.create({
   tabBtn: {
     height: 32,
-    width: 62,
-    backgroundColor: COLORS.black,
-    maxWidth: 62,
+    backgroundColor: 'transparent',
+    borderRadius: 0,
+    textAlign: 'left',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
   tabBtnDisabled: {
     backgroundColor: 'transparent',
@@ -25,15 +27,17 @@ export const tabsStyled = StyleSheet.create({
   },
   tabTitleStyled: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 3,
-    color: COLORS.white,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 3,
+    color: COLORS.black,
   },
   tabTitleDisabledStyled: {
     color: COLORS.colorGrey3,
   },
   styledTabList: {
-    maxWidth: 132,
+    maxWidth: 80,
+    backgroundColor: 'transparent',
+    borderRadius: 0,
   },
 });
 
@@ -43,10 +47,9 @@ export const inputGroupStyled = StyleSheet.create({
   },
   rightHeaderSell: {
     flex: 1,
-    marginLeft: 15,
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
   },
   balanceStr: {
     fontFamily: FONT.NAME.regular,

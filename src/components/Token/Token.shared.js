@@ -8,7 +8,7 @@ export const Icon = React.memo((props) => {
   const { iconUrl, style } = props;
   return (
     <Image
-      style={[{ width: 20, height: 20 }, style]}
+      style={[{ width: 20, height: 20, borderRadius: 20 }, style]}
       source={{ uri: iconUrl }}
       defaultSource={incognito}
     />
