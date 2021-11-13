@@ -2,7 +2,7 @@ import React, {memo} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
 import withToken from '@screens/Wallet/features/Home/Wallet.enhanceToken';
-import { useSelector } from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 import { currencySelector } from '@screens/Setting';
 import Swipeout from 'react-native-swipeout';
 import { BtnDelete } from '@components/Button';
@@ -15,10 +15,18 @@ import round from 'lodash/round';
 import { COLORS, FONT } from '@src/styles';
 import { ActivityIndicator } from '@components/core';
 import { NormalText } from '@components/Token/Token';
+import {actionInitSwapForm, actionSelectToken} from '@screens/PDexV3/features/Swap';
+import {formConfigs} from '@screens/PDexV3/features/Swap/Swap.constant';
+import {useNavigation} from 'react-navigation-hooks';
+import routeNames from '@routers/routeNames';
+import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
+import {ROOT_TAB_TRADE, TAB_SWAP_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
 
 const TokenDefault = React.memo((props) => {
-  const { symbol, name, priceUsd, amount, pDecimals, decimalDigits, pricePrv, tokenId, change, onPress, isVerified, isGettingBalance, showGettingBalance } = props;
+  const { symbol, name, priceUsd, amount, pDecimals, decimalDigits, pricePrv, tokenId, change, onPress, isVerified, isGettingBalance, showGettingBalance, token } = props;
   const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
   const isToggleUSD = useSelector(currencySelector);
   const balance = React.useMemo(() => {
     const price = isToggleUSD ? priceUsd : pricePrv;
@@ -36,6 +44,21 @@ const TokenDefault = React.memo((props) => {
       changeColor
     };
   }, [priceUsd, pricePrv, amount, isToggleUSD]);
+
+  const onPressTrade = () => {
+    navigation.navigate(routeNames.Trade);
+    setTimeout(() => {
+      batch(() => {
+        dispatch(actionSelectToken(props, formConfigs.buytoken));
+        dispatch(
+          actionChangeTab({
+            rootTabID: ROOT_TAB_TRADE,
+            tabID: TAB_SWAP_ID,
+          }),
+        );
+      });
+    }, 200);
+  };
   return (
     <TouchableOpacity style={tokenStyled.container} onPress={onPress}>
       <View style={tokenStyled.wrapFirst}>
@@ -76,7 +99,7 @@ const TokenDefault = React.memo((props) => {
         />
         <Text numberOfLines={1} style={[tokenStyled.grayText, { color: balance.changeColor }]}>{balance.changeStr}</Text>
       </View>
-      <TouchableOpacity style={tokenStyled.btnTrade}>
+      <TouchableOpacity style={tokenStyled.btnTrade} onPress={onPressTrade}>
         <Text style={tokenStyled.labelTrade}>Trade</Text>
       </TouchableOpacity>
     </TouchableOpacity>
