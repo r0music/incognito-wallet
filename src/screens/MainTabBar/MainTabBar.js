@@ -17,7 +17,7 @@ import { styled } from './MainTabBar.styled';
 const TabNavigator = createMaterialBottomTabNavigator(
   {
     Assets: {
-      screen: () => null,
+      screen: TabAssets,
       navigationOptions: {
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
