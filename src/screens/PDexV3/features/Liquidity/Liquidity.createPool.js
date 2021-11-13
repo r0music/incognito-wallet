@@ -238,7 +238,7 @@ const CreatePool = ({
   return (
     <>
       <View style={styled.container}>
-        <Header style={styled.padding} title={LIQUIDITY_MESSAGES.createPool} />
+        <Header style={styled.padding} />
         <ScrollView
           refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onInitCreatePool} />)}
           showsVerticalScrollIndicator={false}

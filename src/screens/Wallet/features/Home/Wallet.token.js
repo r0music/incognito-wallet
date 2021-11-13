@@ -6,15 +6,15 @@ import { useSelector } from 'react-redux';
 import { currencySelector } from '@screens/Setting';
 import Swipeout from 'react-native-swipeout';
 import { BtnDelete } from '@components/Button';
-import {tokenStyled} from '@screens/Wallet/features/Home/Wallet.styled';
-import {Row} from '@src/components';
-import {formatAmount, formatPrice} from '@components/Token';
+import { tokenStyled } from '@screens/Wallet/features/Home/Wallet.styled';
+import { Row } from '@src/components';
+import { formatAmount, formatPrice } from '@components/Token';
 import format from '@utils/format';
 import replace from 'lodash/replace';
 import round from 'lodash/round';
-import {COLORS} from '@src/styles';
-import {TokenVerifiedIcon} from '@components/Icons';
-import {ActivityIndicator} from '@components/core';
+import { COLORS, FONT } from '@src/styles';
+import { ActivityIndicator } from '@components/core';
+import { NormalText } from '@components/Token/Token';
 
 const TokenDefault = React.memo((props) => {
   const { symbol, name, priceUsd, amount, pDecimals, decimalDigits, pricePrv, tokenId, change, onPress, isVerified, isGettingBalance, showGettingBalance } = props;
@@ -49,12 +49,28 @@ const TokenDefault = React.memo((props) => {
         {shouldShowGettingBalance ?
           <ActivityIndicator />
           : (
-            <Text numberOfLines={1} style={tokenStyled.blackText}>{balance.tokenAmount}</Text>
+            <NormalText
+              text={balance.tokenAmount}
+              hasPSymbol
+              style={tokenStyled.blackText}
+              stylePSymbol={[
+                tokenStyled.blackText,
+                { fontFamily: FONT.NAME.specialRegular, }
+              ]}
+            />
           )}
         <Text numberOfLines={1} style={tokenStyled.grayText}>{`${balance.amountCompare} ${symbol}`}</Text>
       </View>
       <View style={tokenStyled.wrapThird}>
-        <Text numberOfLines={1} style={tokenStyled.blackText}>{balance.price}</Text>
+        <NormalText
+          text={balance.price}
+          hasPSymbol
+          style={tokenStyled.blackText}
+          stylePSymbol={[
+            tokenStyled.blackText,
+            { fontFamily: FONT.NAME.specialRegular, }
+          ]}
+        />
         <Text numberOfLines={1} style={[tokenStyled.grayText, { color: balance.changeColor }]}>{balance.changeStr}</Text>
       </View>
       <TouchableOpacity style={tokenStyled.btnTrade}>

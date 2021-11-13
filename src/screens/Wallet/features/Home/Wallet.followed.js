@@ -16,9 +16,9 @@ import {Row} from '@src/components';
 import {tokenStyled} from '@screens/Wallet/features/Home/Wallet.styled';
 
 const Followed = () => {
-  const followed = useSelector(tokenSelector.tokensFollowedSelector);
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const followed = useSelector(tokenSelector.tokensFollowedSelector);
   const { walletProps } = React.useContext(WalletContext);
   const { isReloading, onRefresh } = walletProps;
   const handleSelectToken = async (tokenId) => {

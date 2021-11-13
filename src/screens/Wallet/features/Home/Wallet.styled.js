@@ -129,6 +129,7 @@ export const tokenStyled = StyleSheet.create({
     fontSize: FONT.SIZE.small + 1,
     lineHeight: FONT.SIZE.regular + 8,
     textAlign: 'left',
+    color: COLORS.black
   },
   grayText: {
     ...FONT.STYLE.regular,
