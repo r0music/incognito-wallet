@@ -38,7 +38,7 @@ import { useTabFactories } from './Swap.simpleTab';
 const styled = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 24,
+    marginTop: 16,
   },
 });
 
@@ -52,7 +52,6 @@ const TabPro = React.memo(() => {
   const sellinputAmount = inputAmount(formConfigs.selltoken);
   const buyInputAmount = inputAmount(formConfigs.buytoken);
   const prv: SelectedPrivacy = useSelector(getPrivacyDataByTokenID)(PRV.id);
-  const { hooksFactories } = useTabFactories();
   const dispatch = useDispatch();
   const onChangeTypeFee = async (type) => {
     const { tokenId } = type;
@@ -145,12 +144,7 @@ const TabPro = React.memo(() => {
           editableInput={!!swapInfo?.editableInput}
         />
       ),
-    },
-    {
-      title: 'Trade details',
-      hooks: hooksFactories
-        .filter((hook) => !isEmpty(hook))
-        .map((hook) => <Hook {...hook} key={hook.label} />),
+      containerStyle: { marginBottom: 0 },
     },
   ];
   return (

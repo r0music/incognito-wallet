@@ -1,14 +1,14 @@
-import { BtnOrderHistory, ButtonTrade } from '@src/components/Button';
+import { ButtonTrade } from '@src/components/Button';
 import React from 'react';
-import { View } from 'react-native';
 import PropTypes from 'prop-types';
-import { Tabs1 } from '@src/components/core/Tabs';
 import { createForm } from '@components/core/reduxForm';
 import { useSelector } from 'react-redux';
 import LoadingTx from '@src/components/LoadingTx';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { KeyboardAwareScrollView, RefreshControl } from '@src/components/core';
+import ToggleArrow from '@src/components/ToggleArrow';
+import { COLORS, FONT } from '@src/styles';
 import { styled, tabsStyled } from './Swap.styled';
 import {
   ROOT_TAB_ID,
@@ -21,6 +21,7 @@ import TabPro from './Swap.proTab';
 import withSwap from './Swap.enhance';
 import { swapInfoSelector } from './Swap.selector';
 import SwapInputsGroup from './Swap.inputsGroup';
+import SwapDetails from './Swap.details';
 
 const initialFormValues = {
   selltoken: '',
@@ -84,28 +85,25 @@ const Swap = (props) => {
                 title={swapInfo?.btnSwapText || ''}
                 disabled={!!swapInfo?.disabledBtnSwap}
               />
-              <Tabs1
-                rootTabID={ROOT_TAB_ID}
-                styledTabList={tabsStyled.styledTabList}
-                containerStyled={{
-                  marginTop: 0,
-                  marginBottom: 0,
-                }}
-                rightCustom={
-                  <BtnOrderHistory onPress={handleNavOrderHistory} />
-                }
-              >
-                {tabsFactories.map(({ tab, ...rest }) => (
-                  <View key={rest.tabID} {...rest}>
-                    {tab}
-                  </View>
-                ))}
-              </Tabs1>
+              <SwapDetails />
             </>
           )}
         </Form>
       </KeyboardAwareScrollView>
       {!!swapInfo.swaping && <LoadingTx />}
+      <ToggleArrow
+        label="Order history"
+        useRightArrow
+        style={{
+          height: 30,
+        }}
+        labelStyle={{
+          fontFamily: FONT.NAME.medium,
+          fontSize: FONT.SIZE.small,
+          color: COLORS.colorGrey3,
+        }}
+        handlePressToggle={handleNavOrderHistory}
+      />
     </>
   );
 };

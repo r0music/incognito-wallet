@@ -9,7 +9,8 @@ export const styled = StyleSheet.create({
   },
   btnTrade: {
     marginBottom: 40,
-    borderRadius: 8
+    borderRadius: 8,
+    marginTop: 24,
   },
 });
 
@@ -71,5 +72,8 @@ export const inputGroupStyled = StyleSheet.create({
   },
   inputGroups: {
     marginTop: 24,
+  },
+  toggleArrow: {
+    marginTop: 40,
   },
 });
