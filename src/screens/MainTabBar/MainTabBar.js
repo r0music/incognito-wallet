@@ -66,7 +66,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
     }
   },
   {
-    initialRouteName: 'Assets',
+    initialRouteName: 'More',
     activeColor: COLORS.colorBlue,
     inactiveColor: COLORS.lightGrey34,
     barStyle: {

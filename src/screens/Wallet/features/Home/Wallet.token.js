@@ -50,16 +50,19 @@ const TokenDefault = React.memo((props) => {
           <ActivityIndicator />
           : (
             <NormalText
-              text={balance.tokenAmount}
+              text={balance.amountCompare}
               hasPSymbol
               style={tokenStyled.blackText}
               stylePSymbol={[
                 tokenStyled.blackText,
-                { fontFamily: FONT.NAME.specialRegular, }
+                { fontFamily: FONT.NAME.specialRegular }
               ]}
             />
           )}
-        <Text numberOfLines={1} style={tokenStyled.grayText}>{`${balance.amountCompare} ${symbol}`}</Text>
+        <NormalText
+          text={`${balance.tokenAmount}${symbol}`}
+          style={tokenStyled.grayText}
+        />
       </View>
       <View style={tokenStyled.wrapThird}>
         <NormalText
