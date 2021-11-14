@@ -14,7 +14,7 @@ const initialState = {
   toggleModalMintMoreNFT: false,
   nft: {
     nftToken: '',
-    initNFTToken: false,
+    initNFTToken: true,
     list: [],
   },
 };

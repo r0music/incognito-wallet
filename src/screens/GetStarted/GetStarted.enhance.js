@@ -17,7 +17,7 @@ import {
 } from '@src/redux/actions/masterKey';
 import { getBanners } from '@src/redux/actions/settings';
 import { actionFetchPairs } from '@screens/PDexV3/features/Swap';
-import { actionFetchPools } from '@screens/PDexV3/features/Pools';
+import { actionFetchListPools } from '@screens/PDexV3/features/Pools';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { ANALYTICS } from '@src/constants';
 import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
@@ -51,17 +51,15 @@ const enhance = (WrappedComp) => (props) => {
         dispatch(getInternalTokenList());
         dispatch(getBanners());
         dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));
+        dispatch(actionFetchListPools());
+        dispatch(actionFetchPairs(true));
       });
       const servers = await serverService.get();
       if (!servers || servers?.length === 0) {
         await serverService.setDefaultList();
       }
       await dispatch(actionLoadDefaultWallet());
-      batch(() => {
-        dispatch(loadAllMasterKeyAccounts());
-        dispatch(actionFetchPools());
-        dispatch(actionFetchPairs(true));
-      });
+      dispatch(loadAllMasterKeyAccounts());
     } catch (error) {
       hasError = !!error;
       await setError(getErrorMsg(error));

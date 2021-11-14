@@ -54,8 +54,7 @@ const styled = StyleSheet.create({
   label: {
     color: COLORS.lightGrey36,
     fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 7,
-    fontFamily: FONT.NAME.medium,
+    fontFamily: FONT.NAME.regular,
   },
 });
 

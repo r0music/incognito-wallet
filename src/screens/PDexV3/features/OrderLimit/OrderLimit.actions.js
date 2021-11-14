@@ -17,6 +17,11 @@ import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import { batch } from 'react-redux';
 import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
 import {
+  ROOT_TAB_TRADE,
+  TAB_BUY_LIMIT_ID,
+  TAB_SELL_LIMIT_ID,
+} from '@screens/PDexV3/features/Trade/Trade.constant';
+import {
   ACTION_FETCHING,
   ACTION_FETCHED,
   ACTION_FETCH_FAIL,
@@ -26,9 +31,6 @@ import {
   ACTION_SET_SELL_TOKEN,
   ACTION_SET_BUY_TOKEN,
   ACTION_RESET,
-  ROOT_TAB_ORDER_LIMIT,
-  TAB_BUY_ID,
-  TAB_SELL_ID,
   formConfigs,
   ACTION_SET_PERCENT,
   ACTION_FETCHED_OPEN_ORDERS,
@@ -48,7 +50,8 @@ import {
   orderLimitDataSelector,
   orderDetailSelector,
   rateDataSelector,
-  orderHistorySelector,
+  sellInputAmountSelector,
+  buyInputAmountSelector,
 } from './OrderLimit.selector';
 
 export const actionResetOrdersHistory = () => ({
@@ -217,29 +220,23 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
     }
     batch(() => {
       if (refresh) {
-        dispatch(actionFetchPools()),
-        dispatch(actionSetNFTTokenData()),
-        dispatch(actionFetchWithdrawOrderTxs());
-        dispatch(actionFetchOrdersHistory());
+        dispatch(actionFetchPools());
+        dispatch(actionSetNFTTokenData());
       }
     });
-    const activedTab = activedTabSelector(state)(ROOT_TAB_ORDER_LIMIT);
+    const activedTab = activedTabSelector(state)(ROOT_TAB_TRADE);
     const token1: SelectedPrivacy = pool?.token1;
     const token2: SelectedPrivacy = pool?.token2;
-    let selltokenId, buytokenId, x, y;
+    let selltokenId, buytokenId;
     switch (activedTab) {
-    case TAB_BUY_ID: {
-      selltokenId = token2.tokenId;
-      x = token2;
+    case TAB_BUY_LIMIT_ID: {
       buytokenId = token1.tokenId;
-      y = token1;
+      selltokenId = token2.tokenId;
       break;
     }
-    case TAB_SELL_ID: {
+    case TAB_SELL_LIMIT_ID: {
       selltokenId = token1.tokenId;
-      x = token1;
       buytokenId = token2.tokenId;
-      y = token2;
       break;
     }
     default:
@@ -316,6 +313,7 @@ export const actionFetchOrdersHistory = () => async (dispatch, getState) => {
     if (!pool) {
       return;
     }
+    dispatch(actionFetchWithdrawOrderTxs());
     const orders =
       (await pDexV3Inst.getOrderLimitHistory({
         poolid: pool?.poolId,
@@ -376,30 +374,60 @@ export const actionBookOrder = () => async (dispatch, getState) => {
   await dispatch(actionFetchingBookOrder(true));
   try {
     const state = getState();
-    const { disabledBtn } = orderLimitDataSelector(state);
+    const { disabledBtn, activedTab, totalAmountData } = orderLimitDataSelector(
+      state,
+    );
     if (disabledBtn) {
       return;
     }
+    const { totalAmountToken, totalOriginalAmount } = totalAmountData;
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const { poolId: poolPairID } = poolSelectedDataSelector(state);
-    const {
-      tokenId: tokenIDToSell,
-      originalAmount: sellAmount,
-    } = inputAmountSelector(state)(formConfigs.selltoken);
-    const { tokenId: tokenIDToBuy } = inputAmountSelector(state)(
-      formConfigs.buytoken,
-    );
-    const { originalAmount: minAcceptableAmount } = inputAmountSelector(state)(
-      formConfigs.buytoken,
-    );
-    const extra = {
-      tokenIDToSell,
-      poolPairID,
-      sellAmount: String(sellAmount),
-      version: PrivacyVersion.ver2,
-      minAcceptableAmount: String(minAcceptableAmount),
-      tokenIDToBuy,
-    };
+    let extra;
+    switch (activedTab) {
+    case TAB_BUY_LIMIT_ID: {
+      const {
+        originalAmount: minAcceptableAmount,
+        tokenData,
+      } = buyInputAmountSelector(state);
+      const sellToken: SelectedPrivacy = totalAmountToken;
+      const buyToken: SelectedPrivacy = tokenData;
+      const tokenIDToSell = sellToken?.tokenId;
+      const sellAmount = totalOriginalAmount;
+      const tokenIDToBuy = buyToken?.tokenId;
+      extra = {
+        tokenIDToSell,
+        poolPairID,
+        sellAmount: String(sellAmount),
+        version: PrivacyVersion.ver2,
+        minAcceptableAmount: String(minAcceptableAmount),
+        tokenIDToBuy,
+      };
+      break;
+    }
+    case TAB_SELL_LIMIT_ID: {
+      const {
+        originalAmount: sellAmount,
+        tokenData,
+      } = sellInputAmountSelector(state);
+      const sellToken: SelectedPrivacy = tokenData;
+      const buyToken: SelectedPrivacy = totalAmountToken;
+      const tokenIDToSell = sellToken?.tokenId;
+      const minAcceptableAmount = totalOriginalAmount;
+      const tokenIDToBuy = buyToken?.tokenId;
+      extra = {
+        tokenIDToSell,
+        poolPairID,
+        sellAmount: String(sellAmount),
+        version: PrivacyVersion.ver2,
+        minAcceptableAmount: String(minAcceptableAmount),
+        tokenIDToBuy,
+      };
+      break;
+    }
+    default:
+      break;
+    }
     const tx = await pDexV3Inst.createAndSendOrderRequestTx({ extra });
     return tx;
   } catch (error) {
