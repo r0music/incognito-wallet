@@ -9,6 +9,8 @@ export const styled = StyleSheet.create({
   },
   btnTrade: {
     marginBottom: 40,
+    borderRadius: 8,
+    marginTop: 24,
   },
 });
 
@@ -49,7 +51,7 @@ export const inputGroupStyled = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
   },
   balanceStr: {
     fontFamily: FONT.NAME.regular,
@@ -70,5 +72,8 @@ export const inputGroupStyled = StyleSheet.create({
   },
   inputGroups: {
     marginTop: 24,
+  },
+  toggleArrow: {
+    marginTop: 40,
   },
 });

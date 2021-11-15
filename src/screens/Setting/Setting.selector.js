@@ -15,9 +15,9 @@ export const currencySelector = createSelector(
   (setting) => setting?.isToggleUSD,
 );
 
-export const showWalletBlanceSelector = createSelector(
+export const showWalletBalanceSelector = createSelector(
   settingSelector,
-  (setting) => setting?.showWalletBlance,
+  (setting) => setting?.showWalletBalance,
 );
 
 export const isToggleBackupAllKeysSelector = createSelector(

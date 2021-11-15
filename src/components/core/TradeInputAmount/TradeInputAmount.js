@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowGreyDown, InfiniteIcon } from '@src/components/Icons';
+import {MaxIcon} from '@src/components/Icons';
 import PropTypes from 'prop-types';
 import Row from '@src/components/Row';
 import { StyleSheet } from 'react-native';
@@ -12,6 +12,7 @@ import {
 } from '@src/components/core';
 import { COLORS, FONT } from '@src/styles';
 import { Icon } from '@src/components/Token/Token.shared';
+import { ArrowRight } from '@components/Icons/icon.arrowRightGreyIcon';
 
 const styled = StyleSheet.create({
   container: {
@@ -19,30 +20,28 @@ const styled = StyleSheet.create({
   },
   inputContainer: {
     flex: 1,
-    backgroundColor: COLORS.colorGrey4,
-    height: 50,
+    height: 30,
     borderRadius: 8,
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    paddingHorizontal: 15,
   },
   input: {
     flex: 1,
     color: COLORS.black,
-    fontSize: FONT.SIZE.medium,
+    fontSize: FONT.SIZE.large + 2,
+    lineHeight: FONT.SIZE.large + 5,
     fontFamily: FONT.NAME.medium,
     marginRight: 15,
   },
   symbol: {
     color: COLORS.black,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 5,
+    fontSize: FONT.SIZE.large + 2,
+    lineHeight: FONT.SIZE.large + 5,
     fontFamily: FONT.NAME.medium,
-    marginRight: 8,
+    marginRight: 5,
   },
   infinityIcon: {
-    marginHorizontal: 8,
   },
   loadingIcon: {
     marginRight: 8,
@@ -53,10 +52,32 @@ const styled = StyleSheet.create({
     marginBottom: 8,
   },
   label: {
-    color: COLORS.black,
-    fontSize: FONT.SIZE.superSmall,
-    lineHeight: FONT.SIZE.superSmall + 5,
-    fontFamily: FONT.NAME.medium,
+    color: COLORS.lightGrey36,
+    fontSize: FONT.SIZE.small,
+    fontFamily: FONT.NAME.regular,
+  },
+  text: {
+    color: COLORS.colorGreyBold,
+    fontFamily: FONT.NAME.specialMedium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.medium + 4,
+  },
+  contentView: {
+    flexDirection: 'row',
+  },
+  selectedButton: {
+    padding: 12,
+    borderRadius: 16,
+    borderWidth: 0,
+    marginBottom: 16,
+    backgroundColor: '#EFEFEF',
+  },
+  unSelectedButon: {
+    padding: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: COLORS.colorGreyLight,
+    marginBottom: 16
   },
 });
 
@@ -70,14 +91,18 @@ const TradeInputAmount = (props) => {
     placeholder = '0',
     loadingBalance,
     editableInput,
-    hasIcon = true,
+    hasIcon = false,
     srcIcon,
     label,
     rightHeader,
     visibleHeader = false,
     inputStyle,
+    platforms,
+    value,
     ...rest
   } = props || {};
+
+  const [selectedPlatform, setSelectedPlatform] = React.useState(0);
   const renderSub = () => {
     if (loadingBalance) {
       return <ActivityIndicator style={styled.loadingIcon} size="small" />;
@@ -87,17 +112,20 @@ const TradeInputAmount = (props) => {
     }
     if (hasInfinityIcon) {
       return (
-        <TouchableOpacity
+        <MaxIcon
+          style={styled.infinityIcon}
           onPress={() =>
             typeof onPressInfinityIcon === 'function' && onPressInfinityIcon()
           }
-          style={styled.infinityIcon}
-        >
-          <InfiniteIcon style={{ width: 22, height: 10 }} />
-        </TouchableOpacity>
+        />
       );
     }
   };
+
+  const handlePress = (index) => {
+    setSelectedPlatform(index);
+  };
+
   return (
     <View style={styled.container}>
       {visibleHeader && (
@@ -118,7 +146,8 @@ const TradeInputAmount = (props) => {
           placeholder={placeholder}
           ellipsizeMode="tail"
           numberOfLines={1}
-          editable={editableInput}
+          editable={platforms && platforms.length > 1 ?  false : editableInput}
+          value={platforms && platforms.length > 1 ?  ' ' : value}
           {...rest}
         />
         {renderSub()}
@@ -126,11 +155,26 @@ const TradeInputAmount = (props) => {
           <TouchableOpacity style={{ marginLeft: 8 }} onPress={onPressSymbol}>
             <Row style={{ alignItems: 'center' }}>
               {!!symbol && <Text style={styled.symbol}>{symbol}</Text>}
-              {canSelectSymbol && <ArrowGreyDown />}
+              {canSelectSymbol && <ArrowRight />}
             </Row>
           </TouchableOpacity>
         )}
       </View>
+      { platforms && platforms.length > 1 &&
+        platforms.map((item, index) => {
+          return (
+            <TouchableOpacity
+              style={index === selectedPlatform ? styled.selectedButton : styled.unSelectedButon}
+              key={`key-${index}`}
+              onPress={() => handlePress(index)}
+            >
+              <View style={styled.contentView}>
+                <Text style={[styled.text, { marginRight: 20, color: index === selectedPlatform ? COLORS.black : COLORS.colorGreyBold }]}>{item.price} {item.name}</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })
+      }
     </View>
   );
 };
@@ -143,7 +187,7 @@ TradeInputAmount.defaultProps = {
   onPressSymbol: undefined,
   loadingBalance: false,
   editableInput: false,
-  hasIcon: true,
+  hasIcon: false,
   label: '',
   srcIcon: '',
   visibleHeader: false,

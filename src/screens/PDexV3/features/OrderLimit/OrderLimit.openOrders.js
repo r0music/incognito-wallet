@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { FlatList } from '@src/components/core';
+import { FlatList, RefreshControl } from '@src/components/core';
 import Extra from '@screens/PDexV3/features/Extra';
 import { openOrdersSelector } from './OrderLimit.selector';
 import Order from './OrderLimit.order';
@@ -11,11 +11,12 @@ const styled = StyleSheet.create({
 });
 
 const OpenOrders = () => {
-  const { history = [] } = useSelector(openOrdersSelector);
+  const { history = [], isFetching } = useSelector(openOrdersSelector);
   return (
     <View style={styled.container}>
       <Extra title="Open orders" />
       <FlatList
+        refreshControl={<RefreshControl refreshing={isFetching} />}
         data={history}
         keyExtractor={(item) => item?.requestTx}
         renderItem={({ item, index }) => (
