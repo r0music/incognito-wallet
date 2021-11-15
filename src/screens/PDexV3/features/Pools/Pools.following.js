@@ -11,12 +11,12 @@ import { styled, poolsListHeaderFollowingStyled } from './Pools.styled';
 
 const HEADER_FACTORIES = [
   {
-    text: '#Name / Vol',
+    text: 'Name / Vol',
     styled: [poolsListHeaderFollowingStyled.wrapperFirstSection],
     textStyle: null,
   },
   {
-    text: '#APY',
+    text: 'APY',
     styled: [
       poolsListHeaderFollowingStyled.wrapperSecondSection,
       poolsListHeaderFollowingStyled.centerText,

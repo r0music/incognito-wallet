@@ -159,7 +159,8 @@ export const homeStyled = StyleSheet.create({
   mainVolume: {
     paddingHorizontal: 16,
     paddingTop: 14,
-    paddingBottom: 18
+    paddingBottom: 18,
+    marginTop: 20
   },
   wrapMainVolume: {
   },
@@ -175,6 +176,21 @@ export const homeStyled = StyleSheet.create({
   labelTrade: {
     color: COLORS.white,
     fontSize: FONT.SIZE.superSmall,
+  },
+  tabStyled: {
+    backgroundColor: 'transparent',
+    borderRadius: 0,
+    padding: 0,
+    marginRight: 16,
+  },
+  titleStyled: {
+    color: COLORS.black,
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
+  },
+  tabStyledEnabled: {
+    borderBottomColor: COLORS.colorBlue,
+    borderBottomWidth: 2,
   }
 });
 
@@ -183,7 +199,7 @@ export const moreStyled = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
     paddingHorizontal: DEFAULT_PADDING,
-    paddingTop: 10
+    paddingTop: 10,
   },
   wrapBar: {
     width: ScreenWidth / 5,
@@ -197,9 +213,10 @@ export const moreStyled = StyleSheet.create({
     marginTop: 2
   },
   category: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    width: (ScreenWidth - (DEFAULT_PADDING * 2)) / 4,
+    marginBottom: 20
   },
   regularBlack: {
     ...FONT.STYLE.normal,
@@ -209,13 +226,12 @@ export const moreStyled = StyleSheet.create({
     marginTop: 2,
   },
   wrapCategory: {
-    marginTop: 30,
+    marginTop: 10,
   },
   sectionLabel: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.regular,
     color: COLORS.black,
-    lineHeight: FONT.SIZE.regular + 6,
     marginBottom: 20,
   }
 });

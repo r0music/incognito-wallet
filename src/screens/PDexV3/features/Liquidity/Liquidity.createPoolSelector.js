@@ -62,6 +62,14 @@ export const hookFactoriesSelector = createSelector(
         label: 'Exchange rate',
         value: exchangeRateStr,
       },
+      {
+        label: `${input.symbol} Balance`,
+        value: input.maxAmountDisplay,
+      },
+      {
+        label: `${output.symbol} Balance`,
+        value: output.maxAmountDisplay,
+      },
     ];
   }
 );

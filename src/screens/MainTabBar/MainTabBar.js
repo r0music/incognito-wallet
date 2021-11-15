@@ -1,13 +1,11 @@
 import React from 'react';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { COLORS } from '@src/styles';
-import TabHome from '@screens/MainTabBar/features/Home';
 import More from '@screens/MainTabBar/features/More';
 import TabAssets from '@screens/MainTabBar/features/Assets';
 import TabTrade from '@screens/MainTabBar/features/Trade';
 import TabHomeLP from '@screens/MainTabBar/features/HomeLP';
 import {
-  MarketIcon,
   MoreIcon,
   TradeIcon,
   LiquidityIcon,
@@ -18,15 +16,17 @@ import { styled } from './MainTabBar.styled';
 
 const TabNavigator = createMaterialBottomTabNavigator(
   {
-    Market: {
-      screen: TabHome,
+    Assets: {
+      screen: TabAssets,
       navigationOptions: {
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
-            <MarketIcon active={focused} />
-            <Text style={[styled.label, { color: tintColor }]}>Market</Text>
+            <AssetsIcon active={focused} />
+            <Text style={[styled.label, { color: tintColor }]}>Portfolio</Text>
           </View>
         ),
+        activeColor: COLORS.colorBlue,
+        inactiveColor: COLORS.lightGrey34,
       },
     },
     Trade: {
@@ -53,19 +53,6 @@ const TabNavigator = createMaterialBottomTabNavigator(
         ),
       },
     },
-    Assets: {
-      screen: TabAssets,
-      navigationOptions: {
-        tabBarIcon: ({ focused, tintColor }) => (
-          <View style={styled.wrapBar}>
-            <AssetsIcon active={focused} />
-            <Text style={[styled.label, { color: tintColor }]}>Assets</Text>
-          </View>
-        ),
-        activeColor: COLORS.colorBlue,
-        inactiveColor: COLORS.lightGrey34,
-      },
-    },
     More: {
       screen: More,
       navigationOptions: {
@@ -79,7 +66,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
     }
   },
   {
-    initialRouteName: 'Market',
+    initialRouteName: 'Assets',
     activeColor: COLORS.colorBlue,
     inactiveColor: COLORS.lightGrey34,
     barStyle: {

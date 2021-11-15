@@ -342,6 +342,7 @@ export const mappingOrderHistorySelector = createSelector(
       const buyStr = `${priceStr} ${buyToken.symbol}`;
       const timeStr = format.formatDateTime(
         fromStorage ? requestime : requestime * 1000,
+        'DD MMM HH:mm',
       );
       const rate = getPairRate({
         token1Value: amount,

@@ -112,6 +112,18 @@ const OrderDetail = () => {
         value: order?.respondTxs.map((responseTx) => `\n${responseTx}`).join(),
       });
     }
+    if (order?.cancelTxId) {
+      ft.push({
+        label: 'Cancel Tx',
+        value: `#${order?.cancelTxId}`,
+        copiable: true,
+        openUrl: true,
+        handleOpenUrl: () =>
+          LinkingService.openUrl(
+            `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${order?.requestTx}`,
+          ),
+      });
+    }
     return ft.filter(
       (ftItem) => !!ftItem && (!!ftItem?.value || !!ftItem?.customValue),
     );

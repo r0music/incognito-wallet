@@ -12,7 +12,6 @@ import { ButtonBasic } from '@src/components/Button';
 import { listAllMasterKeyAccounts } from '@src/redux/selectors/masterKey';
 import { switchMasterKey } from '@src/redux/actions/masterKey';
 import accountService from '@services/wallet/accountService';
-import { accountServices } from '@src/services/wallet';
 
 const styled = StyleSheet.create({
   container: {
@@ -83,14 +82,14 @@ const SelectAccountButton = ({
       <ButtonBasic
         disabled={disabled}
         onPress={onNavSelectAccount}
-        customContent={
+        customContent={(
           <View style={styled.hook}>
             <Text numberOfLines={1} style={styled.name} ellipsizeMode="tail">
               {account?.accountName || ''}
             </Text>
             <Ionicons name="ios-arrow-down" color={COLORS.black} size={13} />
           </View>
-        }
+        )}
         btnStyle={styled.btnStyle}
       />
     </View>

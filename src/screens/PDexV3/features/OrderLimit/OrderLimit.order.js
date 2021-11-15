@@ -193,7 +193,7 @@ const Order = React.memo(({ data, visibleDivider }) => {
         </View>
         <View style={{ ...styled.orderItem, ...styled.block3 }}>
           {renderHook()}
-          <Text style={{ ...styled.subText, ...styled.mv8 }}>Filled (%)</Text>
+          <Text style={{ ...styled.subText, ...styled.mv8 }}>Fill</Text>
           <Text style={styled.mainText}>{percentStr1}</Text>
         </View>
       </Row>
@@ -205,7 +205,8 @@ const Order = React.memo(({ data, visibleDivider }) => {
         onPressAccept={onWithdrawOrder}
         title="Cancel order"
         subTitle={withdrawData?.subTitle || ''}
-        acceptStr="OK"
+        acceptStr="Yes, cancel"
+        canStr="Keep it"
       />
     </TouchableOpacity>
   );

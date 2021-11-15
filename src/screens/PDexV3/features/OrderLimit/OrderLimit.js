@@ -1,4 +1,3 @@
-import Tabs from '@src/components/core/Tabs';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
@@ -7,13 +6,13 @@ import { KeyboardAwareScrollView, RefreshControl } from '@src/components/core';
 import { createForm } from '@src/components/core/reduxForm';
 import { ButtonBasic } from '@src/components/Button';
 import LoadingTx from '@src/components/LoadingTx';
-import { GroupActions } from '@screens/PDexV3/features/Share';
 import GroupSubInfo from './OrderLimit.groupSubInfo';
-import { formConfigs, ROOT_TAB_ORDER_LIMIT } from './OrderLimit.constant';
+import { formConfigs } from './OrderLimit.constant';
 import { styled } from './OrderLimit.styled';
 import { orderLimitDataSelector } from './OrderLimit.selector';
 import withOrderLimit from './OrderLimit.enhance';
 import OrderLimitInputsGroup from './OrderLimit.inputsGroup';
+import OrderDetails from './OrderLimit.details';
 
 const initialFormValues = {
   selltoken: '',
@@ -36,7 +35,7 @@ const OrderLimit = (props) => {
     ordering,
     calculating,
   } = useSelector(orderLimitDataSelector);
-  const { tabsFactories, handleConfirm, onRefresh, callback } = props;
+  const { handleConfirm, onRefresh } = props;
   return (
     <>
       <KeyboardAwareScrollView
@@ -48,25 +47,13 @@ const OrderLimit = (props) => {
         <Form>
           {() => (
             <View>
-              <GroupActions
-                hasChart
-                onPressRefresh={onRefresh}
-                callback={callback}
-              />
-              <Tabs
-                rootTabID={ROOT_TAB_ORDER_LIMIT}
-                styledTabs={{ marginBottom: 24 }}
-              >
-                {tabsFactories.map((tab) => (
-                  <View key={tab.tabID} {...tab} />
-                ))}
-              </Tabs>
               <OrderLimitInputsGroup />
             </View>
           )}
         </Form>
+        <OrderDetails />
         <ButtonBasic
-          btnStyle={{ backgroundColor: mainColor }}
+          btnStyle={{ backgroundColor: mainColor, borderRadius: 8 }}
           title={btnActionTitle}
           disabled={disabledBtn}
           onPress={handleConfirm}
