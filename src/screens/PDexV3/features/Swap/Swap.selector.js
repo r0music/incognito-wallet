@@ -21,6 +21,11 @@ export const swapSelector = createSelector(
   ({ swap }) => swap,
 );
 
+export const purePairsSelector = createSelector(
+  swapSelector,
+  ({ pairs }) => (pairs || [])
+);
+
 export const listPairsSelector = createSelector(
   swapSelector,
   getPrivacyDataByTokenIDSelector,

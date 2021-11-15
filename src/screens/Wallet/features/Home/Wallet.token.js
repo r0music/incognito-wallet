@@ -15,15 +15,18 @@ import round from 'lodash/round';
 import { COLORS, FONT } from '@src/styles';
 import { ActivityIndicator } from '@components/core';
 import { NormalText } from '@components/Token/Token';
-import {actionInitSwapForm} from '@screens/PDexV3/features/Swap';
+import {actionInitSwapForm, purePairsSelector} from '@screens/PDexV3/features/Swap';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
 import {ROOT_TAB_TRADE, TAB_SWAP_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
 import {CONSTANT_CONFIGS} from '@src/constants';
+import difference from 'lodash/difference';
+import {PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
 
 const TokenDefault = React.memo((props) => {
   const { symbol, name, priceUsd, amount, pDecimals, decimalDigits, pricePrv, change, onPress, tokenId, isGettingBalance, showGettingBalance } = props;
+  const pairs = useSelector(purePairsSelector);
   const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -46,14 +49,28 @@ const TokenDefault = React.memo((props) => {
   }, [priceUsd, pricePrv, amount, isToggleUSD]);
 
   const onPressTrade = () => {
+    const isPairUSDTExisted =
+      difference([CONSTANT_CONFIGS.USDT_TOKEN_ID, tokenId], pairs).length === 0;
+    let params = {
+      buytoken: tokenId,
+      selltoken: PRVIDSTR,
+    };
+    if (tokenId === CONSTANT_CONFIGS.USDT_TOKEN_ID) {
+      params = {
+        buytoken: PRVIDSTR,
+        selltoken: CONSTANT_CONFIGS.USDT_TOKEN_ID,
+      };
+    } else if (isPairUSDTExisted) {
+      params = {
+        buytoken: tokenId,
+        selltoken: CONSTANT_CONFIGS.USDT_TOKEN_ID,
+      };
+    }
     navigation.navigate(routeNames.Trade);
     setTimeout(() => {
       batch(() => {
         dispatch(actionInitSwapForm({
-          defaultPair: {
-            buytoken: CONSTANT_CONFIGS.USDT_TOKEN_ID,
-            selltoken: tokenId,
-          }
+          defaultPair: params
         }));
         dispatch(
           actionChangeTab({
@@ -71,7 +88,10 @@ const TokenDefault = React.memo((props) => {
           <Text numberOfLines={1} style={tokenStyled.blackText}>{symbol}</Text>
           {/*{isVerified && <TokenVerifiedIcon style={tokenStyled.icon} />}*/}
         </Row>
-        <Text numberOfLines={1} style={tokenStyled.grayText}>{name}</Text>
+        <NormalText
+          text={name}
+          style={tokenStyled.grayText}
+        />
       </View>
       <View style={tokenStyled.wrapSecond}>
         {shouldShowGettingBalance ?
