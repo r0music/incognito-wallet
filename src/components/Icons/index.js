@@ -90,3 +90,4 @@ export { default as SuccessIcon } from './icon.success';
 export { default as SettingIcon } from './icon.setting';
 export { default as MarketIcon } from './icon.martket';
 export { default as MoreIcon } from './icon.more';
+export { default as WalletIcon } from './icon.wallet';

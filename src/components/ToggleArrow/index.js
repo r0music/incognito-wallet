@@ -13,10 +13,12 @@ const styled = StyleSheet.create({
     alignItems: 'center',
   },
   label: {
-    flex: 1,
-    marginRight: 15,
+    marginRight: 10,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
+  },
+  rightArrowRow: {
+    justifyContent: 'flex-start',
   },
 });
 
@@ -41,7 +43,12 @@ const ToggleArrow = (props) => {
         }
       }}
     >
-      <Row style={styled.row}>
+      <Row
+        style={{
+          ...styled.row,
+          ...(useRightArrow ? styled.rightArrowRow : {}),
+        }}
+      >
         <Text style={{ ...styled.label, ...labelStyle }}>{label}</Text>
         {useRightArrow ? (
           <ArrowRightGreyIcon />

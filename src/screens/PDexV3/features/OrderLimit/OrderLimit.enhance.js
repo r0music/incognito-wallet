@@ -6,19 +6,23 @@ import { actionToggleModal } from '@src/components/Modal';
 import { TradeSuccessModal } from '@screens/PDexV3/features/Trade';
 import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import { NFTTokenModal } from '@screens/PDexV3/features/NFTToken';
-import { orderLimitDataSelector } from './OrderLimit.selector';
+import { LoadingContainer } from '@src/components/core';
+import {
+  orderLimitDataSelector,
+  orderLimitSelector,
+} from './OrderLimit.selector';
 import {
   actionInit,
   actionBookOrder,
   actionSetPoolSelected,
   actionResetOrdersHistory,
-  actionFetchOrdersHistory,
 } from './OrderLimit.actions';
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const { cfmTitle } = useSelector(orderLimitDataSelector);
   const { nftTokenAvailable } = useSelector(nftTokenDataSelector);
+  const { isFetching, isFetched } = useSelector(orderLimitSelector);
   const handleConfirm = async () => {
     try {
       if (!nftTokenAvailable) {
@@ -69,6 +73,9 @@ const enhance = (WrappedComp) => (props) => {
   React.useEffect(() => {
     dispatch(actionInit(true));
   }, []);
+  if (isFetching && !isFetched) {
+    return <LoadingContainer />;
+  }
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props, handleConfirm, onRefresh, callback }} />

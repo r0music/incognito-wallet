@@ -28,9 +28,13 @@ import {
   orderLimitDataSelector,
   rateDataSelector,
   sellInputAmountSelector,
+  selectableTokens1Selector,
+  selectableTokens2Selector,
+  poolSelectedDataSelector,
 } from './OrderLimit.selector';
-import { actionSetPercent } from './OrderLimit.actions';
 import { formConfigs } from './OrderLimit.constant';
+import { findPoolByPairSelector } from '../Pools';
+import { actionInit, actionSetPoolSelected } from './OrderLimit.actions';
 
 const styled = StyleSheet.create({
   container: {
@@ -59,11 +63,31 @@ const styled = StyleSheet.create({
 });
 
 const RateInput = React.memo(() => {
+  const navigation = useNavigation();
+  const poolSelected = useSelector(poolSelectedDataSelector);
   const dispatch = useDispatch();
   const orderlimitData = useSelector(orderLimitDataSelector);
   const rateData = useSelector(rateDataSelector);
   const rateToken: SelectedPrivacy = rateData?.rateToken;
   const { activedTab } = orderlimitData;
+  const selectableTokens = useSelector(selectableTokens2Selector);
+  const findPoolByPair = useSelector(findPoolByPairSelector);
+  const onPressSymbol = () => {
+    navigation.navigate(routeNames.SelectTokenModal, {
+      data: selectableTokens,
+      onPress: (token2: SelectedPrivacy) => {
+        const token1: SelectedPrivacy = poolSelected?.token1 || {};
+        const pool = findPoolByPair({
+          token1Id: token1?.tokenId,
+          token2Id: token2?.tokenId,
+        });
+        if (pool?.poolId) {
+          dispatch(actionSetPoolSelected(pool?.poolId));
+          dispatch(actionInit(true));
+        }
+      },
+    });
+  };
   const onChange = async (rate) => {
     try {
       dispatch(change(formConfigs.formName, formConfigs.rate, rate));
@@ -105,6 +129,8 @@ const RateInput = React.memo(() => {
         symbol={rateToken?.symbol}
         label="Limit price"
         visibleHeader
+        canSelectSymbol
+        onPressSymbol={onPressSymbol}
       />
     </View>
   );
@@ -113,10 +139,40 @@ const RateInput = React.memo(() => {
 const SellInput = React.memo(() => {
   const navigation = useNavigation();
   const orderLimitData = useSelector(orderLimitDataSelector);
+  const rateData = useSelector(rateDataSelector);
+  const { rateToken } = rateData;
   const dispatch = useDispatch();
   const inputAmount = useSelector(inputAmountSelector);
   const sellInputAmount = inputAmount(formConfigs.selltoken);
   const sellToken: SelectedPrivacy = sellInputAmount?.tokenData;
+  const selectableTokens = useSelector(selectableTokens1Selector);
+  const findPoolByPair = useSelector(findPoolByPairSelector);
+  const onPressSymbol = () => {
+    const { activedTab } = orderLimitData;
+    switch (activedTab) {
+    case TAB_BUY_LIMIT_ID: {
+      break;
+    }
+    case TAB_SELL_LIMIT_ID: {
+      navigation.navigate(routeNames.SelectTokenModal, {
+        data: selectableTokens,
+        onPress: (sellToken: SelectedPrivacy) => {
+          const pool = findPoolByPair({
+            token1Id: sellToken?.tokenId,
+            token2Id: rateToken?.tokenId,
+          });
+          if (pool?.poolId) {
+            dispatch(actionSetPoolSelected(pool?.poolId));
+            dispatch(actionInit(true));
+          }
+        },
+      });
+      break;
+    }
+    default:
+      break;
+    }
+  };
   const onPressInfinityIcon = async () => {
     batch(() => {
       dispatch(
@@ -163,6 +219,8 @@ const SellInput = React.memo(() => {
         rightHeader={
           <ButtonChart onPress={() => navigation.navigate(routeNames.Chart)} />
         }
+        canSelectSymbol
+        onPressSymbol={onPressSymbol}
       />
     </View>
   );
@@ -178,7 +236,35 @@ const BuyInput = React.memo(() => {
   const sellToken: SelectedPrivacy = sellInputAmount?.tokenData;
   const orderLimitData = useSelector(orderLimitDataSelector);
   const rateData = useSelector(rateDataSelector);
-  const { customRate } = rateData;
+  const { customRate, rateToken } = rateData;
+  const selectableTokens = useSelector(selectableTokens1Selector);
+  const findPoolByPair = useSelector(findPoolByPairSelector);
+  const onPressSymbol = () => {
+    const { activedTab } = orderLimitData;
+    switch (activedTab) {
+    case TAB_BUY_LIMIT_ID: {
+      navigation.navigate(routeNames.SelectTokenModal, {
+        data: selectableTokens,
+        onPress: (buyToken: SelectedPrivacy) => {
+          const pool = findPoolByPair({
+            token1Id: buyToken?.tokenId,
+            token2Id: rateToken?.tokenId,
+          });
+          if (pool?.poolId) {
+            dispatch(actionSetPoolSelected(pool?.poolId));
+            dispatch(actionInit(true));
+          }
+        },
+      });
+      break;
+    }
+    case TAB_SELL_LIMIT_ID: {
+      break;
+    }
+    default:
+      break;
+    }
+  };
   const onPressInfinityIcon = async () => {
     const {
       availableAmountNumber: availableSellAmountNumber,
@@ -252,6 +338,8 @@ const BuyInput = React.memo(() => {
         rightHeader={
           <ButtonChart onPress={() => navigation.navigate(routeNames.Chart)} />
         }
+        canSelectSymbol
+        onPressSymbol={onPressSymbol}
       />
     </View>
   );
@@ -259,6 +347,7 @@ const BuyInput = React.memo(() => {
 
 const InputsGroup = React.memo(() => {
   const { activedTab } = useSelector(orderLimitDataSelector);
+  const poolSelected = useSelector(poolSelectedDataSelector);
   const renderMain = () => {
     switch (activedTab) {
     case TAB_SELL_LIMIT_ID: {
@@ -281,6 +370,9 @@ const InputsGroup = React.memo(() => {
       return null;
     }
   };
+  if (!poolSelected) {
+    return null;
+  }
   return <View style={styled.container}>{renderMain()}</View>;
 });
 

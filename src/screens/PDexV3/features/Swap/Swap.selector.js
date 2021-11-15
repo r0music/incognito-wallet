@@ -241,7 +241,7 @@ export const swapInfoSelector = createSelector(
       const networkfeeAmountStr = `${networkfeeAmount} ${PRV.symbol}`;
       const editableInput =
         !swapingToken && !initing && !selecting && !isFetching;
-      let btnSwapText = 'Convert';
+      let btnSwapText = 'Swap';
       const calculating = swapingToken || initing || selecting || isFetching;
       const disabledBtnSwap =
         calculating ||

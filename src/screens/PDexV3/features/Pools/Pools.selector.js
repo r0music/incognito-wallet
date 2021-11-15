@@ -5,8 +5,7 @@ import { COLORS } from '@src/styles';
 import { getExchangeRate } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
 import convert from '@src/utils/convert';
-import SelectedPrivacy from '@src/models/selectedPrivacy';
-import xor from 'lodash/xor';
+import isEqual from 'lodash/isEqual';
 
 export const poolsSelector = createSelector(
   (state) => state.pDexV3,
@@ -165,13 +164,8 @@ export const listPoolsVerifySelector = createSelector(
 
 export const findPoolByPairSelector = createSelector(
   listPoolsVerifySelector,
-  (pools) => ({ selltoken, buytoken }) =>
-    pools.find((pool) => {
-      const token1: SelectedPrivacy = pool?.token1;
-      const token2: SelectedPrivacy = pool?.token2;
-      return (
-        xor([token1?.tokenId, token2?.tokenId], [selltoken, buytoken])
-          .length === 0
-      );
-    }),
+  (pools) => ({ token1Id, token2Id }) =>
+    pools.find(({ token1, token2 }) =>
+      isEqual([token1?.tokenId, token2?.tokenId], [token1Id, token2Id]),
+    ) || pools.find(({ token1 }) => token1?.tokenId === token1Id),
 );

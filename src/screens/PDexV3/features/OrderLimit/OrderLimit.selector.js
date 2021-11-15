@@ -1,4 +1,5 @@
 import { PRV } from '@src/constants/common';
+import uniqBy from 'lodash/uniqBy';
 import { sharedSelector } from '@src/redux/selectors';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
@@ -14,7 +15,10 @@ import {
   getPairRate,
   getOriginalPairRate,
 } from '@screens/PDexV3';
-import { getDataByPoolIdSelector } from '@screens/PDexV3/features/Pools';
+import {
+  getDataByPoolIdSelector,
+  listPoolsVerifySelector,
+} from '@screens/PDexV3/features/Pools';
 import { activedTabSelector } from '@src/components/core/Tabs/Tabs.selector';
 import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import BigNumber from 'bignumber.js';
@@ -46,7 +50,7 @@ export const poolIdSelector = createSelector(
 export const poolSelectedDataSelector = createSelector(
   orderLimitSelector,
   getDataByPoolIdSelector,
-  ({ poolId }, getDataByPoolId) => getDataByPoolId(poolId) || {},
+  ({ poolId }, getDataByPoolId) => getDataByPoolId(poolId),
 );
 
 // group inputs
@@ -231,7 +235,7 @@ export const orderLimitDataSelector = createSelector(
   nftTokenDataSelector,
   (
     state,
-    { networkfee, initing, percent, ordering },
+    { networkfee, isFetching, percent, ordering },
     getActivedTab,
     getPrivacyDataByTokenID,
     getInputAmount,
@@ -347,14 +351,14 @@ export const orderLimitDataSelector = createSelector(
     const balanceStr = `${sellInputAmount?.balanceStr ||
       '0'} ${sellInputAmount?.symbol || ''}`;
     const poolSizeStr = `${sellInputAmount?.poolValueStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.poolValueStr} ${buyInputAmount?.symbol}`;
-    const editableInput = !initing;
-    const calculating = initing;
+    const editableInput = !isFetching;
+    const calculating = isFetching;
     const disabledBtn = calculating || !isValid(formConfigs.formName)(state);
     if (calculating) {
       btnActionTitle = 'Calculating...';
     }
     const tradingFeeStr = `${feeTokenData?.feeAmountText} ${feeTokenData?.symbol}`;
-    const refreshing = initing;
+    const refreshing = isFetching;
     const poolStr = `${token1?.symbol || ''} / ${token2?.symbol || ''}`;
     const priceChange24h = pool?.priceChange24h || 0;
     let colorPriceChange24h = COLORS.green;
@@ -651,5 +655,22 @@ export const orderDetailSelector = createSelector(
       fetching,
       order: mappingOrderHistory(order),
     };
+  },
+);
+
+export const selectableTokens1Selector = createSelector(
+  listPoolsVerifySelector,
+  (pools) =>
+    uniqBy(pools.map(({ token1 }) => token1), (token) => token?.tokenId),
+);
+
+export const selectableTokens2Selector = createSelector(
+  listPoolsVerifySelector,
+  poolSelectedDataSelector,
+  (pools, poolSelected) => {
+    const { tokenId: token1Id } = poolSelected?.token1;
+    return pools
+      .filter(({ token1 }) => token1?.tokenId === token1Id)
+      .map(({ token2 }) => token2);
   },
 );

@@ -153,7 +153,6 @@ export default (state = initialState, action) => {
       ...state,
       isFetching: false,
       isFetched: true,
-      data: { ...action.payload },
     };
   }
   case ACTION_FETCH_FAIL: {

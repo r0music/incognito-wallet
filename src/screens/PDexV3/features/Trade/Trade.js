@@ -9,7 +9,6 @@ import OrderLimit, {
   actionSetPoolSelected,
 } from '@screens/PDexV3/features/OrderLimit';
 import { useNavigationParam } from 'react-navigation-hooks';
-import MarketList from '@screens/PDexV3/features/MarketList';
 import SelectAccountButton from '@src/components/SelectAccountButton';
 import { actionChangeTab } from '@src/components/core/Tabs/Tabs.actions';
 import {
@@ -17,7 +16,6 @@ import {
   TAB_SWAP_ID,
   TAB_BUY_LIMIT_ID,
   TAB_SELL_LIMIT_ID,
-  TAB_MARKET_ID,
 } from './Trade.constant';
 import { styled } from './Trade.styled';
 import withTrade from './Trade.enhance';
@@ -62,9 +60,6 @@ const Trade = () => {
         </View>
         <View tabID={TAB_SWAP_ID} label="Swap" onChangeTab={() => null}>
           <TabSwap />
-        </View>
-        <View tabID={TAB_MARKET_ID} label="Market" onChangeTab={() => null}>
-          <MarketList onPressPool={onPressPool} />
         </View>
       </Tabs>
     </View>

@@ -66,9 +66,8 @@ export const actionFetching = () => ({
   type: ACTION_FETCHING,
 });
 
-export const actionFetched = (payload) => ({
+export const actionFetched = () => ({
   type: ACTION_FETCHED,
-  payload,
 });
 
 export const actionFetchFail = () => ({
@@ -188,7 +187,7 @@ export const actionSetDefaultPool = () => async (dispatch, getState) => {
 
 export const actionInit = (refresh = true) => async (dispatch, getState) => {
   try {
-    await dispatch(actionIniting(true));
+    dispatch(actionFetching());
     batch(() => {
       dispatch(reset(formConfigs.formName));
       dispatch(actionSetPercent(0));
@@ -257,7 +256,7 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
   } catch (error) {
     new ExHandler(error).showErrorToast;
   } finally {
-    await dispatch(actionIniting(false));
+    dispatch(actionFetched());
   }
 };
 
