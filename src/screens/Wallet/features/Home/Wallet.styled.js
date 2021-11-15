@@ -61,7 +61,17 @@ export const styledBalance = StyleSheet.create({
   },
   wrapBalance: {
     minHeight: FONT.SIZE.superLarge + 12,
-  }
+  },
+  iconHide: {
+    marginLeft: 5
+  },
+  btnHideBalance: {
+    position: 'absolute',
+    right: -15,
+    top: -15,
+    width: 50,
+    height: 50,
+  },
 });
 
 export const groupButtonStyled = StyleSheet.create({
