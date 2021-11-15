@@ -56,6 +56,29 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.small,
     fontFamily: FONT.NAME.regular,
   },
+  text: {
+    color: COLORS.colorGreyBold,
+    fontFamily: FONT.NAME.specialMedium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.medium + 4,
+  },
+  contentView: {
+    flexDirection: 'row',
+  },
+  selectedButton: {
+    padding: 12,
+    borderRadius: 16,
+    borderWidth: 0,
+    marginBottom: 16,
+    backgroundColor: '#EFEFEF',
+  },
+  unSelectedButon: {
+    padding: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: COLORS.colorGreyLight,
+    marginBottom: 16
+  },
 });
 
 const TradeInputAmount = (props) => {
@@ -74,8 +97,12 @@ const TradeInputAmount = (props) => {
     rightHeader,
     visibleHeader = false,
     inputStyle,
+    platforms,
+    value,
     ...rest
   } = props || {};
+
+  const [selectedPlatform, setSelectedPlatform] = React.useState(0);
   const renderSub = () => {
     if (loadingBalance) {
       return <ActivityIndicator style={styled.loadingIcon} size="small" />;
@@ -94,6 +121,11 @@ const TradeInputAmount = (props) => {
       );
     }
   };
+
+  const handlePress = (index) => {
+    setSelectedPlatform(index);
+  };
+
   return (
     <View style={styled.container}>
       {visibleHeader && (
@@ -114,7 +146,8 @@ const TradeInputAmount = (props) => {
           placeholder={placeholder}
           ellipsizeMode="tail"
           numberOfLines={1}
-          editable={editableInput}
+          editable={platforms && platforms.length > 1 ?  false : editableInput}
+          value={platforms && platforms.length > 1 ?  ' ' : value}
           {...rest}
         />
         {renderSub()}
@@ -127,6 +160,21 @@ const TradeInputAmount = (props) => {
           </TouchableOpacity>
         )}
       </View>
+      { platforms && platforms.length > 1 &&
+        platforms.map((item, index) => {
+          return (
+            <TouchableOpacity
+              style={index === selectedPlatform ? styled.selectedButton : styled.unSelectedButon}
+              key={`key-${index}`}
+              onPress={() => handlePress(index)}
+            >
+              <View style={styled.contentView}>
+                <Text style={[styled.text, { marginRight: 20, color: index === selectedPlatform ? COLORS.black : COLORS.colorGreyBold }]}>{item.price} {item.name}</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })
+      }
     </View>
   );
 };

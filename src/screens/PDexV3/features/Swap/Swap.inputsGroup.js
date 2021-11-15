@@ -46,6 +46,8 @@ const SwapInputsGroup = React.memo(() => {
   const inputAmount = useSelector(inputAmountSelector);
   const sellInputAmount = inputAmount(formConfigs.selltoken);
   const buyInputAmount = inputAmount(formConfigs.buytoken);
+  // todo: update value assgined 
+  const platforms = [{name: 'Incognito', price: 50, fee: 10}, {name: 'Pancake', price: 49, fee: 10}];
   const onSelectToken = (token, field) => {
     dispatch(actionSelectToken(token, field));
     dispatch(actionToggleModal());
@@ -138,6 +140,7 @@ const SwapInputsGroup = React.memo(() => {
         editableInput={!!swapInfo?.editableInput}
         visibleHeader={false}
         onChange={(value) => onChange(formConfigs.buytoken, value)}
+        platforms={platforms}
       />
       <ToggleArrow
         label="Advanced"
