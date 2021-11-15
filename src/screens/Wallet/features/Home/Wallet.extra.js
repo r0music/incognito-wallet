@@ -100,7 +100,7 @@ const GroupButton = React.memo(() => {
       <BTNBorder
         disabled={isDisabled}
         onPress={onFeaturePress}
-        title="Add crypto"
+        title="Deposit"
       />
     </View>
   );

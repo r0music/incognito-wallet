@@ -155,7 +155,6 @@ export const tokenStyled = StyleSheet.create({
   labelTrade: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.small + 1,
-    lineHeight: FONT.SIZE.regular + 8,
     color: COLORS.white
   },
   headerLabel: {
@@ -172,7 +171,13 @@ export const tokenStyled = StyleSheet.create({
 
 export const styledAddToken = StyleSheet.create({
   container: {
-    marginVertical: 10
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+    position: 'absolute',
+    bottom: 0,
+    left: -25,
+    backgroundColor: COLORS.white,
+    borderTopRightRadius: 8,
   },
   title: {
     fontFamily: FONT.NAME.medium,

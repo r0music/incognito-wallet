@@ -23,7 +23,7 @@ import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
 import {ROOT_TAB_TRADE, TAB_SWAP_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
 
 const TokenDefault = React.memo((props) => {
-  const { symbol, name, priceUsd, amount, pDecimals, decimalDigits, pricePrv, tokenId, change, onPress, isVerified, isGettingBalance, showGettingBalance, token } = props;
+  const { symbol, name, priceUsd, amount, pDecimals, decimalDigits, pricePrv, change, onPress, isGettingBalance, showGettingBalance } = props;
   const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -184,7 +184,10 @@ TokenDefault.propTypes = {
   pDecimals: PropTypes.string.isRequired,
   decimalDigits: PropTypes.string.isRequired,
   pricePrv: PropTypes.string.isRequired,
-  tokenId: PropTypes.string.isRequired,
+  change: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
+  isGettingBalance: PropTypes.bool.isRequired,
+  showGettingBalance: PropTypes.bool.isRequired,
 };
 
 export default withToken(memo(Token));
