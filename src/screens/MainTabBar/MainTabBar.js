@@ -48,7 +48,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
             <LiquidityIcon active={focused} />
-            <Text style={[styled.label, { color: tintColor }]}>Liquidity</Text>
+            <Text style={[styled.label, { color: tintColor }]}>Earn</Text>
           </View>
         ),
       },

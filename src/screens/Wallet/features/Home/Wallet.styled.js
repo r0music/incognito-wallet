@@ -119,7 +119,8 @@ export const tokenStyled = StyleSheet.create({
     paddingRight: 10
   },
   wrapThird: {
-    flex: 1
+    flex: 1,
+    paddingRight: 5
   },
   rowHeight: {
     height: FONT.SIZE.regular + 8,

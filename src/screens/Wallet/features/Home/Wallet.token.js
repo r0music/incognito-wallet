@@ -51,8 +51,8 @@ const TokenDefault = React.memo((props) => {
       batch(() => {
         dispatch(actionInitSwapForm({
           defaultPair: {
-            selltoken: CONSTANT_CONFIGS.USDT_TOKEN_ID,
-            buytoken: tokenId,
+            buytoken: CONSTANT_CONFIGS.USDT_TOKEN_ID,
+            selltoken: tokenId,
           }
         }));
         dispatch(

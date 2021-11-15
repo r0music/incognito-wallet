@@ -16,7 +16,12 @@ const BottomView = ({ title, onPress }) => {
 
 export const styled = StyleSheet.create({
   container: {
-    marginVertical: 10
+    paddingVertical: 10,
+    position: 'absolute',
+    bottom: 0,
+    backgroundColor: COLORS.white,
+    borderTopRightRadius: 8,
+    paddingRight: 25
   },
   title: {
     fontFamily: FONT.NAME.medium,
