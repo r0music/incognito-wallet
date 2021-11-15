@@ -26,6 +26,9 @@ const initialState = {
   isFetching: false,
   isFetched: false,
   data: {},
+  dataPancake: {},
+  isIncognito: false,
+  isPancake: false,
   buytoken: '',
   selltoken: '',
   feetoken: '',
@@ -144,7 +147,10 @@ export default (state = initialState, action) => {
       ...state,
       isFetching: false,
       isFetched: true,
-      data: { ...action.payload },
+      data: { ...action.payload.data },
+      dataPancake: { ...action.payload.dataPancake },
+      isIncognito: { ...action.payload.isIncognito },
+      isPancake: { ...action.payload.isPancake },
     };
   }
   case ACTION_FETCH_FAIL: {

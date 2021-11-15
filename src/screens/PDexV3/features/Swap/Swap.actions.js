@@ -162,12 +162,33 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
     }
     await dispatch(actionFetching());
 
-    // get estimate trade from pancake
-    // const {paths, outputs, tradingFee} =  await estimateTradePancake(state, payload);
-
+    // estimate trade from Incognito
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-    const data = await pDexV3Inst.getEstimateTrade(payload);
-    await dispatch(actionFetched(data));
+    let data, dataPancake;
+    let isIncognito = false, isPancake = false;
+    try {
+      data = await pDexV3Inst.getEstimateTrade(payload);
+      isIncognito = true;
+    } catch(e) {
+      console.log('Can not estimate trade from Incognito with this pair.');
+    }
+
+    // estimate trade from Pancake
+    try {
+      dataPancake = await estimateTradePancake(state, payload);
+      if (dataPancake && dataPancake.paths && dataPancake.paths.length > 0) {
+        isPancake = true;
+      }
+    } catch(e) {
+      console.log('Can not estimate trade from Pancake with this pair.');
+    }
+
+    if (!isIncognito && !isPancake) {
+      await dispatch(actionFetchFail());
+      new ExHandler('Can not estimate trade with this pair').showErrorToast();
+    }
+
+    await dispatch(actionFetched({data, dataPancake, isIncognito, isPancake}));
     state = getState();
     const feeTokenData = feetokenDataSelector(state);
     const { minFeeAmountFixed } = feeTokenData;
@@ -214,10 +235,10 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
 
 const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buyamount}) => {
   try {
-    console.log('selltoken: ', selltoken);
-    console.log('buytoken: ', buytoken);
-    console.log('sellamount: ', sellamount);
-    console.log('buyamount: ', buyamount);
+    // console.log('selltoken: ', selltoken);
+    // console.log('buytoken: ', buytoken);
+    // console.log('sellamount: ', sellamount);
+    // console.log('buyamount: ', buyamount);
     
     const getPancakeTokenParamReq = getPancakeTokenParamReqByTokenIDSelector(state);
     const tokenSellPancake = getPancakeTokenParamReq(selltoken);
@@ -241,7 +262,7 @@ const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buy
     }
     const {sourceToken, destToken, amount, chainID, isSwapExactOut} = payloadPancake;
     console.log('payloadPancake: ', payloadPancake);
-    const [paths, outputs] = await getBestRateFromPancake(sourceToken, destToken, amount, chainID, isSwapExactOut);
+    const {paths, outputs} = await getBestRateFromPancake(sourceToken, destToken, amount, chainID, isSwapExactOut);
     
     if (!paths || paths.length === 0) {
       console.log('Can not found best route for this pair');
@@ -249,7 +270,6 @@ const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buy
     }
 
     const account = defaultAccountSelector(state);
-    console.log('account: ', account);
     const tradingFee = await getPancakeTradingFee({
       paymentAddress: account.PaymentAddress,
       srcTokenID: selltoken, 
@@ -257,7 +277,6 @@ const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buy
       srcAmt: sellamount, 
       destAmt: buyamount,
     });
-    console.log('tradingFee: ', tradingFee);
     return {
       paths, 
       outputs,
@@ -330,16 +349,20 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
     if (!refresh && listPairs.length > 0) {
       return listPairs;
     }
-    [pDEXPairs = [], pancakeTokens = []] = await Promise.all([
+    [pDEXPairs, pancakeTokens] = await Promise.all([
       pDexV3Inst.getListPair(),
-      getPancakeTokens()
+      getPancakeTokens(),
     ]);
+
     pDEXPairs = pDEXPairs.reduce(
       (prev, current) =>
         (prev = prev.concat([current.tokenId1, current.tokenId2])),
       [],
     );
+    
     const pancakeTokenIDs = pancakeTokens.map(item => item.tokenID);
+    console.log('pDEXPairs: ', pDEXPairs);
+    console.log('pancakeTokenIDs: ', pancakeTokenIDs);
     pairs = uniq([...pDEXPairs, ...pancakeTokenIDs]);
   } catch (error) {
     new ExHandler(error).showErrorToast();

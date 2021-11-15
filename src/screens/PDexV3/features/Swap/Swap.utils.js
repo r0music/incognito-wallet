@@ -203,7 +203,7 @@ export const calMintAmountExpected = ({ maxGet, slippagetolerance } = {}) => {
   return maxGet;
 };
 
-const listCommon = Object.keys(listDecimals);
+const listCommon = [...Object.keys(listDecimals)];
 const web3 = new Web3(CONSTANTS.BSC_HOST);
 const MULTI_CALL_INST = new web3.eth.Contract(MULTI_CALL_ABI, MULTI_CALL_CONTRACT);
 const FACTORY_INST = new web3.eth.Contract(PANCAKE_FACOTRY_ABI, PANCAKE_FACTORY_ADDRESS);
@@ -225,7 +225,7 @@ export async function getBestRateFromPancake(sourceToken, destToken, amount, cha
       }
     }
   );
-
+  
   for (let i = 0; i < listTokens.length - 1; i++) {
     for (let j = i + 1; j < listTokens.length; j++) {
       if (listTokens[i] === listTokens[j]) continue;
@@ -255,7 +255,6 @@ export async function getBestRateFromPancake(sourceToken, destToken, amount, cha
   }
 
   const listReserved = await MULTI_CALL_INST.methods.tryAggregate(false, getPairResrved).call();
-  console.log('listReserved: ', listReserved);
   if (listReserved.length < 2) {
     console.log('no LPs exist!!!');
     return null, null;
@@ -313,7 +312,7 @@ export async function getBestRateFromPancake(sourceToken, destToken, amount, cha
   } else {
     outputs = await PANCKAE_ROUTER_INST.methods.getAmountsIn(sellAmount.toString(), paths).call();
   }
-  return paths, outputs;
+  return {paths, outputs};
 }
 
 // generated eth from incKey success
