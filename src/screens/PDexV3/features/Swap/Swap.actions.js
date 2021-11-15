@@ -190,34 +190,56 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
 
     await dispatch(actionFetched({data, dataPancake, isIncognito, isPancake}));
     state = getState();
-    const feeTokenData = feetokenDataSelector(state);
-    const { minFeeAmountFixed } = feeTokenData;
-    let maxGet = 0;
-    switch (field) {
-    case formConfigs.selltoken: {
-      maxGet = data?.maxGet || 0;
-      break;
+    let IncMinAmountExpectedToFixed, IncMinFeeAmountFixed, PancakeMinAmountExpectedToFixed, PancakeMinFeeAmountFixed;
+    if (isIncognito) {
+      const feeTokenData = feetokenDataSelector(state);
+      const minFee = feeTokenData.minFeeAmountFixed;
+      IncMinFeeAmountFixed = minFee;
+      let maxGet = 0;
+      switch (field) {
+      case formConfigs.selltoken: {
+        maxGet = data?.maxGet || 0;
+        break;
+      }
+      case formConfigs.buytoken: {
+        maxGet = data?.sellAmount || 0;
+        break;
+      }
+      default:
+        break;
+      }
+      const originalMinAmountExpected = calMintAmountExpected({
+        maxGet,
+        slippagetolerance,
+      });
+      const minAmountExpectedToHumanAmount = convert.toHumanAmount(
+        originalMinAmountExpected,
+        inputPDecimals,
+      );
+      IncMinAmountExpectedToFixed = format.toFixed(
+        minAmountExpectedToHumanAmount,
+        inputPDecimals,
+      );
+    } 
+    if (isPancake) {
+      const {tradingFee, minAmountExpectedToFixed} = dataPancake;
+      PancakeMinAmountExpectedToFixed = minAmountExpectedToFixed;
+      PancakeMinFeeAmountFixed = convert.toHumanAmount(
+        tradingFee.tradeFee,
+        9, //todo: get PRV decimals
+      );
     }
-    case formConfigs.buytoken: {
-      maxGet = data?.sellAmount || 0;
-      break;
-    }
-    default:
-      break;
-    }
-    const originalMinAmountExpected = calMintAmountExpected({
-      maxGet,
-      slippagetolerance,
-    });
-    const minAmountExpectedToHumanAmount = convert.toHumanAmount(
-      originalMinAmountExpected,
-      inputPDecimals,
-    );
-    const minAmountExpectedToFixed = format.toFixed(
-      minAmountExpectedToHumanAmount,
-      inputPDecimals,
-    );
+    
     batch(() => {
+      let minAmountExpectedToFixed, minFeeAmountFixed;
+      if (isIncognito && !isPancake) {
+        minAmountExpectedToFixed = IncMinAmountExpectedToFixed;
+        minFeeAmountFixed = IncMinFeeAmountFixed;
+      } if (!isIncognito && isPancake) { 
+        minAmountExpectedToFixed = PancakeMinAmountExpectedToFixed;
+        minFeeAmountFixed = PancakeMinFeeAmountFixed;
+        dispatch(actionSetFeeToken(PRV.id));
+      }
       dispatch(
         change(formConfigs.formName, inputToken, minAmountExpectedToFixed),
       );
@@ -235,11 +257,7 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
 
 const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buyamount}) => {
   try {
-    // console.log('selltoken: ', selltoken);
-    // console.log('buytoken: ', buytoken);
-    // console.log('sellamount: ', sellamount);
-    // console.log('buyamount: ', buyamount);
-    
+    const slippagetolerance = slippagetoleranceSelector(state);
     const getPancakeTokenParamReq = getPancakeTokenParamReqByTokenIDSelector(state);
     const tokenSellPancake = getPancakeTokenParamReq(selltoken);
     const tokenBuyPancake = getPancakeTokenParamReq(buytoken);
@@ -254,22 +272,43 @@ const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buy
       chainID: PANCAKE_CHAIN_ID,
     };
     if (sellamount) {
-      payloadPancake.amount = sellamount;
+      payloadPancake.amount = convert.toHumanAmount(
+        sellamount,
+        tokenSellPancake.pDecimals,
+      );
       payloadPancake.isSwapExactOut = false; 
     } else if (buyamount) {
-      payloadPancake.amount = buyamount;
+      payloadPancake.amount = convert.toHumanAmount(
+        buyamount,
+        tokenBuyPancake.pDecimals,
+      );
       payloadPancake.isSwapExactOut = true; 
     }
     const {sourceToken, destToken, amount, chainID, isSwapExactOut} = payloadPancake;
     console.log('payloadPancake: ', payloadPancake);
     const {paths, outputs} = await getBestRateFromPancake(sourceToken, destToken, amount, chainID, isSwapExactOut);
-    
     if (!paths || paths.length === 0) {
       console.log('Can not found best route for this pair');
       return null;
     }
+    let originalMaxGet = isSwapExactOut ? outputs[0] : outputs[outputs.length - 1];
+    let getTokenDecimals = isSwapExactOut ? sourceToken.decimals : destToken.decimals;
+    const originalMinAmountExpected = calMintAmountExpected({
+      maxGet: originalMaxGet,
+      slippagetolerance,
+    });
+    
+    const minAmountExpectedToHumanAmount = convert.toHumanAmount(
+      originalMinAmountExpected,
+      getTokenDecimals,
+    );
+    const minAmountExpectedToFixed = format.toFixed(
+      minAmountExpectedToHumanAmount,
+      getTokenDecimals,
+    );
 
     const account = defaultAccountSelector(state);
+    // only PRV
     const tradingFee = await getPancakeTradingFee({
       paymentAddress: account.PaymentAddress,
       srcTokenID: selltoken, 
@@ -281,6 +320,9 @@ const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buy
       paths, 
       outputs,
       tradingFee,
+      originalMaxGet,
+      originalMinAmountExpected,
+      minAmountExpectedToFixed,
     };
   }catch(e) {
     console.log('Error when get best route on pancake: ', e);

@@ -148,9 +148,9 @@ export default (state = initialState, action) => {
       isFetching: false,
       isFetched: true,
       data: { ...action.payload.data },
-      dataPancake: { ...action.payload.dataPancake },
-      isIncognito: { ...action.payload.isIncognito },
-      isPancake: { ...action.payload.isPancake },
+      dataPancake: {...action.payload.dataPancake},
+      isIncognito: action.payload.isIncognito,
+      isPancake: action.payload.isPancake,
     };
   }
   case ACTION_FETCH_FAIL: {

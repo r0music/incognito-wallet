@@ -147,6 +147,14 @@ const TabPro = React.memo(() => {
       containerStyle: { marginBottom: 0 },
     },
   ];
+  if (swapInfo?.platformNameStr) {
+    extraFactories.push(
+      {
+        label: 'Platform',
+        value: swapInfo?.platformNameStr,
+      }
+    );
+  }
   return (
     <View style={styled.container}>
       {extraFactories.map((extra) => (

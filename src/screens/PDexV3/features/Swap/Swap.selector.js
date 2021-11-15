@@ -203,6 +203,8 @@ export const swapInfoSelector = createSelector(
       isFetched,
       percent,
       swaping,
+      isIncognito,
+      isPancake,
     },
     feeTokenData,
     getInputAmount,
@@ -272,6 +274,13 @@ export const swapInfoSelector = createSelector(
         selltoken: sellInputAmount.tokenId,
         buytoken: buyInputAmount.tokenId,
       };
+      let platformNameStr  = '';
+      if (isIncognito && !isPancake) {
+        platformNameStr = 'Incognito swap';
+      } else if (!isIncognito && isPancake) {
+        platformNameStr = 'Pancake swap';
+      }
+
       return {
         balanceStr: sellInputBalanceStr,
         routing,
@@ -296,6 +305,7 @@ export const swapInfoSelector = createSelector(
         maxGet,
         refreshing: isFetching,
         defaultPair,
+        platformNameStr
       };
     } catch (error) {
       console.log('swapInfoSelector-error', error);
@@ -433,6 +443,7 @@ export const getPancakeTokenParamReqByTokenIDSelector = createSelector(
           address: token.contractID,
           decimals: token.decimals,
           symbol: token.symbol,
+          pDecimals: token.pDecimals,
         };
       }
       return null;

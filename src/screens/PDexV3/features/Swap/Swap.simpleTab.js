@@ -57,6 +57,14 @@ export const useTabFactories = () => {
         },
       );
     }
+    if (swapInfo?.platformNameStr) {
+      result.push(
+        {
+          label: 'Platform',
+          value: swapInfo?.platformNameStr,
+        }
+      );
+    }
     return result.filter((hook) => !isEmpty(hook));
   }, [swapInfo]);
   return {
