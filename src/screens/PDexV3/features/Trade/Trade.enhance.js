@@ -21,7 +21,6 @@ import {
 } from '@screens/PDexV3/features/OrderLimit';
 import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
 import { LoadingContainer } from '@src/components/core';
-import { actionFetch } from './Trade.actions';
 import {
   ROOT_TAB_TRADE,
   TAB_SWAP_ID,

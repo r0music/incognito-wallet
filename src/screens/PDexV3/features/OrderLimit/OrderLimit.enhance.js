@@ -64,11 +64,9 @@ const enhance = (WrappedComp) => (props) => {
     dispatch(actionInit());
   };
   const callback = async (poolId) => {
-    batch(async () => {
-      dispatch(actionResetOrdersHistory());
-      await dispatch(actionSetPoolSelected(poolId));
-      dispatch(actionInit(true));
-    });
+    dispatch(actionResetOrdersHistory());
+    await dispatch(actionSetPoolSelected(poolId));
+    dispatch(actionInit(true));
   };
   React.useEffect(() => {
     dispatch(actionInit(true));

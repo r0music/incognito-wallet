@@ -19,6 +19,7 @@ import {
 } from '@screens/PDexV3/features/Trade/Trade.constant';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
+import { findPoolByPairSelector } from '@screens/PDexV3/features/Pools';
 import {
   maxAmountValidatorForBuyInput,
   maxAmountValidatorForSellInput,
@@ -33,8 +34,11 @@ import {
   poolSelectedDataSelector,
 } from './OrderLimit.selector';
 import { formConfigs } from './OrderLimit.constant';
-import { findPoolByPairSelector } from '../Pools';
-import { actionInit, actionSetPoolSelected } from './OrderLimit.actions';
+import {
+  actionInit,
+  actionSetPoolSelected,
+  actionResetOrdersHistory,
+} from './OrderLimit.actions';
 
 const styled = StyleSheet.create({
   container: {
@@ -82,8 +86,11 @@ const RateInput = React.memo(() => {
           token2Id: token2?.tokenId,
         });
         if (pool?.poolId) {
-          dispatch(actionSetPoolSelected(pool?.poolId));
-          dispatch(actionInit(true));
+          batch(() => {
+            dispatch(actionResetOrdersHistory());
+            dispatch(actionSetPoolSelected(pool?.poolId));
+            dispatch(actionInit(true));
+          });
         }
       },
     });
@@ -162,8 +169,11 @@ const SellInput = React.memo(() => {
             token2Id: rateToken?.tokenId,
           });
           if (pool?.poolId) {
-            dispatch(actionSetPoolSelected(pool?.poolId));
-            dispatch(actionInit(true));
+            batch(() => {
+              dispatch(actionResetOrdersHistory());
+              dispatch(actionSetPoolSelected(pool?.poolId));
+              dispatch(actionInit(true));
+            });
           }
         },
       });
@@ -251,8 +261,11 @@ const BuyInput = React.memo(() => {
             token2Id: rateToken?.tokenId,
           });
           if (pool?.poolId) {
-            dispatch(actionSetPoolSelected(pool?.poolId));
-            dispatch(actionInit(true));
+            batch(() => {
+              dispatch(actionResetOrdersHistory());
+              dispatch(actionSetPoolSelected(pool?.poolId));
+              dispatch(actionInit(true));
+            });
           }
         },
       });
