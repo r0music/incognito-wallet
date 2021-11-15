@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, batch } from 'react-redux';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { compose } from 'recompose';
 import { actionToggleModal } from '@src/components/Modal';
@@ -12,6 +12,7 @@ import {
   actionBookOrder,
   actionSetPoolSelected,
   actionResetOrdersHistory,
+  actionFetchOrdersHistory,
 } from './OrderLimit.actions';
 
 const enhance = (WrappedComp) => (props) => {
@@ -40,7 +41,11 @@ const enhance = (WrappedComp) => (props) => {
                 sub={
                   'Your balance will update in a couple of\nminutes after the trade is finalized.'
                 }
-                handleTradeSucesss={() => dispatch(actionInit())}
+                handleTradeSucesss={() => {
+                  batch(() => {
+                    dispatch(actionInit());
+                  });
+                }}
               />
             ),
             visible: true,
@@ -55,9 +60,11 @@ const enhance = (WrappedComp) => (props) => {
     dispatch(actionInit());
   };
   const callback = async (poolId) => {
-    dispatch(actionResetOrdersHistory());
-    await dispatch(actionSetPoolSelected(poolId));
-    dispatch(actionInit(true));
+    batch(async () => {
+      dispatch(actionResetOrdersHistory());
+      await dispatch(actionSetPoolSelected(poolId));
+      dispatch(actionInit(true));
+    });
   };
   React.useEffect(() => {
     dispatch(actionInit(true));

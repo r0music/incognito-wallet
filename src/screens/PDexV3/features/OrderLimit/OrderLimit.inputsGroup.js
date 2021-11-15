@@ -11,13 +11,14 @@ import { change, Field, focus } from 'redux-form';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
-import { Text } from '@src/components/core';
+import { ButtonChart } from '@src/components/Button';
 import convert from '@src/utils/convert';
-import SelectPercentAmount from '@src/components/SelectPercentAmount';
 import {
   TAB_BUY_LIMIT_ID,
   TAB_SELL_LIMIT_ID,
 } from '@screens/PDexV3/features/Trade/Trade.constant';
+import { useNavigation } from 'react-navigation-hooks';
+import routeNames from '@src/router/routeNames';
 import {
   maxAmountValidatorForBuyInput,
   maxAmountValidatorForSellInput,
@@ -110,6 +111,7 @@ const RateInput = React.memo(() => {
 });
 
 const SellInput = React.memo(() => {
+  const navigation = useNavigation();
   const orderLimitData = useSelector(orderLimitDataSelector);
   const dispatch = useDispatch();
   const inputAmount = useSelector(inputAmountSelector);
@@ -158,12 +160,16 @@ const SellInput = React.memo(() => {
         editableInput={!!orderLimitData?.editableInput}
         visibleHeader
         label="Amount"
+        rightHeader={
+          <ButtonChart onPress={() => navigation.navigate(routeNames.Chart)} />
+        }
       />
     </View>
   );
 });
 
 const BuyInput = React.memo(() => {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const inputAmount = useSelector(inputAmountSelector);
   const buyInputAmount = inputAmount(formConfigs.buytoken);
@@ -243,6 +249,9 @@ const BuyInput = React.memo(() => {
         label="Amount"
         hasInfinityIcon
         onPressInfinityIcon={onPressInfinityIcon}
+        rightHeader={
+          <ButtonChart onPress={() => navigation.navigate(routeNames.Chart)} />
+        }
       />
     </View>
   );

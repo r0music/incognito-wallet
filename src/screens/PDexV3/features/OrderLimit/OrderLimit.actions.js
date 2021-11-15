@@ -46,7 +46,6 @@ import {
 } from './OrderLimit.constant';
 import {
   poolSelectedDataSelector,
-  inputAmountSelector,
   orderLimitDataSelector,
   orderDetailSelector,
   rateDataSelector,
@@ -222,6 +221,7 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
       if (refresh) {
         dispatch(actionFetchPools());
         dispatch(actionSetNFTTokenData());
+        dispatch(actionFetchOrdersHistory());
       }
     });
     const activedTab = activedTabSelector(state)(ROOT_TAB_TRADE);

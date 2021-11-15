@@ -38,7 +38,6 @@ const enhance = (WrappedComp) => (props) => {
   const onRefresh = async () => {
     try {
       await setRefreshing(true);
-      await dispatch(actionFetch());
       switch (activedTab) {
       case TAB_SWAP_ID: {
         await dispatch(actionInitSwapForm());
