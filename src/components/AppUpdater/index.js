@@ -148,7 +148,7 @@ class AppUpdater extends PureComponent {
           checkFrequency: codePush.CheckFrequency.ON_APP_START,
           installMode: codePush.InstallMode.ON_NEXT_SUSPEND,
           mandatoryInstallMode: codePush.InstallMode.IMMEDIATE,
-          minimumBackgroundDuration: 1,
+          minimumBackgroundDuration: 2 * 60,
           rollbackRetryOptions: {
             delayInHours: 0.5,
             maxRetryAttempts: 5
