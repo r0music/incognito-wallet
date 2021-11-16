@@ -12,6 +12,7 @@ import { SafeAreaView, ScrollView } from 'react-native';
 import { NetworkIcon, SecurityIcon } from '@components/Icons';
 import { Header } from '@src/components';
 import codePush from 'react-native-code-push';
+import {codepushVersionSelector} from '@src/redux/selectors/settings';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
@@ -31,7 +32,7 @@ const Setting = () => {
   const navigation = useNavigation();
   const showHeader = useNavigationParam('showHeader');
   const { server } = useSelector(settingSelector);
-  const [codepushVersion, setCodepushVersion] = useState('');
+  const version = useSelector(codepushVersionSelector);
   const sectionItemFactories = [
     {
       title: 'Network',
@@ -55,17 +56,6 @@ const Setting = () => {
     navigation?.navigate(routeNames.ExportCSV);
   };
 
-  const getCodePushVer = async () => {
-    const { label } = (await codePush.getUpdateMetadata()) || {};
-    if (label) {
-      setCodepushVersion(label);
-    }
-  };
-
-  React.useEffect(() => {
-    getCodePushVer().then();
-  }, []);
-
   return (
     <SafeAreaView>
       {!!showHeader && (
@@ -82,10 +72,10 @@ const Setting = () => {
           <PayFeeByPRV />
           <PINSection />
           <SeparatorSection />
-          <DecimalDigitsSection />
-          <CurrencySection />
+          {/*<DecimalDigitsSection />*/}
+          {/*<CurrencySection />*/}
           <AddressBookSection />
-          <ExportCSVSection handlePress={handlePressExportCSV} />
+          {/*<ExportCSVSection handlePress={handlePressExportCSV} />*/}
           <UTXOSection />
           <ConvertCoinsSection />
           <RemoveStorage />
@@ -95,7 +85,7 @@ const Setting = () => {
         <Text style={[settingStyle.textVersion]}>
           {`v${AppUpdater.appVersion}${
             global.isDebug() ? ` (${DeviceInfo.getBuildNumber()})` : ''
-          }`}
+          } ${version ? `(${version})` : ''}`}
         </Text>
       </ScrollView>
     </SafeAreaView>

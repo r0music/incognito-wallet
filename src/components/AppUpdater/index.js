@@ -20,12 +20,12 @@ import {
   actionToggleBackupAllKeys,
 } from '@src/screens/Setting';
 import {actionLogEvent} from '@screens/Performance';
+import {setCodePushVersion} from '@src/redux/actions/settings';
 import { BtnClose, ButtonBasic } from '../Button';
 import styles from './styles';
 
 let displayedNews = false;
 let ignored = false;
-let data;
 
 class AppUpdater extends PureComponent {
   static instance = null;
@@ -61,10 +61,10 @@ class AppUpdater extends PureComponent {
     }
 
     try {
-      const { logEvent } = this.props;
+      const { logEvent, actionSetCodePushVersion } = this.props;
       const metadata = await codePush.getUpdateMetadata();
       logEvent(JSON.stringify(metadata));
-      const { isFirstRun, description, appVersion } = metadata || {};
+      const { isFirstRun, description, appVersion, label } = metadata || {};
       if (isFirstRun && description) {
         displayedNews = true;
         AppUpdater.appVersion = appVersion;
@@ -73,6 +73,7 @@ class AppUpdater extends PureComponent {
           appVersion: CONSTANT_CONFIGS.BUILD_VERSION,
         });
       }
+      actionSetCodePushVersion(label || '');
     } catch (error) {
       console.debug('DISPLAY NEWS', error);
     }
@@ -86,15 +87,18 @@ class AppUpdater extends PureComponent {
       break;
     case codePush.SyncStatus.DOWNLOADING_PACKAGE:
       logEvent('[CODE_PUSH] Downloading package.');
+      this.setState({ downloading: true });
       break;
     case codePush.SyncStatus.AWAITING_USER_ACTION:
       logEvent('[CODE_PUSH] Awaiting user action.');
       break;
     case codePush.SyncStatus.INSTALLING_UPDATE:
       logEvent('[CODE_PUSH] Installing update.');
+      this.setState({ updating: true, downloading: false });
       break;
     case codePush.SyncStatus.UP_TO_DATE:
       logEvent('[CODE_PUSH] App up to date.');
+      this.handleDisplayNews();
       break;
     case codePush.SyncStatus.UPDATE_IGNORED:
       logEvent('[CODE_PUSH] Update cancelled by user.');
@@ -104,23 +108,6 @@ class AppUpdater extends PureComponent {
       break;
     case codePush.SyncStatus.UNKNOWN_ERROR:
       logEvent('[CODE_PUSH] An unknown error occurred.');
-      break;
-    }
-    switch (newStatus) {
-    case codePush.SyncStatus.DOWNLOADING_PACKAGE:
-      this.setState({ downloading: true });
-      break;
-    case codePush.SyncStatus.INSTALLING_UPDATE:
-      this.setState({ updating: true, downloading: false });
-      break;
-    case codePush.SyncStatus.UP_TO_DATE:
-      this.handleDisplayNews();
-      break;
-    case codePush.SyncStatus.UPDATE_IGNORED:
-      ignored = true;
-      break;
-    case codePush.SyncStatus.UNKNOWN_ERROR:
-      console.debug('Update failed.');
       this.setState({ downloading: false, updating: false });
       break;
     }
@@ -268,7 +255,8 @@ const mapState = (state) => ({
 const mapDispatch = (dispatch) => ({
   toggleBackupAllKeys: (payload) =>
     dispatch(actionToggleBackupAllKeys(payload)),
-  logEvent: (message) => dispatch(actionLogEvent({ desc: message }))
+  logEvent: (message) => dispatch(actionLogEvent({ desc: message })),
+  actionSetCodePushVersion: (payload) => dispatch(setCodePushVersion(payload))
 });
 
 export default compose(
