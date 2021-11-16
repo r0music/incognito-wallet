@@ -28,7 +28,7 @@ import {
 const isShowDeviceLog = false;
 const {store, persistor} = configureStore();
 const codePushOptions = {
-  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+  checkFrequency: codePush.CheckFrequency.ON_APP_START,
   installMode: codePush.InstallMode.ON_NEXT_SUSPEND,
   mandatoryInstallMode: codePush.InstallMode.IMMEDIATE,
   minimumBackgroundDuration: 1,
