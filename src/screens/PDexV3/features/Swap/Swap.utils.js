@@ -203,6 +203,12 @@ export const calMintAmountExpected = ({ maxGet, slippagetolerance } = {}) => {
   return maxGet;
 };
 
+export const calMinAmountExpectedToFixed = ({ maxGet, slippagetolerance, pDecimals }) => {
+  const originalMinAmountExpected = calMintAmountExpected({ maxGet, slippagetolerance });
+  const minAmountExpectedToHumanAmount = convert.toHumanAmount(originalMinAmountExpected, pDecimals);
+  return format.toFixed(minAmountExpectedToHumanAmount, pDecimals);
+};
+
 const listCommon = [...Object.keys(listDecimals)];
 const web3 = new Web3(CONSTANTS.BSC_HOST);
 const MULTI_CALL_INST = new web3.eth.Contract(MULTI_CALL_ABI, MULTI_CALL_CONTRACT);

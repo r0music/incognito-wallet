@@ -20,15 +20,17 @@ import {
   ACTION_FETCHING_ORDER_DETAIL,
   ACTION_FETCHED_ORDER_DETAIL,
   ACTION_SET_DEFAULT_PAIR,
+  ACTION_SET_SELECTED_PLATFORM,
 } from './Swap.constant';
 
 const initialState = {
   isFetching: false,
   isFetched: false,
+  selectedPlatform: null,
   data: {},
-  dataPancake: {},
-  isIncognito: false,
-  isPancake: false,
+  dataOtherPlatforms: [],
+  dataDisplays: [],
+  platforms: [],
   buytoken: '',
   selltoken: '',
   feetoken: '',
@@ -148,9 +150,9 @@ export default (state = initialState, action) => {
       isFetching: false,
       isFetched: true,
       data: { ...action.payload.data },
-      dataPancake: {...action.payload.dataPancake},
-      isIncognito: action.payload.isIncognito,
-      isPancake: action.payload.isPancake,
+      dataOtherPlatforms: [...action.payload.dataOtherPlatforms],
+      platforms: action.payload.platforms,
+      dataDisplays: [...action.payload.dataDisplays],
     };
   }
   case ACTION_FETCH_FAIL: {
@@ -202,7 +204,12 @@ export default (state = initialState, action) => {
       swapingToken: action.payload,
     };
   }
-
+  case ACTION_SET_SELECTED_PLATFORM: {
+    return {
+      ...state,
+      selectedPlatform: action.payload,
+    };
+  }
   default:
     return state;
   }

@@ -44,7 +44,9 @@ import {
   ACTION_FETCHING_ORDER_DETAIL,
   ACTION_FETCHED_ORDER_DETAIL,
   ACTION_SET_DEFAULT_PAIR,
+  ACTION_SET_SELECTED_PLATFORM,
   PANCAKE_CHAIN_ID,
+  SwapPlatforms,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -59,7 +61,11 @@ import {
   defaultPairSelector,
   getPancakeTokenParamReqByTokenIDSelector,
 } from './Swap.selector';
-import { calMintAmountExpected, getBestRateFromPancake } from './Swap.utils';
+import { 
+  calMintAmountExpected, 
+  getBestRateFromPancake, 
+  calMinAmountExpectedToFixed 
+} from './Swap.utils';
 
 export const actionSetPercent = (payload) => ({
   type: ACTION_SET_PERCENT,
@@ -101,6 +107,11 @@ export const actionFetchFail = () => ({
 
 export const actionReset = (payload) => ({
   type: ACTION_RESET,
+  payload,
+});
+
+export const actionSetSelectedPlatform = (payload) => ({
+  type: ACTION_SET_SELECTED_PLATFORM,
   payload,
 });
 
@@ -165,10 +176,11 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
     // estimate trade from Incognito
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     let data, dataPancake;
-    let isIncognito = false, isPancake = false;
+    let platforms = [];
+    let dataOtherPlatforms = [];
     try {
       data = await pDexV3Inst.getEstimateTrade(payload);
-      isIncognito = true;
+      platforms.push(SwapPlatforms.Incognito);
     } catch(e) {
       console.log('Can not estimate trade from Incognito with this pair.');
     }
@@ -177,74 +189,84 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
     try {
       dataPancake = await estimateTradePancake(state, payload);
       if (dataPancake && dataPancake.paths && dataPancake.paths.length > 0) {
-        isPancake = true;
+        platforms.push(SwapPlatforms.Pancake);
+        dataOtherPlatforms.push({...dataPancake, platformType: SwapPlatforms.Pancake});
       }
     } catch(e) {
       console.log('Can not estimate trade from Pancake with this pair.');
     }
 
-    if (!isIncognito && !isPancake) {
-      await dispatch(actionFetchFail());
-      new ExHandler('Can not estimate trade with this pair').showErrorToast();
+    if (platforms.length === 0) {
+      throw Error('Can not estimate trade with this pair');
     }
 
-    await dispatch(actionFetched({data, dataPancake, isIncognito, isPancake}));
     state = getState();
-    let IncMinAmountExpectedToFixed, IncMinFeeAmountFixed, PancakeMinAmountExpectedToFixed, PancakeMinFeeAmountFixed;
-    if (isIncognito) {
-      const feeTokenData = feetokenDataSelector(state);
-      const minFee = feeTokenData.minFeeAmountFixed;
-      IncMinFeeAmountFixed = minFee;
-      let maxGet = 0;
-      switch (field) {
-      case formConfigs.selltoken: {
-        maxGet = data?.maxGet || 0;
+    let dataDisplays = [];
+    platforms.forEach(item => {
+      switch (item) {
+      case SwapPlatforms.Incognito: {
+        const feeTokenData = feetokenDataSelector(state);
+        const minFee = feeTokenData.minFeeAmountFixed;
+        let maxGet = 0;
+        switch (field) {
+        case formConfigs.selltoken: {
+          maxGet = data?.maxGet || 0;
+          break;
+        }
+        case formConfigs.buytoken: {
+          maxGet = data?.sellAmount || 0;
+          break;
+        }
+        default:
+          break;
+        }
+        const minAmountExpectedToFixed = calMinAmountExpectedToFixed({maxGet, slippagetolerance, pDecimals: inputPDecimals});
+        dataDisplays.push({
+          platformType: item,
+          minAmountExpectedToFixed: minAmountExpectedToFixed,
+          minFeeAmountFixed: minFee, 
+        });
         break;
       }
-      case formConfigs.buytoken: {
-        maxGet = data?.sellAmount || 0;
+      case SwapPlatforms.Pancake: {
+        const {tradingFee, maxGet} = dataPancake;
+        const minAmountExpectedToFixed = calMinAmountExpectedToFixed({maxGet, slippagetolerance, pDecimals: inputPDecimals});
+        const minFeeAmountFixed = convert.toHumanAmount(
+          tradingFee.tradeFee,
+          9, //todo: get PRV decimals
+        );
+        dataDisplays.push({
+          platformType: item,
+          minAmountExpectedToFixed: minAmountExpectedToFixed,
+          minFeeAmountFixed: minFeeAmountFixed, 
+        });
         break;
       }
       default:
         break;
       }
-      const originalMinAmountExpected = calMintAmountExpected({
-        maxGet,
-        slippagetolerance,
-      });
-      const minAmountExpectedToHumanAmount = convert.toHumanAmount(
-        originalMinAmountExpected,
-        inputPDecimals,
-      );
-      IncMinAmountExpectedToFixed = format.toFixed(
-        minAmountExpectedToHumanAmount,
-        inputPDecimals,
-      );
-    } 
-    if (isPancake) {
-      const {tradingFee, minAmountExpectedToFixed} = dataPancake;
-      PancakeMinAmountExpectedToFixed = minAmountExpectedToFixed;
-      PancakeMinFeeAmountFixed = convert.toHumanAmount(
-        tradingFee.tradeFee,
-        9, //todo: get PRV decimals
-      );
+    });
+
+    await dispatch(actionFetched({data, dataOtherPlatforms, platforms, dataDisplays}));
+
+    if (platforms.length === 1 && platforms[0] === SwapPlatforms.Incognito || platforms.length === 2) {
+      dispatch(actionSetSelectedPlatform(SwapPlatforms.Incognito));
+    } else if (platforms.length === 1 && platforms[0] === SwapPlatforms.Pancake) {
+      dispatch(actionSetSelectedPlatform(SwapPlatforms.Pancake));
     }
     
     batch(() => {
-      let minAmountExpectedToFixed, minFeeAmountFixed;
-      if (isIncognito && !isPancake) {
-        minAmountExpectedToFixed = IncMinAmountExpectedToFixed;
-        minFeeAmountFixed = IncMinFeeAmountFixed;
-      } if (!isIncognito && isPancake) { 
-        minAmountExpectedToFixed = PancakeMinAmountExpectedToFixed;
-        minFeeAmountFixed = PancakeMinFeeAmountFixed;
+      state = getState();
+      const { selectedPlatform } = swapSelector(state);
+      const dataDisplay = dataDisplays.find(item => item.platformType === selectedPlatform);
+      if (selectedPlatform === SwapPlatforms.Pancake) {
         dispatch(actionSetFeeToken(PRV.id));
       }
       dispatch(
-        change(formConfigs.formName, inputToken, minAmountExpectedToFixed),
+        change(formConfigs.formName, inputToken, dataDisplay.minAmountExpectedToFixed),
       );
       dispatch(
-        change(formConfigs.formName, formConfigs.feetoken, minFeeAmountFixed),
+        change(formConfigs.formName, formConfigs.feetoken, dataDisplay.minFeeAmountFixed),
       );
     });
   } catch (error) {
@@ -257,7 +279,6 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
 
 const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buyamount}) => {
   try {
-    const slippagetolerance = slippagetoleranceSelector(state);
     const getPancakeTokenParamReq = getPancakeTokenParamReqByTokenIDSelector(state);
     const tokenSellPancake = getPancakeTokenParamReq(selltoken);
     const tokenBuyPancake = getPancakeTokenParamReq(buytoken);
@@ -291,21 +312,12 @@ const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buy
       console.log('Can not found best route for this pair');
       return null;
     }
+    // convert maxGet amount from decimals to pDecimals
     let originalMaxGet = isSwapExactOut ? outputs[0] : outputs[outputs.length - 1];
-    let getTokenDecimals = isSwapExactOut ? sourceToken.decimals : destToken.decimals;
-    const originalMinAmountExpected = calMintAmountExpected({
-      maxGet: originalMaxGet,
-      slippagetolerance,
-    });
-    
-    const minAmountExpectedToHumanAmount = convert.toHumanAmount(
-      originalMinAmountExpected,
-      getTokenDecimals,
-    );
-    const minAmountExpectedToFixed = format.toFixed(
-      minAmountExpectedToHumanAmount,
-      getTokenDecimals,
-    );
+    const getTokenDecimals = isSwapExactOut ? sourceToken.decimals : destToken.decimals;
+    const getTokenPDecimals = isSwapExactOut ? sourceToken.pDecimals : destToken.pDecimals;
+    const maxGetHuman = convert.toHumanAmount(originalMaxGet, getTokenDecimals);
+    const maxGet = convert.toOriginalAmount(maxGetHuman, getTokenPDecimals);
 
     const account = defaultAccountSelector(state);
     // only PRV
@@ -320,9 +332,7 @@ const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buy
       paths, 
       outputs,
       tradingFee,
-      originalMaxGet,
-      originalMinAmountExpected,
-      minAmountExpectedToFixed,
+      maxGet,
     };
   }catch(e) {
     console.log('Error when get best route on pancake: ', e);

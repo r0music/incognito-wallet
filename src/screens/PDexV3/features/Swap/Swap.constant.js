@@ -29,6 +29,7 @@ export const ACTION_FETCHING_ORDER_DETAIL =
 export const ACTION_FETCHED_ORDER_DETAIL =
   '[pDexV3][swap] Fetched order detail';
 export const ACTION_SET_DEFAULT_PAIR = '[pDexV3][swap] Set default pair';
+export const ACTION_SET_SELECTED_PLATFORM =  '[pDexV3][swap] Set selected platform';
 
 export const TAB_SIMPLE_ID = 'simple';
 export const TAB_PRO_ID = 'pro';
@@ -63,3 +64,8 @@ export const PANCAKE_FACOTRY_ABI = [{'inputs':[{'internalType':'address','name':
 export const PANCAKE_ABI = [{'inputs':[{'internalType':'uint256','name':'amountOut','type':'uint256'},{'internalType':'uint256','name':'reserveIn','type':'uint256'},{'internalType':'uint256','name':'reserveOut','type':'uint256'}],'name':'getAmountIn','outputs':[{'internalType':'uint256','name':'amountIn','type':'uint256'}],'stateMutability':'pure','type':'function'},{'inputs':[{'internalType':'uint256','name':'amountIn','type':'uint256'},{'internalType':'uint256','name':'reserveIn','type':'uint256'},{'internalType':'uint256','name':'reserveOut','type':'uint256'}],'name':'getAmountOut','outputs':[{'internalType':'uint256','name':'amountOut','type':'uint256'}],'stateMutability':'pure','type':'function'},{'inputs':[{'internalType':'uint256','name':'amountOut','type':'uint256'},{'internalType':'address[]','name':'path','type':'address[]'}],'name':'getAmountsIn','outputs':[{'internalType':'uint256[]','name':'amounts','type':'uint256[]'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'uint256','name':'amountIn','type':'uint256'},{'internalType':'address[]','name':'path','type':'address[]'}],'name':'getAmountsOut','outputs':[{'internalType':'uint256[]','name':'amounts','type':'uint256[]'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'uint256','name':'amountA','type':'uint256'},{'internalType':'uint256','name':'reserveA','type':'uint256'},{'internalType':'uint256','name':'reserveB','type':'uint256'}],'name':'quote','outputs':[{'internalType':'uint256','name':'amountB','type':'uint256'}],'stateMutability':'pure','type':'function'}];
 export const PANCAKE_ROUTER_V2 =  global.isMainnet ? '0x10ed43c718714eb63d5aa57b78b54704e256024e' : '0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3';
 export const PANCAKE_CHAIN_ID = global.isMainnet ? 56 : 97;
+
+export const SwapPlatforms = {
+  Incognito: 0,
+  Pancake: 1,
+};

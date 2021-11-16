@@ -14,7 +14,7 @@ import orderBy from 'lodash/orderBy';
 import { getExchangeRate, getPairRate, getPoolSize } from '@screens/PDexV3';
 import { PRIORITY_LIST } from '@screens/Dex/constants';
 import BigNumber from 'bignumber.js';
-import { formConfigs } from './Swap.constant';
+import { formConfigs, SwapPlatforms } from './Swap.constant';
 import { getInputAmount } from './Swap.utils';
 
 export const swapSelector = createSelector(
@@ -142,9 +142,10 @@ export const feetokenDataSelector = createSelector(
 );
 
 export const feeTypesSelector = createSelector(
+  swapSelector,
   selltokenSelector,
   feeSelectedSelector,
-  (selltoken: SelectedPrivacy, feetoken) => {
+  ({selectedPlatform}, selltoken: SelectedPrivacy, feetoken) => {
     let types = [
       {
         tokenId: PRV.id,
@@ -152,7 +153,7 @@ export const feeTypesSelector = createSelector(
         actived: feetoken == PRV.id,
       },
     ];
-    if (selltoken?.tokenId && !selltoken.isMainCrypto) {
+    if (selltoken?.tokenId && !selltoken.isMainCrypto && selectedPlatform !== SwapPlatforms.Pancake) {
       types.push({
         tokenId: selltoken.tokenId,
         symbol: selltoken.symbol,
@@ -203,8 +204,7 @@ export const swapInfoSelector = createSelector(
       isFetched,
       percent,
       swaping,
-      isIncognito,
-      isPancake,
+      selectedPlatform,
     },
     feeTokenData,
     getInputAmount,
@@ -274,10 +274,10 @@ export const swapInfoSelector = createSelector(
         selltoken: sellInputAmount.tokenId,
         buytoken: buyInputAmount.tokenId,
       };
-      let platformNameStr  = '';
-      if (isIncognito && !isPancake) {
+      let platformNameStr = '';
+      if (selectedPlatform === SwapPlatforms.Incognito) {
         platformNameStr = 'Incognito swap';
-      } else if (!isIncognito && isPancake) {
+      } else if (selectedPlatform === SwapPlatforms.Pancake) {
         platformNameStr = 'Pancake swap';
       }
 
