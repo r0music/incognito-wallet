@@ -20,7 +20,7 @@ export const NormalText = (props) => {
   const { style, stylePSymbol, containerStyle, text, hasPSymbol, showBalance, symbol } = props;
   return (
     <View style={[styled.normalText, containerStyle]}>
-      {hasPSymbol && !showBalance && (
+      {hasPSymbol && showBalance && (
         <Text style={[styled.pSymbol, stylePSymbol]}>{prefix}</Text>
       )}
       <Text numberOfLines={1} style={[styled.text, style]} ellipsizeMode="tail">
