@@ -89,7 +89,7 @@ const Home = ({ hideBackButton }) => {
   return (
     <>
       <View style={mainStyle.container}>
-        <Header title="Liquidity" accountSelectable hideBackButton={hideBackButton} />
+        <Header title="Earn" accountSelectable hideBackButton={hideBackButton} />
         <HeaderView />
         <Tabs rootTabID={ROOT_TAB_HOME} styledTabs={styled.tab} defaultTabIndex={1}>
           {_TabPools}

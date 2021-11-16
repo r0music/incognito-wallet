@@ -74,6 +74,7 @@ const Followed = () => {
             showGettingBalance={token?.loading}
           />
         ))}
+        <View style={{ height: 50 }} />
       </ScrollView>
     </View>
   );

@@ -12,7 +12,7 @@ import {
 } from '@screens/PDexV3/features/Pools';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import isEmpty from 'lodash/isEmpty';
-import { change, destroy, reset } from 'redux-form';
+import { change, focus } from 'redux-form';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import { batch } from 'react-redux';
 import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
@@ -46,7 +46,6 @@ import {
 } from './OrderLimit.constant';
 import {
   poolSelectedDataSelector,
-  inputAmountSelector,
   orderLimitDataSelector,
   orderDetailSelector,
   rateDataSelector,
@@ -67,9 +66,8 @@ export const actionFetching = () => ({
   type: ACTION_FETCHING,
 });
 
-export const actionFetched = (payload) => ({
+export const actionFetched = () => ({
   type: ACTION_FETCHED,
-  payload,
 });
 
 export const actionFetchFail = () => ({
@@ -189,9 +187,8 @@ export const actionSetDefaultPool = () => async (dispatch, getState) => {
 
 export const actionInit = (refresh = true) => async (dispatch, getState) => {
   try {
-    await dispatch(actionIniting(true));
     batch(() => {
-      dispatch(reset(formConfigs.formName));
+      dispatch(actionFetching());
       dispatch(actionSetPercent(0));
     });
     let state = getState();
@@ -222,6 +219,7 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
       if (refresh) {
         dispatch(actionFetchPools());
         dispatch(actionSetNFTTokenData());
+        dispatch(actionFetchOrdersHistory());
       }
     });
     const activedTab = activedTabSelector(state)(ROOT_TAB_TRADE);
@@ -253,11 +251,12 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
       state = getState();
       const { rate } = rateDataSelector(state);
       dispatch(change(formConfigs.formName, formConfigs.rate, rate));
+      dispatch(focus(formConfigs.formName, formConfigs.rate));
     });
   } catch (error) {
     new ExHandler(error).showErrorToast;
   } finally {
-    await dispatch(actionIniting(false));
+    dispatch(actionFetched());
   }
 };
 

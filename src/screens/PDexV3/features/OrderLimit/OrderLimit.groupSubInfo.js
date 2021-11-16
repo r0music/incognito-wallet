@@ -63,14 +63,7 @@ const GroupSubInfo = () => {
         >
           <TabOrderBook />
         </View>
-        <View
-          tabID={TAB_OPEN_ORDER}
-          label="Open order"
-          onChangeTab={() => null}
-        >
-          <TabOpenOrder />
-        </View>
-        <View tabID={TAB_HISTORY_ID} label="History" onChangeTab={() => null}>
+        <View tabID={TAB_HISTORY_ID} label="Order" onChangeTab={() => null}>
           <History />
         </View>
       </Tabs>

@@ -1,12 +1,16 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, batch } from 'react-redux';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { compose } from 'recompose';
 import { actionToggleModal } from '@src/components/Modal';
 import { TradeSuccessModal } from '@screens/PDexV3/features/Trade';
 import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import { NFTTokenModal } from '@screens/PDexV3/features/NFTToken';
-import { orderLimitDataSelector } from './OrderLimit.selector';
+import { LoadingContainer } from '@src/components/core';
+import {
+  orderLimitDataSelector,
+  orderLimitSelector,
+} from './OrderLimit.selector';
 import {
   actionInit,
   actionBookOrder,
@@ -16,8 +20,9 @@ import {
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
-  const { cfmTitle } = useSelector(orderLimitDataSelector);
+  const { cfmTitle, disabledBtn } = useSelector(orderLimitDataSelector);
   const { nftTokenAvailable } = useSelector(nftTokenDataSelector);
+  const { isFetching, isFetched } = useSelector(orderLimitSelector);
   const handleConfirm = async () => {
     try {
       if (!nftTokenAvailable) {
@@ -28,6 +33,9 @@ const enhance = (WrappedComp) => (props) => {
             data: <NFTTokenModal />,
           }),
         );
+      }
+      if (disabledBtn) {
+        return;
       }
       const tx = await dispatch(actionBookOrder());
       if (tx) {
@@ -40,7 +48,11 @@ const enhance = (WrappedComp) => (props) => {
                 sub={
                   'Your balance will update in a couple of\nminutes after the trade is finalized.'
                 }
-                handleTradeSucesss={() => dispatch(actionInit())}
+                handleTradeSucesss={() => {
+                  batch(() => {
+                    dispatch(actionInit());
+                  });
+                }}
               />
             ),
             visible: true,
@@ -62,6 +74,9 @@ const enhance = (WrappedComp) => (props) => {
   React.useEffect(() => {
     dispatch(actionInit(true));
   }, []);
+  if (isFetching && !isFetched) {
+    return <LoadingContainer />;
+  }
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props, handleConfirm, onRefresh, callback }} />

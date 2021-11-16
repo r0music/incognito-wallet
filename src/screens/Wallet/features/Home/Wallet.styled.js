@@ -61,7 +61,17 @@ export const styledBalance = StyleSheet.create({
   },
   wrapBalance: {
     minHeight: FONT.SIZE.superLarge + 12,
-  }
+  },
+  iconHide: {
+    marginLeft: 5
+  },
+  btnHideBalance: {
+    position: 'absolute',
+    right: -15,
+    top: -15,
+    width: 50,
+    height: 50,
+  },
 });
 
 export const groupButtonStyled = StyleSheet.create({
@@ -119,21 +129,22 @@ export const tokenStyled = StyleSheet.create({
     paddingRight: 10
   },
   wrapThird: {
-    flex: 1
+    flex: 1,
+    paddingRight: 10
   },
   rowHeight: {
     height: FONT.SIZE.regular + 8,
   },
   blackText: {
     ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.small + 1,
+    fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.regular + 8,
     textAlign: 'left',
     color: COLORS.black
   },
   grayText: {
-    ...FONT.STYLE.regular,
-    fontSize: FONT.SIZE.small + 1,
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.regular + 8,
     color: COLORS.lightGrey36
   },
@@ -154,12 +165,11 @@ export const tokenStyled = StyleSheet.create({
   },
   labelTrade: {
     ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.small + 1,
-    lineHeight: FONT.SIZE.regular + 8,
+    fontSize: FONT.SIZE.small,
     color: COLORS.white
   },
   headerLabel: {
-    ...FONT.STYLE.regular,
+    ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.regular,
     color: COLORS.lightGrey36,
@@ -172,7 +182,13 @@ export const tokenStyled = StyleSheet.create({
 
 export const styledAddToken = StyleSheet.create({
   container: {
-    marginVertical: 10
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+    position: 'absolute',
+    bottom: 0,
+    left: -25,
+    backgroundColor: COLORS.white,
+    borderTopRightRadius: 8,
   },
   title: {
     fontFamily: FONT.NAME.medium,

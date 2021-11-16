@@ -2,36 +2,27 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { Hook } from '@screens/PDexV3/features/Extra';
-import {
-  sellInputAmountSelector,
-  buyInputAmountSelector,
-  orderLimitDataSelector,
-} from './OrderLimit.selector';
+import { orderLimitDataSelector } from './OrderLimit.selector';
 
 const styled = StyleSheet.create({
-  container: {},
+  container: {
+  },
 });
 
 const OrderDetails = () => {
-  const sellInputAmount = useSelector(sellInputAmountSelector);
-  const buyInputAmount = useSelector(buyInputAmountSelector);
   const orderLimitData = useSelector(orderLimitDataSelector);
   const {
-    networkfeeAmountStr,
     totalAmountData: { totalStr },
+    balanceStr
   } = orderLimitData;
   const factories = [
     {
-      label: sellInputAmount?.balanceTitle,
-      value: sellInputAmount?.balanceStr,
+      label: 'Balance',
+      value: balanceStr,
     },
     {
-      label: buyInputAmount?.balanceTitle,
-      value: buyInputAmount?.balanceStr,
-    },
-    {
-      label: 'Network fee',
-      value: networkfeeAmountStr,
+      label: 'Trading fee',
+      value: 'Free',
     },
     {
       label: 'Total',

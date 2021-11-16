@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
-import {Text, View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { actionUpdateShowWalletBalance, showWalletBalanceSelector } from '@screens/Setting';
+import { actionUpdateShowWalletBalance, hideWalletBalanceSelector } from '@screens/Setting';
 import { styledBalance, groupButtonStyled } from '@screens/Wallet/features/Home/Wallet.styled';
 import {
   isGettingBalance as isGettingTotalBalanceSelector,
@@ -21,9 +21,14 @@ import appConstant from '@src/constants/app';
 import Tooltip from '@components/Tooltip/Tooltip';
 import { BtnClose } from '@components/Button';
 import {Row} from '@src/components';
+import {EyeIcon} from '@components/Icons';
 
-const Balance = React.memo(() => {
+const Balance = React.memo(({ hideBalance }) => {
+  const dispatch = useDispatch();
   let totalShielded = useSelector(totalShieldedTokensSelector);
+  const updateShowWalletBalance = () => {
+    dispatch(actionUpdateShowWalletBalance());
+  };
   const isGettingTotalBalance =
     useSelector(isGettingTotalBalanceSelector).length > 0;
   if (isNaN(totalShielded)) {
@@ -31,7 +36,13 @@ const Balance = React.memo(() => {
   }
   return (
     <View style={styledBalance.container}>
-      <Text style={styledBalance.title}>Balance</Text>
+      <Row centerVertical>
+        <Text style={styledBalance.title}>Balance</Text>
+        <View style={styledBalance.iconHide}>
+          <EyeIcon hideEye={!hideBalance} />
+        </View>
+        <TouchableOpacity style={styledBalance.btnHideBalance} onPress={updateShowWalletBalance} />
+      </Row>
       <Row style={styledBalance.wrapBalance} center>
         <Amount
           amount={totalShielded}
@@ -43,7 +54,7 @@ const Balance = React.memo(() => {
           stylePSymbol={styledBalance.pSymbol}
           containerStyle={styledBalance.balanceContainer}
           size="large"
-          hideBalance={false}
+          hideBalance={hideBalance}
           fromBalance
         />
       </Row>
@@ -100,7 +111,7 @@ const GroupButton = React.memo(() => {
       <BTNBorder
         disabled={isDisabled}
         onPress={onFeaturePress}
-        title="Add crypto"
+        title="Deposit"
       />
     </View>
   );
@@ -108,16 +119,18 @@ const GroupButton = React.memo(() => {
 
 const Extra = () => {
   const dispatch = useDispatch();
-  const showBalance = useSelector(showWalletBalanceSelector);
+  const hideBalance = useSelector(hideWalletBalanceSelector);
   const updateShowBalance = () => dispatch(actionUpdateShowWalletBalance());
   return (
     <View>
-      <Balance hideBalance={showBalance} onPressHideBalance={updateShowBalance} />
+      <Balance hideBalance={hideBalance} onPressHideBalance={updateShowBalance} />
       <GroupButton />
     </View>
   );
 };
 
-Extra.propTypes = {};
+Balance.propTypes = {
+  hideBalance: PropTypes.bool.isRequired
+};
 
 export default memo(Extra);

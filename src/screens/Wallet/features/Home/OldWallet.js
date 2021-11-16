@@ -28,7 +28,7 @@ import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { PRV } from '@services/wallet/tokenService';
 import SelectAccountButton from '@components/SelectAccountButton';
 import PropTypes from 'prop-types';
-import { showWalletBalanceSelector } from '@src/screens/Setting/Setting.selector';
+import { hideWalletBalanceSelector } from '@src/screens/Setting/Setting.selector';
 import { actionUpdateShowWalletBalance } from '@src/screens/Setting/Setting.actions';
 import srcHideBalanceIcon from '@src/assets/images/icons/ic_hide_blance.png';
 import srcShowBalanceIcon from '@src/assets/images/icons/ic_show_blacne.png';
@@ -252,7 +252,7 @@ const AddToken = React.memo(() => {
 
 const Extra = React.memo(() => {
   const dispatch = useDispatch();
-  const showWalletBalance = useSelector(showWalletBalanceSelector);
+  const showWalletBalance = useSelector(hideWalletBalanceSelector);
   const updateShowWalletBalance = () => {
     dispatch(actionUpdateShowWalletBalance());
   };

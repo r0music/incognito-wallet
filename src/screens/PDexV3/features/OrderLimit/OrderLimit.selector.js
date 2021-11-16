@@ -1,4 +1,5 @@
 import { PRV } from '@src/constants/common';
+import uniqBy from 'lodash/uniqBy';
 import { sharedSelector } from '@src/redux/selectors';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
@@ -14,7 +15,10 @@ import {
   getPairRate,
   getOriginalPairRate,
 } from '@screens/PDexV3';
-import { getDataByPoolIdSelector } from '@screens/PDexV3/features/Pools';
+import {
+  getDataByPoolIdSelector,
+  listPoolsVerifySelector,
+} from '@screens/PDexV3/features/Pools';
 import { activedTabSelector } from '@src/components/core/Tabs/Tabs.selector';
 import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import BigNumber from 'bignumber.js';
@@ -24,6 +28,8 @@ import {
   TAB_BUY_LIMIT_ID,
   TAB_SELL_LIMIT_ID,
 } from '@screens/PDexV3/features/Trade/Trade.constant';
+import orderBy from 'lodash/orderBy';
+import differenceBy from 'lodash/differenceBy';
 import { formConfigs } from './OrderLimit.constant';
 import { getInputAmount as getInputTokenAmount } from './OrderLimit.utils';
 
@@ -46,7 +52,7 @@ export const poolIdSelector = createSelector(
 export const poolSelectedDataSelector = createSelector(
   orderLimitSelector,
   getDataByPoolIdSelector,
-  ({ poolId }, getDataByPoolId) => getDataByPoolId(poolId) || {},
+  ({ poolId }, getDataByPoolId) => getDataByPoolId(poolId),
 );
 
 // group inputs
@@ -231,7 +237,7 @@ export const orderLimitDataSelector = createSelector(
   nftTokenDataSelector,
   (
     state,
-    { networkfee, initing, percent, ordering },
+    { networkfee, isFetching, percent, ordering },
     getActivedTab,
     getPrivacyDataByTokenID,
     getInputAmount,
@@ -255,8 +261,9 @@ export const orderLimitDataSelector = createSelector(
     let totalOriginalAmount = 0,
       totalAmount = 0,
       totalAmountStr = '',
-      totalAmountToken = {},
-      totalStr = '';
+      totalAmountToken = {};
+    const calculating = isFetching;
+    let disabledBtn = calculating || !isValid(formConfigs.formName)(state);
     switch (activedTab) {
     case TAB_BUY_LIMIT_ID: {
       mainColor = buyColor;
@@ -286,6 +293,7 @@ export const orderLimitDataSelector = createSelector(
       );
       reviewOrderDescValue = `${totalAmountStr} ${totalAmountToken?.symbol}`;
       cfmTitle = `You placed an order to buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol} for ${reviewOrderDescValue}`;
+      disabledBtn = !originalbuyAmount && disabledBtn;
       break;
     }
     case TAB_SELL_LIMIT_ID: {
@@ -316,9 +324,9 @@ export const orderLimitDataSelector = createSelector(
       );
       reviewOrderDescValue = `${totalAmountStr} ${totalAmountToken?.symbol}`;
       cfmTitle = `You placed an order to sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol} for ${reviewOrderDescValue}`;
+      disabledBtn = !originalSellAmount && disabledBtn;
       break;
     }
-
     default:
       break;
     }
@@ -344,17 +352,15 @@ export const orderLimitDataSelector = createSelector(
       !sellInputAmount?.isMainCrypto && !buyInputAmount.isMainCrypto;
     const prvBalance = format.amountVer2(prv?.amount || 0, PRV.pDecimals);
     const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
-    const balanceStr = `${sellInputAmount?.balanceStr ||
-      '0'} ${sellInputAmount?.symbol || ''}`;
+    const balanceStr = sellInputAmount?.balanceStr;
     const poolSizeStr = `${sellInputAmount?.poolValueStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.poolValueStr} ${buyInputAmount?.symbol}`;
-    const editableInput = !initing;
-    const calculating = initing;
-    const disabledBtn = calculating || !isValid(formConfigs.formName)(state);
+    const editableInput = !isFetching;
+
     if (calculating) {
       btnActionTitle = 'Calculating...';
     }
     const tradingFeeStr = `${feeTokenData?.feeAmountText} ${feeTokenData?.symbol}`;
-    const refreshing = initing;
+    const refreshing = isFetching;
     const poolStr = `${token1?.symbol || ''} / ${token2?.symbol || ''}`;
     const priceChange24h = pool?.priceChange24h || 0;
     let colorPriceChange24h = COLORS.green;
@@ -573,6 +579,7 @@ export const mappingOrderHistorySelector = createSelector(
         ...order,
         type,
         mainColor,
+        time,
         timeStr,
         percent,
         percentStr,
@@ -620,6 +627,11 @@ export const orderHistorySelector = createSelector(
       return history;
     }
     history = data.map((order) => mappingOrderHistory(order));
+    let openOrders = history.filter((h) => !h?.isCompleted);
+    openOrders = orderBy(openOrders, ['time'], ['desc']);
+    let remainOrders = differenceBy(history, openOrders, ['requestTx']);
+    remainOrders = orderBy(remainOrders, ['time'], ['desc']);
+    history = [...openOrders, ...remainOrders];
     return { history, isFetching, isFetched };
   },
 );
@@ -651,5 +663,34 @@ export const orderDetailSelector = createSelector(
       fetching,
       order: mappingOrderHistory(order),
     };
+  },
+);
+
+export const selectableTokens1Selector = createSelector(
+  listPoolsVerifySelector,
+  (pools) =>
+    uniqBy(pools.map(({ token1 }) => token1), (token) => token?.tokenId),
+);
+
+export const selectableTokens2Selector = createSelector(
+  listPoolsVerifySelector,
+  poolSelectedDataSelector,
+  (pools, poolSelected) => {
+    const { tokenId: token1Id } = poolSelected?.token1;
+    return pools
+      .filter(({ token1 }) => token1?.tokenId === token1Id)
+      .map(({ token2 }) => token2);
+  },
+);
+
+export const visibleBtnChartSelector = createSelector(
+  poolIdSelector,
+  activedTabSelector,
+  (poolId, getActivedTab) => {
+    const activedTab = getActivedTab(ROOT_TAB_TRADE);
+    return (
+      !!poolId &&
+      (activedTab === TAB_BUY_LIMIT_ID || activedTab === TAB_SELL_LIMIT_ID)
+    );
   },
 );

@@ -22,6 +22,9 @@ const enhance = (WrappedComp) => (props) => {
     );
   const handleConfirm = async () => {
     try {
+      if (swapInfo?.disabledBtnSwap) {
+        return;
+      }
       const tx = await dispatch(actionFetchSwap());
       if (tx) {
         dispatch(

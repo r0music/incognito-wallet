@@ -22,6 +22,11 @@ export const swapSelector = createSelector(
   ({ swap }) => swap,
 );
 
+export const purePairsSelector = createSelector(
+  swapSelector,
+  ({ pairs }) => (pairs || [])
+);
+
 export const listPairsSelector = createSelector(
   swapSelector,
   getPrivacyDataByTokenIDSelector,
@@ -244,7 +249,7 @@ export const swapInfoSelector = createSelector(
       const networkfeeAmountStr = `${networkfeeAmount} ${PRV.symbol}`;
       const editableInput =
         !swapingToken && !initing && !selecting && !isFetching;
-      let btnSwapText = 'Convert';
+      let btnSwapText = 'Swap';
       const calculating = swapingToken || initing || selecting || isFetching;
       const disabledBtnSwap =
         calculating ||

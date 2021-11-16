@@ -2,7 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { KeyboardAwareScrollView, RefreshControl } from '@src/components/core';
+import {
+  KeyboardAwareScrollView,
+  RefreshControl,
+  Text,
+} from '@src/components/core';
 import { createForm } from '@src/components/core/reduxForm';
 import { ButtonBasic } from '@src/components/Button';
 import LoadingTx from '@src/components/LoadingTx';
@@ -53,11 +57,21 @@ const OrderLimit = (props) => {
         </Form>
         <OrderDetails />
         <ButtonBasic
-          btnStyle={{ backgroundColor: mainColor, borderRadius: 8 }}
+          btnStyle={{
+            backgroundColor: mainColor,
+            borderRadius: 8,
+            marginTop: 24,
+            marginBottom: 16,
+          }}
           title={btnActionTitle}
           disabled={disabledBtn}
           onPress={handleConfirm}
         />
+        <Text style={styled.subText}>
+          {
+            'Incognito collects a small network fee of PRV to pay the miners\nwho help power the network.'
+          }
+        </Text>
         <GroupSubInfo />
       </KeyboardAwareScrollView>
       {!!ordering && <LoadingTx />}

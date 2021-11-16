@@ -20,7 +20,6 @@ export const styled = StyleSheet.create({
     marginRight: 15,
   },
   rightHeader: {
-    alignItems: 'center',
   },
   styledTabList: {
     borderBottomWidth: 0,
