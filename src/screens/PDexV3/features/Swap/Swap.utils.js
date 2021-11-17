@@ -226,7 +226,7 @@ export async function getBestRateFromPancake(sourceToken, destToken, amount, cha
   [sourceToken, destToken].forEach(
     function(item) {
       if (!listTokenDecimals[item.address.toLowerCase()]) {
-        listTokenDecimals[item.address] = {decimals: item.decimals, symbol: item.symbol};
+        listTokenDecimals[item.address.toLowerCase()] = {decimals: item.decimals, symbol: item.symbol};
         listTokens.push(item.address);
       }
     }
@@ -234,7 +234,7 @@ export async function getBestRateFromPancake(sourceToken, destToken, amount, cha
   
   for (let i = 0; i < listTokens.length - 1; i++) {
     for (let j = i + 1; j < listTokens.length; j++) {
-      if (listTokens[i] === listTokens[j]) continue;
+      if (listTokens[i].toLocaleLowerCase() === listTokens[j].toLocaleLowerCase()) continue;
       const temp = FACTORY_INST.methods.getPair(listTokens[i], listTokens[j]).encodeABI();
       abiCallGetLPs.push([PANCAKE_FACTORY_ADDRESS, temp]);
       token_pair.push({token0: listTokens[i], token1: listTokens[j]});
@@ -260,6 +260,11 @@ export async function getBestRateFromPancake(sourceToken, destToken, amount, cha
     listPairExist.push(token_pair[i]);
   }
 
+  if (getPairResrved.length === 0) {
+    console.log('no LPs exist!!!');
+    return null, null;
+  }
+
   const listReserved = await MULTI_CALL_INST.methods.tryAggregate(false, getPairResrved).call();
   if (listReserved.length < 2) {
     console.log('no LPs exist!!!');
@@ -274,8 +279,8 @@ export async function getBestRateFromPancake(sourceToken, destToken, amount, cha
     if (listPairExist[i / 2].token0.toLowerCase() !== token0.toLowerCase()) {
       token1 = listPairExist[i / 2].token0;
     }
-    const token0Ins = new Token(chainID, token0, listTokenDecimals[token0].decimals, listTokenDecimals[token0].symbol);
-    const token1Ins = new Token(chainID, token1, listTokenDecimals[token1].decimals, listTokenDecimals[token1].symbol);
+    const token0Ins = new Token(chainID, token0, listTokenDecimals[token0.toLocaleLowerCase()].decimals, listTokenDecimals[token0.toLocaleLowerCase()].symbol);
+    const token1Ins = new Token(chainID, token1, listTokenDecimals[token1.toLocaleLowerCase()].decimals, listTokenDecimals[token1.toLocaleLowerCase()].symbol);
     const pair = new Pair(new TokenAmount(token0Ins, reserve0), new TokenAmount(token1Ins, reserve1));
     pairList.push(pair);
   }
