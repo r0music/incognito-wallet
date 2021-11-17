@@ -62,7 +62,6 @@ import {
   getPancakeTokenParamReqByTokenIDSelector,
 } from './Swap.selector';
 import { 
-  calMintAmountExpected, 
   getBestRateFromPancake, 
   calMinAmountExpectedToFixed 
 } from './Swap.utils';
@@ -177,7 +176,7 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     let data, dataPancake;
     let platforms = [];
-    let dataOtherPlatforms = [];
+    let dataOtherPlatforms = {};
     try {
       data = await pDexV3Inst.getEstimateTrade(payload);
       platforms.push(SwapPlatforms.Incognito);
@@ -190,7 +189,7 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
       dataPancake = await estimateTradePancake(state, payload);
       if (dataPancake && dataPancake.paths && dataPancake.paths.length > 0) {
         platforms.push(SwapPlatforms.Pancake);
-        dataOtherPlatforms.push({...dataPancake, platformType: SwapPlatforms.Pancake});
+        dataOtherPlatforms[SwapPlatforms.Pancake] = {...dataPancake};
       }
     } catch(e) {
       console.log('Can not estimate trade from Pancake with this pair.');
@@ -201,7 +200,7 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
     }
 
     state = getState();
-    let dataDisplays = [];
+    let dataDisplays = {};
     platforms.forEach(item => {
       switch (item) {
       case SwapPlatforms.Incognito: {
@@ -221,11 +220,10 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
           break;
         }
         const minAmountExpectedToFixed = calMinAmountExpectedToFixed({maxGet, slippagetolerance, pDecimals: inputPDecimals});
-        dataDisplays.push({
-          platformType: item,
+        dataDisplays[item] = {
           minAmountExpectedToFixed: minAmountExpectedToFixed,
           minFeeAmountFixed: minFee, 
-        });
+        };
         break;
       }
       case SwapPlatforms.Pancake: {
@@ -235,11 +233,10 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
           tradingFee.tradeFee,
           9, //todo: get PRV decimals
         );
-        dataDisplays.push({
-          platformType: item,
+        dataDisplays[item] = {
           minAmountExpectedToFixed: minAmountExpectedToFixed,
           minFeeAmountFixed: minFeeAmountFixed, 
-        });
+        };
         break;
       }
       default:
@@ -416,6 +413,7 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
     console.log('pDEXPairs: ', pDEXPairs);
     console.log('pancakeTokenIDs: ', pancakeTokenIDs);
     pairs = uniq([...pDEXPairs, ...pancakeTokenIDs]);
+    console.log('pairs: ', pairs);
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }

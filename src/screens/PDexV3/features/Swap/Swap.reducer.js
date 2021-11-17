@@ -28,8 +28,8 @@ const initialState = {
   isFetched: false,
   selectedPlatform: null,
   data: {},
-  dataOtherPlatforms: [],
-  dataDisplays: [],
+  dataOtherPlatforms: {}, 
+  dataDisplays: {},
   platforms: [],
   buytoken: '',
   selltoken: '',
@@ -150,9 +150,9 @@ export default (state = initialState, action) => {
       isFetching: false,
       isFetched: true,
       data: { ...action.payload.data },
-      dataOtherPlatforms: [...action.payload.dataOtherPlatforms],
+      dataOtherPlatforms: {...action.payload.dataOtherPlatforms},
       platforms: action.payload.platforms,
-      dataDisplays: [...action.payload.dataDisplays],
+      dataDisplays: {...action.payload.dataDisplays},
     };
   }
   case ACTION_FETCH_FAIL: {

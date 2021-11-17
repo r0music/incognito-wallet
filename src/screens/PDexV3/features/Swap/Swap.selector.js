@@ -90,6 +90,26 @@ export const feeSelectedSelector = createSelector(
   ({ feetoken }) => feetoken || '',
 );
 
+// export const OriginalTradingFeeSelector = createSelector(
+//   swapSelector,
+//   ({ selectedPlatform, data, dataOtherPlatforms }) => {
+//     let tradingFee;
+//     switch (selectedPlatform) {
+//     case SwapPlatforms.Incognito:
+//       tradingFee = data?.minFeeOriginal || 0;
+//       break;
+//     default:
+//       if (selectedPlatform) {
+//         const data = dataOtherPlatforms.find(item => item.platformType  === selectedPlatform);
+
+//         break;
+//       }
+      
+//     }
+//   }
+// );
+
+
 export const feetokenDataSelector = createSelector(
   (state) => state,
   swapSelector,
@@ -201,6 +221,7 @@ export const swapInfoSelector = createSelector(
   (
     {
       data,
+      dataOtherPlatforms,
       networkfee,
       swapingToken,
       initing,
