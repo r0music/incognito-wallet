@@ -227,7 +227,7 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
         break;
       }
       case SwapPlatforms.Pancake: {
-        const { originalTradeFee, maxGet} = dataPancake;
+        const { originalTradeFee, maxGet, inputPDecimals} = dataPancake;
         const minAmountExpectedToFixed = calMinAmountExpectedToFixed({maxGet, slippagetolerance, pDecimals: inputPDecimals});
         const minFeeAmountFixed = convert.toHumanAmount(
           originalTradeFee,
@@ -283,7 +283,7 @@ const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buy
       console.log('This pair is not existed on pancake');
       return null;
     }
-
+    let inputPDecimals;
     let payloadPancake = {
       sourceToken: tokenSellPancake,
       destToken: tokenBuyPancake,
@@ -294,13 +294,15 @@ const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buy
         sellamount,
         tokenSellPancake.pDecimals,
       );
-      payloadPancake.isSwapExactOut = false; 
+      payloadPancake.isSwapExactOut = false;
+      inputPDecimals = tokenSellPancake.pDecimals; 
     } else if (buyamount) {
       payloadPancake.amount = convert.toHumanAmount(
         buyamount,
         tokenBuyPancake.pDecimals,
       );
       payloadPancake.isSwapExactOut = true; 
+      inputPDecimals = tokenBuyPancake.pDecimals; 
     }
     const {sourceToken, destToken, amount, chainID, isSwapExactOut} = payloadPancake;
     console.log('payloadPancake: ', payloadPancake);
@@ -330,6 +332,7 @@ const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buy
       outputs,
       maxGet,
       ...tradingFee,
+      inputPDecimals,
     };
   }catch(e) {
     console.log('Error when get best route on pancake: ', e);
