@@ -14,6 +14,7 @@ import { Hook } from '@screens/PDexV3/features/Extra';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import ToggleArrow from '@src/components/ToggleArrow';
+import SwapOption from '@src/components/core/SwapOtion';
 import { maxAmountValidatorForSellInput } from './Swap.utils';
 import { formConfigs } from './Swap.constant';
 import {
@@ -140,6 +141,8 @@ const SwapInputsGroup = React.memo(() => {
         editableInput={!!swapInfo?.editableInput}
         visibleHeader={false}
         onChange={(value) => onChange(formConfigs.buytoken, value)}
+      />
+      <SwapOption
         platforms={platforms}
       />
       <ToggleArrow
