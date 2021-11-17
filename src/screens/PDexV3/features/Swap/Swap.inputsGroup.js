@@ -43,6 +43,7 @@ const SwapInputsGroup = React.memo(() => {
   const swapInfo = useSelector(swapInfoSelector);
   const swap = useSelector(swapSelector);
   const pairsToken = useSelector(listPairsSelector);
+  const {swapingToken, initing, selecting, isFetching, isFetched} = pairsToken;
   const selltoken: SelectedPrivacy = useSelector(selltokenSelector);
   const buytoken: SelectedPrivacy = useSelector(buytokenSelector);
   const inputAmount = useSelector(inputAmountSelector);
@@ -142,14 +143,16 @@ const SwapInputsGroup = React.memo(() => {
         visibleHeader={false}
         onChange={(value) => onChange(formConfigs.buytoken, value)}
       />
-      <SwapOption
-        platforms={platforms}
-        dataDisplays={dataDisplays}
-        actionSetSelectedPlatform={actionSetSelectedPlatform}
-        dispatch={dispatch}
-        selectedPlatformInit={selectedPlatform}
-        platformNames={PlatformNames}
-      />
+      {selectedPlatform !== null && !!(swapingToken || initing || selecting || isFetching || (!isFetched && !isFetching)) &&
+        <SwapOption
+          platforms={platforms}
+          dataDisplays={dataDisplays}
+          actionSetSelectedPlatform={actionSetSelectedPlatform}
+          dispatch={dispatch}
+          selectedPlatformInit={selectedPlatform}
+          platformNames={PlatformNames}
+        />
+      }
       <ToggleArrow
         label="Advanced"
         toggle={toggle}
