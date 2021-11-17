@@ -49,10 +49,16 @@ const styled = StyleSheet.create({
 const SwapOption = (props) => {
   const {
     platforms,
+    dataDisplays,
+    dispatch,
+    selectedPlatformInit,
+    actionSetSelectedPlatform,
+    platformNames,
   } = props || {};
-  const [selectedPlatform, setSelectedPlatform] = React.useState(0);
+  const [selectedPlatform, setSelectedPlatform] = React.useState(selectedPlatformInit);
   const handlePress = (index) => {
     setSelectedPlatform(index);
+    dispatch(actionSetSelectedPlatform(index));
   };
 
   return (
@@ -63,10 +69,13 @@ const SwapOption = (props) => {
             <TouchableOpacity
               style={index === selectedPlatform ? styled.selectedButton : styled.unSelectedButon}
               key={`key-${index}`}
-              onPress={() => handlePress(index)}
+              onPress={() => handlePress(item)}
             >
               <View style={styled.contentView}>
-                <Text style={[styled.text, { marginRight: 20, color: index === selectedPlatform ? COLORS.black : COLORS.colorGreyBold }]}>{item.name}</Text>
+                <Text style={[styled.text, { marginRight: 20, color: item === selectedPlatform ? COLORS.black : COLORS.colorGreyBold }]}>
+                  {platformNames.hasOwnProperty(item) ? platformNames[item] : ''} 
+                  {dataDisplays.hasOwnProperty(item) ? dataDisplays[item]?.minAmount : ''}              
+                </Text>
               </View>
             </TouchableOpacity>
           );

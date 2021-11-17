@@ -69,3 +69,8 @@ export const SwapPlatforms = {
   Incognito: 0,
   Pancake: 1,
 };
+
+export const PlatformNames = {
+  0: 'Incognito',
+  1: 'Pancake'
+};

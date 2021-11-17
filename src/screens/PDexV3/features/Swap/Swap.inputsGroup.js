@@ -16,7 +16,7 @@ import routeNames from '@src/router/routeNames';
 import ToggleArrow from '@src/components/ToggleArrow';
 import SwapOption from '@src/components/core/SwapOtion';
 import { maxAmountValidatorForSellInput } from './Swap.utils';
-import { formConfigs } from './Swap.constant';
+import { formConfigs, PlatformNames } from './Swap.constant';
 import {
   listPairsSelector,
   selltokenSelector,
@@ -29,6 +29,7 @@ import {
   actionEstimateTrade,
   actionSelectToken,
   actionSetFocusToken,
+  actionSetSelectedPlatform,
   actionSwapToken,
 } from './Swap.actions';
 import { inputGroupStyled as styled } from './Swap.styled';
@@ -47,8 +48,7 @@ const SwapInputsGroup = React.memo(() => {
   const inputAmount = useSelector(inputAmountSelector);
   const sellInputAmount = inputAmount(formConfigs.selltoken);
   const buyInputAmount = inputAmount(formConfigs.buytoken);
-  // todo: update value assgined 
-  const platforms = [{name: 'Incognito', price: 50, fee: 10}, {name: 'Pancake', price: 49, fee: 10}];
+  const {platforms, dataDisplays, selectedPlatform} = swap;
   const onSelectToken = (token, field) => {
     dispatch(actionSelectToken(token, field));
     dispatch(actionToggleModal());
@@ -144,6 +144,11 @@ const SwapInputsGroup = React.memo(() => {
       />
       <SwapOption
         platforms={platforms}
+        dataDisplays={dataDisplays}
+        actionSetSelectedPlatform={actionSetSelectedPlatform}
+        dispatch={dispatch}
+        selectedPlatformInit={selectedPlatform}
+        platformNames={PlatformNames}
       />
       <ToggleArrow
         label="Advanced"
