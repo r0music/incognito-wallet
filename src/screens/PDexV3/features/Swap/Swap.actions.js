@@ -144,7 +144,6 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
     case formConfigs.selltoken: {
       inputToken = formConfigs.buytoken;
       payload.sellamount = sellAmount;
-      payload.sellamount = String(payload.sellamount);
       inputPDecimals = buyPDecimals;
       break;
     }
@@ -155,7 +154,6 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
           .multipliedBy(100 / (100 - slippagetolerance))
           .toNumber(),
       );
-      payload.buyamount = String(payload.buyamount);
       inputPDecimals = sellPDecimals;
       break;
     }
@@ -229,10 +227,10 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
         break;
       }
       case SwapPlatforms.Pancake: {
-        const {tradingFee, maxGet} = dataPancake;
+        const { originalTradeFee, maxGet} = dataPancake;
         const minAmountExpectedToFixed = calMinAmountExpectedToFixed({maxGet, slippagetolerance, pDecimals: inputPDecimals});
         const minFeeAmountFixed = convert.toHumanAmount(
-          tradingFee.tradeFee,
+          originalTradeFee,
           9, //todo: get PRV decimals
         );
         dataDisplays[item] = {
@@ -257,7 +255,7 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
     batch(() => {
       state = getState();
       const { selectedPlatform } = swapSelector(state);
-      const dataDisplay = dataDisplays.find(item => item.platformType === selectedPlatform);
+      const dataDisplay = dataDisplays[selectedPlatform];
       if (selectedPlatform === SwapPlatforms.Pancake) {
         dispatch(actionSetFeeToken(PRV.id));
       }
@@ -324,14 +322,14 @@ const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buy
       paymentAddress: account.PaymentAddress,
       srcTokenID: selltoken, 
       destTokenID: buytoken, 
-      srcAmt: sellamount, 
-      destAmt: buyamount,
+      srcAmt: isSwapExactOut ? maxGet : sellamount, 
+      destAmt: isSwapExactOut ? buyamount : maxGet,
     });
     return {
       paths, 
       outputs,
-      tradingFee,
       maxGet,
+      ...tradingFee,
     };
   }catch(e) {
     console.log('Error when get best route on pancake: ', e);

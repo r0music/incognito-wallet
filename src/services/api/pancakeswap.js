@@ -21,10 +21,12 @@ export async function getPancakeTradingFee({paymentAddress, srcTokenID, destToke
   };
   return http.post('/trade/estimate-fees', body)
     .then(res => {
-      const { FeeAddress, PrivacyFees } = res;
+      const { FeeAddress, PrivacyFees, ID, SignAddress } = res;
       return {
+        tradeID: ID, 
         feeAddress: FeeAddress,
-        tradeFee: PrivacyFees.Level1,
+        signAddress: SignAddress,
+        originalTradeFee: PrivacyFees.Level1,
       };
     });
 }
