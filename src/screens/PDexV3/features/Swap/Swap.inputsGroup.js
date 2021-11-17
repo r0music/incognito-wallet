@@ -143,7 +143,9 @@ const SwapInputsGroup = React.memo(() => {
         visibleHeader={false}
         onChange={(value) => onChange(formConfigs.buytoken, value)}
       />
-      {selectedPlatform !== null && !!(swapingToken || initing || selecting || isFetching || (!isFetched && !isFetching)) &&
+      {selectedPlatform !== null && 
+        !!(swapingToken || initing || selecting || isFetching || (!isFetched && !isFetching)) &&
+        (sellInputAmount?.amount > 0 && buyInputAmount?.amount > 0) &&
         <SwapOption
           platforms={platforms}
           dataDisplays={dataDisplays}
