@@ -90,24 +90,23 @@ export const feeSelectedSelector = createSelector(
   ({ feetoken }) => feetoken || '',
 );
 
-// export const OriginalTradingFeeSelector = createSelector(
-//   swapSelector,
-//   ({ selectedPlatform, data, dataOtherPlatforms }) => {
-//     let tradingFee;
-//     switch (selectedPlatform) {
-//     case SwapPlatforms.Incognito:
-//       tradingFee = data?.minFeeOriginal || 0;
-//       break;
-//     default:
-//       if (selectedPlatform) {
-//         const data = dataOtherPlatforms.find(item => item.platformType  === selectedPlatform);
-
-//         break;
-//       }
-      
-//     }
-//   }
-// );
+export const originalTradingFeeSelector = createSelector(
+  swapSelector,
+  ({ selectedPlatform, data, dataOtherPlatforms }) => {
+    let originalTradeFee = 0;
+    switch (selectedPlatform) {
+    case SwapPlatforms.Incognito:
+      originalTradeFee = data?.minFeeOriginal || 0;
+      break;
+    default:
+      if (selectedPlatform) {
+        originalTradeFee = dataOtherPlatforms[selectedPlatform]?.originalTradeFee || 0;
+        break;
+      }
+    }
+    return originalTradeFee;
+  }
+);
 
 
 export const feetokenDataSelector = createSelector(
@@ -115,12 +114,16 @@ export const feetokenDataSelector = createSelector(
   swapSelector,
   feeSelectedSelector,
   getPrivacyDataByTokenIDSelector,
-  (state, { data, networkfee }, feetoken, getPrivacyDataByTokenID) => {
+  originalTradingFeeSelector,
+  (state, { data, networkfee }, feetoken, getPrivacyDataByTokenID, originalTradingFee) => {
     try {
       const feeTokenData: SelectedPrivacy = getPrivacyDataByTokenID(feetoken);
       const selector = formValueSelector(formConfigs.formName);
       const fee = selector(state, formConfigs.feetoken);
-      const { fee: minFeeOriginal = 0 } = data;
+
+      // const { fee: minFeeOriginal = 0 } = data;
+      const minFeeOriginal = originalTradingFee;
+
       let feeAmount = convert.toNumber(fee, true) || 0;
       const feeAmountText = `${fee} ${feeTokenData.symbol}`;
       const origininalFeeAmount =
