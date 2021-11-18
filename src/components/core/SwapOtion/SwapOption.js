@@ -12,8 +12,8 @@ import { COLORS, FONT } from '@src/styles';
 const styled = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
-    // width: '100%',
+    flexDirection: 'column',
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -33,6 +33,7 @@ const styled = StyleSheet.create({
     padding: 15,
     borderRadius: 16,
     borderWidth: 0,
+    width: '100%',
     backgroundColor: '#EFEFEF',
   },
   unSelectedButon: {
@@ -42,6 +43,7 @@ const styled = StyleSheet.create({
     padding: 15,
     borderRadius: 16,
     borderWidth: 1,
+    width: '100%',
     borderColor: COLORS.colorGreyLight,
   },
 });
@@ -55,6 +57,7 @@ const SwapOption = (props) => {
     actionSetSelectedPlatform,
     platformNames,
   } = props || {};
+  console.log({dataDisplays});
   const [selectedPlatform, setSelectedPlatform] = React.useState(selectedPlatformInit);
   const handlePress = (index) => {
     setSelectedPlatform(index);
@@ -73,8 +76,8 @@ const SwapOption = (props) => {
             >
               <View style={styled.contentView}>
                 <Text style={[styled.text, { marginRight: 20, color: item === selectedPlatform ? COLORS.black : COLORS.colorGreyBold }]}>
-                  {platformNames.hasOwnProperty(item) ? platformNames[item] : ''} 
-                  {dataDisplays.hasOwnProperty(item) ? dataDisplays[item]?.minAmount : ''}              
+                  {platformNames.hasOwnProperty(item) ? platformNames[item] : ''} Rate: 
+                  {dataDisplays.hasOwnProperty(item) ? dataDisplays[item]?.minAmountExpectedToFixed : ''}              
                 </Text>
               </View>
             </TouchableOpacity>
