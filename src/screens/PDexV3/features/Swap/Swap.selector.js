@@ -14,7 +14,7 @@ import orderBy from 'lodash/orderBy';
 import { getExchangeRate, getPairRate, getPoolSize } from '@screens/PDexV3';
 import { PRIORITY_LIST } from '@screens/Dex/constants';
 import BigNumber from 'bignumber.js';
-import { formConfigs, SwapPlatforms } from './Swap.constant';
+import { formConfigs, SwapPlatforms, PlatformNames } from './Swap.constant';
 import { getInputAmount } from './Swap.utils';
 
 export const swapSelector = createSelector(
@@ -303,12 +303,7 @@ export const swapInfoSelector = createSelector(
         selltoken: sellInputAmount.tokenId,
         buytoken: buyInputAmount.tokenId,
       };
-      let platformNameStr = '';
-      if (selectedPlatform === SwapPlatforms.Incognito) {
-        platformNameStr = 'Incognito swap';
-      } else if (selectedPlatform === SwapPlatforms.Pancake) {
-        platformNameStr = 'Pancake swap';
-      }
+      const platformNameStr = PlatformNames[selectedPlatform] || '';
 
       return {
         balanceStr: sellInputBalanceStr,

@@ -16,7 +16,7 @@ import uniq from 'lodash/uniq';
 import { PRV, PRV_ID } from '@src/constants/common';
 import convert from '@src/utils/convert';
 import format from '@src/utils/format';
-import { getPancakeTokens, getPancakeTradingFee } from '@services/api/pancakeswap';
+import { getPancakeTokens, getPancakeTradingFee, submitPancakeTradingTx } from '@services/api/pancakeswap';
 import BigNumber from 'bignumber.js';
 import floor from 'lodash/floor';
 import difference from 'lodash/difference';
@@ -65,6 +65,9 @@ import {
   getBestRateFromPancake, 
   calMinAmountExpectedToFixed 
 } from './Swap.utils';
+import {
+  handleBurningTokenToSwapOtherPlatforms,
+} from './Swap.pancake';
 
 export const actionSetPercent = (payload) => ({
   type: ACTION_SET_PERCENT,
@@ -248,15 +251,15 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
 
     if (platforms.length === 1 && platforms[0] === SwapPlatforms.Incognito || platforms.length === 2) {
       dispatch(actionSetSelectedPlatform(SwapPlatforms.Incognito));
-    } else if (platforms.length === 1 && platforms[0] === SwapPlatforms.Pancake) {
-      dispatch(actionSetSelectedPlatform(SwapPlatforms.Pancake));
+    } else if (platforms.length === 1) {
+      dispatch(actionSetSelectedPlatform(platforms[0]));
     }
     
     batch(() => {
       state = getState();
       const { selectedPlatform } = swapSelector(state);
       const dataDisplay = dataDisplays[selectedPlatform];
-      if (selectedPlatform === SwapPlatforms.Pancake) {
+      if (selectedPlatform !== SwapPlatforms.Incognito) {
         dispatch(actionSetFeeToken(PRV.id));
       }
       dispatch(
@@ -327,11 +330,19 @@ const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buy
       srcAmt: isSwapExactOut ? maxGet : sellamount, 
       destAmt: isSwapExactOut ? buyamount : maxGet,
     });
+    if (!tradingFee) {
+      console.log('Can not estimate trading fee');
+      return null;
+    }
+    const {tradeID, feeAddress, signAddress, originalTradeFee} = tradingFee;
     return {
       paths, 
       outputs,
       maxGet,
-      ...tradingFee,
+      tradeID, 
+      feeAddress,
+      signAddress,
+      originalTradeFee,
       inputPDecimals,
     };
   }catch(e) {
@@ -621,6 +632,86 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
     if (!tx) {
       console.log('error');
     }
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  } finally {
+    await dispatch(actionFetchingSwap(false));
+  }
+  return tx;
+};
+
+export const actionFetchSwapOtherPlatforms = () => async (dispatch, getState) => {
+  let tx;
+  try {
+    const state = getState();
+    const { disabledBtnSwap, dataOtherPlatforms, selectedPlatform } = swapInfoSelector(state);
+    if (disabledBtnSwap) {
+      return;
+    }
+    await dispatch(actionFetchingSwap(true));
+    const accountWallet = defaultAccountWalletSelector(state);
+    console.log('accountWallet: ', accountWallet);
+    // const account = defaultAccountSelector(state);
+    const sellInputAmount = inputAmountSelector(state)(formConfigs.selltoken);
+    const buyInputAmount = inputAmountSelector(state)(formConfigs.buytoken);
+    const feetokenData = feetokenDataSelector(state);
+    const data = dataOtherPlatforms[selectedPlatform];
+    if (!sellInputAmount || !buyInputAmount || !feetokenData || selectedPlatform === SwapPlatforms.Incognito || !data) {
+      return;
+    }
+    const {
+      tokenId: tokenIDToSell,
+      originalAmount: sellAmount,
+    } = sellInputAmount;
+    const {
+      tokenId: tokenIDToBuy,
+      originalAmount: minAcceptableAmount,
+    } = buyInputAmount;
+
+    const { origininalFeeAmount: tradingFee, feetoken } = feetokenData;
+  
+
+    // create burning tx
+    const {
+      paths, 
+      outputs,
+      maxGet,
+      tradeID, 
+      feeAddress,
+      signAddress,
+      originalTradeFee,
+      inputPDecimals,
+    } = data;
+    
+    const payload = {
+      originalBurnAmount: sellAmount, 
+      tokenId: tokenIDToSell,
+      networkFee: feetoken, 
+      signKey: signAddress, 
+      feeAddress: feeAddress, 
+      tradeFee: tradingFee,
+      tradeID: tradeID,
+    };
+    const resTx = await handleBurningTokenToSwapOtherPlatforms(payload, null);
+    const {burningTxId} = resTx;
+    console.log('resTx: ', resTx);
+
+    // call api submit trading tx
+    const payloadSubmit = {
+      tradeID, 
+      burnTxID: burningTxId, 
+      paymentAddress: accountWallet.paymentAddress, 
+      srcTokenID: tokenIDToSell, 
+      destTokenID: tokenIDToBuy, 
+      paths, 
+      signKey: signAddress, 
+      srcAmt: sellAmount,
+    };
+    const res = await submitPancakeTradingTx(payloadSubmit);
+    if (!res) {
+      throw Error('Can not submit trading tx');
+    }
+    return resTx;
   } catch (error) {
     new ExHandler(error).showErrorToast();
   } finally {

@@ -31,3 +31,26 @@ export async function getPancakeTradingFee({paymentAddress, srcTokenID, destToke
     });
 }
 
+export async function submitPancakeTradingTx(
+  {tradeID, burnTxID, paymentAddress, srcTokenID, destTokenID, paths, signKey, srcAmt}
+) {
+  let body = {
+    'ID': tradeID,
+    'BurnTx': burnTxID,
+    'WalletAddress': paymentAddress,
+    'SrcTokens': srcTokenID,
+    'DestTokens': destTokenID,
+    'IsNative': true,
+    'Path': paths,
+    'SignKey': signKey, //todo: review
+    'UserFeeSelection': 2, 
+    'UserFeeLevel': 1,
+    'SrcQties': srcAmt,
+  };
+  return http.post('/trade/submit-trading-tx', body)
+    .then(res => {
+      console.log('res submitPancakeTradingTx: ', submitPancakeTradingTx);
+      return res;
+    });
+}
+

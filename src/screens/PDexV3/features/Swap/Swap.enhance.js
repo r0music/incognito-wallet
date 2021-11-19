@@ -7,8 +7,10 @@ import {
   actionInitSwapForm,
   actionReset,
   actionFetchSwap,
+  actionFetchSwapOtherPlatforms,
 } from './Swap.actions';
 import { swapInfoSelector } from './Swap.selector';
+import { PlatformNames, SwapPlatforms } from './Swap.constant';
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
@@ -25,7 +27,14 @@ const enhance = (WrappedComp) => (props) => {
       if (swapInfo?.disabledBtnSwap) {
         return;
       }
-      const tx = await dispatch(actionFetchSwap());
+      // check platforms
+      let tx;
+      if (swapInfo.platformNameStr === PlatformNames[SwapPlatforms.Incognito]) {
+        tx = await dispatch(actionFetchSwap());
+      } else {
+        tx = await dispatch(actionFetchSwapOtherPlatforms());
+      }
+     
       if (tx) {
         dispatch(
           actionToggleModal({
