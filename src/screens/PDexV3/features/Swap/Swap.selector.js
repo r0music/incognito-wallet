@@ -181,7 +181,7 @@ export const feeTypesSelector = createSelector(
         actived: feetoken == PRV.id,
       },
     ];
-    if (selltoken?.tokenId && !selltoken.isMainCrypto && selectedPlatform !== SwapPlatforms.Pancake) {
+    if (selltoken?.tokenId && !selltoken.isMainCrypto && selectedPlatform === SwapPlatforms.Incognito) {
       types.push({
         tokenId: selltoken.tokenId,
         symbol: selltoken.symbol,

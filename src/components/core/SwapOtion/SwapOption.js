@@ -54,14 +54,14 @@ const SwapOption = (props) => {
     dataDisplays,
     dispatch,
     selectedPlatformInit,
-    actionSetSelectedPlatform,
+    actionChangePlatform,
     platformNames,
   } = props || {};
   console.log({dataDisplays});
   const [selectedPlatform, setSelectedPlatform] = React.useState(selectedPlatformInit);
   const handlePress = (index) => {
     setSelectedPlatform(index);
-    dispatch(actionSetSelectedPlatform(index));
+    dispatch(actionChangePlatform(index));
   };
 
   return (

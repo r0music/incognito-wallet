@@ -29,7 +29,7 @@ import {
   actionEstimateTrade,
   actionSelectToken,
   actionSetFocusToken,
-  actionSetSelectedPlatform,
+  actionChangePlatform,
   actionSwapToken,
 } from './Swap.actions';
 import { inputGroupStyled as styled } from './Swap.styled';
@@ -149,7 +149,7 @@ const SwapInputsGroup = React.memo(() => {
         <SwapOption
           platforms={platforms}
           dataDisplays={dataDisplays}
-          actionSetSelectedPlatform={actionSetSelectedPlatform}
+          actionChangePlatform={actionChangePlatform}
           dispatch={dispatch}
           selectedPlatformInit={selectedPlatform}
           platformNames={PlatformNames}

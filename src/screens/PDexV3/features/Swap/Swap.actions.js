@@ -117,6 +117,25 @@ export const actionSetSelectedPlatform = (payload) => ({
   payload,
 });
 
+export const actionChangePlatform = (selectedPlatform) => async (dispatch, getState) => {
+  batch(() => {
+    const state = getState();
+    const { dataDisplays, estimateTokenField } = swapSelector(state);
+    const dataDisplay = dataDisplays[selectedPlatform];
+
+    dispatch(actionSetSelectedPlatform(selectedPlatform));
+    if (selectedPlatform !== SwapPlatforms.Incognito) {
+      dispatch(actionSetFeeToken(PRV.id));
+    }
+    dispatch(
+      change(formConfigs.formName, estimateTokenField, dataDisplay.minAmountExpectedToFixed),
+    );
+    dispatch(
+      change(formConfigs.formName, formConfigs.feetoken, dataDisplay.minFeeAmountFixed),
+    );
+  });
+};
+
 export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
   dispatch,
   getState,
@@ -247,7 +266,7 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
       }
     });
 
-    await dispatch(actionFetched({data, dataOtherPlatforms, platforms, dataDisplays}));
+    await dispatch(actionFetched({data, dataOtherPlatforms, platforms, dataDisplays, estimateTokenField: inputToken}));
 
     if (platforms.length === 1 && platforms[0] === SwapPlatforms.Incognito || platforms.length === 2) {
       dispatch(actionSetSelectedPlatform(SwapPlatforms.Incognito));
@@ -328,7 +347,6 @@ const estimateTradePancake = async (state, {selltoken, buytoken, sellamount, buy
       srcTokenID: selltoken, 
       destTokenID: buytoken, 
       srcAmt: isSwapExactOut ? maxGet : sellamount, 
-      destAmt: isSwapExactOut ? buyamount : maxGet,
     });
     if (!tradingFee) {
       console.log('Can not estimate trading fee');
@@ -655,22 +673,28 @@ export const actionFetchSwapOtherPlatforms = () => async (dispatch, getState) =>
     const sellInputAmount = inputAmountSelector(state)(formConfigs.selltoken);
     const buyInputAmount = inputAmountSelector(state)(formConfigs.buytoken);
     const feetokenData = feetokenDataSelector(state);
+    const {
+      tokenId: pTokenIDToSell,
+      amount: sellAmount,
+    } = sellInputAmount;
+    const {
+      tokenId: pTokenIDToBuy,
+      amount: minAcceptableAmount,
+    } = buyInputAmount;
+
+    const getPancakeTokenParamReq = getPancakeTokenParamReqByTokenIDSelector(state);
+    const tokenSell = getPancakeTokenParamReq(pTokenIDToSell);
+    const tokenBuy = getPancakeTokenParamReq(pTokenIDToBuy);
+
     const data = dataOtherPlatforms[selectedPlatform];
     if (!sellInputAmount || !buyInputAmount || !feetokenData || selectedPlatform === SwapPlatforms.Incognito || !data) {
       return;
     }
-    const {
-      tokenId: tokenIDToSell,
-      originalAmount: sellAmount,
-    } = sellInputAmount;
-    const {
-      tokenId: tokenIDToBuy,
-      originalAmount: minAcceptableAmount,
-    } = buyInputAmount;
-
+    
     const { origininalFeeAmount: tradingFee, feetoken } = feetokenData;
+    const originalMinAcceptableAmount = convert.toOriginalAmount(minAcceptableAmount, tokenBuy.decimals);
+    const originalSellAmount = convert.toOriginalAmount(sellAmount, tokenSell.decimals);
   
-
     // create burning tx
     const {
       paths, 
@@ -685,7 +709,7 @@ export const actionFetchSwapOtherPlatforms = () => async (dispatch, getState) =>
     
     const payload = {
       originalBurnAmount: sellAmount, 
-      tokenId: tokenIDToSell,
+      tokenId: pTokenIDToSell,
       networkFee: feetoken, 
       signKey: signAddress, 
       feeAddress: feeAddress, 
@@ -701,11 +725,12 @@ export const actionFetchSwapOtherPlatforms = () => async (dispatch, getState) =>
       tradeID, 
       burnTxID: burningTxId, 
       paymentAddress: accountWallet.paymentAddress, 
-      srcTokenID: tokenIDToSell, 
-      destTokenID: tokenIDToBuy, 
+      srcTokenID: tokenSell.address, 
+      destTokenID: tokenBuy.address, 
       paths, 
-      signKey: signAddress, 
-      srcAmt: sellAmount,
+      srcAmt: originalSellAmount,
+      expectedDestAmt: originalMinAcceptableAmount,
+      isNative: tokenBuy.address === '0x0000000000000000000000000000000000000000', 
     };
     const res = await submitPancakeTradingTx(payloadSubmit);
     if (!res) {

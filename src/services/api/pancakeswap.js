@@ -11,13 +11,12 @@ export async function getPancakeTokens() {
   return cachePromise(KEYS.PancakeTokens, getPancakeTokensNoCache, 10);
 }
 
-export async function getPancakeTradingFee({paymentAddress, srcTokenID, destTokenID, srcAmt, destAmt}) {
+export async function getPancakeTradingFee({paymentAddress, srcTokenID, destTokenID, srcAmt}) {
   let body = {
     WalletAddress: paymentAddress,
     SrcTokens: srcTokenID,
     DestTokens: destTokenID,
-    SrcQties: srcAmt,
-    MaxAmountOut: destAmt,
+    SrcQties: srcAmt.toString(),
   };
   return http.post('/trade/estimate-fees', body)
     .then(res => {
@@ -32,7 +31,7 @@ export async function getPancakeTradingFee({paymentAddress, srcTokenID, destToke
 }
 
 export async function submitPancakeTradingTx(
-  {tradeID, burnTxID, paymentAddress, srcTokenID, destTokenID, paths, signKey, srcAmt}
+  {tradeID, burnTxID, paymentAddress, srcTokenID, destTokenID, paths, srcAmt, isNative, expectedDestAmt}
 ) {
   let body = {
     'ID': tradeID,
@@ -40,12 +39,12 @@ export async function submitPancakeTradingTx(
     'WalletAddress': paymentAddress,
     'SrcTokens': srcTokenID,
     'DestTokens': destTokenID,
-    'IsNative': true,
+    'IsNative': isNative,
     'Path': paths,
-    'SignKey': signKey, //todo: review
     'UserFeeSelection': 2, 
     'UserFeeLevel': 1,
-    'SrcQties': srcAmt,
+    'SrcQties': srcAmt?.toString(),
+    'ExpectedOutputAmount': expectedDestAmt?.toString(),
   };
   return http.post('/trade/submit-trading-tx', body)
     .then(res => {

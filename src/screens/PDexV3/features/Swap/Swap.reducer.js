@@ -26,6 +26,7 @@ import {
 const initialState = {
   isFetching: false,
   isFetched: false,
+  estimateTokenField: null,
   selectedPlatform: null,
   data: {},
   dataOtherPlatforms: {}, 
@@ -153,6 +154,7 @@ export default (state = initialState, action) => {
       dataOtherPlatforms: {...action.payload.dataOtherPlatforms},
       platforms: action.payload.platforms,
       dataDisplays: {...action.payload.dataDisplays},
+      estimateTokenField: action.payload.estimateTokenField,
     };
   }
   case ACTION_FETCH_FAIL: {
