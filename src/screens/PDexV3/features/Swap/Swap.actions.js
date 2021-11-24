@@ -770,6 +770,7 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     const pancakeHistory = await getPancakeHistory({account});
     if (pancakeHistory) {
       history = history.concat(pancakeHistory);
+      history.sort((firstItem, secondItem) => secondItem?.requestime - firstItem?.requestime);
     }
     await dispatch(actionFetchedOrdersHistory(history));
   } catch (error) {
