@@ -68,6 +68,7 @@ import {
 import {
   handleBurningTokenToSwapOtherPlatforms,
 } from './Swap.pancake';
+import { getPancakeHistory } from '../../PDexV3.actions';
 
 export const actionSetPercent = (payload) => ({
   type: ACTION_SET_PERCENT,
@@ -761,9 +762,15 @@ export const actionFetchFailOrderHistory = () => ({
 export const actionFetchHistory = () => async (dispatch, getState) => {
   let history = [];
   try {
+    const state = getState();
     await dispatch(actionFetchingOrdersHistory());
     const pDexV3 = await dispatch(actionGetPDexV3Inst());
     history = await pDexV3.getSwapHistory({ version: PrivacyVersion.ver2 });
+    const account = defaultAccountSelector(state);
+    const pancakeHistory = await getPancakeHistory({account});
+    if (pancakeHistory) {
+      history = history.concat(pancakeHistory);
+    }
     await dispatch(actionFetchedOrdersHistory(history));
   } catch (error) {
     new ExHandler(error).showErrorToast();
