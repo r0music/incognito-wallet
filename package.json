@@ -40,7 +40,7 @@
     "deployIOS:next2": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.11\" -d NextRelease2",
     "deployIOS:next3": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.11\" -d NextRelease3",
     "deployAndroid:staging": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"4.9.0\" -d Staging",
-    "deployAndroid:prod": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"4.15.0\" -d Production -x",
+    "deployAndroid:prod": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"4.9.0\" -d Production -x",
     "deployAndroid:next": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"4.9.0\" -d NextRelease",
     "deployAndroid:next2": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"4.9.0\" -d NextRelease2",
     "deployAndroid:next3": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"4.9.0\" -d NextRelease3",
