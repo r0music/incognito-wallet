@@ -8,13 +8,13 @@ commands:
             echo "export LAST_COMMIT_MESSAGE=\"$(git show -s --format=%s)\"" >> $BASH_ENV
             echo "export APP_VERSION="$(sed 's/.*\"version\": \"\(.*\)\".*/\1/;t;d' ./package.json)"" >> $BASH_ENV
   login_appcenter:
-    description: "Install and login appcenter"
-    steps:
-      - run:
-          name: Login appcenter
-          command: |
-            npm install appcenter-cli@2.6.3 -g
-            appcenter login --token $CODEPUSH_ACCESS_TOKEN --disable-telemetry
+      description: "Install and login appcenter"
+      steps:
+        - run:
+            name: Login appcenter
+            command: |
+              npm install appcenter-cli@2.6.3 -g
+              appcenter login --token $CODEPUSH_ACCESS_TOKEN --disable-telemetry
 jobs:
   checkout_code:
     executor:
@@ -199,63 +199,63 @@ workflows:
           requires:
             - generate_data
   build_release:
-    jobs:
-      - checkout_code:
-          filters:
-            branches:
-              only:
-                - build/release
-      - generate_data:
-          requires:
-            - checkout_code
-      - build_android_release:
-          requires:
-            - generate_data
+      jobs:
+        - checkout_code:
+            filters:
+              branches:
+                only:
+                  - build/release
+        - generate_data:
+            requires:
+              - checkout_code
+        - build_android_release:
+            requires:
+              - generate_data
   build_next:
-    jobs:
-      - checkout_code:
-          filters:
-            branches:
-              only:
-                - build/next
-      - generate_data:
-          requires:
-            - checkout_code
-      - build_android_next:
-          requires:
-            - generate_data
+      jobs:
+        - checkout_code:
+            filters:
+              branches:
+                only:
+                  - build/next
+        - generate_data:
+            requires:
+              - checkout_code
+        - build_android_next:
+            requires:
+              - generate_data
   push_staging:
-    jobs:
-      - checkout_code:
-          filters:
-            branches:
-              only:
-                - develop
-      - generate_data:
-          requires:
-            - checkout_code
-      - push_android_staging:
-          requires:
-            - generate_data
-      - push_ios_staging:
-          requires:
-            - generate_data
+      jobs:
+        - checkout_code:
+            filters:
+              branches:
+                only:
+                  - develop
+        - generate_data:
+            requires:
+              - checkout_code
+        - push_android_staging:
+            requires:
+              - generate_data
+        - push_ios_staging:
+            requires:
+              - generate_data
   push_next:
-    jobs:
-      - checkout_code:
-          filters:
-            branches:
-              only:
-                - inc-next
-      - generate_data:
-          requires:
-            - checkout_code
-      - push_android_next:
-          requires:
-            - generate_data
-      - push_ios_next:
-          requires:
-            - generate_data
+      jobs:
+        - checkout_code:
+            filters:
+              branches:
+                only:
+                  - inc-next
+        - generate_data:
+            requires:
+              - checkout_code
+        - push_android_next:
+            requires:
+              - generate_data
+        - push_ios_next:
+            requires:
+              - generate_data
   store:
     jobs:
       - checkout_code:
