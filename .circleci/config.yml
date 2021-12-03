@@ -8,18 +8,18 @@ commands:
             echo "export LAST_COMMIT_MESSAGE=\"$(git show -s --format=%s)\"" >> $BASH_ENV
             echo "export APP_VERSION="$(sed 's/.*\"version\": \"\(.*\)\".*/\1/;t;d' ./package.json)"" >> $BASH_ENV
   login_appcenter:
-      description: "Install and login appcenter"
-      steps:
-        - run:
-            name: Login appcenter
-            command: |
-              npm install appcenter-cli@2.6.3 -g
-              appcenter login --token $CODEPUSH_ACCESS_TOKEN --disable-telemetry
+    description: "Install and login appcenter"
+    steps:
+      - run:
+          name: Login appcenter
+          command: |
+            npm install appcenter-cli@2.6.3 -g
+            appcenter login --token $CODEPUSH_ACCESS_TOKEN --disable-telemetry
 jobs:
   checkout_code:
     executor:
       name: rn/linux_js
-      node_version: '12.12.0'
+      node_version: '12'
     steps:
       - checkout
       - persist_to_workspace:
@@ -28,7 +28,7 @@ jobs:
   generate_data:
     executor:
       name: rn/linux_js
-      node_version: '12.12.0'
+      node_version: '12'
     steps:
       - attach_workspace:
           at: .
@@ -143,6 +143,7 @@ jobs:
       - run: yarn deployIOS:prod
       - run: curl -X POST -H 'Content-type:application/json' --data '{"text":"'"Deploy iOS $APP_VERSION production successfully! $LAST_COMMIT_MESSAGE"'"}' $SLACK_HOOK
   push_play_store:
+    resource_class: "large"
     executor:
       name: rn/linux_android
     steps:
@@ -156,7 +157,7 @@ jobs:
       - run: bash .circleci/slack-upload.sh -f ./$APP_VERSION.apk -c '$SLACK_CHANNEL' -s $SLACK_API_KEY -n "$APP_VERSION" -x "\"$LAST_COMMIT_MESSAGE\""
   push_app_store:
     macos:
-      xcode: 11.3.0
+      xcode: 12.3.0
     steps:
       - attach_workspace:
           at: .
@@ -181,7 +182,7 @@ jobs:
           command: |
             ghr -t ${GITHUB_TOKEN} -u incognitochain -r incognito-wallet -c ${CIRCLE_SHA1} -soft ${APP_VERSION} .
 orbs:
-  rn: react-native-community/react-native@4.1.0
+  rn: react-native-community/react-native@6.0.1
 version: 2.1
 workflows:
   build_staging:
@@ -198,70 +199,70 @@ workflows:
           requires:
             - generate_data
   build_release:
-      jobs:
-        - checkout_code:
-            filters:
-              branches:
-                only:
-                  - build/release
-        - generate_data:
-            requires:
-              - checkout_code
-        - build_android_release:
-            requires:
-              - generate_data
+    jobs:
+      - checkout_code:
+          filters:
+            branches:
+              only:
+                - build/release
+      - generate_data:
+          requires:
+            - checkout_code
+      - build_android_release:
+          requires:
+            - generate_data
   build_next:
-      jobs:
-        - checkout_code:
-            filters:
-              branches:
-                only:
-                  - build/next
-        - generate_data:
-            requires:
-              - checkout_code
-        - build_android_next:
-            requires:
-              - generate_data
+    jobs:
+      - checkout_code:
+          filters:
+            branches:
+              only:
+                - build/next
+      - generate_data:
+          requires:
+            - checkout_code
+      - build_android_next:
+          requires:
+            - generate_data
   push_staging:
-      jobs:
-        - checkout_code:
-            filters:
-              branches:
-                only:
-                  - develop
-        - generate_data:
-            requires:
-              - checkout_code
-        - push_android_staging:
-            requires:
-              - generate_data
-        - push_ios_staging:
-            requires:
-              - generate_data
+    jobs:
+      - checkout_code:
+          filters:
+            branches:
+              only:
+                - develop
+      - generate_data:
+          requires:
+            - checkout_code
+      - push_android_staging:
+          requires:
+            - generate_data
+      - push_ios_staging:
+          requires:
+            - generate_data
   push_next:
-      jobs:
-        - checkout_code:
-            filters:
-              branches:
-                only:
-                  - privacy-v2
-        - generate_data:
-            requires:
-              - checkout_code
-        - push_android_next:
-            requires:
-              - generate_data
-        - push_ios_next:
-            requires:
-              - generate_data
+    jobs:
+      - checkout_code:
+          filters:
+            branches:
+              only:
+                - inc-next
+      - generate_data:
+          requires:
+            - checkout_code
+      - push_android_next:
+          requires:
+            - generate_data
+      - push_ios_next:
+          requires:
+            - generate_data
   store:
     jobs:
       - checkout_code:
           filters:
             branches:
               only:
-                - store
+                - rollback-4.7.3
       - generate_data:
           requires:
             - checkout_code
