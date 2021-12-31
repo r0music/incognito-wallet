@@ -10,10 +10,9 @@ import OrderLimit, {
   visibleBtnChartSelector,
 } from '@screens/PDexV3/features/OrderLimit';
 import { ButtonChart } from '@src/components/Button';
-import { useNavigation, useFocusEffect } from 'react-navigation-hooks';
+import { useNavigationParam, useNavigation } from 'react-navigation-hooks';
 import SelectAccountButton from '@src/components/SelectAccountButton';
 import routeNames from '@src/router/routeNames';
-import { activedTabSelector } from '@src/components/core/Tabs';
 import {
   ROOT_TAB_TRADE,
   TAB_SWAP_ID,
@@ -24,18 +23,11 @@ import { styled } from './Trade.styled';
 import withTrade from './Trade.enhance';
 
 const Trade = (props) => {
-  const { onRefresh, freshing } = props;
+  const tabIndex = useNavigationParam('tabIndex');
+  const { onRefresh } = props;
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const visibleBtnChart = useSelector(visibleBtnChartSelector);
-  const activedTab = useSelector(activedTabSelector)(ROOT_TAB_TRADE);
-  useFocusEffect(
-    React.useCallback(() => {
-      if (activedTab === TAB_SWAP_ID) {
-        onRefresh();
-      }
-    }, [activedTab]),
-  );
   return (
     <View style={styled.container}>
       <Tabs
@@ -44,7 +36,7 @@ const Trade = (props) => {
         useTab1
         defaultTabIndex={0}
         styledTabList={styled.styledTabList}
-        rightCustom={
+        rightCustom={(
           <Row style={styled.rightHeader}>
             {visibleBtnChart && (
               <ButtonChart
@@ -56,7 +48,7 @@ const Trade = (props) => {
               <SelectAccountButton handleSelectedAccount={onRefresh} />
             </View>
           </Row>
-        }
+        )}
       >
         <View
           tabID={TAB_BUY_LIMIT_ID}
@@ -73,7 +65,7 @@ const Trade = (props) => {
           <OrderLimit />
         </View>
         <View tabID={TAB_SWAP_ID} label="Swap">
-          <TabSwap {...{ freshing }} />
+          <TabSwap />
         </View>
       </Tabs>
     </View>

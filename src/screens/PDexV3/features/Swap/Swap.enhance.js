@@ -35,7 +35,6 @@ const enhance = (WrappedComp) => (props) => {
   const {
     isPrivacyApp = false,
     exchange = KEYS_PLATFORMS_SUPPORTED.incognito,
-    refreshing = false,
   } = props;
   const unmountSwap = () => {
     dispatch(actionReset());
@@ -120,13 +119,11 @@ const enhance = (WrappedComp) => (props) => {
     initSwapForm(true);
   };
   React.useEffect(() => {
-    if (!refreshing) {
-      handleInitSwapForm();
-    }
+    handleInitSwapForm();
     return () => {
       unmountSwap();
     };
-  }, [refreshing]);
+  }, []);
 
   return (
     <ErrorBoundary>

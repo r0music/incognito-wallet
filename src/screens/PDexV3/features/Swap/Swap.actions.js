@@ -861,10 +861,6 @@ export const actionInitSwapForm =
     async (dispatch, getState) => {
       try {
         let state = getState();
-        const { initing } = swapSelector(state);
-        if (initing) {
-          return;
-        }
         const defaultExchange = defaultExchangeSelector(state);
         const isUsePRVToPayFee = isUsePRVToPayFeeSelector(state);
         let pair = defaultPair || defaultPairSelector(state);
