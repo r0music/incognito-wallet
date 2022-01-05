@@ -834,6 +834,7 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
         [],
       );
       pairs = [...pairs, ...pancakeTokens.map((t) => t?.tokenID)];
+      pairs = uniq(pairs);
     } else {
       switch (defaultExchange) {
       case KEYS_PLATFORMS_SUPPORTED.pancake:
@@ -844,7 +845,6 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
         break;
       }
     }
-    pairs = uniq(pairs);
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }

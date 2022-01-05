@@ -68,16 +68,40 @@ export const purePairsSelector = createSelector(
 export const listPairsSelector = createSelector(
   swapSelector,
   getPrivacyDataByTokenIDSelector,
-  ({ pairs }, getPrivacyDataByTokenID) => {
+  (
+    { pairs, isPrivacyApp, defaultExchange, pancakeTokens },
+    getPrivacyDataByTokenID,
+  ) => {
     if (!pairs) {
       return [];
     }
     let list = pairs.map((tokenID) => getPrivacyDataByTokenID(tokenID));
-    const result = orderBy(
-      list,
-      ['priority', 'hasIcon', 'isVerified'],
-      ['asc', 'desc', 'desc'],
-    );
+    let result = [];
+    if (isPrivacyApp) {
+      switch (defaultExchange) {
+      case KEYS_PLATFORMS_SUPPORTED.pancake: {
+        list = list.map((token: SelectedPrivacy) => {
+          let { priority, isVerified } = token;
+          const foundedToken = pancakeTokens.find(
+            (pt) => pt?.tokenID === token?.tokenId,
+          );
+          if (foundedToken) {
+            priority = foundedToken?.priority;
+            isVerified = foundedToken?.verify;
+          }
+          return {
+            ...token,
+            isVerified,
+            priority,
+          };
+        });
+        break;
+      }
+      default:
+        break;
+      }
+    }
+    result = orderBy(list, ['priority'], ['asc']);
     return result;
   },
 );
@@ -86,7 +110,7 @@ export const listPairsIDVerifiedSelector = createSelector(
   listPairsSelector,
   (pairs) => {
     const result = pairs
-      .filter((token: SelectedPrivacy) => token?.isVerified)
+      .filter((token: SelectedPrivacy) => !!token?.isVerified)
       .map((token) => token?.tokenId);
     return result;
   },
