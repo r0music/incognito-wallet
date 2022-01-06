@@ -14,7 +14,7 @@ import { Row } from '@src/components';
 import globalStyled from '@src/theme/theme.styled';
 import { BtnCircleBack } from '@components/Button';
 import { BaseTextInputCustom } from '@components/core/BaseTextInput';
-import { styled } from '@screens/PDexV3/features/Pools/Pools.list';
+import { PoolsListHeader, styled } from '@screens/PDexV3/features/Pools/Pools.list';
 import { RefreshControl } from 'react-native';
 import {
   isFetchingSelector,
@@ -90,7 +90,8 @@ const PoolsListContainer = (props) => {
           }}
         />
       </Row>
-      <View style={[styled.container, style, { paddingTop: 8 }]} borderTop>
+      <View style={[styled.container, style]} borderTop>
+        <PoolsListHeader />
         <PoolsList onPressPool={onPressPool} pools={pools} />
       </View>
     </>

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import {FontStyle} from '@src/styles/TextStyle';
-import {COLORS} from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 import globalStyled from '@src/theme/theme.styled';
 
 export const styled = StyleSheet.create({
@@ -49,10 +49,16 @@ export const styled = StyleSheet.create({
   tabEnable: {
     backgroundColor: COLORS.colorBlue
   },
+  text: {
+    ...FONT.STYLE.normal,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 5,
+  },
   btnSearchPool: {
     ...globalStyled.defaultPaddingHorizontal,
-    position: 'absolute',
-    bottom: 24,
-    width: '100%'
-  }
+    paddingVertical: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
 });

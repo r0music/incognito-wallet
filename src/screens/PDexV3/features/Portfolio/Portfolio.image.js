@@ -26,8 +26,8 @@ const styles = StyleSheet.create({
 const TwoTokenImage = React.memo(({ iconUrl1 , iconUrl2 }) => {
   return (
     <View style={styles.container}>
-      <ImageCached style={[styles.icon, iconUrl1.includes('prv') && { height: 34, width: 34 }]} uri={iconUrl1} defaultImage={incognito} />
-      <ImageCached style={[styles.rightIcon, iconUrl2.includes('prv') && { height: 34, width: 34 }]} uri={iconUrl2} defaultImage={incognito} />
+      <ImageCached style={[styles.icon, iconUrl1 && iconUrl1.includes('prv') && { height: 34, width: 34 }]} uri={iconUrl1} defaultImage={incognito} />
+      <ImageCached style={[styles.rightIcon, iconUrl2 && iconUrl2.includes('prv') && { height: 34, width: 34 }]} uri={iconUrl2} defaultImage={incognito} />
     </View>
   );
 });

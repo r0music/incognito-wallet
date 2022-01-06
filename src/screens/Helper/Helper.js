@@ -49,12 +49,11 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-    paddingTop: 43,
     marginBottom: 40
   },
   subTitle: {
     ...FONT.STYLE.bold,
-    marginTop: 25,
+    marginTop: 8,
     lineHeight: 25,
     marginBottom: 5,
     color: COLORS.black,

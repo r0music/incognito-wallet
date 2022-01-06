@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row } from '@src/components';
-import { Tabs } from '@src/components/core';
+import { Tabs, Text, Text3, TouchableOpacity } from '@src/components/core';
 import Portfolio from '@src/screens/PDexV3/features/Portfolio';
 import { View } from 'react-native';
 import { batch, useDispatch, useSelector } from 'react-redux';
@@ -14,8 +14,9 @@ import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout';
 import globalStyled from '@src/theme/theme.styled';
 import { PoolReward } from '@screens/PDexV3/features/Share';
-import { BtnPrimary } from '@components/core/Button';
 import PortfolioReward from '@screens/PDexV3/features/Portfolio/Portfolio.reward';
+import { SearchIcon } from '@components/Icons';
+import { PoolsListHeader } from '@screens/PDexV3/features/Pools/Pools.list';
 import withHome from './Home.enhance';
 import { ROOT_TAB_HOME, TAB_POOLS_ID, TAB_PORTFOLIO_ID, TAB_REWARDS_ID } from './Home.constant';
 import { styled } from './Home.styled';
@@ -32,10 +33,16 @@ const TabPools = React.memo(() => {
   };
   return (
     <>
+      <PoolsListHeader />
       <PoolsList onPressPool={onNavigateContribute} listPools={listPools} canSearch={false} />
-      <View style={styled.btnSearchPool}>
-        <BtnPrimary onPress={() => navigation.navigate(routeNames.PoolsTab)} title="Search pools" wrapperStyle={{ marginBottom: 0 }}  />
-      </View>
+      <TouchableOpacity style={styled.btnSearchPool} onPress={() => navigation.navigate(routeNames.PoolsTab)}>
+        <Text style={styled.text}>
+            Search for other pools
+        </Text>
+        <View style={{ marginLeft: 8 }}>
+          <SearchIcon size={16} />
+        </View>
+      </TouchableOpacity>
     </>
   );
 });
@@ -65,12 +72,12 @@ const HeaderRewardView = React.memo(() => {
 
 const Home = () => {
   const _TabPools = React.useMemo(() => (
-    <View tabID={TAB_POOLS_ID} label="Select pools">
+    <View tabID={TAB_POOLS_ID} label="Pools">
       <TabPools />
     </View>
   ), []);
   const _TabPortfolio = React.useMemo(() => (
-    <View tabID={TAB_PORTFOLIO_ID} label="Pools">
+    <View tabID={TAB_PORTFOLIO_ID} label="Portfolio">
       <HeaderPortfolioView />
       <Portfolio />
     </View>

@@ -34,7 +34,7 @@ export const PoolItem = React.memo((props) => {
   return (
     <TouchableOpacity
       onPress={() => typeof onPressPool === 'function' && onPressPool(poolId)}
-      style={[styled.container, { borderBottomWidth: 1, borderBottomColor: colors.border4 }, isLast && { marginBottom: 120, borderBottomWidth: 0 }, style]}
+      style={[styled.container, { borderBottomWidth: 1, borderBottomColor: colors.border4 }, isLast && { marginBottom: 70, borderBottomWidth: 0 }, style]}
     >
       <Row centerVertical>
         <TwoTokenImage iconUrl1={token1.iconUrl} iconUrl2={token2.iconUrl} />
@@ -45,7 +45,7 @@ export const PoolItem = React.memo((props) => {
           {/*<Text style={styled.subText}>{`Vol: ${volumeSuffixStr}`}</Text>*/}
         </View>
         <View style={styled.block2}>
-          <Text style={styled.subText}>{`${apyStr} APR`}</Text>
+          <Text style={styled.subText}>{`${apyStr}`}</Text>
         </View>
         <View style={styled.block3}>
           <BtnStar onPress={handleToggleFollowingPool} isBlue={isFollowed} />

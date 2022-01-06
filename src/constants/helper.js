@@ -94,6 +94,15 @@ const HELPER_CONSTANT = {
       },
     ],
   },
+  LIQUIDITY_APR: {
+    title: '',
+    contents: [
+      {
+        content:
+          'Based on last 7 days’ performance. Does not account for impermanent loss.'
+      },
+    ],
+  },
 };
 
 export default { HELPER_CONSTANT };
