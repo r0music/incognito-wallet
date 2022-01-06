@@ -621,7 +621,7 @@ export const actionFindBestRateBetweenPlatforms =
       } = pancakeData;
       let platformIdHasBestRate;
       const isPairSupportedTradeOnPancake =
-      isPairSupportedTradeOnPancakeSelector(state);
+        isPairSupportedTradeOnPancakeSelector(state);
       console.log('pdexData', pDexData);
       console.log('pancakeData', pancakeData);
       try {
@@ -636,7 +636,7 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnPancake &&
-            new BigNumber(buyPancakeAmount).isGreaterThan(0)
+              new BigNumber(buyPancakeAmount).isGreaterThan(0)
           ) {
             arrMaxBuyAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.pancake,
@@ -659,7 +659,7 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnPancake &&
-            new BigNumber(sellPancakeAmount).isGreaterThan(0)
+              new BigNumber(sellPancakeAmount).isGreaterThan(0)
           ) {
             arrMinSellAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.pancake,
@@ -757,8 +757,8 @@ export const actionEstimateTrade =
         payload.inputToken = inputToken;
         if (
           isEmpty(sellInputToken) ||
-        isEmpty(buyInputToken) ||
-        isEmpty(feetoken)
+          isEmpty(buyInputToken) ||
+          isEmpty(feetoken)
         ) {
           return;
         }
@@ -778,7 +778,7 @@ export const actionEstimateTrade =
         isFetched = true;
         state = getState();
         const { availableAmountText, availableOriginalAmount } =
-        sellInputTokenSelector(state);
+          sellInputTokenSelector(state);
         const errorEstTrade = errorEstimateTradeSelector(state);
         if (errorEstTrade) {
           new ExHandler(errorEstTrade).showErrorToast();
@@ -876,7 +876,7 @@ export const actionInitSwapForm =
         });
         const pairs = await dispatch(actionFetchPairs(refresh));
         const isDefaultPairExisted =
-        difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
+          difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
         if (!pair?.selltoken || !pair?.buytoken || !isDefaultPairExisted) {
           state = getState();
           const listPairs = listPairsIDVerifiedSelector(state);
