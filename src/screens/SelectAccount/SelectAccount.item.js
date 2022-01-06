@@ -19,6 +19,8 @@ import Row from '@components/Row';
 import { switchMasterKey } from '@src/redux/actions/masterKey';
 import { RatioIcon } from '@components/Icons';
 import styled from 'styled-components/native';
+import { actionToggleModal } from '@src/components/Modal';
+import ModalSwitchingAccount from './SelectAccount.modalSwitching';
 
 const itemStyled = StyleSheet.create({
   wrapper: {
@@ -27,11 +29,10 @@ const itemStyled = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 16,
   },
-  selected: {
-  },
+  selected: {},
   container: {
     marginLeft: 10,
-    flex: 1
+    flex: 1,
   },
   name: {
     fontFamily: FONT.NAME.medium,
@@ -71,17 +72,19 @@ const AccountItem = React.memo(
         if (switchingAccount) {
           return;
         }
-        if (!onSelect) {
-          navigation.goBack();
-        } else {
-          onSelect();
-        }
         await dispatch(actionSwitchAccountFetching());
+        await dispatch(
+          actionToggleModal({
+            visible: true,
+            data: <ModalSwitchingAccount />,
+          }),
+        );
         if (PrivateKey === account.PrivateKey) {
           Toast.showInfo(`Your current account is "${accountName}"`);
           return;
         }
         await dispatch(switchMasterKey(MasterKeyName, accountName));
+
       } catch (e) {
         new ExHandler(
           e,
@@ -89,17 +92,24 @@ const AccountItem = React.memo(
         ).showErrorToast();
       } finally {
         await dispatch(actionSwitchAccountFetched());
-        await dispatch(actionSwitchAccountFetched());
+        dispatch(
+          actionToggleModal()
+        );
         if (typeof handleSelectedAccount === 'function') {
           handleSelectedAccount();
+        }
+        if (!onSelect) {
+          navigation.goBack();
+        } else {
+          onSelect();
         }
       }
     };
 
-    const isCurrentAccount = useMemo(() => PrivateKey === account.PrivateKey, [
-      PrivateKey,
-      account.PrivateKey,
-    ]);
+    const isCurrentAccount = useMemo(
+      () => PrivateKey === account.PrivateKey,
+      [PrivateKey, account.PrivateKey],
+    );
 
     // eslint-disable-next-line react/prop-types
     const Component = ({ style }) => (
