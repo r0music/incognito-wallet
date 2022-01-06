@@ -27,18 +27,18 @@ export const useTabFactories = () => {
         label: `${selltoken?.symbol || ''} Balance`,
         value: swapInfo?.balanceStr,
       },
-      {
-        label: 'Rate',
-        value: feeTokenData?.rateStr,
-      },
-      {
-        label: 'Trade path',
-        value: feeTokenData?.tradePathStr,
-      },
-      {
-        label: 'Size impact',
-        value: `${feeTokenData?.impactAmountStr}%`,
-      },
+      // {
+      //   label: 'Rate',
+      //   value: feeTokenData?.rateStr,
+      // },
+      // {
+      //   label: 'Trade path',
+      //   value: feeTokenData?.tradePathStr,
+      // },
+      // {
+      //   label: 'Price impact',
+      //   value: `${feeTokenData?.impactAmountStr}%`,
+      // },
     ];
     if (feeTokenData.isMainCrypto) {
       result.push({
