@@ -437,7 +437,7 @@ export const feetokenDataSelector = createSelector(
         tradePathStr = tradePathArr.map(tokenID => {
           const token: SelectedPrivacy = getPrivacyDataByTokenID(tokenID);
           return token?.symbol || '';
-        }).filter(symbol => !!symbol).join('->');
+        }).filter(symbol => !!symbol).join('>');
       } catch (error) {
         console.log('GET TRADE PATH ERROR', error);
       }
