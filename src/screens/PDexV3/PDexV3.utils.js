@@ -64,7 +64,7 @@ export const getExchangeRate = (token1, token2, token1Value, token2Value) => {
       token1Value,
       token2Value,
     });
-    return `1 ${token1?.symbol} ~ ${format.amountVer2(
+    return `1 ${token1?.symbol} = ${format.amountVer2(
       originalRate,
       token2?.pDecimals,
     )} ${token2?.symbol}`;

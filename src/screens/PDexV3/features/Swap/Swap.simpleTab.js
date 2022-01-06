@@ -27,18 +27,6 @@ export const useTabFactories = () => {
         label: `${selltoken?.symbol || ''} Balance`,
         value: swapInfo?.balanceStr,
       },
-      {
-        label: 'Rate',
-        value: feeTokenData?.rateStr,
-      },
-      {
-        label: 'Trade path',
-        value: feeTokenData?.tradePathStr,
-      },
-      {
-        label: 'Size impact',
-        value: `${feeTokenData?.impactAmountStr}%`,
-      },
     ];
     if (feeTokenData.isMainCrypto) {
       result.push({
@@ -51,8 +39,8 @@ export const useTabFactories = () => {
         value: feeTokenData?.feeAmountText ?? '',
       });
     }
-    return result.filter((hook) => !isEmpty(hook) && !!hook?.value);
-  }, [swapInfo, feeTokenData]);
+    return result.filter((hook) => !isEmpty(hook));
+  }, [swapInfo]);
   return {
     hooksFactories,
   };
