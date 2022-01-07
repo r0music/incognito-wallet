@@ -32,6 +32,7 @@ const Trade = (props) => {
     <View style={styled.container}>
       <Tabs
         rootTabID={ROOT_TAB_TRADE}
+        defaultTabHeader
         styledTabs={styled.styledTabs}
         useTab1
         defaultTabIndex={0}

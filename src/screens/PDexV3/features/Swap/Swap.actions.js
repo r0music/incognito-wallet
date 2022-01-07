@@ -54,6 +54,7 @@ import {
   ACTION_FREE_HISTORY_ORDERS,
   ACTION_SET_ERROR,
   ACTION_REMOVE_ERROR,
+  ACTION_CHANGE_SLIPPAGE,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -83,6 +84,11 @@ import {
   findBestRateOfMaxBuyAmount,
   findBestRateOfMinSellAmount,
 } from './Swap.utils';
+
+export const actionChangeSlippage = (payload) => ({
+  type: ACTION_CHANGE_SLIPPAGE,
+  payload,
+});
 
 export const actionSetError = (payload) => ({
   type: ACTION_SET_ERROR,
@@ -524,7 +530,7 @@ export const actionEstimateTradeForPancake =
       const { sourceToken, destToken, amount, isSwapFromBuyToSell } =
         payloadPancake;
       const hashmapContractIDs = hashmapContractIDsSelector(state);
-      const { paths, outputs } = await getBestRateFromPancake({
+      const { paths, outputs, impactAmount } = await getBestRateFromPancake({
         sourceToken,
         destToken,
         amount,
@@ -579,6 +585,8 @@ export const actionEstimateTradeForPancake =
               maxGet,
               route: paths,
               sellAmount,
+              impactAmount,
+              tokenRoute: paths,
             },
             feeToken: {
               sellAmount,
@@ -586,6 +594,8 @@ export const actionEstimateTradeForPancake =
               isSignificant: false,
               maxGet,
               route: paths,
+              impactAmount,
+              tokenRoute: paths,
             },
             tradeID,
             feeAddress,
@@ -890,9 +900,16 @@ export const actionInitSwapForm =
           });
         }
         const { selltoken } = pair;
+        state = getState();
+        const { slippage: defautSlippage } = swapSelector(state);
+        console.log('defautSlippage', defautSlippage);
         batch(() => {
           dispatch(
-            change(formConfigs.formName, formConfigs.slippagetolerance, '1'),
+            change(
+              formConfigs.formName,
+              formConfigs.slippagetolerance,
+              defautSlippage,
+            ),
           );
           const useFeeByToken = selltoken !== PRV_ID && !isUsePRVToPayFee;
           if (useFeeByToken) {

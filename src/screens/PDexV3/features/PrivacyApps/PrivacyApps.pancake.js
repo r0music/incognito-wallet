@@ -26,7 +26,7 @@ const PrivacyAppsPancake = () => {
   return (
     <>
       <Header
-        title="Private PancakeSwap"
+        title="pPancakeSwap"
         accountSelectable
         handleSelectedAccount={handleOnRefresh}
       />

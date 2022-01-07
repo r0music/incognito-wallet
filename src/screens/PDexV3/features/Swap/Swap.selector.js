@@ -14,16 +14,30 @@ import orderBy from 'lodash/orderBy';
 import memoize from 'lodash/memoize';
 import { getExchangeRate, getPairRate, getPoolSize } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
+import isEqual from 'lodash/isEqual';
 import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
   PLATFORMS_SUPPORTED,
 } from './Swap.constant';
-import { getInputAmount } from './Swap.utils';
+import { getInputAmount, calMintAmountExpected } from './Swap.utils';
 
 export const swapSelector = createSelector(
   (state) => state.pDexV3,
   ({ swap }) => swap,
+);
+
+export const slippagetoleranceSelector = createSelector(
+  (state) => state,
+  (state) => {
+    const selector = formValueSelector(formConfigs.formName);
+    let slippagetolerance = selector(state, formConfigs.slippagetolerance);
+    slippagetolerance = Number(slippagetolerance);
+    if (isNaN(slippagetolerance)) {
+      return 0;
+    }
+    return slippagetolerance;
+  },
 );
 
 export const pDexPairsSelector = createSelector(
@@ -58,6 +72,21 @@ export const hashmapContractIDsSelector = createSelector(
         };
         return curr;
       }, {}),
+);
+
+export const getTokenIdByContractIdGetRateSelector = createSelector(
+  pancakePairsSelector,
+  (pancakeTokens) =>
+    memoize((contractIdGetRate) => {
+      let tokenID = '';
+      const foundToken = pancakeTokens.find((token) =>
+        isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate)),
+      );
+      if (foundToken) {
+        tokenID = foundToken?.tokenID;
+      }
+      return tokenID;
+    }),
 );
 
 export const purePairsSelector = createSelector(
@@ -253,16 +282,21 @@ export const feetokenDataSelector = createSelector(
   feeSelectedSelector,
   getPrivacyDataByTokenIDSelector,
   platformSelectedSelector,
+  getTokenIdByContractIdGetRateSelector,
+  slippagetoleranceSelector,
   (
     state,
-    { data, networkfee, selltoken },
+    { data, networkfee, selltoken, buytoken },
     feetoken,
     getPrivacyDataByTokenID,
     platform,
+    getTokenIdByContractIdGetRate,
+    slippagetolerance,
   ) => {
     try {
       const feeTokenData: SelectedPrivacy = getPrivacyDataByTokenID(feetoken);
       const sellTokenData: SelectedPrivacy = getPrivacyDataByTokenID(selltoken);
+      const buyTokenData: SelectedPrivacy = getPrivacyDataByTokenID(buytoken);
       const selector = formValueSelector(formConfigs.formName);
       const fee = selector(state, formConfigs.feetoken);
       const { id: platformID } = platform;
@@ -276,6 +310,8 @@ export const feetokenDataSelector = createSelector(
         route: tradePathPRV,
         maxGet: maxGetPRV,
         isSignificant: isSignificantPRV,
+        impactAmount: impactAmountPRV = 0,
+        tokenRoute: tokenRoutePRV = [],
       } = feePrvEst;
       const {
         fee: feeToken,
@@ -284,6 +320,8 @@ export const feetokenDataSelector = createSelector(
         route: tradePathToken,
         maxGet: maxGetToken,
         isSignificant: isSignificantToken,
+        impactAmount: impactAmountToken = 0,
+        tokenRoute: tokenRouteToken = [],
       } = feeTokenEst;
       let allPoolSize = [];
       let maxGet = 0;
@@ -379,7 +417,53 @@ export const feetokenDataSelector = createSelector(
         //
       }
       const tradePath = payFeeByPRV ? tradePathPRV : tradePathToken;
+      const tokenRoute = payFeeByPRV ? tokenRoutePRV : tokenRouteToken;
+      const impactAmount = payFeeByPRV ? impactAmountPRV : impactAmountToken;
+      const impactOriginalAmount = convert.toOriginalAmount(impactAmount, 2);
+      const impactAmountStr = format.amountVer2(impactOriginalAmount, 2);
       maxGet = payFeeByPRV ? maxGetPRV : maxGetToken;
+      const sellOriginalAmount = payFeeByPRV ? sellAmountPRV : sellAmountToken;
+      const buyOriginalAmount = calMintAmountExpected({
+        maxGet,
+        slippagetolerance,
+      });
+      const rateStr = getExchangeRate(
+        sellTokenData,
+        buyTokenData,
+        sellOriginalAmount,
+        buyOriginalAmount,
+      );
+      let tradePathStr = '';
+      let tradePathArr = [];
+      try {
+        if (tokenRoute?.length > 0) {
+          switch (platformID) {
+          case KEYS_PLATFORMS_SUPPORTED.incognito: {
+            tradePathArr = tokenRoute;
+            break;
+          }
+          case KEYS_PLATFORMS_SUPPORTED.pancake: {
+            tradePathArr = tokenRoute.map((contractId) =>
+              getTokenIdByContractIdGetRate(contractId),
+            );
+            break;
+          }
+          default:
+            break;
+          }
+        }
+        tradePathStr = tradePathArr
+          .map((tokenID, index, arr) => {
+            const token: SelectedPrivacy = getPrivacyDataByTokenID(tokenID);
+            return (
+              `${token?.symbol}${index === arr?.length - 1 ? '' : ' > '}` || ''
+            );
+          })
+          .filter((symbol) => !!symbol)
+          .join('');
+      } catch (error) {
+        console.log('GET TRADE PATH ERROR', error);
+      }
       return {
         ...feeTokenData,
         ...data,
@@ -411,6 +495,11 @@ export const feetokenDataSelector = createSelector(
         feeDataByPlatform,
         feePrvEst,
         feeTokenEst,
+        sellOriginalAmount,
+        buyOriginalAmount,
+        rateStr,
+        tradePathStr,
+        impactAmountStr,
       };
     } catch (error) {
       console.log('feetokenDataSelector-error', error);
@@ -473,19 +562,6 @@ export const sellInputTokenSelector = createSelector(
 export const buyInputTokenSeletor = createSelector(
   inputAmountSelector,
   (getInputAmount) => getInputAmount(formConfigs.buytoken),
-);
-
-export const slippagetoleranceSelector = createSelector(
-  (state) => state,
-  (state) => {
-    const selector = formValueSelector(formConfigs.formName);
-    let slippagetolerance = selector(state, formConfigs.slippagetolerance);
-    slippagetolerance = Number(slippagetolerance);
-    if (isNaN(slippagetolerance)) {
-      return 0;
-    }
-    return slippagetolerance;
-  },
 );
 
 export const swapInfoSelector = createSelector(

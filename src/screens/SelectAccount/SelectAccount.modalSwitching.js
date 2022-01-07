@@ -24,7 +24,7 @@ const ModalSwitchingAccount = (props) => {
   return (
     <PureModalContent>
       <ActivityIndicator size='large' />
-      <Text style={[styled.desc]}>Switchinng account...</Text>
+      <Text style={[styled.desc]}>Switching account...</Text>
       <Text style={[styled.sub, { color: colors.subText }]}>Please wait a few minutes</Text>
     </PureModalContent>
   );

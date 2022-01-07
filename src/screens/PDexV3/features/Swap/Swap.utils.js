@@ -388,6 +388,7 @@ export async function getBestRateFromPancake(params) {
     console.log('Can not find the best path for this pair');
     return null, null;
   }
+  const priceImpact = result[0]?.priceImpact.toSignificant(18);
   const bestPath = result[0].route.path;
   let paths = [];
   bestPath.forEach(function (item) {
@@ -403,7 +404,7 @@ export async function getBestRateFromPancake(params) {
       .getAmountsIn(sellAmount.toString(), paths)
       .call();
   }
-  return { paths, outputs };
+  return { paths, outputs, impactAmount: Number(priceImpact) / 100 };
 }
 
 // generated eth from incKey success
