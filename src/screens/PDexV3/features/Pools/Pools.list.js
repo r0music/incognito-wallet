@@ -58,9 +58,14 @@ const HEADER_FACTORIES = [
     style: {
       width: 80,
       flexDirection: 'row',
-      alignItems: 'flex-end',
-      paddingLeft: 10,
-      textAlign: 'right',
+      justifyContent: 'flex-end',
+    },
+  },
+  {
+    text: '',
+    style: {
+      width: 30,
+      marginRight: 5
     },
   },
 ];
