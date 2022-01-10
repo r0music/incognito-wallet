@@ -404,7 +404,7 @@ export async function getBestRateFromPancake(params) {
       .getAmountsIn(sellAmount.toString(), paths)
       .call();
   }
-  return { paths, outputs, impactAmount: Number(priceImpact) / 100 };
+  return { paths, outputs, impactAmount: Number(priceImpact) };
 }
 
 // generated eth from incKey success
