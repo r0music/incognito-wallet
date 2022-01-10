@@ -41,13 +41,17 @@ export const styled = StyleSheet.create({
 
 const HEADER_FACTORIES = [
   {
-    text: 'Reward pools',
+    text: 'Featured pools',
     style: {
       flex: 1,
-      marginRight: 15,
       justifyContent: 'flex-start',
       alignItems: 'flex-start',
     },
+    icon: {
+      route: routeNames.Helper,
+      data: helperConst.HELPER_CONSTANT.LIQUIDITY_APR,
+      style: { width: 30, flexDirection: 'row' ,justifyContent: 'center' },
+    }
   },
   {
     text: 'APR',
@@ -55,7 +59,7 @@ const HEADER_FACTORIES = [
       width: 80,
       flexDirection: 'row',
       alignItems: 'flex-end',
-      marginRight: 5,
+      paddingLeft: 10,
       textAlign: 'right',
     },
   },
@@ -66,18 +70,22 @@ export const PoolsListHeader = React.memo(() => {
   return (
     <Row style={{ marginTop: 32, marginBottom: 8, marginHorizontal: 24 }}>
       {HEADER_FACTORIES.map((item) => (
-        <Text key={item.text} style={{ ...styled.headerText, ...item.style }}>
-          {item.text}
-        </Text>
+        <Row centerVertical style={item.style}>
+          <Text key={item.text} style={styled.headerText}>
+            {item.text}
+          </Text>
+          {!!item.icon && (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate(item.icon.route, item.icon.data)
+              }
+              style={item.icon.style}
+            >
+              <InfoIcon />
+            </TouchableOpacity>
+          )}
+        </Row>
       ))}
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate(routeNames.Helper, helperConst.HELPER_CONSTANT.LIQUIDITY_APR)
-        }
-        style={{ width: 30, flexDirection: 'row' ,justifyContent: 'flex-end' }}
-      >
-        <InfoIcon />
-      </TouchableOpacity>
     </Row>
   );
 });

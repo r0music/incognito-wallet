@@ -5,8 +5,8 @@ import { COLORS } from '@src/styles';
 
 const styled = StyleSheet.create({
   icon: {
-    width: 32,
-    height: 32,
+    width: 34,
+    height: 34,
     backgroundColor: COLORS.black,
     borderRadius: 80,
   },

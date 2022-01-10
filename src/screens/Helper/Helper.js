@@ -1,8 +1,8 @@
 import React, {memo} from 'react';
 import { StyleSheet } from 'react-native';
-import { View, Text, ScrollViewBorder } from '@components/core';
+import { View, Text, ScrollViewBorder, Text3 } from '@components/core';
 import { Header } from '@src/components';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 import { v4 } from 'uuid';
 import withEnhance from './Helper.enhance';
@@ -22,9 +22,9 @@ const HelperScreen = ({ title, contents, style }) => {
               {subTitle}
             </Text>
           )}
-          <Text style={styles.content}>
+          <Text3 style={styles.content}>
             {content}
-          </Text>
+          </Text3>
         </View>
       );
     });
@@ -56,14 +56,13 @@ const styles = StyleSheet.create({
     marginTop: 8,
     lineHeight: 25,
     marginBottom: 5,
-    color: COLORS.black,
     fontSize: FONT.SIZE.medium
   },
   content: {
     ...FONT.STYLE.medium,
     lineHeight: 25,
-    color: COLORS.newGrey,
-    fontSize: FONT.SIZE.regular
+    fontSize: FONT.SIZE.regular,
+    marginBottom: 16
   }
 });
 

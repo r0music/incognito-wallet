@@ -95,11 +95,23 @@ const HELPER_CONSTANT = {
     ],
   },
   LIQUIDITY_APR: {
-    title: '',
+    title: 'Verified pools',
     contents: [
       {
-        content:
-          'Based on last 7 days’ performance. Does not account for impermanent loss.'
+        subTitle: 'Join a pool and earn rewards',
+        content: 'The real-time APR represents current earnings from trading fees of that pair. A liquidity pool consists of a pair of 2 tradable currencies. To join a pool, both sides of the pair must be contributed, at a rate determined by the current trading price. Simply tap on the listed pair to contribute.'
+      },
+      {
+        subTitle: 'How APR is paid out',
+        content: 'Rewards are paid out every block (~40s). They do not compound, and can be withdrawn at any time from the rewards tab. Rewards are paid in the currencies of the pair.'
+      },
+      {
+        subTitle: 'How APR is calculated',
+        content: 'APR adapts in real-time based on 2 factors – liquidity and trading volume of a particular pool. The formula for determining APR is trading fees earned over 1 year (extrapolated from the last 7 days), divided by current pool liquidity. APR does not take into account any impermanent loss.'
+      },
+      {
+        subTitle: 'Can’t find a pool?',
+        content: 'The liquidity pools listed in this tab are manually verified to avoid scam tokens. Pools not on this list yet may simply be new. Please reach out to us at go@incognito.org to request verification.'
       },
     ],
   },
