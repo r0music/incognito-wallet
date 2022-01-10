@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import { ActivityIndicator } from '@components/core';
 import { View, StyleSheet } from 'react-native';
-import {AppIcon} from '@components/Icons';
 
 const ImageCached = (props) => {
   const { style, uri, defaultImage, ...rest } = props;
@@ -13,7 +12,7 @@ const ImageCached = (props) => {
   });
 
   if (!!error || !uri) {
-    return <AppIcon style={style} {...rest} />;
+    return <FastImage style={[style, { backgroundColor: 'black', width: 34, height: 34, borderRadius: 22 }]} {...rest} />;
   }
   return (
     <>
