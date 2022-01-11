@@ -2,7 +2,7 @@ import React, {memo} from 'react';
 import { ScrollView, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header, RowSpaceText, SuccessModal} from '@src/components';
+import { Header, RowSpaceText, SuccessModal } from '@src/components';
 import {
   LIQUIDITY_MESSAGES,
   formConfigsCreatePool,
@@ -24,8 +24,6 @@ import routeNames from '@routers/routeNames';
 import NetworkFee from '@src/components/NetworkFee';
 import {actionToggleModal} from '@components/Modal';
 import { withLayout_2 } from '@components/Layout';
-import SelectedPrivacy from '@models/selectedPrivacy';
-import { formConfigs } from '@screens/PDexV3/features/Swap';
 
 const initialFormValues = {
   inputToken: '',
