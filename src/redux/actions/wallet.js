@@ -8,7 +8,6 @@ import {
   setAccount,
   setDefaultAccount,
   actionReloadFollowingToken,
-  actionSetNFTTokenData,
   actionSetSignPublicKeyEncode,
 } from '@src/redux/actions/account';
 import { currentMasterKeySelector } from '@src/redux/selectors/masterKey';
@@ -112,11 +111,11 @@ export const reloadWallet =
             dispatch(setListAccount(listAccount));
             dispatch(setAccount(defaultAccount));
             dispatch(setDefaultAccount(defaultAccount));
-            dispatch(actionReloadFollowingToken());
             dispatch(actionSetSignPublicKeyEncode());
             dispatch(actionSyncAccountMasterKey());
           });
-          await dispatch(actionSetNFTTokenData());
+          await dispatch(actionReloadFollowingToken());
+        // TODO: only screen need nft
         }
         return wallet;
       } catch (e) {

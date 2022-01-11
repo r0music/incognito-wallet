@@ -31,9 +31,6 @@ const OrderLimit = (props) => {
     orderLimitDataSelector,
   );
   const { handleConfirm, onRefresh } = props;
-  React.useEffect(() => {
-    onRefresh();
-  }, []);
   return (
     <>
       <KeyboardAwareScrollView

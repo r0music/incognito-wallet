@@ -130,7 +130,7 @@ export const loadAllMasterKeys = () => async (dispatch) => {
       try {
         await masterKey.loadWallet();
       } catch (error) {
-        console.log('LOAD WALLET ERROR', masterKey?.name);
+        new ExHandler(error).showErrorToast();
       }
     }
     await dispatch(loadAllMasterKeysSuccess(masterKeyList));

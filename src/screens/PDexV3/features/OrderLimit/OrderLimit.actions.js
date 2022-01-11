@@ -6,10 +6,10 @@ import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { getBalance } from '@src/redux/actions/token';
 import { ExHandler } from '@src/services/exception';
 import {
-  actionFetchPools,
   defaultPoolSelector,
   listPoolsIDsSelector,
   getAllTokenIDsInPoolsSelector,
+  actionFetchListPools,
 } from '@screens/PDexV3/features/Pools';
 import { actionSetNFTTokenData as actionSetNFTTokenDataNoCache } from '@src/redux/actions/account';
 import { nftTokenDataSelector } from '@src/redux/selectors/account';
@@ -151,19 +151,17 @@ export const actionSetBuyToken = (buytokenId, refresh) => async (dispatch) => {
 };
 
 export const actionSetInputToken =
-  ({ selltoken, buytoken, refresh }) =>
+  ({ selltoken, buytoken }) =>
     async (dispatch) => {
       if (!selltoken || !buytoken) {
         return;
       }
       try {
-        batch(() => {
-          dispatch(actionSetSellToken(selltoken, refresh));
-          dispatch(actionSetBuyToken(buytoken, refresh));
-          if (selltoken !== PRV.id && buytoken !== PRV.id && refresh) {
-            dispatch(getBalance(PRV.id));
-          }
-        });
+        await dispatch(getBalance(selltoken));
+        if (selltoken !== PRV.id && buytoken !== PRV.id) {
+          await dispatch(getBalance(PRV.id));
+        }
+        await dispatch(getBalance(buytoken));
       } catch (error) {
         throw error;
       }
@@ -189,14 +187,12 @@ export const actionSetDefaultPool = () => async (dispatch, getState) => {
 };
 
 export const actionInit =
-  (refresh = true) =>
+  ({ shouldFetchListPools = false, shouldFetchNFTData = false } = {}) =>
     async (dispatch, getState) => {
       try {
-        dispatch(actionFetching());
-        if (refresh) {
-          dispatch(reset(formConfigs.formName));
-        }
         let state = getState();
+        dispatch(actionFetching());
+        dispatch(reset(formConfigs.formName));
         const pools = listPoolsIDsSelector(state);
         const poolSelected = poolSelectedDataSelector(state);
         if (!poolSelected?.poolId) {
@@ -242,21 +238,22 @@ export const actionInit =
           dispatch(actionSetBuyTokenFetched(buytokenId));
           dispatch(actionSetSellTokenFetched(selltokenId));
           dispatch(actionSetPercent(0));
-          dispatch(
-            actionSetInputToken({
-              selltoken: selltokenId,
-              buytoken: buytokenId,
-              refresh,
-            }),
-          );
           state = getState();
           const { rate } = rateDataSelector(state);
           dispatch(change(formConfigs.formName, formConfigs.rate, rate));
           dispatch(focus(formConfigs.formName, formConfigs.rate));
-          dispatch(actionFetchPools());
         });
-        if (refresh) {
+        await dispatch(
+          actionSetInputToken({
+            selltoken: selltokenId,
+            buytoken: buytokenId,
+          }),
+        );
+        if (shouldFetchNFTData) {
           await dispatch(actionSetNFTTokenDataNoCache());
+        }
+        if (shouldFetchListPools) {
+          await dispatch(actionFetchListPools());
         }
       } catch (error) {
         new ExHandler(error).showErrorToast;
@@ -473,9 +470,17 @@ export const actionBookOrder = () => async (dispatch, getState) => {
     default:
       break;
     }
-    const tx = await pDexV3Inst.createAndSendOrderRequestTx({ extra });
-    dispatch(actionSetNFTTokenDataNoCache());
-    dispatch(actionFetchOrdersHistory(OPEN_ORDERS_STATE));
+    const tx = await pDexV3Inst.createAndSendOrderRequestTx({
+      extra: {
+        ...extra,
+        callback: async () => {
+          await Promise.all([
+            dispatch(actionSetNFTTokenDataNoCache()),
+            dispatch(actionFetchOrdersHistory(OPEN_ORDERS_STATE)),
+          ]);
+        },
+      },
+    });
     return tx;
   } catch (error) {
     new ExHandler(error).showErrorToast();

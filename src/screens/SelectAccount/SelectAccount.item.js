@@ -13,7 +13,6 @@ import {
 } from '@src/redux/selectors/account';
 import { Text, Text3, Toast, TouchableOpacity } from '@src/components/core';
 import { ExHandler } from '@src/services/exception';
-import debounce from 'lodash/debounce';
 import { FONT } from '@src/styles';
 import Row from '@components/Row';
 import { switchMasterKey } from '@src/redux/actions/masterKey';
@@ -72,37 +71,34 @@ const AccountItem = React.memo(
         if (switchingAccount) {
           return;
         }
-        await dispatch(actionSwitchAccountFetching());
         await dispatch(
           actionToggleModal({
             visible: true,
             data: <ModalSwitchingAccount />,
           }),
         );
+        await dispatch(actionSwitchAccountFetching());
         if (PrivateKey === account.PrivateKey) {
           Toast.showInfo(`Your current account is "${accountName}"`);
           return;
         }
         await dispatch(switchMasterKey(MasterKeyName, accountName));
-
+        if (typeof handleSelectedAccount === 'function') {
+          await handleSelectedAccount();
+        }
       } catch (e) {
         new ExHandler(
           e,
           `Can not switch to account "${accountName}", please try again.`,
         ).showErrorToast();
       } finally {
-        await dispatch(actionSwitchAccountFetched());
-        dispatch(
-          actionToggleModal()
-        );
-        if (typeof handleSelectedAccount === 'function') {
-          handleSelectedAccount();
-        }
         if (!onSelect) {
           navigation.goBack();
         } else {
           onSelect();
         }
+        await dispatch(actionSwitchAccountFetched());
+        dispatch(actionToggleModal());
       }
     };
 
@@ -134,7 +130,7 @@ const AccountItem = React.memo(
 
     if (!switchingAccount) {
       return (
-        <TouchableOpacity onPress={debounce(onSelectAccount, 100)}>
+        <TouchableOpacity onPress={onSelectAccount}>
           <Component style={[isCurrentAccount ? itemStyled.selected : null]} />
         </TouchableOpacity>
       );

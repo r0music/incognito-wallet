@@ -93,7 +93,7 @@ const RateInput = React.memo(() => {
           batch(() => {
             dispatch(actionResetOrdersHistory());
             dispatch(actionSetPoolSelected(pool?.poolId));
-            dispatch(actionInit(true));
+            dispatch(actionInit());
           });
         }
       },
@@ -176,7 +176,7 @@ const SellInput = React.memo(() => {
             batch(() => {
               dispatch(actionResetOrdersHistory());
               dispatch(actionSetPoolSelected(pool?.poolId));
-              dispatch(actionInit(true));
+              dispatch(actionInit());
             });
           }
         },
@@ -282,7 +282,7 @@ const BuyInput = React.memo(() => {
             batch(() => {
               dispatch(actionResetOrdersHistory());
               dispatch(actionSetPoolSelected(pool?.poolId));
-              dispatch(actionInit(true));
+              dispatch(actionInit());
             });
           }
         },
