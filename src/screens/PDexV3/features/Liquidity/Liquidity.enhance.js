@@ -15,7 +15,6 @@ const withLiquidity = WrappedComp => props => {
   const _debounceInitRemovePool = React.useCallback(debounce(onInitRemovePool, 200), []);
   const onFreeCreatePool = () => dispatch(liquidityActions.actionFeeCreatePool());
   const onInitCreatePool = () => dispatch(liquidityActions.actionInitCreatePool());
-  const _debounceInitCreatePool = React.useCallback(debounce(onInitCreatePool, 200), []);
   const onRefreshPool = () => dispatch(actionRefresh());
   const _debounceRefreshPool = React.useCallback(debounce(onRefreshPool, 200), []);
   const onFree = () => dispatch(liquidityActions.actionFree());
@@ -34,7 +33,7 @@ const withLiquidity = WrappedComp => props => {
           ...props,
           onInitContribute: _debounceInitContribute,
           onInitRemovePool: _debounceInitRemovePool,
-          onInitCreatePool: _debounceInitCreatePool,
+          onInitCreatePool: onInitCreatePool,
 
           onFreeCreatePool,
         }}
