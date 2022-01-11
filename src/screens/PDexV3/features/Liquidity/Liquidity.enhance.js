@@ -10,14 +10,14 @@ const withLiquidity = WrappedComp => props => {
   const dispatch = useDispatch();
   const switching = useSelector(switchAccountSelector);
   const onInitContribute = () => dispatch(liquidityActions.actionInitContribute());
-  const _debounceInitContribute = React.useCallback(debounce(onInitContribute, 300), []);
+  const _debounceInitContribute = React.useCallback(debounce(onInitContribute, 200), []);
   const onInitRemovePool = () => dispatch(liquidityActions.actionInitRemovePool());
-  const _debounceInitRemovePool = React.useCallback(debounce(onInitRemovePool, 300), []);
+  const _debounceInitRemovePool = React.useCallback(debounce(onInitRemovePool, 200), []);
   const onFreeCreatePool = () => dispatch(liquidityActions.actionFeeCreatePool());
   const onInitCreatePool = () => dispatch(liquidityActions.actionInitCreatePool());
-  const _debounceInitCreatePool = React.useCallback(debounce(onInitCreatePool, 300), []);
+  const _debounceInitCreatePool = React.useCallback(debounce(onInitCreatePool, 200), []);
   const onRefreshPool = () => dispatch(actionRefresh());
-  const _debounceRefreshPool = React.useCallback(debounce(onRefreshPool, 300), []);
+  const _debounceRefreshPool = React.useCallback(debounce(onRefreshPool, 200), []);
   const onFree = () => dispatch(liquidityActions.actionFree());
   const _debounceFree = React.useCallback(debounce(onFree, 100), []);
   React.useEffect(() => {
