@@ -162,7 +162,6 @@ export const actionSetInputToken =
         if (selltoken !== PRV.id && buytoken !== PRV.id) {
           await dispatch(getBalance(PRV.id));
         }
-        await dispatch(getBalance(buytoken));
       } catch (error) {
         throw error;
       }

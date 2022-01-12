@@ -267,18 +267,12 @@ export const actionLoadAllTokenBalance = () => async (dispatch, getState) => {
     const state = getState();
     const followed = tokensRealFollowedSelector(state);
     const account = accountSelector.defaultAccountSelector(state);
-    batch(() => {
-      dispatch(getBalance(account));
+    await Promise.all([
+      dispatch(getBalance(account)),
       followed
         .map((token) => token?.id)
-        .forEach((tokenID) => {
-          try {
-            dispatch(getTokenBalance(tokenID));
-          } catch (error) {
-            console.log('error', error);
-          }
-        });
-    });
+        .map((tokenID) => dispatch(getTokenBalance(tokenID))),
+    ]);
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
