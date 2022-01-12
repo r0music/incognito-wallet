@@ -1,7 +1,6 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { StyleSheet } from 'react-native';
-import withLazy from '@components/LazyHoc/LazyHoc';
 import { compose } from 'recompose';
 import { View2 } from '@components/core/View';
 import styled from 'styled-components/native';

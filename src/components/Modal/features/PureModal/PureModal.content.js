@@ -4,9 +4,11 @@ import { View, StyleSheet } from 'react-native';
 import { colorsSelector } from '@src/theme';
 import { useSelector } from 'react-redux';
 import { UTILS } from '@src/styles';
+import withLazy from '@components/LazyHoc/LazyHoc';
 
 const styled = StyleSheet.create({
   container: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -44,4 +46,4 @@ PureModalContent.propTypes = {
   styledWrapper: PropTypes.any,
 };
 
-export default React.memo(PureModalContent);
+export default withLazy(React.memo(PureModalContent));

@@ -37,6 +37,8 @@ const setToken = (list, token) => {
     const foundIndex = list.findIndex((t) => t.id === token.id);
     if (foundIndex >= 0) {
       newList[foundIndex] = token;
+    } else {
+      newList.push(token);
     }
   } catch (e) {
     throw new Error('Save token failed');
@@ -222,7 +224,8 @@ const reducer = (state = initialState, action) => {
     };
   }
   case type.ACTION_FETCHED_RECEIVE_HISTORY: {
-    const { nextPage, data, oversize, refreshing, notEnoughData } = action?.payload;
+    const { nextPage, data, oversize, refreshing, notEnoughData } =
+        action?.payload;
     return {
       ...state,
       receiveHistory: {

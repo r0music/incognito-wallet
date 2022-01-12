@@ -103,16 +103,21 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
   const onRefresh = () => {
-    dispatch(actionInit(true, true));
+    dispatch(
+      actionInit({ shouldFetchListPools: true, shouldFetchNFTData: true }),
+    );
     dispatch(actionFetchOrdersHistory(HISTORY_ORDERS_STATE));
     dispatch(actionFetchOrdersHistory(OPEN_ORDERS_STATE));
   };
   const callback = async (poolId) => {
-    dispatch(actionResetOrdersHistory());
     await dispatch(actionSetPoolSelected(poolId));
     dispatch(actionInit(true));
   };
-
+  React.useEffect(() => {
+    dispatch(
+      actionInit({ shouldFetchListPools: true, shouldFetchNFTData: true }),
+    );
+  }, []);
   if (isFetching && !isFetched) {
     return <LoadingContainer />;
   }

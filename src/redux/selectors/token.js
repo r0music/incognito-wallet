@@ -1,5 +1,6 @@
 import { PRV_ID } from '@src/constants/common';
 import uniq from 'lodash/uniq';
+import memoize from 'lodash/memoize';
 import { createSelector } from 'reselect';
 
 export const followed = (state) => state?.token?.followed || [];
@@ -101,6 +102,36 @@ export const allTokensIDsSelector = createSelector(
   },
 );
 
+export const isGettingBalanceSelector = createSelector(
+  isGettingBalance,
+  (tokens) => tokens,
+);
+
+export const isGettingBalanceTokenByIdSelector = createSelector(
+  isGettingBalanceSelector,
+  (tokens) =>
+    memoize((tokenId) =>
+      tokens?.length > 0 ? tokens?.includes(tokenId) : false,
+    ),
+);
+
+export const getBalanceTokenByIdSelector = createSelector(
+  tokensFollowedSelector,
+  (followed) =>
+    memoize((tokenId) => {
+      let balance = 0;
+      try {
+        const foundToken = followed.find((token) => token?.id === tokenId);
+        if (foundToken) {
+          balance = foundToken?.balance || 0;
+        }
+      } catch (error) {
+        console.log('error-getBalanceTokenByIdSelector', error, tokenId);
+      }
+      return balance;
+    }),
+);
+
 export default {
   followed,
   isGettingBalance,
@@ -115,4 +146,7 @@ export default {
   receiveHistorySelector,
   defaultPTokensIDsSelector,
   allTokensIDsSelector,
+  isGettingBalanceSelector,
+  isGettingBalanceTokenByIdSelector,
+  getBalanceTokenByIdSelector,
 };

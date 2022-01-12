@@ -222,4 +222,5 @@ export default {
   getValidRealAmountNFTSelector,
   getValidAmountNFTSelector,
   isFetchingNFTSelector,
+  accountSelector,
 };

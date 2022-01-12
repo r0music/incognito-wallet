@@ -8,7 +8,6 @@ import {
   setAccount,
   setDefaultAccount,
   actionReloadFollowingToken,
-  actionSetNFTTokenData,
   actionSetSignPublicKeyEncode,
 } from '@src/redux/actions/account';
 import { currentMasterKeySelector } from '@src/redux/selectors/masterKey';
@@ -20,6 +19,7 @@ import {
 import { Validator } from 'incognito-chain-web-js/build/wallet';
 import { ExHandler } from '@src/services/exception';
 import isEqual from 'lodash/isEqual';
+import nextFrame from '@src/utils/nextFrame';
 
 export const setWallet = (
   wallet = throw new Error('Wallet object is required'),
@@ -91,6 +91,7 @@ export const actionRequestAirdropNFTForListAccount = (wallet) => async () => {
 export const reloadWallet =
   (accountName = '') =>
     async (dispatch, getState) => {
+      await nextFrame();
       let listAccount = [];
       new Validator('reloadWallet-accountName', accountName).string();
       const state = getState();
@@ -112,11 +113,11 @@ export const reloadWallet =
             dispatch(setListAccount(listAccount));
             dispatch(setAccount(defaultAccount));
             dispatch(setDefaultAccount(defaultAccount));
-            dispatch(actionReloadFollowingToken());
             dispatch(actionSetSignPublicKeyEncode());
             dispatch(actionSyncAccountMasterKey());
           });
-          await dispatch(actionSetNFTTokenData());
+          await dispatch(actionReloadFollowingToken());
+        // TODO: only screen need nft
         }
         return wallet;
       } catch (e) {

@@ -3,20 +3,21 @@ import { StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-native-modal';
 import { COLORS } from '@src/styles';
+import { ScreenHeight, ScreenWidth } from '@src/utils/devices';
 import { modalSelector, modalLoadingSelector } from './modal.selector';
 import { actionToggleModal } from './modal.actions';
 import LoadingModal from './features/LoadingModal';
 
 const styled = StyleSheet.create({
   container: {
+    flex: 1,
     margin: 0,
     flexDirection: 'column',
   },
 });
 const ModalComponent = () => {
-  const { visible, data, shouldCloseModalWhenTapOverlay, onBack } = useSelector(
-    modalSelector,
-  );
+  const { visible, data, shouldCloseModalWhenTapOverlay, onBack } =
+    useSelector(modalSelector);
   const {
     toggle: toggleLoading,
     title: titleLoading,
@@ -48,6 +49,10 @@ const ModalComponent = () => {
       style={styled.container}
       backdropColor={COLORS.black}
       backdropOpacity={0.4}
+      coverScreen
+      hideModalContentWhileAnimating
+      deviceHeight={ScreenHeight}
+      deviceWidth={ScreenWidth}
     >
       {data}
       {toggleLoading && (
