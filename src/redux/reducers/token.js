@@ -36,7 +36,7 @@ const setToken = (list, token) => {
   try {
     const foundIndex = list.findIndex((t) => t.id === token.id);
     if (foundIndex >= 0) {
-      newList[foundIndex] = token;
+      newList[foundIndex] = { ...newList[foundIndex], ...token };
     } else {
       newList.push(token);
     }

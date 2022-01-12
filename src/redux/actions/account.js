@@ -28,6 +28,7 @@ import {
 import {
   defaultPTokensIDsSelector,
   tokensFollowedSelector,
+  tokensRealFollowedSelector
 } from '@src/redux/selectors/token';
 import { actionGetPDexV3Inst } from '@src/screens/PDexV3';
 import MasterKeyModel from '@src/models/masterKey';
@@ -264,7 +265,7 @@ export const actionSwitchAccount =
 export const actionLoadAllTokenBalance = () => async (dispatch, getState) => {
   try {
     const state = getState();
-    const followed = tokensFollowedSelector(state);
+    const followed = tokensRealFollowedSelector(state);
     const account = accountSelector.defaultAccountSelector(state);
     await dispatch(getBalance(account));
     for (const token of followed) {
