@@ -239,16 +239,6 @@ const CreatePool = ({
     onInitCreatePool();
   };
 
-  const renderContent = () => (
-    <>
-      <InputsGroup />
-      <View style={styled.padding}>
-        {!!error && <Text style={styled.warning}>{error}</Text>}
-        <ButtonCreatePool onSubmit={onSubmit} />
-        <Extra />
-      </View>
-    </>
-  );
   React.useEffect(() => {
     onInitCreatePool();
     return () => onFreeCreatePool();
@@ -262,7 +252,12 @@ const CreatePool = ({
           showsVerticalScrollIndicator={false}
         >
           <Form>
-            {renderContent()}
+            <InputsGroup />
+            <View style={styled.padding}>
+              {!!error && <Text style={styled.warning}>{error}</Text>}
+              <ButtonCreatePool onSubmit={onSubmit} />
+              <Extra />
+            </View>
           </Form>
         </ScrollView>
       </View>
@@ -295,7 +290,7 @@ ButtonCreatePool.propTypes = {
 };
 
 export default compose(
-  withLiquidity,
   withLayout_2,
+  withLiquidity,
   withTransaction,
 )(memo(CreatePool));
