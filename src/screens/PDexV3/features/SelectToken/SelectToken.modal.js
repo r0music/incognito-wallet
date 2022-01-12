@@ -8,7 +8,7 @@ import {
 import { useSearchBox } from '@src/components/Header';
 import { withLayout_2 } from '@src/components/Layout';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
-import { delay } from '@src/utils/delay';
+import nextFrame from '@src/utils/nextFrame';
 import { ListAllTokenSelectable } from './SelectToken';
 
 const styled = StyleSheet.create({
@@ -48,11 +48,11 @@ const SelectTokenModal = () => {
           renderItem={({ item }) => (
             <TokenTrade
               onPress={async () => {
-                goBack();
-                await delay(0);
+                await nextFrame();
                 if (typeof onPress === 'function') {
                   onPress(item);
                 }
+                goBack();
               }}
               tokenId={item?.tokenId}
             />
