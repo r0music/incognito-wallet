@@ -1,7 +1,7 @@
 import React from 'react';
 import { FONT, COLORS } from '@src/styles';
 import { View, StyleSheet } from 'react-native';
-import { Row } from '@src/components';
+import nextFrame from '@src/utils/nextFrame';
 import {
   RFTradeInputAmount as TradeInputAmount,
   validator,
@@ -80,7 +80,8 @@ const RateInput = React.memo(() => {
   const { activedTab } = orderlimitData;
   const selectableTokens = useSelector(selectableTokens2Selector);
   const findPoolByPair = useSelector(findPoolByPairSelector);
-  const onPressSymbol = () => {
+  const onPressSymbol = async () => {
+    await nextFrame();
     navigation.navigate(routeNames.SelectTokenModal, {
       data: selectableTokens,
       onPress: (token2: SelectedPrivacy) => {
@@ -158,7 +159,8 @@ const SellInput = React.memo(() => {
   const sellToken: SelectedPrivacy = sellInputAmount?.tokenData;
   const selectableTokens = useSelector(selectableTokens1Selector);
   const findPoolByPair = useSelector(findPoolByPairSelector);
-  const onPressSymbol = () => {
+  const onPressSymbol = async () => {
+    await nextFrame();
     const { activedTab } = orderLimitData;
     switch (activedTab) {
     case TAB_BUY_LIMIT_ID: {
@@ -267,7 +269,8 @@ const BuyInput = React.memo(() => {
   const { customRate, rateToken } = rateData;
   const selectableTokens = useSelector(selectableTokens1Selector);
   const findPoolByPair = useSelector(findPoolByPairSelector);
-  const onPressSymbol = () => {
+  const onPressSymbol = async () => {
+    await nextFrame();
     const { activedTab } = orderLimitData;
     switch (activedTab) {
     case TAB_BUY_LIMIT_ID: {
@@ -311,9 +314,8 @@ const BuyInput = React.memo(() => {
     }
   };
   const onPressInfinityIcon = async () => {
-    const {
-      availableAmountNumber: availableSellAmountNumber,
-    } = sellInputAmount;
+    const { availableAmountNumber: availableSellAmountNumber } =
+      sellInputAmount;
     let buyAmountNumber = new BigNumber(availableSellAmountNumber)
       .dividedBy(customRate)
       .toNumber();
@@ -396,9 +398,12 @@ const SelectPercentAmountInput = React.memo(() => {
   const buyToken: SelectedPrivacy = buyInputAmount?.tokenData;
   const sellToken: SelectedPrivacy = sellInputAmount?.tokenData;
   const { customRate } = useSelector(rateDataSelector);
-  const { mainColor, percent: selected, activedTab, balanceStr } = useSelector(
-    orderLimitDataSelector,
-  );
+  const {
+    mainColor,
+    percent: selected,
+    activedTab,
+    balanceStr,
+  } = useSelector(orderLimitDataSelector);
   const onPressPercent = (percent) => {
     let _percent;
     if (percent === selected) {
@@ -411,9 +416,8 @@ const SelectPercentAmountInput = React.memo(() => {
     _percent = _percent / 100;
     switch (activedTab) {
     case TAB_BUY_LIMIT_ID: {
-      const {
-        availableAmountNumber: availableSellAmountNumber,
-      } = sellInputAmount;
+      const { availableAmountNumber: availableSellAmountNumber } =
+          sellInputAmount;
       let buyAmountNumber = new BigNumber(availableSellAmountNumber)
         .dividedBy(customRate)
         .multipliedBy(_percent)
@@ -441,9 +445,8 @@ const SelectPercentAmountInput = React.memo(() => {
       break;
     }
     case TAB_SELL_LIMIT_ID: {
-      const {
-        availableAmountNumber: availableSellAmountNumber,
-      } = sellInputAmount;
+      const { availableAmountNumber: availableSellAmountNumber } =
+          sellInputAmount;
       let sellAmountNumber = new BigNumber(availableSellAmountNumber)
         .multipliedBy(_percent)
         .toNumber();

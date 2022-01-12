@@ -11,7 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from '@src/components/core';
-import { COLORS, FONT } from '@src/styles';
+import nextFrame from '@src/utils/nextFrame';
+import { FONT } from '@src/styles';
 import { Icon } from '@src/components/Token/Token.shared';
 import { ArrowRight } from '@components/Icons/icon.arrowRightGreyIcon';
 
@@ -40,10 +41,6 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     marginRight: 10,
   },
-  infinityIcon: {},
-  // loadingIcon: {
-  //   marginRight: 8,
-  // },
   header: {
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -117,7 +114,13 @@ const TradeInputAmount = (props) => {
         />
         {renderSub()}
         {!!symbol && (
-          <TouchableOpacity style={{ marginLeft: 16 }} onPress={onPressSymbol}>
+          <TouchableOpacity
+            style={{ marginLeft: 16 }}
+            onPress={async () => {
+              await nextFrame();
+              typeof onPressSymbol === 'function' ? onPressSymbol() : false;
+            }}
+          >
             <Row style={{ alignItems: 'center' }}>
               {!!symbol && <Text style={styled.symbol}>{symbol}</Text>}
               {canSelectSymbol && <ArrowRight />}

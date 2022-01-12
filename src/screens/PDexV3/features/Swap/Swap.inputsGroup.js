@@ -1,4 +1,5 @@
 import React from 'react';
+import nextFrame from '@src/utils/nextFrame';
 import { View } from 'react-native';
 import {
   RFTradeInputAmount as TradeInputAmount,
@@ -47,7 +48,8 @@ const SwapInputsGroup = React.memo(() => {
   const onSelectToken = (token, field) => {
     dispatch(actionSelectToken(token, field));
   };
-  const onSelectSellToken = () => {
+  const onSelectSellToken = async () => {
+    await nextFrame();
     navigation.navigate(routeNames.SelectTokenModal, {
       data: pairsToken.filter(
         (token: SelectedPrivacy) => token?.tokenId !== selltoken?.tokenId,
@@ -55,7 +57,8 @@ const SwapInputsGroup = React.memo(() => {
       onPress: (token) => onSelectToken(token, formConfigs.selltoken),
     });
   };
-  const onSelectBuyToken = () => {
+  const onSelectBuyToken = async () => {
+    await nextFrame();
     navigation.navigate(routeNames.SelectTokenModal, {
       data: pairsToken.filter(
         (token: SelectedPrivacy) => token?.tokenId !== buytoken?.tokenId,
