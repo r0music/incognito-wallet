@@ -9,6 +9,7 @@ import {
   setDefaultAccount,
   actionReloadFollowingToken,
   actionSetSignPublicKeyEncode,
+  getBalanceStart,
 } from '@src/redux/actions/account';
 import { currentMasterKeySelector } from '@src/redux/selectors/masterKey';
 import { walletSelector } from '@src/redux/selectors/wallet';
@@ -115,6 +116,7 @@ export const reloadWallet =
             dispatch(setDefaultAccount(defaultAccount));
             dispatch(actionSetSignPublicKeyEncode());
             dispatch(actionSyncAccountMasterKey());
+            dispatch(getBalanceStart(defaultAccount?.accountName));
           });
           await dispatch(actionReloadFollowingToken());
         // TODO: only screen need nft

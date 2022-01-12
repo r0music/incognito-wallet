@@ -267,13 +267,17 @@ export const actionLoadAllTokenBalance = () => async (dispatch, getState) => {
     const state = getState();
     const followed = tokensRealFollowedSelector(state);
     const account = accountSelector.defaultAccountSelector(state);
-    dispatch(getBalance(account));
-    followed.map((token) => {
-      try {
-        dispatch(getTokenBalance(token?.id));
-      } catch (error) {
-        console.log('error', token?.id);
-      }
+    batch(() => {
+      dispatch(getBalance(account));
+      followed
+        .map((token) => token?.id)
+        .forEach((tokenID) => {
+          try {
+            dispatch(getTokenBalance(tokenID));
+          } catch (error) {
+            console.log('error', error);
+          }
+        });
     });
   } catch (error) {
     new ExHandler(error).showErrorToast();
@@ -281,45 +285,44 @@ export const actionLoadAllTokenBalance = () => async (dispatch, getState) => {
 };
 
 export const actionReloadFollowingToken =
-  (shouldLoadBalance) => async (dispatch, getState) => {
-    try {
-      const state = getState();
-      const wallet = walletSelector(state);
-      const account = accountSelector.defaultAccountSelector(state);
-      const accountWallet = getDefaultAccountWalletSelector(state);
-      let followed = await accountService.getFollowingTokens(account, wallet);
-      const keyInfo = await accountWallet.getKeyInfo({
-        version: PrivacyVersion.ver2,
-      });
-      const isFollowedDefaultTokens =
+  (shouldLoadBalance = false) =>
+    async (dispatch, getState) => {
+      try {
+        const state = getState();
+        const wallet = walletSelector(state);
+        const account = accountSelector.defaultAccountSelector(state);
+        const accountWallet = getDefaultAccountWalletSelector(state);
+        let followed = await accountService.getFollowingTokens(account, wallet);
+        const keyInfo = await accountWallet.getKeyInfo({
+          version: PrivacyVersion.ver2,
+        });
+        const isFollowedDefaultTokens =
         await accountWallet.isFollowedDefaultTokens();
-      if (!isFollowedDefaultTokens) {
-        const coinIDs = keyInfo.coinindex
-          ? Object.keys(keyInfo.coinindex).map((tokenID) => tokenID)
-          : [];
-        const pTokensIDs = defaultPTokensIDsSelector(state);
-        if (pTokensIDs.length > 0) {
-          let tokenIDs = [...pTokensIDs, ...coinIDs];
-          tokenIDs = uniq(tokenIDs);
-          await accountWallet.followingDefaultTokens({
-            tokenIDs,
-          });
-          followed = await accountService.getFollowingTokens(account, wallet);
+        if (!isFollowedDefaultTokens) {
+          const coinIDs = keyInfo.coinindex
+            ? Object.keys(keyInfo.coinindex).map((tokenID) => tokenID)
+            : [];
+          const pTokensIDs = defaultPTokensIDsSelector(state);
+          if (pTokensIDs.length > 0) {
+            let tokenIDs = [...pTokensIDs, ...coinIDs];
+            tokenIDs = uniq(tokenIDs);
+            await accountWallet.followingDefaultTokens({
+              tokenIDs,
+            });
+            followed = await accountService.getFollowingTokens(account, wallet);
+          }
         }
+        await dispatch(
+          setListToken(followed.map((token) => ({ ...token, loading: true }))),
+        );
+        if (shouldLoadBalance) {
+          await dispatch(actionLoadAllTokenBalance());
+        }
+        return followed;
+      } catch (error) {
+        throw error;
       }
-      dispatch(
-        setListToken(
-          followed.map((token) => ({ ...token, loading: shouldLoadBalance })),
-        ),
-      );
-      if (shouldLoadBalance) {
-        await dispatch(actionLoadAllTokenBalance());
-      }
-      return followed;
-    } catch (error) {
-      throw error;
-    }
-  };
+    };
 
 export const actionLoadAllBalance = () => async (dispatch, getState) => {
   try {
