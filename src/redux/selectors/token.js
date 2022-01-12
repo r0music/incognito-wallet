@@ -11,6 +11,12 @@ export const tokensFollowedSelector = createSelector(
   followed,
   (tokens) => tokens,
 );
+
+export const tokensRealFollowedSelector = createSelector(
+  tokensFollowedSelector,
+  (tokens) => tokens?.filter((token) => !!token?.isRealFollowed) || [],
+);
+
 export const pTokensSelector = createSelector(
   (state) => state?.token?.pTokens,
   (pTokens) =>
@@ -149,4 +155,5 @@ export default {
   isGettingBalanceSelector,
   isGettingBalanceTokenByIdSelector,
   getBalanceTokenByIdSelector,
+  tokensRealFollowedSelector,
 };

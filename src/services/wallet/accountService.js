@@ -391,6 +391,7 @@ export default class Account {
         id: tokenID,
         amount: 0,
         loading: false,
+        isRealFollowed: true,
       }));
       return list;
     } catch (error) {

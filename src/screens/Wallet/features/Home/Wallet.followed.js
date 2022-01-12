@@ -21,7 +21,7 @@ import { decimalDigitsSelector } from '@screens/Setting';
 const Followed = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const followed = useSelector(tokenSelector.tokensFollowedSelector);
+  const followed = useSelector(tokenSelector.tokensRealFollowedSelector);
   const getPrivacyDataByTokenID = useSelector(
     selectedPrivacySelector.getPrivacyDataByTokenID,
   );
