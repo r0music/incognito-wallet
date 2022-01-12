@@ -24,6 +24,7 @@ import routeNames from '@routers/routeNames';
 import NetworkFee from '@src/components/NetworkFee';
 import {actionToggleModal} from '@components/Modal';
 import { withLayout_2 } from '@components/Layout';
+import withLazy from '@components/LazyHoc/LazyHoc';
 
 const initialFormValues = {
   inputToken: '',
@@ -291,6 +292,7 @@ ButtonCreatePool.propTypes = {
 
 export default compose(
   withLayout_2,
+  withLazy,
   withLiquidity,
   withTransaction,
 )(memo(CreatePool));
