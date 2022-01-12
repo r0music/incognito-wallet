@@ -24,6 +24,7 @@ import routeNames from '@routers/routeNames';
 import NetworkFee from '@src/components/NetworkFee';
 import {actionToggleModal} from '@components/Modal';
 import { withLayout_2 } from '@components/Layout';
+import withLazy from '@components/LazyHoc/LazyHoc';
 
 const initialFormValues = {
   inputToken: '',
@@ -239,16 +240,6 @@ const CreatePool = ({
     onInitCreatePool();
   };
 
-  const renderContent = () => (
-    <>
-      <InputsGroup />
-      <View style={styled.padding}>
-        {!!error && <Text style={styled.warning}>{error}</Text>}
-        <ButtonCreatePool onSubmit={onSubmit} />
-        <Extra />
-      </View>
-    </>
-  );
   React.useEffect(() => {
     onInitCreatePool();
     return () => onFreeCreatePool();
@@ -262,7 +253,12 @@ const CreatePool = ({
           showsVerticalScrollIndicator={false}
         >
           <Form>
-            {renderContent()}
+            <InputsGroup />
+            <View style={styled.padding}>
+              {!!error && <Text style={styled.warning}>{error}</Text>}
+              <ButtonCreatePool onSubmit={onSubmit} />
+              <Extra />
+            </View>
           </Form>
         </ScrollView>
       </View>
@@ -295,7 +291,8 @@ ButtonCreatePool.propTypes = {
 };
 
 export default compose(
-  withLiquidity,
   withLayout_2,
+  withLazy,
+  withLiquidity,
   withTransaction,
 )(memo(CreatePool));
