@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import nextFrame from '@src/utils/nextFrame';
 import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import { activedTabSelector } from '@src/components/core/Tabs/Tabs.selector';
 import { PRV } from '@src/constants/common';
@@ -190,6 +191,7 @@ export const actionInit =
   ({ shouldFetchListPools = false, shouldFetchNFTData = false } = {}) =>
     async (dispatch, getState) => {
       try {
+        await nextFrame();
         let state = getState();
         dispatch(actionFetching());
         dispatch(reset(formConfigs.formName));
@@ -280,6 +282,7 @@ export const actionFetchWithdrawOrderTxs = () => async (dispatch, getState) => {
     const state = getState();
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const poolIds = listPoolsIDsSelector(state);
+    await nextFrame();
     withdrawTxs = await pDexV3Inst.getWithdrawOrderTxs({
       poolIds,
     });
@@ -323,6 +326,7 @@ export const actionFetchOrdersHistory =
         const data = await dispatch(actionSetNFTTokenDataNoCache());
         listNFTToken = [...data?.listNFTToken];
       }
+      await nextFrame();
       switch (field) {
       case OPEN_ORDERS_STATE: {
         const tokenIds = getAllTokenIDsInPoolsSelector(state);
@@ -470,6 +474,7 @@ export const actionBookOrder = () => async (dispatch, getState) => {
     default:
       break;
     }
+    await nextFrame();
     const tx = await pDexV3Inst.createAndSendOrderRequestTx({
       extra: {
         ...extra,
@@ -519,6 +524,7 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
       fromStorage: !!fromStorage,
       version: PrivacyVersion.ver2,
     };
+    await nextFrame();
     _order = await pDexV3.getOrderLimitDetail(params);
     _order = {
       ..._order,

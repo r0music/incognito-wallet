@@ -19,6 +19,7 @@ import { switchMasterKey } from '@src/redux/actions/masterKey';
 import { RatioIcon } from '@components/Icons';
 import styled from 'styled-components/native';
 import { actionToggleModal } from '@src/components/Modal';
+import nextFrame from '@src/utils/nextFrame';
 import ModalSwitchingAccount from './SelectAccount.modalSwitching';
 
 const itemStyled = StyleSheet.create({
@@ -68,6 +69,7 @@ const AccountItem = React.memo(
     }
     const onSelectAccount = async () => {
       try {
+        await nextFrame();
         if (switchingAccount) {
           return;
         }
@@ -77,12 +79,15 @@ const AccountItem = React.memo(
             data: <ModalSwitchingAccount />,
           }),
         );
+        await nextFrame();
         await dispatch(actionSwitchAccountFetching());
         if (PrivateKey === account.PrivateKey) {
           Toast.showInfo(`Your current account is "${accountName}"`);
           return;
         }
+        await nextFrame();
         await dispatch(switchMasterKey(MasterKeyName, accountName));
+        await nextFrame();
         if (typeof handleSelectedAccount === 'function') {
           await handleSelectedAccount();
         }
@@ -92,6 +97,7 @@ const AccountItem = React.memo(
           `Can not switch to account "${accountName}", please try again.`,
         ).showErrorToast();
       } finally {
+        await nextFrame();
         if (!onSelect) {
           navigation.goBack();
         } else {

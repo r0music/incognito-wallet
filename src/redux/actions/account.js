@@ -34,6 +34,7 @@ import MasterKeyModel from '@src/models/masterKey';
 import { batch } from 'react-redux';
 import uniq from 'lodash/uniq';
 import { cachePromise } from '@src/services/cache';
+import nextFrame from '@src/utils/nextFrame';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
 export const setAccount = (
@@ -155,6 +156,7 @@ export const actionSetNFTTokenData =
         dispatch(actionSetFetchingNFT());
         const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
         const otaKey = pDexV3Inst.getOTAKey();
+        await nextFrame();
         if (noCache) {
           nftPayload = await pDexV3Inst.getNFTTokenData({
             version: PrivacyVersion.ver2,

@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import nextFrame from '@src/utils/nextFrame';
 import BigNumber from 'bignumber.js';
 import AccountModel from '@models/account';
 import { COINS, CONSTANT_KEYS } from '@src/constants';
@@ -24,9 +25,6 @@ import {
 } from '@src/services/wallet/Wallet.shared';
 import { cachePromise, clearAllCaches } from '@src/services/cache';
 import { getPDexV3Instance } from '@src/screens/PDexV3';
-import { delay } from '@src/utils/delay';
-import { v4 } from 'uuid';
-import random from 'lodash/random';
 import { CustomError, ErrorCode, ExHandler } from '../exception';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 
@@ -362,6 +360,7 @@ export default class Account {
     try {
       const params = { tokenID, version };
       const key = accountWallet.getKeyCacheBalance(params);
+      await nextFrame();
       balance = await cachePromise(key, () =>
         accountWallet.getBalance({
           tokenID,

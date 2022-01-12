@@ -19,6 +19,7 @@ import {
 import { Validator } from 'incognito-chain-web-js/build/wallet';
 import { ExHandler } from '@src/services/exception';
 import isEqual from 'lodash/isEqual';
+import nextFrame from '@src/utils/nextFrame';
 
 export const setWallet = (
   wallet = throw new Error('Wallet object is required'),
@@ -90,6 +91,7 @@ export const actionRequestAirdropNFTForListAccount = (wallet) => async () => {
 export const reloadWallet =
   (accountName = '') =>
     async (dispatch, getState) => {
+      await nextFrame();
       let listAccount = [];
       new Validator('reloadWallet-accountName', accountName).string();
       const state = getState();
