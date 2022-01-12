@@ -36,6 +36,7 @@ import { EXPIRED_TIME } from '@services/cache';
 import Util from '@utils/Util';
 import BigNumber from 'bignumber.js';
 import { actionToggleModal } from '@src/components/Modal';
+import { batch } from 'react-redux';
 import { setWallet } from './wallet';
 
 export const setToken = (
@@ -120,14 +121,16 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
   const account = accountSelector.defaultAccountSelector(state);
   let balance = 0;
   try {
-    await dispatch(getBalanceStart(tokenId));
-    dispatch(
-      setToken({
-        id: tokenId,
-        amount: balance,
-        loading: true,
-      }),
-    );
+    batch(() => {
+      dispatch(
+        setToken({
+          id: tokenId,
+          amount: balance,
+          loading: true,
+        }),
+      );
+      dispatch(getBalanceStart(tokenId));
+    });
     balance = await accountService.getBalance({
       account,
       wallet,
@@ -137,14 +140,16 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
   } catch (e) {
     throw e;
   } finally {
-    dispatch(
-      setToken({
-        id: tokenId,
-        amount: balance,
-        loading: false,
-      }),
-    );
-    dispatch(getBalanceFinish(tokenId));
+    batch(() => {
+      dispatch(
+        setToken({
+          id: tokenId,
+          amount: balance,
+          loading: false,
+        }),
+      );
+      dispatch(getBalanceFinish(tokenId));
+    });
   }
   return balance || 0;
 };
