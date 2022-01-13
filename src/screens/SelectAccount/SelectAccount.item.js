@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
+  actionLoadAllTokenBalance,
   actionSwitchAccountFetched,
   actionSwitchAccountFetching,
 } from '@src/redux/actions/account';
@@ -73,22 +74,25 @@ const AccountItem = React.memo(
         if (switchingAccount) {
           return;
         }
-        await dispatch(
-          actionToggleModal({
-            visible: true,
-            data: <ModalSwitchingAccount />,
-          }),
-        );
-        await nextFrame();
-        await dispatch(actionSwitchAccountFetching());
         if (PrivateKey === account.PrivateKey) {
           Toast.showInfo(`Your current account is "${accountName}"`);
           return;
         }
-        await nextFrame();
+        batch(() => {
+          dispatch(
+            actionToggleModal({
+              visible: true,
+              data: <ModalSwitchingAccount />,
+            }),
+          );
+          dispatch(actionSwitchAccountFetching());
+        });
+
         await dispatch(switchMasterKey(MasterKeyName, accountName));
         await nextFrame();
+        await dispatch(actionLoadAllTokenBalance());
         if (typeof handleSelectedAccount === 'function') {
+          await nextFrame();
           await handleSelectedAccount();
         }
       } catch (e) {
@@ -98,13 +102,15 @@ const AccountItem = React.memo(
         ).showErrorToast();
       } finally {
         await nextFrame();
+        batch(() => {
+          dispatch(actionSwitchAccountFetched());
+          dispatch(actionToggleModal());
+        });
         if (!onSelect) {
           navigation.goBack();
         } else {
           onSelect();
         }
-        await dispatch(actionSwitchAccountFetched());
-        dispatch(actionToggleModal());
       }
     };
 
