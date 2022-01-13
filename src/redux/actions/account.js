@@ -267,12 +267,10 @@ export const actionLoadAllTokenBalance = () => async (dispatch, getState) => {
     const state = getState();
     const followed = tokensRealFollowedSelector(state);
     const account = accountSelector.defaultAccountSelector(state);
-    await Promise.all([
-      dispatch(getBalance(account)),
-      followed
-        .map((token) => token?.id)
-        .map((tokenID) => dispatch(getTokenBalance(tokenID))),
-    ]);
+    await dispatch(getBalance(account));
+    for (let token of followed) {
+      await dispatch(getTokenBalance(token?.id));
+    }
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
@@ -310,7 +308,7 @@ export const actionReloadFollowingToken =
           setListToken(followed.map((token) => ({ ...token, loading: true }))),
         );
         if (shouldLoadBalance) {
-          await dispatch(actionLoadAllTokenBalance());
+          dispatch(actionLoadAllTokenBalance());
         }
         return followed;
       } catch (error) {

@@ -90,11 +90,11 @@ const AccountItem = React.memo(
 
         await dispatch(switchMasterKey(MasterKeyName, accountName));
         await nextFrame();
-        await dispatch(actionLoadAllTokenBalance());
         if (typeof handleSelectedAccount === 'function') {
           await nextFrame();
           await handleSelectedAccount();
         }
+        dispatch(actionLoadAllTokenBalance());
       } catch (e) {
         new ExHandler(
           e,
