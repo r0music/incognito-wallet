@@ -267,9 +267,9 @@ export const actionLoadAllTokenBalance = () => async (dispatch, getState) => {
     const state = getState();
     const followed = tokensRealFollowedSelector(state);
     const account = accountSelector.defaultAccountSelector(state);
-    await dispatch(getBalance(account));
+    dispatch(getBalance(account));
     for (let token of followed) {
-      await dispatch(getTokenBalance(token?.id));
+      dispatch(getTokenBalance(token?.id));
     }
   } catch (error) {
     new ExHandler(error).showErrorToast();

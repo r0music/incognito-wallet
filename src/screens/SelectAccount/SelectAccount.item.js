@@ -21,6 +21,7 @@ import { RatioIcon } from '@components/Icons';
 import styled from 'styled-components/native';
 import { actionToggleModal } from '@src/components/Modal';
 import nextFrame from '@src/utils/nextFrame';
+import { delay } from '@src/utils/delay';
 import ModalSwitchingAccount from './SelectAccount.modalSwitching';
 
 const itemStyled = StyleSheet.create({
@@ -94,7 +95,6 @@ const AccountItem = React.memo(
           await nextFrame();
           await handleSelectedAccount();
         }
-        dispatch(actionLoadAllTokenBalance());
       } catch (e) {
         new ExHandler(
           e,
@@ -111,6 +111,9 @@ const AccountItem = React.memo(
         } else {
           onSelect();
         }
+        await nextFrame();
+        await delay(1000);
+        dispatch(actionLoadAllTokenBalance());
       }
     };
 
