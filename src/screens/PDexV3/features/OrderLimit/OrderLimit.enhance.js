@@ -25,7 +25,6 @@ import {
   actionInit,
   actionBookOrder,
   actionSetPoolSelected,
-  actionResetOrdersHistory,
   actionFetchOrdersHistory,
 } from './OrderLimit.actions';
 
@@ -115,7 +114,7 @@ const enhance = (WrappedComp) => (props) => {
   };
   React.useEffect(() => {
     dispatch(
-      actionInit({ shouldFetchListPools: true, shouldFetchNFTData: true }),
+      actionInit({ shouldFetchListPools: false, shouldFetchNFTData: true }),
     );
   }, []);
   if (isFetching && !isFetched) {

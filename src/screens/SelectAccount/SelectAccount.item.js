@@ -71,6 +71,12 @@ const AccountItem = React.memo(
     }
     const onSelectAccount = async () => {
       try {
+        dispatch(
+          actionToggleModal({
+            visible: true,
+            data: <ModalSwitchingAccount />,
+          }),
+        );
         await nextFrame();
         if (switchingAccount) {
           return;
@@ -80,15 +86,8 @@ const AccountItem = React.memo(
           return;
         }
         batch(() => {
-          dispatch(
-            actionToggleModal({
-              visible: true,
-              data: <ModalSwitchingAccount />,
-            }),
-          );
           dispatch(actionSwitchAccountFetching());
         });
-
         await dispatch(switchMasterKey(MasterKeyName, accountName));
         await nextFrame();
         if (typeof handleSelectedAccount === 'function') {
