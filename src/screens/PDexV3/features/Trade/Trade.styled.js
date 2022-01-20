@@ -14,6 +14,7 @@ export const styled = StyleSheet.create({
     alignItems: 'center',
     // marginBottom: 16,
     // paddingHorizontal: 16,
+    marginTop: 12,
   },
   btnOrderHistory: {
     marginRight: 15,

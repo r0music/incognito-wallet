@@ -1,6 +1,6 @@
 {
   "name": "incognito-wallet",
-  "version": "5.0.11",
+  "version": "5.0.13",
   "private": true,
   "rnpm": {
     "assets": [
@@ -39,7 +39,7 @@
     "deployIOS:next": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.12\" -d NextRelease",
     "deployIOS:next2": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.12\" -d NextRelease2",
     "deployIOS:next3": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.12\" -d NextRelease3",
-    "deployAndroid:staging": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"4.9.0\" -d Staging",
+    "deployAndroid:staging": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"5.0.0\" -d Staging",
     "deployAndroid:prod": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"5.0.0\" -d Production -x",
     "deployAndroid:next": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"5.0.0\" -d NextRelease",
     "deployAndroid:next2": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"4.9.0\" -d NextRelease2",
@@ -86,7 +86,7 @@
     "formik": "^1.5.3",
     "https-browserify": "0.0.1",
     "immutability-helper": "^3.0.1",
-    "incognito-chain-web-js": "https://github.com/incognitochain/incognito-chain-web-js#4.2.18.40",
+    "incognito-chain-web-js": "https://github.com/incognitochain/incognito-chain-web-js#4.2.19.2",
     "intl": "^1.2.5",
     "jetifier": "^1.6.5",
     "json-2-csv": "^3.10.2",
@@ -153,7 +153,7 @@
     "react-native-select-dropdown": "^1.4.0",
     "react-native-sensors": "5.3.0",
     "react-native-settings": "^0.2.3",
-    "react-native-share": "^5.1.4",
+    "react-native-share": "^7.1.1",
     "react-native-size-matters": "^0.2.1",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-splash-screen": "^3.2.0",

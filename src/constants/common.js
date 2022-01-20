@@ -115,6 +115,7 @@ const NETWORK_NAME = {
   TOMO: 'TomoChain',
   BSC: 'Binance Smart Chain',
   PRV: 'Privacy',
+  POLYGON: 'Polygon'
 };
 
 export const PRV = {
@@ -134,6 +135,7 @@ const FACTORIES_EVM_NETWORK = [
   NETWORK_NAME.TOMO,
   NETWORK_NAME.BSC,
   NETWORK_NAME.PRV,
+  NETWORK_NAME.POLYGON,
 ];
 
 const PRIVATE_TOKEN_CURRENCY_TYPE = {
@@ -145,7 +147,6 @@ const PRIVATE_TOKEN_CURRENCY_TYPE = {
   USD: 6,
   BSC_BNB: 7,
   BSC_BEP20: 8,
-
   TOMO: 9,
   ZIL: 10,
   XMR: 11,
@@ -155,11 +156,14 @@ const PRIVATE_TOKEN_CURRENCY_TYPE = {
   DOGE: 15,
   ZEC: 16,
   DOT: 17,
+  MATIC: 19,
+  POLYGON_ERC20: 20
 };
 
 const PRIVATE_TOKEN_CURRENCY_NAME = {
   [PRIVATE_TOKEN_CURRENCY_TYPE.ERC20]: 'ERC20 Ethereum',
   [PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20]: 'BEP20 Smart Chain',
+  [PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20]: 'ERC20 Polygon',
 };
 
 const RESPONSE_PRV_TYPES = [271, 273];
@@ -247,7 +251,7 @@ export default {
       COMPLETE: [3, 5],
       TIMED_OUT: [14, 16],
       EXPIRED: [16],
-      INVALID_AMOUNT: [17]
+      INVALID_AMOUNT: [17],
     },
     //unshield decentralized
     STATUS_CODE_UNSHIELD_DECENTRALIZED: {

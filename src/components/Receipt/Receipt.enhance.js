@@ -25,6 +25,7 @@ const enhance = (WrappedComp) => (props) => {
     keySaveAddressBook,
     txId,
     title,
+    onGoBack
   } = params || props;
   const { receivers } = useSelector(receiversSelector)[keySaveAddressBook];
   const time = formatUtil.formatDateTime(lockTime * 1000);
@@ -61,7 +62,7 @@ const enhance = (WrappedComp) => (props) => {
     },
   ];
 
-  const onBack = async () => navigation.navigate(routeNames.WalletDetail);
+  const onBack = async () => typeof onGoBack === 'function' ? onGoBack() : navigation.navigate(routeNames.WalletDetail);
 
   const onSaveReceivers = async () => {
     try {

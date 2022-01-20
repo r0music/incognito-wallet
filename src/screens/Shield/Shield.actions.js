@@ -5,6 +5,7 @@ import {
   genERC20DepositAddress,
   genCentralizedDepositAddress,
   genBSCDepositAddress,
+  genPolygonDepositAddress,
 } from '@src/services/api/deposit';
 import { ANALYTICS, CONSTANT_COMMONS } from '@src/constants';
 import config from '@src/constants/config';
@@ -64,7 +65,8 @@ export const actionGetAddressToShield = async ({
       return null;
     }
     if (
-      selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH
+      selectedPrivacy?.currencyType ===
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH
     ) {
       generateResult = await genETHDepositAddress({
         paymentAddress: account.PaymentAddress,
@@ -73,13 +75,19 @@ export const actionGetAddressToShield = async ({
         currencyType: selectedPrivacy?.currencyType,
         signPublicKeyEncode,
       });
-    } else if (selectedPrivacy?.isErc20Token || selectedPrivacy?.tokenId === PRV_ID) {
+    } else if (
+      selectedPrivacy?.isErc20Token ||
+      selectedPrivacy?.tokenId === PRV_ID
+    ) {
       let currencyType_ = selectedPrivacy?.currencyType;
       let tokenContractID_ = selectedPrivacy?.contractId;
       if (selectedPrivacy?.tokenId === PRV_ID) {
-        console.log({selectedPrivacy});
         if (selectedPrivacy?.listChildToken) {
-          const tokenChild = selectedPrivacy?.listChildToken.find(x => x.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20);
+          const tokenChild = selectedPrivacy?.listChildToken.find(
+            (x) =>
+              x.currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20,
+          );
           currencyType_ = tokenChild?.currencyType;
           tokenContractID_ = tokenChild?.contractId;
         }
@@ -106,6 +114,19 @@ export const actionGetAddressToShield = async ({
         currencyType: selectedPrivacy?.currencyType,
         signPublicKeyEncode,
       });
+    } else if (
+      selectedPrivacy?.isPolygonErc20Token ||
+      selectedPrivacy?.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC
+    ) {
+      generateResult = await genPolygonDepositAddress({
+        paymentAddress: account.PaymentAddress,
+        walletAddress: account.PaymentAddress,
+        tokenId: selectedPrivacy?.tokenId,
+        tokenContractID: selectedPrivacy?.contractId,
+        currencyType: selectedPrivacy?.currencyType,
+        signPublicKeyEncode,
+      });
     } else {
       generateResult = await genCentralizedDepositAddress({
         paymentAddress: account.PaymentAddress,
@@ -115,13 +136,8 @@ export const actionGetAddressToShield = async ({
         signPublicKeyEncode,
       });
     }
-    const {
-      address,
-      expiredAt,
-      decentralized,
-      estimateFee,
-      tokenFee,
-    } = generateResult;
+    const { address, expiredAt, decentralized, estimateFee, tokenFee } =
+      generateResult;
     if (!address) {
       throw 'Can not gen new deposit address';
     }
@@ -131,99 +147,100 @@ export const actionGetAddressToShield = async ({
   }
 };
 
-export const actionGetPRVBep20FeeToShield = (account, signPublicKeyEncode, selectedPrivacy) => async (
-  dispatch,
-  getState,
-) => {
-  let generateResult = await genBSCDepositAddress({
-    paymentAddress: account.PaymentAddress,
-    walletAddress: account.PaymentAddress,
-    tokenId: selectedPrivacy?.tokenId,
-    tokenContractID: selectedPrivacy?.contractId,
-    currencyType: selectedPrivacy?.currencyType,
-    signPublicKeyEncode,
-  });
-  let {
-    tokenFee,
-    estimateFee,
-  } = generateResult;
-  await dispatch(
-    actionBSCFetch({
-      tokenFee,
-      estimateFee,
-    }),
-  );
-};
-
-export const actionFetch = ({ tokenId, selectedPrivacy, account }) => async (
-  dispatch,
-  getState,
-) => {
-  try {
-    const state = getState();
-    const { isFetching } = shieldSelector(state);
-    const signPublicKeyEncode = signPublicKeyEncodeSelector(state);
-    if (!selectedPrivacy || isFetching) {
-      return;
-    }
-    dispatch(actionFetching());
-    const [dataMinMax, addressShield] = await Promise.all([
-      actionGetMinMaxShield({ tokenId }),
-      actionGetAddressToShield({
-        selectedPrivacy,
-        account,
+export const actionGetPRVBep20FeeToShield =
+  (account, signPublicKeyEncode, selectedPrivacy) =>
+    async (dispatch, getState) => {
+      let generateResult = await genBSCDepositAddress({
+        paymentAddress: account.PaymentAddress,
+        walletAddress: account.PaymentAddress,
+        tokenId: selectedPrivacy?.tokenId,
+        tokenContractID: selectedPrivacy?.contractId,
+        currencyType: selectedPrivacy?.currencyType,
         signPublicKeyEncode,
-      }),
-    ]);
+      });
+      let { tokenFee, estimateFee } = generateResult;
+      await dispatch(
+        actionBSCFetch({
+          tokenFee,
+          estimateFee,
+        }),
+      );
+    };
 
-    let {
-      address,
-      expiredAt,
-      decentralized,
-      tokenFee,
-      estimateFee,
-    } = addressShield;
+export const actionFetch =
+  ({ tokenId, selectedPrivacy, account }) =>
+    async (dispatch, getState) => {
+      try {
+        const state = getState();
+        const { isFetching } = shieldSelector(state);
+        const signPublicKeyEncode = signPublicKeyEncodeSelector(state);
+        if (!selectedPrivacy || isFetching) {
+          return;
+        }
+        dispatch(actionFetching());
+        const [dataMinMax, addressShield] = await Promise.all([
+          actionGetMinMaxShield({ tokenId }),
+          actionGetAddressToShield({
+            selectedPrivacy,
+            account,
+            signPublicKeyEncode,
+          }),
+        ]);
 
-    const [min, max] = dataMinMax;
-    if (expiredAt) {
-      expiredAt = formatUtil.formatDateTime(expiredAt);
-    }
+        let { address, expiredAt, decentralized, tokenFee, estimateFee } =
+        addressShield;
 
-    await dispatch(
-      actionBSCFetch({
-        tokenFee : 0,
-        estimateFee : 0,
-      }),
-    );
+        const [min, max] = dataMinMax;
+        if (expiredAt) {
+          expiredAt = formatUtil.formatDateTime(expiredAt);
+        }
 
-    await dispatch(
-      actionFetched({
-        min,
-        max,
-        address,
-        expiredAt,
-        decentralized,
-        tokenFee,
-        estimateFee,
-        isPortal: false,
-      }),
-    );
-  } catch (error) {
-    await dispatch(actionFetchFail());
-    throw error;
-  }
-};
+        await dispatch(
+          actionBSCFetch({
+            tokenFee: 0,
+            estimateFee: 0,
+          }),
+        );
 
-export const actionGeneratePortalShieldAddress = async ({ accountWallet, tokenID, incAddress }) => {
+        await dispatch(
+          actionFetched({
+            min,
+            max,
+            address,
+            expiredAt,
+            decentralized,
+            tokenFee,
+            estimateFee,
+            isPortal: false,
+          }),
+        );
+      } catch (error) {
+        await dispatch(actionFetchFail());
+        throw error;
+      }
+    };
+
+export const actionGeneratePortalShieldAddress = async ({
+  accountWallet,
+  tokenID,
+  incAddress,
+}) => {
   try {
     const chainName = config.isMainnet ? 'mainnet' : 'testnet';
-    return accountWallet.handleGenerateShieldingAddress({ tokenID, incAddress, chainName });
+    return accountWallet.handleGenerateShieldingAddress({
+      tokenID,
+      incAddress,
+      chainName,
+    });
   } catch (e) {
     throw new Error(`Can not generate portal shield address ${e}`);
   }
 };
 
-export const actionGetPortalMinShieldAmt = async ({ accountWallet, tokenID }) => {
+export const actionGetPortalMinShieldAmt = async ({
+  accountWallet,
+  tokenID,
+}) => {
   try {
     return accountWallet.handleGetPortalMinShieldAmount({ tokenID });
   } catch (e) {
@@ -231,14 +248,25 @@ export const actionGetPortalMinShieldAmt = async ({ accountWallet, tokenID }) =>
   }
 };
 
-export const actionAddPortalShieldAddress = async ({ accountWallet, incAddress, shieldingAddress }) => {
+export const actionAddPortalShieldAddress = async ({
+  accountWallet,
+  incAddress,
+  shieldingAddress,
+}) => {
   try {
-    let isExisted = await accountWallet.handleCheckPortalShieldingAddresssExisted({ incAddress, shieldingAddress });
-    if ( isExisted ){
+    let isExisted =
+      await accountWallet.handleCheckPortalShieldingAddresssExisted({
+        incAddress,
+        shieldingAddress,
+      });
+    if (isExisted) {
       return;
     }
-    let isAdded = await accountWallet.handleAddPortalShieldingAddresss({ incAddress, shieldingAddress });
-    if ( !isAdded ){
+    let isAdded = await accountWallet.handleAddPortalShieldingAddresss({
+      incAddress,
+      shieldingAddress,
+    });
+    if (!isAdded) {
       throw new Error('Can not add portal shielding address api');
     }
   } catch (e) {
@@ -246,47 +274,54 @@ export const actionAddPortalShieldAddress = async ({ accountWallet, incAddress, 
   }
 };
 
-export const actionPortalFetch = ({ tokenID, selectedPrivacy, account, accountWallet }) => async (
-  dispatch,
-  getState,
-) => {
-  try {
-    const state = getState();
-    const { isFetching } = shieldSelector(state);
-    if (!selectedPrivacy || isFetching) {
-      return;
-    }
-    dispatch(actionFetching());
+export const actionPortalFetch =
+  ({ tokenID, selectedPrivacy, account, accountWallet }) =>
+    async (dispatch, getState) => {
+      try {
+        const state = getState();
+        const { isFetching } = shieldSelector(state);
+        if (!selectedPrivacy || isFetching) {
+          return;
+        }
+        dispatch(actionFetching());
 
-    const [minShieldAmt, shieldingAddress] = await Promise.all([
-      actionGetPortalMinShieldAmt({ accountWallet, tokenID }),
-      actionGeneratePortalShieldAddress({ accountWallet, tokenID, incAddress: account.paymentAddress })
-    ]);
+        const [minShieldAmt, shieldingAddress] = await Promise.all([
+          actionGetPortalMinShieldAmt({ accountWallet, tokenID }),
+          actionGeneratePortalShieldAddress({
+            accountWallet,
+            tokenID,
+            incAddress: account.paymentAddress,
+          }),
+        ]);
 
-    await actionAddPortalShieldAddress({ accountWallet, incAddress: account.paymentAddress, shieldingAddress });
+        await actionAddPortalShieldAddress({
+          accountWallet,
+          incAddress: account.paymentAddress,
+          shieldingAddress,
+        });
 
-    await dispatch(
-      actionFetched({
-        min: formatUtil.amountFull(minShieldAmt, selectedPrivacy.pDecimals),
-        max: null,
-        address: shieldingAddress,
-        expiredAt: '',
-        decentralized: null,
-        tokenFee: 0,
-        estimateFee: 0,
-        isPortal: true,
-      }),
-    );
-    dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.SHIELD));
-  } catch (error) {
-    let isCompatible = true;
-    if (error.message?.includes('Shielding address is not compatible'))  {
-      isCompatible = false;
-    }
-    await dispatch(actionFetchFail(isCompatible));
-    throw error;
-  }
-};
+        await dispatch(
+          actionFetched({
+            min: formatUtil.amountFull(minShieldAmt, selectedPrivacy.pDecimals),
+            max: null,
+            address: shieldingAddress,
+            expiredAt: '',
+            decentralized: null,
+            tokenFee: 0,
+            estimateFee: 0,
+            isPortal: true,
+          }),
+        );
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.SHIELD));
+      } catch (error) {
+        let isCompatible = true;
+        if (error.message?.includes('Shielding address is not compatible')) {
+          isCompatible = false;
+        }
+        await dispatch(actionFetchFail(isCompatible));
+        throw error;
+      }
+    };
 
 export const actionToggleGuide = () => ({
   type: ACTION_TOGGLE_GUIDE,

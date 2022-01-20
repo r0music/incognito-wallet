@@ -93,6 +93,7 @@ const Home = () => {
       rootTabID={ROOT_TAB_HOME}
       useTab1
       defaultTabHeader
+      styledTabs={{ marginTop: 12 }}
       rightCustom={(<SelectAccountButton />)}
     >
       {_TabPools}

@@ -16,7 +16,7 @@ export const useError = (errorMessage) => {
   });
   return React.useMemo(() => {
     errorMessage = errorMessage || '';
-    if (errorMessage.includes('Faucet') || errorMessage.includes(MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE)) {
+    if (typeof errorMessage === 'string' && (errorMessage.includes('Faucet') || errorMessage.includes(MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE))) {
       return (
         <Text style={styles.error}>
           Not enough coin to spend, please get some PRV at <Text style={[styles.error, {textDecorationLine: 'underline' }]} onPress={navigateFaucet}>Faucet</Text> tab in home screen.

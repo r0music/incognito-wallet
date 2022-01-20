@@ -30,7 +30,7 @@ export const enhancePortalValidation = (WrappedComp) => (props) => {
           maxUnshieldAmount > 0
             ? `Max amount you can withdraw is ${maxUnshieldAmount} ${selectedPrivacy?.externalSymbol ||
                   selectedPrivacy?.symbol}`
-            : 'Your balance is insufficient.',
+            : 'Insufficient balance.',
         })
       } : {},
       ...Number.isFinite(minUnshieldAmount) ? {
@@ -41,7 +41,7 @@ export const enhancePortalValidation = (WrappedComp) => (props) => {
       } : {},
       ...Number.isFinite(balancePRV) ? {
         balancePRVValidator: validator.maxValue(balancePRV, {
-          message: 'Your balance is insufficient.',
+          message: 'Insufficient balance.',
         }),
       } : {}
     });

@@ -45,7 +45,7 @@ const TabNavigator = createBottomTabNavigator(
             <View style={{ height: 26 }}>
               <MarketIcon active={focused} />
             </View>
-            <Text style={[styled.label, { color: tintColor }]}>{focused ? 'Markets' : ''}</Text>
+            <Text style={[styled.label, { color: tintColor }]}>Markets</Text>
           </View>
         ),
       },
@@ -58,7 +58,7 @@ const TabNavigator = createBottomTabNavigator(
             <View style={{ height: 26 }}>
               <LiquidityIcon active={focused} />
             </View>
-            <Text style={[styled.label, { color: tintColor }]}>{focused ? 'Earn' : ''}</Text>
+            <Text style={[styled.label, { color: tintColor }]}>Earn</Text>
           </View>
         ),
       },
@@ -71,7 +71,7 @@ const TabNavigator = createBottomTabNavigator(
             <View style={{ height: 26 }}>
               <TradeIcon active={focused} />
             </View>
-            <Text style={[styled.label, { color: tintColor }]}>{focused ? 'Trade' : ''}</Text>
+            <Text style={[styled.label, { color: tintColor }]}>Trade</Text>
           </View>
         ),
       },
@@ -84,7 +84,7 @@ const TabNavigator = createBottomTabNavigator(
             <View style={{ height: 26 }}>
               <AssetsIcon active={focused} />
             </View>
-            <Text style={[styled.label, { color: tintColor }]}>{focused ? 'Wallet' : ''}</Text>
+            <Text style={[styled.label, { color: tintColor }]}>Wallet</Text>
           </View>
         ),
       },
@@ -97,7 +97,7 @@ const TabNavigator = createBottomTabNavigator(
             <View style={{ height: 26 }}>
               <PrivacyAppsIcon active={focused} />
             </View>
-            <Text style={[styled.label, { color: tintColor }]}>{focused ? 'Apps' : ''}</Text>
+            <Text style={[styled.label, { color: tintColor }]}>Apps</Text>
           </View>
         ),
       },
@@ -110,7 +110,7 @@ const TabNavigator = createBottomTabNavigator(
             <View style={{ height: 26 }}>
               <MoreIcon active={focused} />
             </View>
-            <Text style={[styled.label, { color: tintColor }]}>{focused ? 'More' : ''}</Text>
+            <Text style={[styled.label, { color: tintColor }]}>More</Text>
           </View>
         ),
       },

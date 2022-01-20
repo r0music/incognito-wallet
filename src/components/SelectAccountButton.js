@@ -12,20 +12,23 @@ import accountService from '@services/wallet/accountService';
 import styled from 'styled-components/native';
 import { colorsSelector } from '@src/theme';
 import { FONT } from '@src/styles';
+import { isIOS } from '@utils/platform';
 import { TouchableOpacity, Text } from './core';
 
 const styles = StyleSheet.create({
   btnStyle: {
-    width: 70,
+    width: 78,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
     height: 40,
-    paddingHorizontal: 14,
+    paddingHorizontal: 8,
     paddingVertical: 8,
   },
   accountName: {
-    ...FONT.TEXT.incognitoP1,
+    ...FONT.TEXT.incognitoP2,
+    fontFamily: FONT.NAME.medium,
+    lineHeight: isIOS() ? 20 : 24,
   },
 });
 

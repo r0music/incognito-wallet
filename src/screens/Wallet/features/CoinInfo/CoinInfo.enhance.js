@@ -21,6 +21,9 @@ export const getNetworkName = (selectedPrivacy) => {
   if (selectedPrivacy?.isBep20Token) {
     return 'BSC network (BEP20)';
   }
+  if(selectedPrivacy?.isPolygonErc20Token) {
+    return 'Polygon network (ERC20)';
+  }
   if (
     selectedPrivacy?.currencyType ===
     CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB

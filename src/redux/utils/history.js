@@ -56,7 +56,8 @@ export const getStatusColorShield = (history) => {
     }
     case 1:
     case 2:
-    case 3: {
+    case 3:
+    case 4: {
       // decetralized
       if (STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE === status || STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE.includes(status)) {
         statusColor = COLORS.green;
@@ -95,9 +96,10 @@ export const getStatusColorUnshield = (history) => {
     }
     case 1:
     case 2:
-    case 3: {
+    case 3:
+    case 4: {
       // decetralized
-      if (STATUS_CODE_UNSHIELD_DECENTRALIZED.COMPLETE === status) {
+      if (STATUS_CODE_UNSHIELD_DECENTRALIZED.COMPLETE.includes(status)) {
         statusColor = COLORS.green;
       } else {
         statusColor = COLORS.lightGrey36;
