@@ -17,7 +17,7 @@ import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import { ExHandler } from '@services/exception';
 
 
-const useSendSelf = ({ error, setLoading, tokenID1, tokenID2, setError }) => {
+const useSendSelf = ({ error, setLoading, setError }) => {
   const wallet = useSelector(walletSelector);
   const account = useSelector(defaultAccountSelector);
   const navigation = useNavigation();
@@ -71,8 +71,7 @@ const useSendSelf = ({ error, setLoading, tokenID1, tokenID2, setError }) => {
     let _errorMessage = error || '';
     if (
       typeof _errorMessage === 'string'
-      && (tokenID1 === PRVIDSTR || tokenID2 === PRVIDSTR)
-      && (_errorMessage.includes('-3001') || _errorMessage.includes(MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE))
+      && (_errorMessage.includes('-3001') || _errorMessage.includes('Faucet') || _errorMessage.includes(MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE))
     ) {
       return (
         <Text style={styled.warning} onPress={handleSendMainCrypto}>
@@ -82,7 +81,7 @@ const useSendSelf = ({ error, setLoading, tokenID1, tokenID2, setError }) => {
       );
     }
     return _errorMessage;
-  }, [error, tokenID1, tokenID2]);
+  }, [error]);
 };
 
 export default useSendSelf;

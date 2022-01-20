@@ -233,11 +233,8 @@ const CreatePool = ({
   setError,
   error,
 }) => {
-  const inputAmount = useSelector(createPoolSelector.inputAmountSelector);
-  const inputToken = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
-  const outputToken = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
   const isFetching = useSelector(createPoolSelector.isFetchingSelector);
-  const _error = useSendSelf({ error, setLoading, tokenID1: inputToken.tokenId, tokenID2: outputToken.tokenId, setError });
+  const _error = useSendSelf({ error, setLoading, setError });
   const onSubmit = (params) => {
     typeof onCreateNewPool === 'function' && onCreateNewPool(params);
   };

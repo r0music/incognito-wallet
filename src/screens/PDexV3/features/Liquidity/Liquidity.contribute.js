@@ -194,16 +194,7 @@ const Contribute = ({
 }) => {
   const isFetching = useSelector(contributeSelector.statusSelector);
   const { feeAmountStr, showFaucet } = useSelector(contributeSelector.feeAmountSelector);
-  const amountSelector = useSelector(contributeSelector.inputAmountSelector);
-  const inputAmount = amountSelector(
-    formConfigsContribute.formName,
-    formConfigsContribute.inputToken,
-  );
-  const outputAmount = amountSelector(
-    formConfigsContribute.formName,
-    formConfigsContribute.outputToken,
-  );
-  const _error = useSendSelf({ error, setLoading, tokenID1: inputAmount.tokenId, tokenID2: outputAmount.tokenId, setError });
+  const _error = useSendSelf({ error, setLoading, setError });
   const onSubmit = (params) => {
     typeof onCreateContributes === 'function' && onCreateContributes(params);
   };
