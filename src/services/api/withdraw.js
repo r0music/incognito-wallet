@@ -37,6 +37,7 @@ export const withdraw = (data) => {
   const {
     isErc20Token,
     isBep20Token,
+    isPolygonErc20Token,
     paymentAddress,
     tokenId,
     burningTxId,
@@ -77,14 +78,34 @@ export const withdraw = (data) => {
   if (signPublicKeyEncode) {
     payload.SignPublicKeyEncode = signPublicKeyEncode;
   }
-  if (currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB || isBep20Token) {
+  if (
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB ||
+    isBep20Token
+  ) {
     return http.post('bsc/add-tx-withdraw', payload);
   }
+
+  // Polygon Token
+  if (
+    isPolygonErc20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20
+  ) {
+    return http.post('plg/add-tx-withdraw', payload);
+  }
+
   return http.post('eta/add-tx-withdraw', payload);
 };
 
 export const updatePTokenFee = (data) => {
-  const { fee, paymentAddress, isUsedPRVFee, fast2x, txId, signPublicKeyEncode } = data;
+  const {
+    fee,
+    paymentAddress,
+    isUsedPRVFee,
+    fast2x,
+    txId,
+    signPublicKeyEncode,
+  } = data;
   if (!isUsedPRVFee) {
     if (!fee) throw new Error('Missing fee');
     const parseFee = convert.toNumber(fee);
@@ -125,9 +146,15 @@ export const estimateUserFees = (data) => {
     currencyType,
     isErc20Token,
     isBep20Token,
+    isPolygonErc20Token,
     signPublicKeyEncode,
   } = data;
-  if ((isBep20Token || isErc20Token) && !tokenContractID) {
+  if (
+    (isBep20Token ||
+      isErc20Token ||
+      currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON) &&
+    !tokenContractID
+  ) {
     throw new Error('Missing tokenContractID');
   }
   if (!paymentAddress) throw new Error('Missing payment address');
@@ -153,8 +180,21 @@ export const estimateUserFees = (data) => {
   if (signPublicKeyEncode) {
     payload.SignPublicKeyEncode = signPublicKeyEncode;
   }
-  if (isBep20Token || currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB) {
+  if (
+    isBep20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB
+  ) {
     return http.post('bsc/estimate-fees', payload);
   }
+
+  // Polygon Token
+  if (
+    isPolygonErc20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20
+  ) {
+    return http.post('plg/estimate-fees', payload);
+  }
+
   return http.post('eta/estimate-fees', payload);
 };

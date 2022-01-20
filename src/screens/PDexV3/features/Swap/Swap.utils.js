@@ -1,3 +1,4 @@
+import React from 'react';
 import { PANCAKE_CONSTANTS } from 'incognito-chain-web-js/build/wallet';
 import maxBy from 'lodash/maxBy';
 import minBy from 'lodash/minBy';
@@ -16,7 +17,10 @@ import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
 import { formValueSelector } from 'redux-form';
 import floor from 'lodash/floor';
+import { Text } from 'react-native';
+import routeNames from '@routers/routeNames';
 import { formConfigs } from './Swap.constant';
+
 
 export const minFeeValidator = (feetokenData, isFetching) => {
   if (!feetokenData || isFetching) {
@@ -104,7 +108,7 @@ export const availablePayFeeByPRVValidator = ({
   return undefined;
 };
 
-export const maxAmountValidatorForSellInput = (sellInputAmount) => {
+export const maxAmountValidatorForSellInput = (sellInputAmount, navigation) => {
   try {
     if (!sellInputAmount) {
       return undefined;
@@ -114,14 +118,33 @@ export const maxAmountValidatorForSellInput = (sellInputAmount) => {
       availableOriginalAmount,
       symbol,
       availableAmountText,
+      tokenData
     } = sellInputAmount || {};
+    const onMessagePress = () => {
+      navigation.navigate(routeNames.ShieldGenQRCode, {
+        tokenShield: tokenData,
+        disableBackToShield: true
+      });
+    };
+    if (navigation && !availableOriginalAmount) {
+      return (
+        <Text onPress={onMessagePress}>
+          Insufficient balance. <Text style={{ textDecorationLine: 'underline' }}>Add funds</Text>.
+        </Text>
+      );
+    }
     if (!availableOriginalAmount) {
-      return 'Your balance is insufficient';
+      return 'Insufficient balance.';
     }
     if (
       new BigNumber(originalAmount).gt(new BigNumber(availableOriginalAmount))
     ) {
-      return `Max amount you can convert is ${availableAmountText} ${symbol}`;
+      return (
+        <Text onPress={onMessagePress}>
+          {`Max amount you can convert is ${availableAmountText} ${symbol}.`}&nbsp;
+          <Text style={{ textDecorationLine: 'underline' }}>Add funds</Text>.
+        </Text>
+      );
     }
   } catch (error) {
     console.log('maxAmountValidatorForSellInput-error', error);

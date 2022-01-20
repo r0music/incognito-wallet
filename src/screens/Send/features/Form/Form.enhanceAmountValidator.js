@@ -30,7 +30,7 @@ export const enhanceAmountValidation = (WrappedComp) => (props) => {
             _maxAmount > 0
               ? `Max amount you can withdraw is ${maxAmountText} ${selectedPrivacy?.externalSymbol ||
                   selectedPrivacy?.symbol}`
-              : 'Your balance is insufficient.',
+              : 'Insufficient balance.',
         }),
       };
       await setState(currentState);

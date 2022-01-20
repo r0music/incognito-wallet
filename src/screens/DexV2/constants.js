@@ -31,7 +31,7 @@ export const BIG_COINS = {
 };
 
 export const MESSAGES = {
-  BALANCE_INSUFFICIENT: 'Your balance is insufficient.',
+  BALANCE_INSUFFICIENT: 'Insufficient balance.',
   NEGATIVE_NUMBER: 'Please enter an amount greater than 0.',
   NOT_NEGATIVE_NUMBER: 'Please enter a number greater than or equal to 0.',
   GREATER_OR_EQUAL: (number, pDecimals) => `Please enter a number greater than or equal to ${formatUtil.amountFull(number, pDecimals)}.`,

@@ -81,7 +81,7 @@ const EstimateFeeInput = (props) => {
           message:
             _maxFee > _fee
               ? `Must be less than ${maxFee} ${feeUnit}`
-              : 'Your balance is insufficient.',
+              : 'Insufficient balance.',
         });
         minFeeValidator = validator.minValue(_minFee, {
           message: `Must be at least ${minFee} ${feeUnit}`,

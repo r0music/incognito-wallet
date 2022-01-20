@@ -70,12 +70,13 @@ const SwapInputsGroup = React.memo(() => {
   const onEndEditing = (field) => dispatch(actionEstimateTrade({ field }));
   const onSwapButtons = () => dispatch(actionSwapToken());
   let _maxAmountValidatorForSellInput = React.useCallback(
-    () => maxAmountValidatorForSellInput(sellInputAmount),
+    () => maxAmountValidatorForSellInput(sellInputAmount, navigation),
     [
       sellInputAmount?.originalAmount,
       sellInputAmount?.availableOriginalAmount,
       sellInputAmount?.availableAmountText,
       sellInputAmount?.symbol,
+      navigation,
     ],
   );
   const onPressInfinityIcon = () => {

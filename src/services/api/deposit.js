@@ -9,7 +9,13 @@ const formatResponse = (res) => ({
   tokenFee: res?.TokenFee,
 });
 
-export const genCentralizedDepositAddress = ({ paymentAddress, walletAddress, tokenId, currencyType, signPublicKeyEncode }) => {
+export const genCentralizedDepositAddress = ({
+  paymentAddress,
+  walletAddress,
+  tokenId,
+  currencyType,
+  signPublicKeyEncode,
+}) => {
   if (!paymentAddress) return throw new Error('Missing paymentAddress');
   if (!walletAddress) return throw new Error('Missing walletAddress');
   if (!tokenId) return throw new Error('Missing tokenId');
@@ -27,18 +33,23 @@ export const genCentralizedDepositAddress = ({ paymentAddress, walletAddress, to
     PaymentAddress: paymentAddress,
     WalletAddress: walletAddress ?? paymentAddress,
     PrivacyTokenAddress: tokenId,
-    NewShieldDecentralized: 1
+    NewShieldDecentralized: 1,
   };
 
   if (signPublicKeyEncode) {
     body.SignPublicKeyEncode = signPublicKeyEncode;
   }
 
-  return http.post('ota/generate', body)
-    .then(formatResponse);
+  return http.post('ota/generate', body).then(formatResponse);
 };
 
-export const genETHDepositAddress = ({ paymentAddress, walletAddress, tokenId, currencyType, signPublicKeyEncode }) => {
+export const genETHDepositAddress = ({
+  paymentAddress,
+  walletAddress,
+  tokenId,
+  currencyType,
+  signPublicKeyEncode,
+}) => {
   if (!paymentAddress) return throw new Error('Missing paymentAddress');
   if (!walletAddress) return throw new Error('Missing walletAddress');
   if (!tokenId) return throw new Error('Missing tokenId');
@@ -62,11 +73,17 @@ export const genETHDepositAddress = ({ paymentAddress, walletAddress, tokenId, c
   if (signPublicKeyEncode) {
     body.SignPublicKeyEncode = signPublicKeyEncode;
   }
-  return http.post('eta/generate', body)
-    .then(formatResponse);
+  return http.post('eta/generate', body).then(formatResponse);
 };
 
-export const genERC20DepositAddress = ({ paymentAddress, walletAddress, tokenId, tokenContractID, currencyType, signPublicKeyEncode }) => {
+export const genERC20DepositAddress = ({
+  paymentAddress,
+  walletAddress,
+  tokenId,
+  tokenContractID,
+  currencyType,
+  signPublicKeyEncode,
+}) => {
   if (!paymentAddress) return throw new Error('Missing paymentAddress');
   if (!walletAddress) return throw new Error('Missing walletAddress');
   if (!tokenId) return throw new Error('Missing tokenId');
@@ -93,11 +110,16 @@ export const genERC20DepositAddress = ({ paymentAddress, walletAddress, tokenId,
     body.SignPublicKeyEncode = signPublicKeyEncode;
   }
 
-  return http.post('eta/generate', body)
-    .then(formatResponse);
+  return http.post('eta/generate', body).then(formatResponse);
 };
 
-export const genBSCDepositAddress = ({ paymentAddress, walletAddress, tokenId, currencyType, signPublicKeyEncode }) => {
+export const genBSCDepositAddress = ({
+  paymentAddress,
+  walletAddress,
+  tokenId,
+  currencyType,
+  signPublicKeyEncode,
+}) => {
   if (!paymentAddress) return throw new Error('Missing paymentAddress');
   if (!walletAddress) return throw new Error('Missing walletAddress');
   if (!tokenId) return throw new Error('Missing tokenId');
@@ -110,6 +132,27 @@ export const genBSCDepositAddress = ({ paymentAddress, walletAddress, tokenId, c
   if (signPublicKeyEncode) {
     body.SignPublicKeyEncode = signPublicKeyEncode;
   }
-  return http.post('bsc/generate', body)
-    .then(formatResponse);
+  return http.post('bsc/generate', body).then(formatResponse);
+};
+
+export const genPolygonDepositAddress = ({
+  paymentAddress,
+  walletAddress,
+  tokenId,
+  currencyType,
+  signPublicKeyEncode,
+}) => {
+  if (!paymentAddress) return throw new Error('Missing paymentAddress');
+  if (!walletAddress) return throw new Error('Missing walletAddress');
+  if (!tokenId) return throw new Error('Missing tokenId');
+
+  let body = {
+    AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
+    WalletAddress: walletAddress ?? paymentAddress,
+    PrivacyTokenAddress: tokenId,
+  };
+  if (signPublicKeyEncode) {
+    body.SignPublicKeyEncode = signPublicKeyEncode;
+  }
+  return http.post('plg/generate', body).then(formatResponse);
 };

@@ -12785,9 +12785,9 @@ imurmurhash@^0.1.4:
   resolved "https://registry.yarnpkg.com/imurmurhash/-/imurmurhash-0.1.4.tgz#9218b9b2b928a238b13dc4fb6b6d576f231453ea"
   integrity sha1-khi5srkoojixPcT7a21XbyMUU+o=
 
-"incognito-chain-web-js@https://github.com/incognitochain/incognito-chain-web-js#4.2.18.40":
+"incognito-chain-web-js@https://github.com/incognitochain/incognito-chain-web-js#4.2.19.2":
   version "1.0.0"
-  resolved "https://github.com/incognitochain/incognito-chain-web-js#29f4d5c44f6ec3890686ed39ad59f4ef98cb0804"
+  resolved "https://github.com/incognitochain/incognito-chain-web-js#ff7575c1e6c445cf8c1f12d78f1e4da15edfc6ba"
   dependencies:
     "@babel/runtime" "^7.14.0"
     axios "^0.19.0"
@@ -19393,10 +19393,10 @@ react-native-settings@^0.2.3:
   resolved "https://registry.yarnpkg.com/react-native-settings/-/react-native-settings-0.2.3.tgz#82ad78988da32750a2b1121d447537cef7020eed"
   integrity sha512-8qOvtAaYif7eAFV2ToguHMaMd/EaaWbMUxJ/8i+dRlCfTjY2mAy6TwWcf3CF5mIN8OBXAui59hfgqDbWTb/loQ==
 
-react-native-share@^5.1.4:
-  version "5.1.4"
-  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-5.1.4.tgz#0b9d51f6ca724728cb0c5b3ed3a883ee54d7a11b"
-  integrity sha512-/eNBTuimOmzeeBbnZkwW6hbzSZvJnhfkx5cSdQkFS45KRHekD9twP6F8QHn+zJxeJGAP+EgpVCXoA7yCrgKrhQ==
+react-native-share@^7.1.1:
+  version "7.3.2"
+  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-7.3.2.tgz#3b61c42b28b034d1662f3aa7514846c609251502"
+  integrity sha512-1E2xxTzHYrV74WMuBz6VLx6Y9slBBNI9s0NxXDEYb0VsFT6DcHnbiaY4ExW5E6vw37s3gfZxm4zsv9/TwFEukA==
 
 react-native-size-matters@^0.2.1:
   version "0.2.1"
