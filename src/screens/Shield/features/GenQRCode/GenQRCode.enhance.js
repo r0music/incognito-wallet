@@ -5,7 +5,7 @@ import Header from '@components/Header';
 import { styled } from '@screens/Shield/features/GenQRCode/GenQRCode.styled';
 import { BtnInfo } from '@components/Button';
 import routeNames from '@routers/routeNames';
-import { useNavigation } from 'react-navigation-hooks';
+import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import TermOfUseShield from '@screens/Shield/features/TermOfUseShield';
 import { withLayout_2 } from '@components/Layout';
 import withShieldData from '@screens/Shield/features/GenQRCode/GenQRCode.data';
@@ -32,6 +32,7 @@ const enhance = (WrappedComp) => (props) => {
   const [showTerm, setShowTerm] = useState(true);
   const [selectedTerm, setSelectedTerm] = React.useState(undefined);
   const navigation = useNavigation();
+  const disableBackToShield = useNavigationParam('disableBackToShield');
 
   const handleToggleTooltip = () => {
     navigation.navigate(routeNames.CoinInfo, { decentralized });
@@ -39,6 +40,7 @@ const enhance = (WrappedComp) => (props) => {
   const hasError = !isFetched && !isFetching;
 
   const handleGoBack = () => {
+    if (disableBackToShield ) return navigation.goBack();
     navigation.navigate(routeNames.Shield);
   };
   const themeMode = useSelector(themeModeSelector);
@@ -84,7 +86,13 @@ const enhance = (WrappedComp) => (props) => {
   }
 
   /** render term off user */
-  if (isDecentralized && showTerm && selectedPrivacy?.tokenId !== PRV_ID) {
+  if (
+    isDecentralized &&
+    showTerm &&
+    selectedPrivacy?.tokenId !== PRV_ID &&
+    currencyType !== CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC &&
+    currencyType !== CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20
+  ) {
     return renderTermOfUse();
   }
 

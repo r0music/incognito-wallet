@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout';
 import { View } from '@components/core';
+import { BtnSecondary } from '@components/core/Button';
 import styled from './LiquidityHistories.styled';
 
 const ContributeDetail = ({ handleRefund, handleRetry }) => {
@@ -51,7 +52,7 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
     handleRetry(params);
   };
   const hookFactories = React.useMemo(() => {
-    const { pairId, poolId, statusStr, contributes, storageValue, timeStr, returnValue } = history;
+    const { pairId, poolId, statusStr, contributes, storageValue, timeStr, returnValue, statusColor } = history;
     const headHook = [
       {
         label: 'PoolId',
@@ -68,6 +69,7 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
       {
         label: 'Status',
         valueText: statusStr,
+        rightColor: statusColor,
       },
       {
         label: 'Time',
@@ -121,24 +123,24 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
               key={data?.label}
               {...data}
               labelStyle={styled.leftText}
-              valueTextStyle={styled.rightText}
+              valueTextStyle={[styled.rightText, !!data.rightColor && { color: data?.rightColor }]}
               style={{ marginTop: 8 }}
             />
           ))}
           {!!refundData && (
             <Row spaceBetween style={{ marginTop: 15 }}>
+              {!!retryData && (
+                <BtnSecondary
+                  title={retryData.title}
+                  wrapperStyle={{ flex: 1, marginRight: 20 }}
+                  onPress={onRetryTx}
+                />
+              )}
               <ButtonBasic
                 title={refundData.title}
                 btnStyle={{ flex: 1 }}
                 onPress={onRefundTx}
               />
-              {!!retryData && (
-                <ButtonBasic
-                  title={retryData.title}
-                  btnStyle={{ flex: 1, marginLeft: 20 }}
-                  onPress={onRetryTx}
-                />
-              )}
             </Row>
           )}
         </ScrollView>

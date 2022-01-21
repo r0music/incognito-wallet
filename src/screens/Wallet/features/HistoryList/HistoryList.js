@@ -13,9 +13,11 @@ import { generateTestId } from '@utils/misc';
 import { TOKEN } from '@src/constants/elements';
 import trim from 'lodash/trim';
 import { useNavigation } from 'react-navigation-hooks';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { actionSetSelectedTx } from '@src/redux/actions/history';
 import routeNames from '@src/router/routeNames';
+import { colorsSelector } from '@src/theme';
+import globalStyled from '@src/theme/theme.styled';
 import styleSheet from './History.styled';
 
 const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) =>
@@ -25,6 +27,7 @@ const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) =>
       return (
         <Swipeout
           autoClose
+          sensitivity={1000}
           style={{
             backgroundColor: 'transparent',
           }}
@@ -56,7 +59,8 @@ const NormalText = React.memo(({ style, text, testId, ...rest }) => (
 ));
 
 const HistoryItem = React.memo(({ history }) => {
-  const { amountStr, txTypeStr, timeStr, statusStr } = history;
+  const { amountStr, txTypeStr, timeStr, statusStr, statusColor } = history;
+  const colors = useSelector(colorsSelector);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   if (!history) {
@@ -67,7 +71,13 @@ const HistoryItem = React.memo(({ history }) => {
     navigation.navigate(routeNames.TxHistoryDetail);
   };
   return (
-    <TouchableOpacity onPress={onPress} style={styleSheet.itemContainer}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[
+        styleSheet.itemContainer,
+        globalStyled.defaultPaddingHorizontal,
+        { borderBottomColor: colors.border4, borderBottomWidth: 1 }]}
+    >
       <View style={[styleSheet.row]}>
         <NormalText
           text={txTypeStr}
@@ -87,7 +97,7 @@ const HistoryItem = React.memo(({ history }) => {
           testId={TOKEN.TRANSACTION_TIME}
         />
         <NormalText
-          style={[styleSheet.desc]}
+          style={[styleSheet.desc, !!statusColor && { color: statusColor }]}
           text={statusStr}
           testId={TOKEN.TRANSACTION_STATUS}
         />

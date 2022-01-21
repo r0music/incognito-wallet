@@ -11,6 +11,7 @@ const styled = StyleSheet.create({
 
 const SelectOptionInput = (props) => {
   const { options, actived, ...rest } = props;
+
   return (
     <View style={[styled.container]}>
       <SelectItem {...actived} itemStyled={{ marginBottom: 0 }} {...rest} />

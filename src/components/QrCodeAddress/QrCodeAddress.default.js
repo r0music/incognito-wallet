@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import LoadingContainer from '@src/components/LoadingContainer';
 import QrCodeGenerate from '@src/components/QrCodeGenerate';
 import { CopiableTextDefault as CopiableText } from '@src/components/CopiableText';
 import PropTypes from 'prop-types';
 import { FONT, COLORS } from '@src/styles';
+import { Text } from '@components/core';
 
 const styled = StyleSheet.create({
   container: {
@@ -34,7 +35,6 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.regular,
     lineHeight: FONT.SIZE.regular + 9,
     fontSize: FONT.SIZE.regular,
-    color: COLORS.colorGreyBold,
     textAlign: 'center',
   },
 });

@@ -10,21 +10,30 @@ import { listAllMasterKeyAccounts } from '@src/redux/selectors/masterKey';
 import { switchMasterKey } from '@src/redux/actions/masterKey';
 import accountService from '@services/wallet/accountService';
 import styled from 'styled-components/native';
-import { WalletIcon } from './Icons';
-import { TouchableOpacity } from './core';
+import { colorsSelector } from '@src/theme';
+import { FONT } from '@src/styles';
+import { isIOS } from '@utils/platform';
+import { TouchableOpacity, Text } from './core';
 
 const styles = StyleSheet.create({
   btnStyle: {
-    width: 40,
-    height: 40,
+    width: 78,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 20,
+    borderRadius: 8,
+    height: 40,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+  },
+  accountName: {
+    ...FONT.TEXT.incognitoP2,
+    fontFamily: FONT.NAME.medium,
+    lineHeight: isIOS() ? 20 : 24,
   },
 });
 
 const CustomTouchableOpacity = styled(TouchableOpacity)`
-  background-color: ${({ theme }) => theme.background1};
+  background-color: ${({ theme }) => theme.black1};
 `;
 
 const SelectAccountButton = ({
@@ -32,7 +41,11 @@ const SelectAccountButton = ({
   disabled,
   handleSelectedAccount,
 }) => {
+  const colors = useSelector(colorsSelector);
   const account = useSelector(accountSelector.defaultAccountSelector);
+  const defaultAccountName = useSelector(
+    accountSelector.defaultAccountNameSelector,
+  );
   const accounts = useSelector(listAllMasterKeyAccounts);
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -70,9 +83,11 @@ const SelectAccountButton = ({
     <CustomTouchableOpacity
       disabled={disabled}
       onPress={onNavSelectAccount}
-      style={styles.btnStyle}
+      style={[styles.btnStyle, { borderColor: colors.against, borderWidth: 1 }]}
     >
-      <WalletIcon />
+      <Text style={[styles.accountName]} numberOfLines={1} ellipsizeMode="tail">
+        {defaultAccountName}
+      </Text>
     </CustomTouchableOpacity>
   );
 };

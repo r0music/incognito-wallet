@@ -133,7 +133,7 @@ const Balance = React.memo(() => {
 const History = React.memo(() => {
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   return (
-    <View style={historyStyled.container}>
+    <View style={[historyStyled.container, { marginTop: 12 }]}>
       {selectedPrivacy?.isMainCrypto ? <MainCryptoHistory /> : <HistoryToken />}
     </View>
   );
@@ -211,22 +211,22 @@ const Detail = (props) => {
   const onGoBack = () => navigation.navigate(routeNames.Wallet);
   const { onRefresh } = useHistoryEffect();
   return (
-    <>
-      <View2 style={[styled.container]}>
-        <Header
-          title={selected?.name}
-          customHeaderTitle={<BtnInfo />}
-          rightHeader={<CustomRightHeader />}
-          onGoBack={onGoBack}
-          handleSelectedAccount={onRefresh}
-        />
-        <View borderTop fullFlex paddingHorizontal style={{ paddingBottom: 0 }}>
+    <View2 fullFlex>
+      <Header
+        title={selected?.name}
+        customHeaderTitle={<BtnInfo />}
+        rightHeader={<CustomRightHeader />}
+        onGoBack={onGoBack}
+        handleSelectedAccount={onRefresh}
+      />
+      <View borderTop fullFlex>
+        <View borderTop paddingHorizontal style={{ paddingBottom: 0 }}>
           <Balance />
-          <History {...{ ...props, refreshing }} />
         </View>
-        <GroupButton />
-      </View2>
-    </>
+        <History {...{ ...props, refreshing }} />
+      </View>
+      <GroupButton />
+    </View2>
   );
 };
 

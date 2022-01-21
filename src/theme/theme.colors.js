@@ -72,6 +72,7 @@ export function appTheme(darkMode: boolean) {
     grey10: '#484848',
     ctaMain: '#1A73E8',
     ctaMain01: 'rgba(26, 115, 232, 0.1)',
+    black1: '#191919',
     // text
     mainText: darkMode ? white : black,
     subText: darkMode ? '#858383' : '#858383',
@@ -80,7 +81,6 @@ export function appTheme(darkMode: boolean) {
     borderBtnColor: darkMode ? white : black,
     borderBtnSecondary: darkMode ? white : '#1A73E8',
 
-
-    blue1: '#6BA0FB'
+    blue1: '#6BA0FB',
   };
 }

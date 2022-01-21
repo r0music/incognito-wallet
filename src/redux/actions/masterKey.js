@@ -161,7 +161,7 @@ export const switchMasterKey = (masterKeyName, accountName) => async (
     clearWalletCaches();
     dispatch(switchhingMasterKey(true));
     dispatch(switchMasterKeySuccess(masterKeyName));
-    dispatch(reloadWallet(accountName));
+    await dispatch(reloadWallet(accountName));
   } catch (error) {
     throw error;
   } finally {

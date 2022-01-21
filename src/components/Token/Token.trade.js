@@ -14,7 +14,7 @@ const styled = StyleSheet.create({
   container: {
     paddingHorizontal: 24,
     paddingVertical: 12,
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
   },
   row: {
     alignItems: 'center',

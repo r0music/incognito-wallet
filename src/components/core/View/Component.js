@@ -13,10 +13,10 @@ const View = (props) => {
     <Container
       {...rest}
       style={[
-        style,
         fullFlex && { flex: 1 },
         borderTop && globalStyled.defaultBorderSection,
         paddingHorizontal && globalStyled.defaultPadding,
+        style,
       ]}
     />
   );

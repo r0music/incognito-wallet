@@ -20,8 +20,7 @@ export const styled = StyleSheet.create({
     color: COLORS.black,
   },
   subText: {
-    fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 2,
+    fontSize: FONT.SIZE.medium,
     fontFamily: FONT.NAME.medium,
     // marginBottom: 8,
   },

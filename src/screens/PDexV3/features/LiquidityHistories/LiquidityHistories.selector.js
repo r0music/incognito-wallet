@@ -2,6 +2,7 @@ import {createSelector} from 'reselect';
 import format from '@utils/format';
 import {selectedPrivacySelector as selectedPrivacy} from '@src/redux/selectors';
 import isEmpty from 'lodash/isEmpty';
+import { mapLiquidityHistoryStatusColor } from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistory.utils';
 
 const liquidityHistoriesSelector = createSelector(
   (state) => state.pDexV3,
@@ -111,7 +112,7 @@ const mapContributeData = createSelector(
           poolId: history.poolId,
         };
       }
-
+      const statusColor = mapLiquidityHistoryStatusColor(history.statusStr);
       return {
         ...history,
         key,
@@ -122,6 +123,7 @@ const mapContributeData = createSelector(
         storageValue,
         retryData,
         refundData,
+        statusColor
       };
     });
     return _histories;
@@ -165,9 +167,11 @@ const mapRemoveLPData = createSelector(
         };
       });
       const removeLPAmountDesc = removeData.map(item => item.removeAmountSymbolStr).join(' + ');
+      const statusColor = mapLiquidityHistoryStatusColor(history.statusStr);
       return {
         ...history,
         timeStr,
+        statusColor,
         removeData,
         removeLPAmountDesc,
       };
@@ -210,11 +214,13 @@ const mapWithdrawFeeLPData = createSelector(
         };
       });
       const showRewards = rewards && rewards.length > 0;
+      const statusColor = mapLiquidityHistoryStatusColor(history.statusStr);
       return {
         ...history,
         timeStr,
         rewards,
-        showRewards
+        showRewards,
+        statusColor,
       };
     });
     return _histories;

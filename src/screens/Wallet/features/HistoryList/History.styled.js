@@ -25,7 +25,7 @@ const style = StyleSheet.create({
     marginBottom: 10,
   },
   itemContainer: {
-    marginBottom: 16,
+    paddingVertical: 12,
   },
   amountText: {
     flex: 1,

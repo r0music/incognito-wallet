@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { View, FlatList, RefreshControl } from '@src/components/core';
+import { View, FlatList, RefreshControl, Divider } from '@src/components/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { poolIdSelector } from './OrderLimit.selector';
 import Order from './OrderLimit.order';
@@ -12,7 +12,7 @@ const styled = StyleSheet.create({
     minHeight: 200,
   },
   flatlist: {
-    paddingVertical: 24,
+    paddingBottom: 24,
   },
 });
 
@@ -25,7 +25,7 @@ export const useHistoryOrders = ({ field }) => {
   return { poolId };
 };
 
-const OrderHistory = ({ history, isFetching, field }) => {
+const OrderHistory = ({ history = [], isFetching, field }) => {
   useHistoryOrders({ field });
   return (
     <View style={styled.container}>
@@ -34,7 +34,10 @@ const OrderHistory = ({ history, isFetching, field }) => {
         data={history}
         keyExtractor={(item) => item?.requestTx}
         renderItem={({ item, index }) => (
-          <Order data={item} visibleDivider={index !== history.length - 1} />
+          <>
+            <Order data={item} visibleDivider={index !== history.length - 1} />
+            {index !== history.length - 1 && <Divider />}
+          </>
         )}
         contentContainerStyle={styled.flatlist}
       />

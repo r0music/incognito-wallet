@@ -12,7 +12,7 @@ import { withLayout_2 } from '@components/Layout';
 const WithdrawFeeLPDetail = () => {
   const history = useNavigationParam('history');
   const hookFactories = React.useMemo(() => {
-    const { requestTx, poolId, nftId, statusStr, timeStr, rewards, respondTxs } = history;
+    const { requestTx, poolId, nftId, statusStr, timeStr, rewards, respondTxs, statusColor } = history;
     const headHook = [
       {
         label: 'PoolID',
@@ -36,6 +36,7 @@ const WithdrawFeeLPDetail = () => {
       {
         label: 'Status',
         valueText: statusStr,
+        rightColor: statusColor,
       },
       {
         label: 'Time',
@@ -68,7 +69,7 @@ const WithdrawFeeLPDetail = () => {
               key={data?.label}
               {...data}
               labelStyle={styled.leftText}
-              valueTextStyle={styled.rightText}
+              valueTextStyle={[styled.rightText, !!data.rightColor && { color: data?.rightColor }]}
             />
           ))}
         </ScrollView>

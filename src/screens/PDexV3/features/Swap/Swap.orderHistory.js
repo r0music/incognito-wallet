@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import {
+  Divider,
   FlatList,
   RefreshControl,
   Text,
@@ -23,14 +24,14 @@ const styled = StyleSheet.create({
   },
   flatlist: {
     flex: 1,
-    paddingVertical: 24,
+    paddingBottom: 24,
   },
   order: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    paddingVertical: 24,
   },
   orderId: {
     fontFamily: FONT.NAME.medium,
@@ -82,6 +83,10 @@ const Order = React.memo(({ data }) => {
       <TouchableOpacity style={styled.order} onPress={handleNavOrderDetail}>
         <View style={styled.wrapperOrder}>
           <Row style={{ ...styled.row, marginBottom: 4 }}>
+            <Text style={[styled.swap]}>{swapStr}</Text>
+            <Text style={[styled.statusStr]}>{statusStr}</Text>
+          </Row>
+          <Row style={styled.row}>
             <Text
               style={[styled.orderId, { color: colors.subText }]}
               numberOfLines={1}
@@ -89,11 +94,9 @@ const Order = React.memo(({ data }) => {
             >
               {`#${tradeID || requestTx}`}
             </Text>
-            <Text style={[styled.title, { color: colors.subText }]}>{exchange}</Text>
-          </Row>
-          <Row style={styled.row}>
-            <Text style={[styled.swap]}>{swapStr}</Text>
-            <Text style={[styled.statusStr]}>{statusStr}</Text>
+            <Text style={[styled.title, { color: colors.subText }]}>
+              {exchange}
+            </Text>
           </Row>
         </View>
       </TouchableOpacity>
@@ -109,8 +112,11 @@ const OrderHistory = () => {
         refreshControl={<RefreshControl refreshing={isFetching} />}
         data={history}
         keyExtractor={(item) => item?.tradeID || item?.requestTx}
-        renderItem={({ item, index }) => (
-          <Order data={item} visibleDivider={index !== history.length - 1} />
+        renderItem={({ item, index, arr }) => (
+          <>
+            <Order data={item} visibleDivider={index !== history.length - 1} />
+            {index !== history.length - 1 && <Divider />}
+          </>
         )}
         contentContainerStyle={styled.flatlist}
       />

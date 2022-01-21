@@ -112,7 +112,6 @@ const InputsGroup = () => {
         onPressSymbol={() => {
           if (loading.input) return;
           onSelectSymbol(((token) => {
-            console.log('SANG TEST:::: ', token);
             setTimeout(() =>
               dispatch(liquidityActions.actionUpdateCreatePoolInputToken(token.tokenId)),
             300);

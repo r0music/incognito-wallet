@@ -9,7 +9,7 @@ import styled from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistori
 import {EmptyBookIcon} from '@components/Icons';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import withHistories from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.enhance';
-import { Text, Text3 } from '@components/core';
+import { RefreshControl, Text, Text3 } from '@components/core';
 import globalStyled from '@src/theme/theme.styled';
 import { colorsSelector } from '@src/theme';
 
@@ -24,7 +24,12 @@ const Item = React.memo(({ history, isLast }) => {
       </View>
       <View style={styled.bottomRow}>
         <Text3 style={styled.desc}>{history?.contributeAmountDesc}</Text3>
-        <Text3 style={styled.status}>{history?.statusStr}</Text3>
+        <Text3 style={[
+          styled.status,
+          !!history.statusColor && { color: history.statusColor }]}
+        >
+          {history?.statusStr}
+        </Text3>
       </View>
     </TouchableOpacity>
   );
@@ -38,8 +43,12 @@ const Contribute = ({ onRefresh }) => {
     return (
       <View style={mainStyle.fullFlex}>
         <FlatList
-          refreshing={isFetching}
-          onRefresh={onRefresh}
+          refreshControl={(
+            <RefreshControl
+              refreshing={isFetching}
+              onRefresh={onRefresh}
+            />
+          )}
           data={histories}
           renderItem={renderItem}
           keyExtractor={(item) => item.key}

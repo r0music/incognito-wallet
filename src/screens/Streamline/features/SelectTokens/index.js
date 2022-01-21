@@ -78,7 +78,7 @@ const SelectToken = React.memo(({ onSelectItem, onPullRefresh }) => {
             <LoadingContainer />
           </View2>
         ) : (
-          <View paddingHorizontal borderTop style={{ paddingTop: 8 }}>
+          <View fullFlex paddingHorizontal borderTop style={{ paddingTop: 8 }}>
             <FlatList
               data={UTXOS}
               refreshing={isFetching}

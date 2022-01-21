@@ -10,7 +10,7 @@ export const MAINNET_FULLNODE = 'https://lb-fullnode.incognito.org/fullnode';
 export const MAINNET_1_FULLNODE = 'http://51.83.237.20:9338';
 export const TESTNET_FULLNODE = 'https://testnet.incognito.org/fullnode';
 export const TESTNET1_FULLNODE = 'https://testnet1.incognito.org/fullnode';
-export const DEV_TEST_FULLNODE = 'http://139.162.55.124:18334';
+export const DEV_TEST_FULLNODE = 'http://172.105.114.134:8334';
 // export const DEV_TEST_FULLNODE =
 //   'https://pdexv3test.incognito.corncob.dev/block/f77320ece044035ef7f5c0681bfa921c326ac92707b67bcacce7a78d067df7d9?beacon=true';
 export const DEFAULT_SHARD_NUMBER = 8;
@@ -43,6 +43,9 @@ const MAIN_NET_SERVER = {
   tradeServices: 'https://api-coinservice.incognito.org',
   portalServices: 'https://api-portalv4.incognito.org',
   webviewChartServices: 'https://chart-webview.incognito.org',
+  bscConfigs: BSC_CONSTANT.BSC_MAINNET_CONFIGS,
+  pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
+  web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
 };
 const BETA_SERVER = {
   id: 'beta',
@@ -62,6 +65,9 @@ const BETA_SERVER = {
   tradeServices: 'https://api-coinservice-beta.incognito.org',
   portalServices: 'http://139.162.55.124:8010',
   webviewChartServices: 'https://chart-webview.incognito.org',
+  bscConfigs: BSC_CONSTANT.BSC_MAINNET_CONFIGS,
+  pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
+  web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
 };
 const TEST_NET_SERVER = {
   id: 'testnet',
@@ -121,16 +127,16 @@ export const DEV_TEST_SERVER = {
   username: '',
   password: '',
   name: 'Dev test server',
-  coinServices: 'http://51.161.119.66:6022',
-  pubsubServices: 'http://51.161.119.66:6030',
-  requestServices: 'http://51.161.119.66:6030',
-  apiServices: 'https://privacyv2-api-service.incognito.org',
+  coinServices: 'http://51.89.21.38:6022',
+  pubsubServices: 'http://51.89.21.38:6030',
+  requestServices: 'http://51.161.119.38:6030',
+  apiServices: 'https://dev-api-service.incognito.org',
   shardNumber: 2,
   IncContractAddress: '0xE0D5e7217c6C4bc475404b26d763fAD3F14D2b86',
   IncBSCContractAddress: '0x1ce57B254DC2DBB41e1aeA296Dc7dBD6fb549241',
   explorer: 'https://testnet1.incognito.org',
   portalServices: 'http://139.162.55.124:8010',
-  tradeServices: 'http://51.161.119.66:6022',
+  tradeServices: 'http://51.89.21.38:6022',
   webviewChartServices: 'https://chart-webview-staging.incognito.org',
   bscConfigs: BSC_CONSTANT.BSC_TESTNET_CONFIGS,
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,

@@ -2,10 +2,10 @@ import React from 'react';
 import Svg, { Path } from 'react-native-svg';
 import PropTypes from 'prop-types';
 
-const IconSearch = ({ color }) => (
+const IconSearch = ({ color, size }) => (
   <Svg
-    width={24}
-    height={24}
+    width={size}
+    height={size}
     viewBox="0 0 24 24"
     fill="none"
   >
@@ -17,11 +17,13 @@ const IconSearch = ({ color }) => (
 );
 
 IconSearch.defaultProps = {
-  color: 'white'
+  color: 'white',
+  size: 24
 };
 
 IconSearch.propTypes = {
-  color: PropTypes.string
+  color: PropTypes.string,
+  size: PropTypes.number
 };
 
 export default React.memo(IconSearch);

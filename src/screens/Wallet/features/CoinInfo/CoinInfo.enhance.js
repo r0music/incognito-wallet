@@ -11,6 +11,28 @@ import { CONSTANT_CONFIGS, CONSTANT_COMMONS } from '@src/constants';
 import routeNames from '@src/router/routeNames';
 import { PRV_ID } from '@src/screens/DexV2/constants';
 
+export const getNetworkName = (selectedPrivacy) => {
+  if (selectedPrivacy?.isErc20Token) {
+    return 'Ethereum network (ERC20)';
+  }
+  if (selectedPrivacy?.isBep2Token) {
+    return 'Binance network (BEP2)';
+  }
+  if (selectedPrivacy?.isBep20Token) {
+    return 'BSC network (BEP20)';
+  }
+  if(selectedPrivacy?.isPolygonErc20Token) {
+    return 'Polygon network (ERC20)';
+  }
+  if (
+    selectedPrivacy?.currencyType ===
+    CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB
+  ) {
+    return 'Binance network';
+  }
+  return `${selectedPrivacy?.networkName} network`;
+};
+
 const enhance = (WrappedComp) => (props) => {
   const [state, setState] = React.useState({
     info: null,
@@ -25,35 +47,15 @@ const enhance = (WrappedComp) => (props) => {
     isBep2Token,
     isErc20Token,
     contractId,
-    amount,
     pDecimals,
     incognitoTotalSupply,
-    networkName,
     externalSymbol,
     symbol,
   } = selectedPrivacy;
-  const getNetworkName = () => {
-    if (selectedPrivacy?.isErc20Token) {
-      return 'Ethereum network (ERC20)';
-    }
-    if (selectedPrivacy?.isBep2Token) {
-      return 'Binance network (BEP2)';
-    }
-    if (selectedPrivacy?.isBep20Token) {
-      return 'BSC network (BEP20)';
-    }
-    if (
-      selectedPrivacy?.currencyType ===
-      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB
-    ) {
-      return 'Binance network';
-    }
-    return `${networkName} network`;
-  };
   const infosFactories = [
     {
       label: 'Origin',
-      value: getNetworkName(),
+      value: getNetworkName(selectedPrivacy),
     },
     {
       label: 'Original Ticker',

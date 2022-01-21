@@ -1,11 +1,9 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import Header from '@src/components/Header';
 import { COLORS, FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 import { RoundCornerButton, ScrollViewBorder, Text } from '@components/core';
-import ic_radio from '@src/assets/images/icons/ic_radio.png';
-import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
 import withBridgeConnect from '@src/screens/Wallet/features/BridgeConnect/WalletConnect.enhance';
 import { ExHandler } from '@services/exception';
 import { compose } from 'recompose';

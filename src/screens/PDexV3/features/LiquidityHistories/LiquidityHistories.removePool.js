@@ -7,7 +7,7 @@ import {useSelector} from 'react-redux';
 import {liquidityHistorySelector} from '@screens/PDexV3/features/LiquidityHistories/index';
 import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
-import { ActivityIndicator, Text, Text3 } from '@components/core';
+import { ActivityIndicator, RefreshControl, Text, Text3 } from '@components/core';
 import {EmptyBookIcon} from '@components/Icons';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import withHistories from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.enhance';
@@ -27,7 +27,13 @@ const Item = React.memo(({ history, isLast }) => {
       </View>
       <View style={styled.bottomRow}>
         <Text3 style={styled.desc}>{history?.removeLPAmountDesc}</Text3>
-        <Text3 style={styled.status}>{history?.statusStr}</Text3>
+        <Text3 style={[
+          styled.status,
+          !!history.statusColor && { color: history.statusColor }
+        ]}
+        >
+          {history?.statusStr}
+        </Text3>
       </View>
     </TouchableOpacity>
   );
@@ -42,8 +48,12 @@ const RemoveLP = ({ onRefresh }) => {
     return (
       <View style={mainStyle.fullFlex}>
         <FlatList
-          refreshing={isFetching}
-          onRefresh={onRefresh}
+          refreshControl={(
+            <RefreshControl
+              refreshing={isFetching}
+              onRefresh={onRefresh}
+            />
+          )}
           data={histories}
           renderItem={renderItem}
           keyExtractor={(item) => item.key}

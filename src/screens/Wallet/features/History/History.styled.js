@@ -45,7 +45,6 @@ export const styled = StyleSheet.create({
     height: 30,
   },
   a: {
-    color: COLORS.black,
     textDecorationLine: 'underline',
   },
   p: {

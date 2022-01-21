@@ -10,17 +10,8 @@ export const styled = StyleSheet.create({
     paddingTop: 10,
   },
   wrapBar: {
-    width: ScreenWidth / 5,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  centerTab: {
-    bottom: 0,
-    borderRadius: 48,
-    top: -32,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
   },
   label: {
     ...FONT.STYLE.normal,

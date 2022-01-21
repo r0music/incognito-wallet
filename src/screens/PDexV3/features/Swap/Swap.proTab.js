@@ -36,6 +36,7 @@ import {
   actionHandleInjectEstDataForPDex,
   actionSetFeeToken,
   actionSwitchPlatform,
+  actionChangeSlippage,
 } from './Swap.actions';
 import { formConfigs, KEYS_PLATFORMS_SUPPORTED } from './Swap.constant';
 import {
@@ -181,6 +182,20 @@ const TabPro = React.memo(() => {
             flex: 1,
           }}
           editableInput={!!swapInfo?.editableInput}
+          onChange={(slippage) => {
+            dispatch(
+              change(
+                formConfigs.formName,
+                formConfigs.slippagetolerance,
+                slippage,
+              ),
+            );
+            let defaultSlippage = slippage;
+            if (isNaN(slippage)) {
+              defaultSlippage = '1';
+            }
+            dispatch(actionChangeSlippage(defaultSlippage));
+          }}
         />
       ),
     },
@@ -239,8 +254,8 @@ const TabPro = React.memo(() => {
   return (
     <View
       style={{
+        ...(toggleProTab ? {} : { display: 'none', opacity: 0 }),
         ...styled.container,
-        ...(toggleProTab ? {} : { display: 'none' }),
       }}
     >
       {extraFactories.map((extra) => (

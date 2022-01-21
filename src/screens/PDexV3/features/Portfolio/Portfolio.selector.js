@@ -116,6 +116,14 @@ export const listShareSelector = createSelector(
         },
       ];
       const apyStr = format.amount(apy, 0);
+      let token1Network = '';
+      let token2Network = '';
+      if (token1.networkName) {
+        token1Network = `(${token1.networkName})`;
+      }
+      if (token2.networkName) {
+        token2Network = `(${token2.networkName})`;
+      }
       const hookFactoriesDetail = [
         {
           label: 'APR',
@@ -123,11 +131,11 @@ export const listShareSelector = createSelector(
         },
         {
           label: `${token1.symbol} Balance`,
-          valueText: principal.token1,
+          valueText: `${principal.token1} ${token1Network}`,
         },
         {
           label: `${token2.symbol} Balance`,
-          valueText: principal.token2,
+          valueText: `${principal.token2} ${token2Network}`,
         },
         ...hookRewards,
       ];

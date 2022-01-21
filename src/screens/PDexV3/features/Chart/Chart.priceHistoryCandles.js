@@ -138,9 +138,8 @@ const PriceHistoryCandles = () => {
           intervals,
         })) || [];
       const chartData = res.map((c) => {
-        const { high, low, timestamp } = c;
-        const avg = new BigNumber(high).plus(low).dividedBy(2).toNumber();
-        const value = convert.toHumanAmountVer2(avg, pDecimals);
+        const { close, timestamp } = c;
+        const value = convert.toHumanAmountVer2(close, pDecimals);
         const result = {
           ...c,
           time: timestamp,

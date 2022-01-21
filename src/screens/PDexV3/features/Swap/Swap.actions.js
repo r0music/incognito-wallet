@@ -23,7 +23,6 @@ import difference from 'lodash/difference';
 import { isUsePRVToPayFeeSelector } from '@screens/Setting';
 import flatten from 'lodash/flatten';
 import orderBy from 'lodash/orderBy';
-import { BIG_COINS } from '@src/screens/DexV2/constants';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -52,7 +51,10 @@ import {
   ACTION_SAVE_LAST_FIELD,
   ACTION_CHANGE_ESTIMATE_DATA,
   ACTION_SET_DEFAULT_EXCHANGE,
-  ACTION_FREE_HISTORY_ORDERS
+  ACTION_FREE_HISTORY_ORDERS,
+  ACTION_SET_ERROR,
+  ACTION_REMOVE_ERROR,
+  ACTION_CHANGE_SLIPPAGE,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -73,6 +75,8 @@ import {
   defaultExchangeSelector,
   isPrivacyAppSelector,
   isExchangeVisibleSelector,
+  errorEstimateTradeSelector,
+  listPairsIDVerifiedSelector,
 } from './Swap.selector';
 import {
   calMintAmountExpected,
@@ -80,6 +84,20 @@ import {
   findBestRateOfMaxBuyAmount,
   findBestRateOfMinSellAmount,
 } from './Swap.utils';
+
+export const actionChangeSlippage = (payload) => ({
+  type: ACTION_CHANGE_SLIPPAGE,
+  payload,
+});
+
+export const actionSetError = (payload) => ({
+  type: ACTION_SET_ERROR,
+  payload,
+});
+
+export const actionRemoveError = () => ({
+  type: ACTION_REMOVE_ERROR,
+});
 
 export const actionSetDefaultExchange = ({ isPrivacyApp, exchange }) => ({
   type: ACTION_SET_DEFAULT_EXCHANGE,
@@ -318,18 +336,18 @@ export const actionEstimateTradeForPDex =
   (payload) => async (dispatch, getState) => {
     let minSellOriginalAmount = 0;
     let maxBuyOriginalAmount = 0;
+    let state = getState();
+    const isExchangeVisible = isExchangeVisibleSelector(state)(
+      KEYS_PLATFORMS_SUPPORTED.incognito,
+    );
+    if (!isExchangeVisible) {
+      return {
+        minSellOriginalAmount,
+        maxBuyOriginalAmount,
+      };
+    }
+    const { payFeeByPRV, field } = feetokenDataSelector(state);
     try {
-      let state = getState();
-      const isExchangeVisible = isExchangeVisibleSelector(state)(
-        KEYS_PLATFORMS_SUPPORTED.incognito,
-      );
-      if (!isExchangeVisible) {
-        return {
-          minSellOriginalAmount,
-          maxBuyOriginalAmount,
-        };
-      }
-      const { payFeeByPRV, field } = feetokenDataSelector(state);
       const { sellamount, buyamount } = payload;
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       const estPDexData = await pDexV3Inst.getEstimateTrade(payload);
@@ -361,11 +379,22 @@ export const actionEstimateTradeForPDex =
       }
       await dispatch(
         actionChangeEstimateData({
-          [KEYS_PLATFORMS_SUPPORTED.incognito]: estPDexData,
+          [KEYS_PLATFORMS_SUPPORTED.incognito]: {
+            ...estPDexData,
+            error: null,
+          },
         }),
       );
     } catch (error) {
       console.log('actionEstimateTradeForPDex ERROR', error);
+      state = getState();
+
+      dispatch(
+        actionSetError({
+          error,
+          platformId: KEYS_PLATFORMS_SUPPORTED.incognito,
+        }),
+      );
     }
     return {
       minSellOriginalAmount,
@@ -393,12 +422,12 @@ export const actionHandleInjectEstDataForPancake =
       }
       switch (field) {
       case formConfigs.selltoken: {
-        inputPDecimals = tokenSellPancake.pDecimals;
+        inputPDecimals = tokenBuyPancake.pDecimals;
         inputToken = formConfigs.buytoken;
         break;
       }
       case formConfigs.buytoken: {
-        inputPDecimals = tokenBuyPancake.pDecimals;
+        inputPDecimals = tokenSellPancake.pDecimals;
         inputToken = formConfigs.selltoken;
         break;
       }
@@ -446,18 +475,18 @@ export const actionEstimateTradeForPancake =
   (payload) => async (dispatch, getState) => {
     let minSellOriginalAmount = 0;
     let maxBuyOriginalAmount = 0;
+    let state = getState();
+    const isExchangeVisible = isExchangeVisibleSelector(state)(
+      KEYS_PLATFORMS_SUPPORTED.pancake,
+    );
+    if (!isExchangeVisible) {
+      return {
+        minSellOriginalAmount,
+        maxBuyOriginalAmount,
+      };
+    }
     try {
       const { selltoken, buytoken, sellamount, buyamount } = payload;
-      let state = getState();
-      const isExchangeVisible = isExchangeVisibleSelector(state)(
-        KEYS_PLATFORMS_SUPPORTED.pancake,
-      );
-      if (!isExchangeVisible) {
-        return {
-          minSellOriginalAmount,
-          maxBuyOriginalAmount,
-        };
-      }
       const isPairSup = isPairSupportedTradeOnPancakeSelector(state);
       const { field } = feetokenDataSelector(state);
       const getPancakeTokenParamReq = findTokenPancakeByIdSelector(state);
@@ -501,7 +530,7 @@ export const actionEstimateTradeForPancake =
       const { sourceToken, destToken, amount, isSwapFromBuyToSell } =
         payloadPancake;
       const hashmapContractIDs = hashmapContractIDsSelector(state);
-      const { paths, outputs } = await getBestRateFromPancake({
+      const { paths, outputs, impactAmount } = await getBestRateFromPancake({
         sourceToken,
         destToken,
         amount,
@@ -556,6 +585,8 @@ export const actionEstimateTradeForPancake =
               maxGet,
               route: paths,
               sellAmount,
+              impactAmount,
+              tokenRoute: paths,
             },
             feeToken: {
               sellAmount,
@@ -563,15 +594,21 @@ export const actionEstimateTradeForPancake =
               isSignificant: false,
               maxGet,
               route: paths,
+              impactAmount,
+              tokenRoute: paths,
             },
             tradeID,
             feeAddress,
             signAddress,
+            error: null,
           },
         }),
       );
     } catch (error) {
       console.log('ERROR-actionEstimateTradeForPancake', error);
+      dispatch(
+        actionSetError({ platformId: KEYS_PLATFORMS_SUPPORTED.pancake, error }),
+      );
     }
     return {
       minSellOriginalAmount,
@@ -648,11 +685,9 @@ export const actionFindBestRateBetweenPlatforms =
         default:
           break;
         }
-        console.log('existed', KEYS_PLATFORMS_SUPPORTED[platformIdHasBestRate]);
         platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED[platformIdHasBestRate]
           ? platformIdHasBestRate
           : KEYS_PLATFORMS_SUPPORTED.incognito;
-        console.log('platformIdHasBestRate', platformIdHasBestRate);
         if (platformIdHasBestRate) {
           await dispatch(actionSwitchPlatform(platformIdHasBestRate));
         }
@@ -665,10 +700,10 @@ export const actionEstimateTrade =
   ({ field = formConfigs.selltoken, useMax = false } = {}) =>
     async (dispatch, getState) => {
       let isFetched = false;
+      let state = getState();
       try {
         const params = { field, useMax };
         dispatch(actionFetching(true));
-        let state = getState();
         const inputAmount = inputAmountSelector(state);
         let sellInputToken, buyInputToken, inputToken, inputPDecimals;
         sellInputToken = inputAmount(formConfigs.selltoken);
@@ -751,6 +786,22 @@ export const actionEstimateTrade =
           }),
         );
         isFetched = true;
+        state = getState();
+        const { availableAmountText, availableOriginalAmount } =
+        sellInputTokenSelector(state);
+        const errorEstTrade = errorEstimateTradeSelector(state);
+        if (errorEstTrade) {
+          new ExHandler(errorEstTrade).showErrorToast();
+          if (useMax && availableOriginalAmount) {
+            dispatch(
+              change(
+                formConfigs.formName,
+                formConfigs.selltoken,
+                availableAmountText,
+              ),
+            );
+          }
+        }
       } catch (error) {
         new ExHandler(error).showErrorToast();
       } finally {
@@ -793,6 +844,7 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
         [],
       );
       pairs = [...pairs, ...pancakeTokens.map((t) => t?.tokenID)];
+      pairs = uniq(pairs);
     } else {
       switch (defaultExchange) {
       case KEYS_PLATFORMS_SUPPORTED.pancake:
@@ -803,7 +855,6 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
         break;
       }
     }
-    pairs = uniq(pairs);
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
@@ -819,7 +870,7 @@ export const actionInitSwapForm =
   ({ refresh = true, defaultPair = {}, shouldFetchHistory = false } = {}) =>
     async (dispatch, getState) => {
       try {
-        const state = getState();
+        let state = getState();
         const defaultExchange = defaultExchangeSelector(state);
         const isUsePRVToPayFee = isUsePRVToPayFeeSelector(state);
         let pair = defaultPair || defaultPairSelector(state);
@@ -837,9 +888,11 @@ export const actionInitSwapForm =
         const isDefaultPairExisted =
         difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
         if (!pair?.selltoken || !pair?.buytoken || !isDefaultPairExisted) {
+          state = getState();
+          const listPairs = listPairsIDVerifiedSelector(state);
           pair = {
-            selltoken: pairs[0],
-            buytoken: pairs[1],
+            selltoken: listPairs[0],
+            buytoken: listPairs[1],
           };
           batch(() => {
             dispatch(actionSetSellTokenFetched(pair.selltoken));
@@ -847,9 +900,16 @@ export const actionInitSwapForm =
           });
         }
         const { selltoken } = pair;
+        state = getState();
+        const { slippage: defautSlippage } = swapSelector(state);
+        console.log('defautSlippage', defautSlippage);
         batch(() => {
           dispatch(
-            change(formConfigs.formName, formConfigs.slippagetolerance, '1'),
+            change(
+              formConfigs.formName,
+              formConfigs.slippagetolerance,
+              defautSlippage,
+            ),
           );
           const useFeeByToken = selltoken !== PRV_ID && !isUsePRVToPayFee;
           if (useFeeByToken) {
@@ -1173,10 +1233,11 @@ export const actionChangeSelectedPlatform = (payload) => ({
 export const actionSwitchPlatform =
   (platformId) => async (dispatch, getState) => {
     try {
-      const state = getState();
       await dispatch(actionChangeSelectedPlatform(platformId));
+      const state = getState();
       const { field } = feetokenDataSelector(state);
-      if (!field) {
+      const errorEstTrade = errorEstimateTradeSelector(state);
+      if (!field || errorEstTrade) {
         return;
       }
       switch (platformId) {

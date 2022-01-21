@@ -7,16 +7,10 @@ import { useHistoryEffect } from '@src/screens/Wallet/features/History';
 import HistoryList from '@src/screens/Wallet/features/HistoryList';
 import EmptyHistory from '@src/screens/Wallet/features/HistoryToken/HistoryToken.empty';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { compose } from 'recompose';
 import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
-
-const styled = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+import { View } from '@components/core';
 
 const HistoryConvert = () => {
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
@@ -25,9 +19,9 @@ const HistoryConvert = () => {
   );
   const { handleRefresh } = useHistoryEffect({ version: PrivacyVersion.ver1 });
   return (
-    <View style={styled.container}>
+    <>
       <Header title={selectedPrivacy?.name || 'Incognito Token'} customHeaderTitle={<BtnInfo />} />
-      <View style={{ flex: 1, paddingTop: 15 }}>
+      <View fullFlex borderTop style={{ paddingTop: 10 }}>
         <HistoryList
           histories={histories}
           onRefreshHistoryList={handleRefresh}
@@ -36,10 +30,9 @@ const HistoryConvert = () => {
           renderEmpty={() => <EmptyHistory />}
           showEmpty={isEmpty}
           oversize={oversize}
-          containerStyled={{ paddingTop: 15 }}
         />
       </View>
-    </View>
+    </>
   );
 };
 

@@ -167,7 +167,8 @@ const Hook = React.memo((props) => {
           html={`<p>${detail}</p>`}
           imagesMaxWidth={Dimensions.get('window').width}
           onLinkPress={(e, href) => {
-            LinkingService.openURL(href);
+            LinkingService
+              .openUrl(href);
           }}
           tagsStyles={{
             a: { ...styled?.p, ...styled?.a },

@@ -12,7 +12,7 @@ import { View } from '@components/core';
 const RemoveLPDetail = () => {
   const history = useNavigationParam('history');
   const hookFactories = React.useMemo(() => {
-    const { requestTx, poolId, nftId, statusStr, timeStr, removeData, respondTxs } = history;
+    const { requestTx, poolId, nftId, statusStr, timeStr, removeData, respondTxs, statusColor } = history;
     const headHook = [
       {
         label: 'PoolID',
@@ -36,6 +36,7 @@ const RemoveLPDetail = () => {
       {
         label: 'Status',
         valueText: statusStr,
+        rightColor: statusColor,
       },
       {
         label: 'Time',
@@ -68,7 +69,7 @@ const RemoveLPDetail = () => {
               key={data?.label}
               {...data}
               labelStyle={styled.leftText}
-              valueTextStyle={styled.rightText}
+              valueTextStyle={[styled.rightText, !!data.rightColor && { color: data?.rightColor }]}
             />
           ))}
         </ScrollView>

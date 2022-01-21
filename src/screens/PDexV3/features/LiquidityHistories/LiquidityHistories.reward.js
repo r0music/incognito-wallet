@@ -15,7 +15,7 @@ import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
 import {HeaderRow, OneRowCoin} from '@screens/PDexV3/features/Staking/Staking.item';
 import globalStyled from '@src/theme/theme.styled';
 import { colorsSelector } from '@src/theme';
-import { Text, Text3 } from '@components/core';
+import { RefreshControl, Text, Text3 } from '@components/core';
 
 const Item = React.memo(({ history, isLast }) => {
   const navigation = useNavigation();
@@ -48,7 +48,13 @@ const Item = React.memo(({ history, isLast }) => {
       <Row spaceBetween centerVertical style={styled.bottomRow}>
         <Text3 style={styled.desc}>{history?.timeStr}</Text3>
         <TouchableOpacity style={[styled.bottomRow, { alignItems: 'center' }]} onPress={onShowReward}>
-          <Text3 style={styled.status}>{history?.statusStr}</Text3>
+          <Text3 style={[
+            styled.status,
+            !!history.statusColor && { color: history.statusColor }
+          ]}
+          >
+            {history?.statusStr}
+          </Text3>
           {history.showRewards && (
             <View style={{ marginLeft: 10 }}>
               <ArrowDown />
@@ -68,8 +74,12 @@ const RemoveLP = ({ onRefresh }) => {
     return (
       <View style={mainStyle.fullFlex}>
         <FlatList
-          refreshing={isFetching}
-          onRefresh={onRefresh}
+          refreshControl={(
+            <RefreshControl
+              refreshing={isFetching}
+              onRefresh={onRefresh}
+            />
+          )}
           data={histories}
           renderItem={renderItem}
           keyExtractor={(item) => item.key}

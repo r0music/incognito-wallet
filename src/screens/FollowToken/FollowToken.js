@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from '@src/components/core';
+import { View, Text, TouchableOpacity, Text3 } from '@src/components/core';
 import { View2 } from '@src/components/core/View';
 import globalStyled from '@src/theme/theme.styled';
 import Header from '@src/components/Header';
@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import routeNames from '@src/router/routeNames';
 import { useNavigation } from 'react-navigation-hooks';
 import { FONT } from '@src/styles';
+import AddSolidIcon from '@components/Icons/icon.addSolid';
 import { styled } from './FollowToken.styled';
 import withFollowToken from './FollowToken.enhance';
 
@@ -17,12 +18,15 @@ const AddManually = () => {
   const handleAddTokenManually = () =>
     navigation?.navigate(routeNames.AddManually, { type: 'ERC20' });
   return (
-    <View style={styled.addManually}>
-      <Text style={styled.text}>{title}</Text>
-      <TouchableOpacity onPress={handleAddTokenManually}>
-        <Text style={[styled.text, styled.boldText, { marginTop: 5 }]}>
-          Add manually +
+    <View spaceBetween style={styled.addManually}>
+      <Text3 style={styled.text}>{title}</Text3>
+      <TouchableOpacity style={{ flexDirection: 'row' }} onPress={handleAddTokenManually}>
+        <Text style={styled.text}>
+          Add manually
         </Text>
+        <View style={{ marginLeft: 8 }}>
+          <AddSolidIcon />
+        </View>
       </TouchableOpacity>
     </View>
   );

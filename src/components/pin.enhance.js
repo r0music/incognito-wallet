@@ -6,13 +6,14 @@ import AppUpdater from '@components/AppUpdater';
 import { WithdrawHistory } from '@models/dexHistory';
 import routeNames from '@src/router/routeNames';
 import AddPin from '@screens/AddPIN';
+import { LoadingContainer } from '@components/core';
 import { loadPin } from '@src/redux/actions/pin';
 import ErrorBoundary from './ErrorBoundary';
 
 const withPin = (WrappedComp) => (props) => {
   const navigation = useNavigation();
   const pinState = useSelector((state) => state?.pin);
-  const { pin, authen } = pinState;
+  const { pin, authen, loading } = pinState;
   const [mounted, setMounted] = React.useState(false);
   const dispatch = useDispatch();
   const handleLoadPin = async () => dispatch(loadPin());
@@ -31,7 +32,7 @@ const withPin = (WrappedComp) => (props) => {
         }
       }
     },
-    [pin, mounted],
+    [pinState, mounted],
   );
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);
@@ -40,10 +41,13 @@ const withPin = (WrappedComp) => (props) => {
       setMounted(false);
       AppState.removeEventListener('change', handleAppStateChange);
     };
-  }, [pin]);
+  }, [pinState]);
   useEffect(() => {
     handleLoadPin();
   }, []);
+  if (loading) {
+    return <LoadingContainer />;
+  }
   if (pin && !authen) {
     return <AddPin action="login" />;
   }

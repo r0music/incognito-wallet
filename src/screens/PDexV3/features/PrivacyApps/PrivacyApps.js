@@ -3,11 +3,18 @@ import { StyleSheet } from 'react-native';
 import { withLayout_2 } from '@src/components/Layout';
 import { ScrollViewBorder } from '@components/core';
 import { PancakeIcon2 } from '@src/components/Icons';
+import { useDispatch, useSelector } from 'react-redux';
 import { FONT } from '@src/styles';
 import { KEYS_PLATFORMS_SUPPORTED } from '@screens/PDexV3/features/Swap';
-import { useNavigation } from 'react-navigation-hooks';
+import {
+  ROOT_TAB_TRADE,
+  TAB_SWAP_ID,
+  TAB_BUY_LIMIT_ID,
+} from '@screens/PDexV3/features/Trade';
+import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import Header from '@src/components/Header';
+import { activedTabSelector, actionChangeTab } from '@src/components/core/Tabs';
 import PrivacyAppsItem from './PrivacyApps.item';
 
 const styled = StyleSheet.create({
@@ -19,8 +26,10 @@ const styled = StyleSheet.create({
   },
 });
 
-const PrivacyApps = (props) => {
+const PrivacyApps = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const getActivedTab = useSelector(activedTabSelector);
   const onPressItem = (id) => {
     switch (id) {
     case KEYS_PLATFORMS_SUPPORTED.pancake:
@@ -52,6 +61,14 @@ const PrivacyApps = (props) => {
       },
     ];
   }, []);
+  useFocusEffect(() => {
+    const activeTabTrade = getActivedTab(ROOT_TAB_TRADE);
+    if (activeTabTrade === TAB_SWAP_ID) {
+      dispatch(
+        actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
+      );
+    }
+  });
   return (
     <>
       <Header

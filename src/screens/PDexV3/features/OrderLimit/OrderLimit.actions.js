@@ -12,9 +12,7 @@ import {
   getAllTokenIDsInPoolsSelector,
 } from '@screens/PDexV3/features/Pools';
 import { actionSetNFTTokenData as actionSetNFTTokenDataNoCache } from '@src/redux/actions/account';
-import {
-  nftTokenDataSelector,
-} from '@src/redux/selectors/account';
+import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import isEmpty from 'lodash/isEmpty';
 import { change, focus, reset } from 'redux-form';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
@@ -324,7 +322,7 @@ export const actionFetchOrdersHistory =
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       const nftData = nftTokenDataSelector(state);
       let listNFTToken = nftData?.listNFTToken;
-      if(!listNFTToken || listNFTToken?.length === 0){
+      if (!listNFTToken || listNFTToken?.length === 0) {
         const data = await dispatch(actionSetNFTTokenDataNoCache());
         listNFTToken = [...data?.listNFTToken];
       }
@@ -402,10 +400,14 @@ export const actionWithdrawOrder =
           version: PrivacyVersion.ver2,
           txType,
           nftID: nftid,
+          callback: async (tx) => {
+            await Promise.all([
+              dispatch(actionFetchWithdrawOrderTxs()),
+              dispatch(actionSetNFTTokenDataNoCache()),
+            ]);
+          },
         };
         await pDexV3Inst.createAndSendWithdrawOrderRequestTx({ extra: data });
-        dispatch(actionFetchWithdrawOrderTxs());
-        dispatch(actionSetNFTTokenDataNoCache());
       } catch (error) {
         new ExHandler(error).showErrorToast();
       } finally {
@@ -515,7 +517,7 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
     _order = await pDexV3.getOrderLimitDetail(params);
     _order = {
       ..._order,
-      requestime: _order?.requestime * 1000,
+      requestime: fromStorage ? _order?.requestime : _order?.requestime * 1000,
     };
   } catch (error) {
     _order = { ...order };

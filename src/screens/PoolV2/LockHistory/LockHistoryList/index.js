@@ -14,6 +14,7 @@ import ROUTE_NAMES from '@routers/routeNames';
 import mainStyles from '@screens/PoolV2/style';
 import { colorsSelector } from '@src/theme';
 import { useSelector } from 'react-redux';
+import globalStyled from '@src/theme/theme.styled';
 import withData from './data.enhance';
 import styles from './style';
 
@@ -46,11 +47,11 @@ const LockHistory = ({
       <Header title="Staking service" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
       { lockHistories.length > 0
         ? (
-          <ScrollViewBorder style={mainStyles.coinContainerNoMargin}>
+          <ScrollViewBorder style={[mainStyles.coinContainerNoMargin, { paddingHorizontal: 0, paddingTop: 24 }]}>
             {lockHistories.map((item, index) => {
               return (
                 <>
-                  <View key={item.symbol}>
+                  <View key={item.symbol} style={globalStyled.defaultPaddingHorizontal}>
                     <Row>
                       <View>
                         <Text style={mainStyles.coinName}>{item.displayBalance} {item.symbol} </Text>
@@ -77,7 +78,7 @@ const LockHistory = ({
                       </View>
                     </Row>
                   </View>
-                  {index === lockHistories.length - 1  ? null :  <Divider color={COLORS.lightGrey31} style={styles.divider} />}
+                  {index === lockHistories.length - 1  ? null :  <Divider color={COLORS.lightGrey31} dividerStyled={styles.divider} />}
                 </>
               );
             })}

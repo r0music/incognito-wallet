@@ -281,7 +281,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - inc-production
       - generate_data:
           requires:
             - checkout_code

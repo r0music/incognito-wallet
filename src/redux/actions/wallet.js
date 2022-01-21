@@ -45,29 +45,27 @@ export const reloadAccountList = () => async (dispatch, getState) => {
   return accounts;
 };
 
-export const actionSubmitOTAKeyForListAccount = (wallet) => async (
-  dispatch,
-  getState,
-) => {
-  try {
-    if (!wallet) {
-      return;
-    }
-    const listAccount = await wallet.listAccount();
-    if (!listAccount) {
-      return;
-    }
-    const task = listAccount.map((account) => {
-      const accountWallet = accountService.getAccount(account, wallet);
-      if (!!accountWallet && accountWallet?.name) {
-        return accountWallet.submitOTAKey();
+export const actionSubmitOTAKeyForListAccount =
+  (wallet) => async (dispatch, getState) => {
+    try {
+      if (!wallet) {
+        return;
       }
-    });
-    await Promise.all(task);
-  } catch (error) {
-    console.log('SUBMIT OTA KEY ERROR', error);
-  }
-};
+      const listAccount = await wallet.listAccount();
+      if (!listAccount) {
+        return;
+      }
+      const task = listAccount.map((account) => {
+        const accountWallet = accountService.getAccount(account, wallet);
+        if (!!accountWallet && accountWallet?.name) {
+          return accountWallet.submitOTAKey();
+        }
+      });
+      await Promise.all(task);
+    } catch (error) {
+      console.log('SUBMIT OTA KEY ERROR', error);
+    }
+  };
 
 export const actionRequestAirdropNFTForListAccount = (wallet) => async () => {
   try {
@@ -90,39 +88,38 @@ export const actionRequestAirdropNFTForListAccount = (wallet) => async () => {
   }
 };
 
-export const reloadWallet = (accountName = '') => async (
-  dispatch,
-  getState,
-) => {
-  let listAccount = [];
-  new Validator('reloadWallet-accountName', accountName).string();
-  const state = getState();
-  const masterKey = currentMasterKeySelector(state);
-  let wallet = masterKey.wallet;
-  let defaultAccount;
-  try {
-    await configsWallet(wallet);
-    if (wallet?.Name) {
-      listAccount = await wallet.listAccount();
-      defaultAccount =
-        listAccount.find((item) => isEqual(item?.accountName, accountName)) ||
-        listAccount[0];
-      if (!defaultAccount?.accountName) {
-        throw new Error(`Can not get default account ${accountName}`);
+export const reloadWallet =
+  (accountName = '') =>
+    async (dispatch, getState) => {
+      let listAccount = [];
+      new Validator('reloadWallet-accountName', accountName).string();
+      const state = getState();
+      const masterKey = currentMasterKeySelector(state);
+      let wallet = masterKey.wallet;
+      let defaultAccount;
+      try {
+        await configsWallet(wallet);
+        if (wallet?.Name) {
+          listAccount = await wallet.listAccount();
+          defaultAccount =
+          listAccount.find((item) => isEqual(item?.accountName, accountName)) ||
+          listAccount[0];
+          if (!defaultAccount?.accountName) {
+            throw new Error(`Can not get default account ${accountName}`);
+          }
+          batch(() => {
+            dispatch(setWallet(wallet));
+            dispatch(setListAccount(listAccount));
+            dispatch(setAccount(defaultAccount));
+            dispatch(setDefaultAccount(defaultAccount));
+            dispatch(actionReloadFollowingToken());
+            dispatch(actionSetSignPublicKeyEncode());
+            dispatch(actionSyncAccountMasterKey());
+          });
+          await dispatch(actionSetNFTTokenData());
+        }
+        return wallet;
+      } catch (e) {
+        new ExHandler(e).showErrorToast();
       }
-      batch(() => {
-        dispatch(setWallet(wallet));
-        dispatch(setListAccount(listAccount));
-        dispatch(setAccount(defaultAccount));
-        dispatch(setDefaultAccount(defaultAccount));
-        dispatch(actionReloadFollowingToken());
-        dispatch(actionSetNFTTokenData());
-        dispatch(actionSetSignPublicKeyEncode());
-        dispatch(actionSyncAccountMasterKey());
-      });
-    }
-    return wallet;
-  } catch (e) {
-    new ExHandler(e).showErrorToast();
-  }
-};
+    };

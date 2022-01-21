@@ -38,31 +38,31 @@ const Actions = ({
   };
 
   const provideButton = (
-    <BtnSecondary
+    <RoundCornerButton
       title={buy ? 'Provide now' : 'Provide more'}
-      wrapperStyle={[styles.actionButton, mainStyle.button]}
+      style={[styles.actionButton, mainStyle.button]}
       onPress={handleProvide}
     />
   );
   const buyButton = (
-    <RoundCornerButton
+    <BtnSecondary
       title="Buy crypto"
-      style={[styles.actionButton, mainStyle.button]}
+      wrapperStyle={[styles.actionButton, mainStyle.button]}
       onPress={handleBuy}
     />
   );
   const withdrawButton = (
-    <RoundCornerButton
+    <BtnSecondary
       title="Withdraw"
-      style={[styles.actionButton, mainStyle.button]}
+      wrapperStyle={[styles.actionButton, mainStyle.button]}
       onPress={handleWithdraw}
     />
   );
 
   return (
     <Row spaceBetween style={[styles.actions, globalStyled.defaultPaddingHorizontal]}>
-      {provideButton}
       {buy ? buyButton : withdrawButton}
+      {provideButton}
     </Row>
   );
 };

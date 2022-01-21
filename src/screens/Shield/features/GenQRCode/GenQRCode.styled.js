@@ -160,12 +160,12 @@ export const styled = StyleSheet.create({
     marginRight: 8,
   },
   optionBtn: {
-    flex: 1,
     height: 45,
     paddingHorizontal: 15,
     borderRadius: 8,
-    borderWidth: 0,
-    justifyContent: 'center'
+    borderWidth: 1,
+    justifyContent: 'center',
+    width: '49%'
   },
   optionContent: {
     flexDirection: 'row',

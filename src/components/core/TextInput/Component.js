@@ -102,8 +102,8 @@ const TextInput = ({
             style={[
               styleSheet.input,
               oldVersion && styleSheet.oldInput,
+              { color: colors.text1 },
               inputStyle,
-              {color: colors.text4},
             ]}
             onFocus={handleFocus}
             onBlur={handleBlur}

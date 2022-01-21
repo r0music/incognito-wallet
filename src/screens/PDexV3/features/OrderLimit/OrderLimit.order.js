@@ -21,7 +21,7 @@ import {
 const styled = StyleSheet.create({
   orderWrapper: {
     flex: 1,
-    marginBottom: 24,
+    paddingVertical: 24,
   },
   orderValue: {
     fontSize: FONT.SIZE.small,
@@ -53,14 +53,17 @@ const styled = StyleSheet.create({
   block1: {
     textAlign: 'left',
     alignItems: 'flex-start',
+    flex: 1.5,
   },
   block2: {
-    textAlign: 'center',
-    alignItems: 'center',
+    textAlign: 'left',
+    alignItems: 'flex-start',
+    flex: 1,
   },
   block3: {
     textAlign: 'right',
     alignItems: 'flex-end',
+    flex: 1,
   },
   mv8: {
     marginVertical: 8,
@@ -221,11 +224,11 @@ const Order = React.memo(({ data, visibleDivider }) => {
         subTitle={withdrawData?.subTitle || ''}
         acceptStr="Yes, cancel"
         canStr="Keep it"
-        icon={(
+        icon={
           <Row center style={{ marginBottom: 7 }}>
             <CancelIcon />
           </Row>
-        )}
+        }
       />
     </TouchableOpacity>
   );

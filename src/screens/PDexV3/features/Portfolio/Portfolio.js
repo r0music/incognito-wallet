@@ -23,10 +23,10 @@ const PortfolioList = withTransaction(React.memo(({ onCreateWithdrawFeeLP }) => 
   const onWithdrawFeeLP = ({ poolId, shareId }) => {
     const dataShare = getDataShare(shareId);
     if (!dataShare && typeof onCreateWithdrawFeeLP !== 'function') return;
-    const { nftId, tokenId1, tokenId2, rewards } = dataShare;
+    const { nftId, tokenId1, tokenId2, rewards, orderRewards } = dataShare;
     const params = {
       fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,
-      withdrawTokenIDs: uniq([tokenId1, tokenId2].concat(Object.keys(rewards))),
+      withdrawTokenIDs: uniq([tokenId1, tokenId2].concat(Object.keys(rewards || {})).concat(orderRewards || {})),
       poolPairID: poolId,
       nftID: nftId,
       amount1: String(0),

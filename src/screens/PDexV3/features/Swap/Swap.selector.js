@@ -14,17 +14,30 @@ import orderBy from 'lodash/orderBy';
 import memoize from 'lodash/memoize';
 import { getExchangeRate, getPairRate, getPoolSize } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
-import xor from 'lodash/xor';
+import isEqual from 'lodash/isEqual';
 import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
   PLATFORMS_SUPPORTED,
 } from './Swap.constant';
-import { getInputAmount } from './Swap.utils';
+import { getInputAmount, calMintAmountExpected } from './Swap.utils';
 
 export const swapSelector = createSelector(
   (state) => state.pDexV3,
   ({ swap }) => swap,
+);
+
+export const slippagetoleranceSelector = createSelector(
+  (state) => state,
+  (state) => {
+    const selector = formValueSelector(formConfigs.formName);
+    let slippagetolerance = selector(state, formConfigs.slippagetolerance);
+    slippagetolerance = Number(slippagetolerance);
+    if (isNaN(slippagetolerance)) {
+      return 0;
+    }
+    return slippagetolerance;
+  },
 );
 
 export const pDexPairsSelector = createSelector(
@@ -46,17 +59,34 @@ export const findTokenPancakeByIdSelector = createSelector(
 export const hashmapContractIDsSelector = createSelector(
   pancakePairsSelector,
   (pancakeTokens) =>
-    pancakeTokens.reduce((curr, token) => {
-      const { symbol, contractIdGetRate, decimals } = token;
-      curr = {
-        ...curr,
-        [toLower(contractIdGetRate)]: {
-          symbol: toLower(symbol),
-          decimals,
-        },
-      };
-      return curr;
-    }, {}),
+    pancakeTokens
+      .filter((token) => token?.isPopular === true)
+      .reduce((curr, token) => {
+        const { symbol, contractIdGetRate, decimals } = token;
+        curr = {
+          ...curr,
+          [toLower(contractIdGetRate)]: {
+            symbol: toLower(symbol),
+            decimals,
+          },
+        };
+        return curr;
+      }, {}),
+);
+
+export const getTokenIdByContractIdGetRateSelector = createSelector(
+  pancakePairsSelector,
+  (pancakeTokens) =>
+    memoize((contractIdGetRate) => {
+      let tokenID = '';
+      const foundToken = pancakeTokens.find((token) =>
+        isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate)),
+      );
+      if (foundToken) {
+        tokenID = foundToken?.tokenID;
+      }
+      return tokenID;
+    }),
 );
 
 export const purePairsSelector = createSelector(
@@ -67,16 +97,51 @@ export const purePairsSelector = createSelector(
 export const listPairsSelector = createSelector(
   swapSelector,
   getPrivacyDataByTokenIDSelector,
-  ({ pairs }, getPrivacyDataByTokenID) => {
+  (
+    { pairs, isPrivacyApp, defaultExchange, pancakeTokens },
+    getPrivacyDataByTokenID,
+  ) => {
     if (!pairs) {
       return [];
     }
     let list = pairs.map((tokenID) => getPrivacyDataByTokenID(tokenID));
-    return orderBy(
-      list,
-      ['priority', 'hasIcon', 'verified'],
-      ['asc', 'desc', 'desc'],
-    );
+    let result = [];
+    if (isPrivacyApp) {
+      switch (defaultExchange) {
+      case KEYS_PLATFORMS_SUPPORTED.pancake: {
+        list = list.map((token: SelectedPrivacy) => {
+          let { priority, isVerified } = token;
+          const foundedToken = pancakeTokens.find(
+            (pt) => pt?.tokenID === token?.tokenId,
+          );
+          if (foundedToken) {
+            priority = foundedToken?.priority;
+            isVerified = foundedToken?.verify;
+          }
+          return {
+            ...token,
+            isVerified,
+            priority,
+          };
+        });
+        break;
+      }
+      default:
+        break;
+      }
+    }
+    result = orderBy(list, ['priority'], ['asc']);
+    return result;
+  },
+);
+
+export const listPairsIDVerifiedSelector = createSelector(
+  listPairsSelector,
+  (pairs) => {
+    const result = pairs
+      .filter((token: SelectedPrivacy) => !!token?.isVerified)
+      .map((token) => token?.tokenId);
+    return result;
   },
 );
 
@@ -150,15 +215,28 @@ export const platformsVisibleSelector = createSelector(
 );
 
 export const platformsSupportedSelector = createSelector(
+  swapSelector,
   platformsVisibleSelector,
   isPairSupportedTradeOnPancakeSelector,
-  (platforms, isPairSupportedTradeOnPancake) => {
-    if (!isPairSupportedTradeOnPancake) {
-      return platforms.filter(
-        (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.pancake,
-      );
+  ({ data }, platforms, isPairSupportedTradeOnPancake) => {
+    let _platforms = [...platforms];
+    try {
+      if (!isPairSupportedTradeOnPancake) {
+        _platforms = _platforms.filter(
+          (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.pancake,
+        );
+      }
+      _platforms = _platforms.filter(({ id: platformId }) => {
+        const hasError = !data[platformId]?.error;
+        return hasError;
+      });
+      if (_platforms.length === 0 || !_platforms) {
+        _platforms = [PLATFORMS_SUPPORTED[0]];
+      }
+    } catch (error) {
+      console.log('error', error);
     }
-    return platforms;
+    return _platforms;
   },
 );
 
@@ -185,6 +263,12 @@ export const isExchangeVisibleSelector = createSelector(
     }),
 );
 
+export const isPlatformSelectedSelector = createSelector(
+  platformIdSelectedSelector,
+  (platformIdSelected) =>
+    memoize((platformId) => platformIdSelected === platformId),
+);
+
 // fee data selector
 
 export const feeSelectedSelector = createSelector(
@@ -198,16 +282,21 @@ export const feetokenDataSelector = createSelector(
   feeSelectedSelector,
   getPrivacyDataByTokenIDSelector,
   platformSelectedSelector,
+  getTokenIdByContractIdGetRateSelector,
+  slippagetoleranceSelector,
   (
     state,
-    { data, networkfee, selltoken },
+    { data, networkfee, selltoken, buytoken },
     feetoken,
     getPrivacyDataByTokenID,
     platform,
+    getTokenIdByContractIdGetRate,
+    slippagetolerance,
   ) => {
     try {
       const feeTokenData: SelectedPrivacy = getPrivacyDataByTokenID(feetoken);
       const sellTokenData: SelectedPrivacy = getPrivacyDataByTokenID(selltoken);
+      const buyTokenData: SelectedPrivacy = getPrivacyDataByTokenID(buytoken);
       const selector = formValueSelector(formConfigs.formName);
       const fee = selector(state, formConfigs.feetoken);
       const { id: platformID } = platform;
@@ -221,6 +310,8 @@ export const feetokenDataSelector = createSelector(
         route: tradePathPRV,
         maxGet: maxGetPRV,
         isSignificant: isSignificantPRV,
+        impactAmount: impactAmountPRV = 0,
+        tokenRoute: tokenRoutePRV = [],
       } = feePrvEst;
       const {
         fee: feeToken,
@@ -229,6 +320,8 @@ export const feetokenDataSelector = createSelector(
         route: tradePathToken,
         maxGet: maxGetToken,
         isSignificant: isSignificantToken,
+        impactAmount: impactAmountToken = 0,
+        tokenRoute: tokenRouteToken = [],
       } = feeTokenEst;
       let allPoolSize = [];
       let maxGet = 0;
@@ -324,7 +417,53 @@ export const feetokenDataSelector = createSelector(
         //
       }
       const tradePath = payFeeByPRV ? tradePathPRV : tradePathToken;
+      const tokenRoute = payFeeByPRV ? tokenRoutePRV : tokenRouteToken;
+      const impactAmount = payFeeByPRV ? impactAmountPRV : impactAmountToken;
+      const impactOriginalAmount = convert.toOriginalAmount(impactAmount, 2);
+      const impactAmountStr = format.amountVer2(impactOriginalAmount, 2);
       maxGet = payFeeByPRV ? maxGetPRV : maxGetToken;
+      const sellOriginalAmount = payFeeByPRV ? sellAmountPRV : sellAmountToken;
+      const buyOriginalAmount = calMintAmountExpected({
+        maxGet,
+        slippagetolerance,
+      });
+      const rateStr = getExchangeRate(
+        sellTokenData,
+        buyTokenData,
+        sellOriginalAmount,
+        buyOriginalAmount,
+      );
+      let tradePathStr = '';
+      let tradePathArr = [];
+      try {
+        if (tokenRoute?.length > 0) {
+          switch (platformID) {
+          case KEYS_PLATFORMS_SUPPORTED.incognito: {
+            tradePathArr = tokenRoute;
+            break;
+          }
+          case KEYS_PLATFORMS_SUPPORTED.pancake: {
+            tradePathArr = tokenRoute.map((contractId) =>
+              getTokenIdByContractIdGetRate(contractId),
+            );
+            break;
+          }
+          default:
+            break;
+          }
+        }
+        tradePathStr = tradePathArr
+          .map((tokenID, index, arr) => {
+            const token: SelectedPrivacy = getPrivacyDataByTokenID(tokenID);
+            return (
+              `${token?.symbol}${index === arr?.length - 1 ? '' : ' > '}` || ''
+            );
+          })
+          .filter((symbol) => !!symbol)
+          .join('');
+      } catch (error) {
+        console.log('GET TRADE PATH ERROR', error);
+      }
       return {
         ...feeTokenData,
         ...data,
@@ -346,7 +485,9 @@ export const feetokenDataSelector = createSelector(
         minFeeOriginalPRV,
         minFeeOriginalToken,
         availableFixedSellAmountPRV,
+        availableOriginalSellAmountPRV: sellAmountPRV,
         availableFixedSellAmountToken,
+        availableOriginalSellAmountToken: sellAmountToken,
         tradePath,
         maxGet,
         allPoolSize,
@@ -354,6 +495,11 @@ export const feetokenDataSelector = createSelector(
         feeDataByPlatform,
         feePrvEst,
         feeTokenEst,
+        sellOriginalAmount,
+        buyOriginalAmount,
+        rateStr,
+        tradePathStr,
+        impactAmountStr,
       };
     } catch (error) {
       console.log('feetokenDataSelector-error', error);
@@ -416,19 +562,6 @@ export const sellInputTokenSelector = createSelector(
 export const buyInputTokenSeletor = createSelector(
   inputAmountSelector,
   (getInputAmount) => getInputAmount(formConfigs.buytoken),
-);
-
-export const slippagetoleranceSelector = createSelector(
-  (state) => state,
-  (state) => {
-    const selector = formValueSelector(formConfigs.formName);
-    let slippagetolerance = selector(state, formConfigs.slippagetolerance);
-    slippagetolerance = Number(slippagetolerance);
-    if (isNaN(slippagetolerance)) {
-      return 0;
-    }
-    return slippagetolerance;
-  },
 );
 
 export const swapInfoSelector = createSelector(
@@ -539,10 +672,20 @@ export const mappingOrderHistorySelector = createSelector(
         feeToken: feeTokenId,
         fromStorage,
         price,
+        statusCode,
       } = order;
       let statusStr = capitalize(status);
       if (fromStorage) {
-        statusStr = 'Processing';
+        switch (statusCode) {
+        case ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_CANCELED:
+        case ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_FAILED: {
+          statusStr = 'Failed';
+          break;
+        }
+        default:
+          statusStr = 'Processing';
+          break;
+        }
       }
       const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
       const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
@@ -551,10 +694,7 @@ export const mappingOrderHistorySelector = createSelector(
       const priceStr = format.amountVer2(price, buyToken.pDecimals);
       const sellStr = `${amountStr} ${sellToken.symbol}`;
       const buyStr = `${priceStr} ${buyToken.symbol}`;
-      const timeStr = format.formatDateTime(
-        fromStorage ? requestime : requestime * 1000,
-        'DD MMM HH:mm',
-      );
+      const timeStr = format.formatDateTime(requestime, 'DD MMM HH:mm');
       const rate = getPairRate({
         token1Value: amount,
         token2Value: price,
@@ -651,4 +791,10 @@ export const defaultExchangeSelector = createSelector(
 export const isPrivacyAppSelector = createSelector(
   swapSelector,
   ({ isPrivacyApp }) => isPrivacyApp,
+);
+
+export const errorEstimateTradeSelector = createSelector(
+  swapSelector,
+  platformIdSelectedSelector,
+  ({ data }, platformId) => data[platformId]?.error || '',
 );

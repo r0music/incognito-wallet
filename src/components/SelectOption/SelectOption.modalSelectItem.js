@@ -118,7 +118,9 @@ export const SelectItem = React.memo(
               borderTopRightRadius: firstChild ? 24 : 0,
             }
             : {
-              backgroundColor: colors.grey7,
+              backgroundColor: colors.grey9,
+              borderColor: colors.against,
+              borderWidth: 1
             },
         ]}
       >

@@ -1,3 +1,6 @@
+import AsyncStorage from '@react-native-community/async-storage';
+import autoMergeLevel1 from 'redux-persist/es/stateReconciler/autoMergeLevel1';
+import { persistReducer } from 'redux-persist';
 import { PRV_ID } from '@src/constants/common';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import {
@@ -30,6 +33,9 @@ import {
   ACTION_CHANGE_ESTIMATE_DATA,
   ACTION_SET_DEFAULT_EXCHANGE,
   ACTION_FREE_HISTORY_ORDERS,
+  ACTION_SET_ERROR,
+  ACTION_REMOVE_ERROR,
+  ACTION_CHANGE_SLIPPAGE,
 } from './Swap.constant';
 
 const initialState = {
@@ -40,10 +46,12 @@ const initialState = {
       // incognito
       feePrv: {},
       feeToken: {},
+      error: null,
     },
     [KEYS_PLATFORMS_SUPPORTED.pancake]: {
       // pancake
       feePrv: {},
+      error: null,
     },
   },
   buytoken: '',
@@ -75,10 +83,38 @@ const initialState = {
   useMax: false,
   defaultExchange: KEYS_PLATFORMS_SUPPORTED.incognito,
   isPrivacyApp: false,
+  error: null,
+  slippage: '1',
 };
 
-export default (state = initialState, action) => {
+const reducer = (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_CHANGE_SLIPPAGE: {
+    return {
+      ...state,
+      slippage: action.payload,
+    };
+  }
+  case ACTION_REMOVE_ERROR: {
+    const { data } = state;
+    const newData = Object.keys(data).reduce((obj, key) => {
+      obj[key].error = null;
+      return obj;
+    }, {});
+    return {
+      ...state,
+      data: Object.assign({}, newData),
+    };
+  }
+  case ACTION_SET_ERROR: {
+    const { platformId, error } = action.payload;
+    const { data } = state;
+    const newState = {
+      ...state,
+      data: { ...data, [platformId]: { ...data[platformId], error } },
+    };
+    return newState;
+  }
   case ACTION_FREE_HISTORY_ORDERS: {
     return {
       ...state,
@@ -222,12 +258,13 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_RESET: {
-    return initialState;
+    return Object.assign({}, { ...initialState, slippage: state.slippage });
   }
   case ACTION_FETCHING: {
     return {
       ...state,
       isFetching: action.payload,
+      data: Object.assign({}, initialState.data),
     };
   }
   case ACTION_FETCHED: {
@@ -299,3 +336,12 @@ export default (state = initialState, action) => {
     return state;
   }
 };
+
+const persistConfig = {
+  key: 'swap',
+  storage: AsyncStorage,
+  whitelist: ['slippage'],
+  stateReconciler: autoMergeLevel1,
+};
+
+export default persistReducer(persistConfig, reducer);

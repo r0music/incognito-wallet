@@ -6,7 +6,7 @@ import { Tabs, View } from '@components/core';
 import { ROOT_TAB_ASSETS, TAB_COINS_ID, TAB_LIQUIDITY_ID, TAB_REWARD_ID } from '@screens/MainTabBar/features/Assets/Assets.constants';
 import Portfolio from '@screens/PDexV3/features/Portfolio/Portfolio';
 import { withLayout_2 } from '@components/Layout';
-import { Row } from '@src/components';
+import { Header, Row } from '@src/components';
 import { styled } from '@screens/PDexV3/features/Home/Home.styled';
 import ReturnLP from '@screens/PDexV3/features/Share/Share.returnLP';
 import { BtnPrimary } from '@components/core/Button';
@@ -45,29 +45,14 @@ const HeaderRewardView = React.memo(() => {
 
 const TabAssets = () => {
   return (
-    <Tabs
-      rootTabID={ROOT_TAB_ASSETS}
-      useTab1
-      defaultTabHeader
-      rightCustom={<SelectAccountButton />}
-    >
-      <View tabID={TAB_COINS_ID} label="Coins">
-        <Wallet hideBackButton />
-      </View>
-      <View tabID={TAB_LIQUIDITY_ID} label="Pools">
-        <HeaderPortfolioView />
-        <Portfolio />
-      </View>
-      <View tabID={TAB_REWARD_ID} label="Rewards">
-        <HeaderRewardView />
-        <PortfolioReward />
-      </View>
-    </Tabs>
+    <>
+      <Header hideBackButton title="Privacy Coins" accountSelectable />
+      <Wallet hideBackButton />
+    </>
   );
 };
 
 export default compose(
-  withHome,
   withLayout_2,
   withTab
 )(memo(TabAssets));

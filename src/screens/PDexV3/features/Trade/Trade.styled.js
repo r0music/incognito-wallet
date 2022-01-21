@@ -12,8 +12,9 @@ export const styled = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
-    paddingHorizontal: 16,
+    // marginBottom: 16,
+    // paddingHorizontal: 16,
+    marginTop: 12,
   },
   btnOrderHistory: {
     marginRight: 15,

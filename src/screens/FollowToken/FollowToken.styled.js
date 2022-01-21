@@ -10,7 +10,7 @@ export const styled = StyleSheet.create({
     paddingTop: 27,
   },
   text: {
-    fontFamily: FONT.NAME.medium,
+    ...FONT.STYLE.normal,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 5,
   },
@@ -21,8 +21,10 @@ export const styled = StyleSheet.create({
   },
   addManually: {
     ...globalStyled.defaultPaddingHorizontal,
-    paddingBottom: 40,
-    paddingTop: 15,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   listToken: {
     flex: 1,
