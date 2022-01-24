@@ -68,7 +68,7 @@ const ListNews = ({ listNews, type, lastNewsID }) => {
     case TYPE.news: {
       Component = () => (
         <View style={styled.extra}>
-          <Text style={styled.title}>{title?.trim()}</Text>
+          <Text style={isHighlight ? styled.title : styled.titleHighLight}>{title?.trim()}</Text>
           <Text style={styled.date}>{moment(createdAt).format('YYYY-DD-MM HH:mm')}</Text>
           {canTap && (
             <View style={styled.descContainer}>

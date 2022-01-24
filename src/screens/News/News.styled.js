@@ -66,6 +66,12 @@ export const listNewsStyled = StyleSheet.create({
     color: COLORS.white,
     flex: 1,
   },
+  titleHighLight: {
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.regular,
+    color: COLORS.lightGrey36,
+    flex: 1,
+  },
   descContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -76,7 +82,7 @@ export const listNewsStyled = StyleSheet.create({
     fontSize: FONT.SIZE.regular,
     color: COLORS.blue5,
     marginRight: 4,
-    lineHeight: FONT.SIZE.regular
+    lineHeight: FONT.SIZE.regular,
   },
   date: {
     fontFamily: FONT.NAME.regular,

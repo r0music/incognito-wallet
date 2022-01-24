@@ -7,6 +7,7 @@ import { camelCaseKeys } from '@src/utils';
 import { ScrollView, View } from '@src/components/core';
 import { useFocusEffect } from 'react-navigation-hooks';
 import { View2 } from '@components/core/View';
+import withLazy from '@src/components/LazyHoc/LazyHoc';
 import withNews from './News.enhance';
 import { newsSelector } from './News.selector';
 import { LAYOUT_TYPE } from './News.constant';
@@ -82,12 +83,12 @@ const News = (props) => {
       <Header title="Bulletin" style={styled.header} />
       <View fullFlex borderTop style={{ overflow: 'hidden' }}>
         <ScrollView
-          refreshControl={
+          refreshControl={(
             <RefreshControl
               refreshing={isFetching}
               onRefresh={handleFetchNews}
             />
-          }
+          )}
           style={styled.scrollViewContainer}
           contentContainerStyle={styled.scrollViewContentContainer}
         >
@@ -124,4 +125,4 @@ Category.propTypes = {
   lastChild: PropTypes.bool,
 };
 
-export default withNews(News);
+export default withLazy(withNews(News));

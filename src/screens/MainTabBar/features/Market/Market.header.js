@@ -63,14 +63,14 @@ const HeaderView = ({ onFilter }) => {
         hideBackButton
         rightHeader={(
           <View style={headerStyled.headerRightContainer}>
-            <Notification />
-            <View style={headerStyled.iconButtonSpacing} />
             <TouchableOpacity
               style={headerStyled.iconButtonContainer}
               onPress={() => navigation.navigate(routeNames.MarketSearchCoins)}
             >
               <SearchIcon color={COLORS.white} size={24} />
             </TouchableOpacity>
+            <View style={headerStyled.iconButtonSpacing} />
+            <Notification />
           </View>
         )}
       />
