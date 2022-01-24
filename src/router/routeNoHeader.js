@@ -143,6 +143,7 @@ import Market from '@screens/MainTabBar/features/Market';
 import { SelectOptionModal } from '@components/SelectOption';
 import { PrivacyAppsPancake } from '@screens/PDexV3/features/PrivacyApps';
 import MarketSearchCoins from '@screens/MainTabBar/features/Market/Market.searchCoins';
+import HomeLP from '@screens/MainTabBar/features/HomeLP';
 
 const masterKeyRoutes = [
   {
@@ -335,6 +336,10 @@ const pDexV3Routes = [
     screen: MarketSearchCoins,
     name: routeNames.MarketSearchCoins,
   },
+  {
+    screen: HomeLP,
+    name: routeNames.HomeLP,
+  }
 ];
 
 const homeRoutes = [

@@ -4,9 +4,12 @@ import { View, StyleSheet } from 'react-native';
 import { colorsSelector } from '@src/theme';
 import { useSelector } from 'react-redux';
 import { UTILS } from '@src/styles';
+import withLazy from '@components/LazyHoc/LazyHoc';
+import { compose } from 'recompose';
 
 const styled = StyleSheet.create({
   container: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -17,6 +20,10 @@ const styled = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 24,
     position: 'relative',
+  },
+  emptyView: {
+    flex: 1,
+    opacity: 0,
   },
 });
 
@@ -44,4 +51,8 @@ PureModalContent.propTypes = {
   styledWrapper: PropTypes.any,
 };
 
-export default React.memo(PureModalContent);
+export default compose(
+  (Comp) => (props) =>
+    <Comp emptyView={<View style={styled.emptyView} />} {...props} />,
+  withLazy,
+)(React.memo(PureModalContent));

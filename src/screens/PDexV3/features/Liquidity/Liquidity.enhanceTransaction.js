@@ -125,8 +125,10 @@ const withTransaction = WrappedComp => props => {
           onCreateWithdrawFeeLP,
           onCloseModal: onClose,
           loading,
+          setLoading,
           visible,
           error,
+          setError,
         }}
       />
       {loading && <Loading open={loading} />}

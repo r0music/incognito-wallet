@@ -1,23 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  TouchableOpacityProps,
-} from 'react-native';
-import { delay } from '@src/utils/delay';
+import { TouchableOpacityProps } from 'react-native';
 import styled from 'styled-components/native';
+import nextFrame from '@src/utils/nextFrame';
 
-const StyledTouchableOpacity = styled.TouchableOpacity`
-`;
+const StyledTouchableOpacity = styled.TouchableOpacity``;
 
 const TouchableOpacity = (props: TouchableOpacityProps) => {
-  const { onPress, activeOpacity = 0.6, ...rest } = props;
+  const { onPress, activeOpacity = 0.9, ...rest } = props;
   const _onPress = async () => {
-    await delay(0);
-    requestAnimationFrame(() => {
-      if (typeof onPress === 'function') {
-        onPress();
-      }
-    });
+    await nextFrame();
+    typeof onPress === 'function' && onPress();
   };
 
   return (

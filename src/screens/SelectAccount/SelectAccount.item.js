@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
+  actionLoadAllTokenBalance,
   actionSwitchAccountFetched,
   actionSwitchAccountFetching,
 } from '@src/redux/actions/account';
@@ -13,13 +14,14 @@ import {
 } from '@src/redux/selectors/account';
 import { Text, Text3, Toast, TouchableOpacity } from '@src/components/core';
 import { ExHandler } from '@src/services/exception';
-import debounce from 'lodash/debounce';
 import { FONT } from '@src/styles';
 import Row from '@components/Row';
 import { switchMasterKey } from '@src/redux/actions/masterKey';
 import { RatioIcon } from '@components/Icons';
 import styled from 'styled-components/native';
 import { actionToggleModal } from '@src/components/Modal';
+import nextFrame from '@src/utils/nextFrame';
+import { delay } from '@src/utils/delay';
 import ModalSwitchingAccount from './SelectAccount.modalSwitching';
 
 const itemStyled = StyleSheet.create({
@@ -69,40 +71,48 @@ const AccountItem = React.memo(
     }
     const onSelectAccount = async () => {
       try {
-        if (switchingAccount) {
-          return;
-        }
-        await dispatch(actionSwitchAccountFetching());
-        await dispatch(
+        dispatch(
           actionToggleModal({
             visible: true,
             data: <ModalSwitchingAccount />,
           }),
         );
+        await nextFrame();
+        if (switchingAccount) {
+          return;
+        }
         if (PrivateKey === account.PrivateKey) {
           Toast.showInfo(`Your current account is "${accountName}"`);
           return;
         }
+        batch(() => {
+          dispatch(actionSwitchAccountFetching());
+        });
         await dispatch(switchMasterKey(MasterKeyName, accountName));
-
+        await nextFrame();
+        if (typeof handleSelectedAccount === 'function') {
+          await nextFrame();
+          await handleSelectedAccount();
+        }
       } catch (e) {
         new ExHandler(
           e,
           `Can not switch to account "${accountName}", please try again.`,
         ).showErrorToast();
       } finally {
-        await dispatch(actionSwitchAccountFetched());
-        dispatch(
-          actionToggleModal()
-        );
-        if (typeof handleSelectedAccount === 'function') {
-          handleSelectedAccount();
-        }
+        await nextFrame();
+        batch(() => {
+          dispatch(actionSwitchAccountFetched());
+          dispatch(actionToggleModal());
+        });
         if (!onSelect) {
           navigation.goBack();
         } else {
           onSelect();
         }
+        await nextFrame();
+        await delay(1000);
+        dispatch(actionLoadAllTokenBalance());
       }
     };
 
@@ -134,7 +144,7 @@ const AccountItem = React.memo(
 
     if (!switchingAccount) {
       return (
-        <TouchableOpacity onPress={debounce(onSelectAccount, 100)}>
+        <TouchableOpacity onPress={onSelectAccount}>
           <Component style={[isCurrentAccount ? itemStyled.selected : null]} />
         </TouchableOpacity>
       );
