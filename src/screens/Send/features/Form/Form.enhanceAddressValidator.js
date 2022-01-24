@@ -15,6 +15,8 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   const {
     externalSymbol,
     isErc20Token,
+    isBep20Token,
+    isPolygonErc20Token,
     isMainCrypto,
     currencyType,
   } = selectedPrivacy;
@@ -24,12 +26,22 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   const isExternalAddress =
     (!!toAddress && !isIncognitoAddress) && selectedPrivacy?.isWithdrawable;
   const isUnshieldPegPRV = isMainCrypto && isExternalAddress;
-  const { isAddressValidated, isValidETHAddress } = useSelector(
-    feeDataSelector,
-  );
-  const isERC20 =
-    isErc20Token ||
-    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
+  const { isAddressValidated } = useSelector(feeDataSelector);
+
+  const isERC20 = React.useMemo(() => {
+    return isErc20Token ||
+      currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
+  }, [isErc20Token, currencyType]);
+
+  const isBEP20 = React.useMemo(() => {
+    return isBep20Token ||
+      currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
+  }, [isBep20Token, currencyType]);
+
+  const isPolygon20 = React.useMemo(() => {
+    return isPolygonErc20Token ||
+      currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
+  }, [isPolygonErc20Token, currencyType]);
 
   const getExternalAddressValidator = () => {
     if (!isAddressValidated) {
@@ -127,6 +139,15 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   };
 
   const getWarningAddress = () => {
+    if (isExternalAddress && isERC20) {
+      return 'You are exiting Incognito and going to Ethereum network.';
+    }
+    if (isExternalAddress && isBEP20) {
+      return 'You are exiting Incognito and going to BSC network.';
+    }
+    if (isExternalAddress && isPolygon20) {
+      return 'You are exiting Incognito and going to Polygon network.';
+    }
     if (isExternalAddress) {
       return 'You are exiting Incognito and going public.';
     }

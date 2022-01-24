@@ -54,7 +54,7 @@ const COLORS = {
   lightGrey37: '#DDDDDD',
   newGrey: '#8A8A8E',
   manateeGrey: '#959599',
-
+  darkGrey: '#303030',
   toastBackgroundDefault: 'rgba(107, 141, 143, 0.8)',
   toastBackgroundError: 'rgba(255, 101, 47, 0.8)',
   toastBackgroundWarning: 'rgba(255, 241, 192, 0.8)',

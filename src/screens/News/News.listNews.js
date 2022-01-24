@@ -7,15 +7,13 @@ import { userIdSelector } from '@screens/Profile';
 import Swipeout from 'react-native-swipeout';
 import { TouchableOpacity } from '@src/components/core';
 import { BtnDelete } from '@src/components/Button';
-import { CircleIcon } from '@src/components/Icons';
-import Icon from 'react-native-vector-icons/Entypo';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
+import Icons from 'react-native-vector-icons/MaterialIcons';
+import moment from 'moment';
 import { actionReadNews, actionRemoveNews } from './News.actions';
 import { listNewsStyled as styled } from './News.styled';
 import { TYPE } from './News.constant';
-
-
 
 const ListNews = ({ listNews, type, lastNewsID }) => {
   const navigation = useNavigation();
@@ -42,7 +40,7 @@ const ListNews = ({ listNews, type, lastNewsID }) => {
   const Item = React.memo((props) => {
 
     const { item, firstChild } = props;
-    const { id, icon, title, description } = item;
+    const { id, icon, title, description, createdAt } = item;
     const canTap = !!item?.more;
 
     // check show highlight or no:
@@ -69,72 +67,59 @@ const ListNews = ({ listNews, type, lastNewsID }) => {
     switch (type) {
     case TYPE.news: {
       Component = () => (
-        <View style={[styled.hook, styled.hook1, isHighlight?styled.highlights:'']}>
-          <CircleIcon
-            style={[
-              styled.circle,
-              // isRead && { backgroundColor: COLORS.colorGreyLight },
-            ]}
-          />
-          <View style={styled.extra}>
-            <Text style={styled.desc}>
-              {`${title} `}
-              {canTap && (
-                <Text style={[styled.desc, { color: COLORS.black }]}>
-                  {`${description}`}
-                  <Icon
-                    name="chevron-thin-right"
-                    size={14}
-                    color={COLORS.black}
-                  />
-                </Text>
-              )}
-            </Text>
-          </View>
+        <View style={styled.extra}>
+          <Text style={styled.title}>{title?.trim()}</Text>
+          <Text style={styled.date}>{moment(createdAt).format('YYYY-DD-MM HH:mm')}</Text>
+          {canTap && (
+            <View style={styled.descContainer}>
+              <Text style={styled.desc}>{description?.trim()}</Text>
+              <Icons name="chevron-right" size={16} color={COLORS.blue5} />
+            </View>
+          )}
         </View>
       );
       break;
     }
-    case TYPE.whatNews: {
-      Component = () => (
-        <View style={[styled.hook, styled.hook2, isHighlight?styled.highlights:'']}>
-          <Image style={styled.icon} source={{ uri: icon }} />
-          <Text style={styled.desc}>
-            {`${title} `}{' '}
-            {canTap && (
-              <Text style={[styled.desc, { color: COLORS.black }]}>
-                {`${description}`}
-                <Icon
-                  name="chevron-thin-right"
-                  size={14}
-                  color={COLORS.black}
-                />
-              </Text>
-            )}
-          </Text>
-        </View>
-      );
-      break;
-    }
-    case TYPE.whatNext: {
-      Component = () => (
-        <View
-          style={[styled.hook, styled.hook3,firstChild && { marginTop: 30 }]}
-        >
-          <Text style={[styled.desc, styled.descNoIcon]}>
-            {`${title} `}
-            {canTap && (
-              <Icon
-                name="chevron-thin-right"
-                size={14}
-                color={COLORS.colorGreyBold}
-              />
-            )}{' '}
-          </Text>
-        </View>        
-      );
-      break;
-    }
+    // case TYPE.whatNews: {
+    //   Component = () => (
+    //     <View style={[styled.hook, styled.hook2, isHighlight?styled.highlights:'']}>
+    //       <Image style={styled.icon} source={{ uri: icon }} />
+    //       <Text style={styled.desc}>
+    //         {`${title} `}{' '}
+    //         {canTap && (
+    //           <Text style={[styled.desc, { color: COLORS.black }]}>
+    //             {`${description}`}
+    //             <Icon
+    //               name="chevron-thin-right"
+    //               size={14}
+    //               color={COLORS.black}
+    //             />
+    //           </Text>
+    //         )}
+    //       </Text>
+    //     </View>
+    //   );
+    //   break;
+    // }
+    // case TYPE.whatNext: {
+    //   Component = () => (
+    //     <View
+    //       style={[styled.hook, styled.hook3,firstChild && { marginTop: 30 }]}
+    //     >
+    //       <Text style={[styled.desc, styled.descNoIcon]}>
+    //         {`${title} `}
+    //         {canTap && (
+    //           <Icon
+    //             name="chevron-thin-right"
+    //             size={14}
+    //             color={COLORS.colorGreyBold}
+    //           />
+    //         )}{' '}
+    //       </Text>
+    //     </View>        
+    //   );
+    //   break;
+    // }
     default: {
       return null;
     }
@@ -160,7 +145,6 @@ const ListNews = ({ listNews, type, lastNewsID }) => {
             style={[
               {
                 backgroundColor: 'transparent',
-                marginBottom: 15,
               },
               arr.length - 1 === index && { marginBottom: 0 },
             ]}

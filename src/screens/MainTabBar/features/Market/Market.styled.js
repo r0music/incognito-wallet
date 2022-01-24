@@ -16,7 +16,7 @@ export const headerStyled = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 8,
-    borderRadius: 8
+    borderRadius: 8,
   },
   tabText: {
     ...FONT.STYLE.normal,
@@ -24,16 +24,42 @@ export const headerStyled = StyleSheet.create({
   },
   wrapSearch: {
     height: 60,
-    marginBottom: 8
+    marginBottom: 8,
+  },
+  iconButtonContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.darkGrey,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  notificationDot: {
+    width: 10,
+    height: 10,
+    backgroundColor: 'red',
+    borderRadius: 5,
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    borderWidth: 1,
+    borderColor: COLORS.darkGrey
+  },
+  headerRightContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  iconButtonSpacing: {
+    width: 8,
   },
   wrapInput: {
     flex: 1,
   },
-  rowStyle: {
-  },
+  rowStyle: {},
   rowTextStyle: {
     ...FONT.STYLE.normal,
-    fontSize: FONT.SIZE.small
+    fontSize: FONT.SIZE.small,
   },
   dropdownStyle: {
     borderRadius: 8,
@@ -51,8 +77,8 @@ export const headerStyled = StyleSheet.create({
     backgroundColor: COLORS.lightGrey30,
   },
   wrapFilter: {
-    paddingTop: 24
-  }
+    paddingTop: 24,
+  },
 });
 
 export const itemStyled = StyleSheet.create({
