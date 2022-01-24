@@ -75,8 +75,8 @@ const useSendSelf = ({ error, setLoading, setError }) => {
     ) {
       return (
         <Text style={styled.warning} onPress={handleSendMainCrypto}>
-          You had only 1 UTXO for PRV in your wallet while adding liquidity would create 2 transactions (1 for pToken fee and another for PRV) that need 2 UTXO for paying network fees. Please&nbsp;
-          <Text style={[styled.warning, { textDecorationLine: 'underline' }]}>increase the number of UTXOs.</Text>
+          You need 2 UTXOs to contribute liquidity. Simply tap here to&nbsp;
+          <Text style={[styled.warning, { textDecorationLine: 'underline' }]}>split a UTXO.</Text>
         </Text>
       );
     }
