@@ -286,7 +286,7 @@ export const actionHandleInjectEstDataForPDex =
         break;
       }
       const slippagetolerance = slippagetoleranceSelector(state);
-      const originalMinAmountExpected = calMintAmountExpected({
+      const originalMinAmountExpected = field === formConfigs.buytoken ? maxGet : calMintAmountExpected({
         maxGet,
         slippagetolerance,
       });
@@ -437,7 +437,7 @@ export const actionHandleInjectEstDataForPancake =
       const { maxGet, minFeePRVFixed, availableFixedSellAmountPRV } =
         feetokenDataSelector(state);
       const slippagetolerance = slippagetoleranceSelector(state);
-      const originalMinAmountExpected = calMintAmountExpected({
+      const originalMinAmountExpected = field === formConfigs.buytoken ? maxGet : calMintAmountExpected({
         maxGet,
         slippagetolerance,
       });
