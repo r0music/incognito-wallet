@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { FONT } from '@src/styles';
 import styled from 'styled-components/native';
+import nextFrame from '@src/utils/nextFrame';
 
 const styles = StyleSheet.create({
   btnStyle: {
@@ -21,12 +22,11 @@ const styles = StyleSheet.create({
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.regular,
   },
-  titleDisabledStyle: {
-  },
+  titleDisabledStyle: {},
 });
 
 const CustomText = styled(Text)`
-  color: ${({ disabled, theme }) => disabled ? theme.text11 : theme.text1 };
+  color: ${({ disabled, theme }) => (disabled ? theme.text11 : theme.text1)};
   line-height: 24px;
 `;
 
@@ -42,7 +42,10 @@ const Tab = (props) => {
     titleStyled,
     titleDisabledStyled,
   } = props;
-  const onClick = () => typeof onClickTab === 'function' && onClickTab(tabID);
+  const onClick = async () => {
+    await nextFrame();
+    typeof onClickTab === 'function' && onClickTab(tabID);
+  };
   const disabled = tabID !== activeTab;
   return (
     <TouchableOpacity
@@ -52,7 +55,9 @@ const Tab = (props) => {
           ? [tabStyled, disabled ? tabStyledDisabled : null]
           : [
             styles.btnStyle,
-            disabled ? styles.btnStyleDisabled : { ...styles.btnStyleEnabled, ...tabStyledEnabled },
+            disabled
+              ? styles.btnStyleDisabled
+              : { ...styles.btnStyleEnabled, ...tabStyledEnabled },
           ]
       }
     >
@@ -63,7 +68,8 @@ const Tab = (props) => {
             ? [titleStyled, disabled && titleDisabledStyled]
             : [styles.titleStyle, disabled ? styles.titleDisabledStyle : null]
         }
-      >{label}
+      >
+        {label}
       </CustomText>
     </TouchableOpacity>
   );
@@ -74,7 +80,7 @@ Tab.defaultProps = {
   titleStyled: null,
   tabStyledDisabled: null,
   titleDisabledStyled: null,
-  tabStyledEnabled: {}
+  tabStyledEnabled: {},
 };
 
 Tab.propTypes = {

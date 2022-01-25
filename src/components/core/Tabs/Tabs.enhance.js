@@ -2,6 +2,7 @@ import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useDispatch, useSelector } from 'react-redux';
 import { delay } from '@src/utils/delay';
+import nextFrame from '@src/utils/nextFrame';
 import { ExHandler } from '@src/services/exception';
 import { View } from '@src/components/core';
 import { actionChangeTab } from './Tabs.actions';
@@ -15,6 +16,7 @@ const enhance = (WrappedComp) => (props) => {
   const activeTab = useSelector(activedTabSelector)(rootTabID);
   const dispatch = useDispatch();
   const onClickTabItem = async (tab) => {
+    await nextFrame();
     try {
       const foundTab = children.find((chil) => chil.props.tabID === tab);
       const { onChangeTab } = foundTab.props || {};
@@ -25,7 +27,7 @@ const enhance = (WrappedComp) => (props) => {
             tabID: tab,
           }),
         );
-        await delay(0);
+        await nextFrame();
         if (typeof onChangeTab === 'function') {
           onChangeTab();
         }

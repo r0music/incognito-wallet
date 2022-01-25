@@ -25,7 +25,7 @@ import {
 } from './OrderLimit.constant';
 
 const initialState = {
-  isFetching: false,
+  isFetching: true,
   isFetched: false,
   data: {},
   poolId: '',

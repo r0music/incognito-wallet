@@ -9,18 +9,16 @@ import {
   actionInitSwapForm,
   actionReset as actionResetSwap,
 } from '@screens/PDexV3/features/Swap';
-import {
-  actionFetchPools,
-  actionReset,
-  poolsSelector,
-} from '@screens/PDexV3/features/Pools';
+import { actionFetchPools, actionReset } from '@screens/PDexV3/features/Pools';
 import { actionReset as actionResetChart } from '@screens/PDexV3/features/Chart';
 import {
   actionInit,
   actionReset as actionResetOrderLimit,
+  actionFetchOrdersHistory,
+  HISTORY_ORDERS_STATE,
+  OPEN_ORDERS_STATE,
 } from '@screens/PDexV3/features/OrderLimit';
 import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
-import { LoadingContainer } from '@src/components/core';
 import {
   ROOT_TAB_TRADE,
   TAB_SWAP_ID,
@@ -31,7 +29,6 @@ import {
 
 const enhance = (WrappedComp) => (props) => {
   const [refreshing, setRefreshing] = React.useState(false);
-  const { isFetching, isFetched } = useSelector(poolsSelector);
   const activedTab = useSelector(activedTabSelector)(ROOT_TAB_TRADE);
   const dispatch = useDispatch();
   const onRefresh = async () => {
@@ -46,7 +43,14 @@ const enhance = (WrappedComp) => (props) => {
       }
       case TAB_SELL_LIMIT_ID:
       case TAB_BUY_LIMIT_ID: {
-        await dispatch(actionInit());
+        await dispatch(
+          actionInit({
+            shouldFetchListPools: true,
+            shouldFetchNFTData: true,
+          }),
+        );
+        dispatch(actionFetchOrdersHistory(HISTORY_ORDERS_STATE));
+        dispatch(actionFetchOrdersHistory(OPEN_ORDERS_STATE));
         break;
       }
       case TAB_MARKET_ID: {
@@ -70,9 +74,6 @@ const enhance = (WrappedComp) => (props) => {
       dispatch(actionResetSwap());
     };
   }, []);
-  if (isFetching && !isFetched) {
-    return <LoadingContainer />;
-  }
   return (
     <ErrorBoundary>
       <WrappedComp

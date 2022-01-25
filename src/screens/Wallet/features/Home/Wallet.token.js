@@ -1,9 +1,9 @@
-import React, {memo} from 'react';
+import React, { memo } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import PropTypes from 'prop-types';
 import withToken from '@screens/Wallet/features/Home/Wallet.enhanceToken';
 import { useSelector } from 'react-redux';
-import {currencySelector, hideWalletBalanceSelector} from '@screens/Setting';
+import { currencySelector, hideWalletBalanceSelector } from '@screens/Setting';
 import Swipeout from 'react-native-swipeout';
 import { tokenStyled } from '@screens/Wallet/features/Home/Wallet.styled';
 import { ImageCached } from '@src/components';
@@ -18,38 +18,69 @@ import { itemStyled } from '@screens/Setting/features/Keychain/keychain.styled';
 import { DeleteFillIcon } from '@components/Icons/icon.delete';
 import incognito from '@assets/images/new-icons/incognito.png';
 import { colorsSelector } from '@src/theme/theme.selector';
+import nextFrame from '@src/utils/nextFrame';
 
 const TokenDefault = React.memo((props) => {
-  const { symbol, priceUsd, amount, pDecimals, decimalDigits, pricePrv, change, onPress, name, isGettingBalance, showGettingBalance, iconUrl } = props;
+  const {
+    symbol,
+    priceUsd,
+    amount,
+    pDecimals,
+    decimalDigits,
+    pricePrv,
+    change,
+    onPress,
+    name,
+    isGettingBalance,
+    showGettingBalance,
+    iconUrl,
+  } = props;
   const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
   const isToggleUSD = useSelector(currencySelector);
   const hideBalance = useSelector(hideWalletBalanceSelector);
   const colors = useSelector(colorsSelector);
   const balance = React.useMemo(() => {
     const price = isToggleUSD ? priceUsd : pricePrv;
-    const amountCompare = formatAmount(price, amount, pDecimals, pDecimals, decimalDigits, false);
+    const amountCompare = formatAmount(
+      price,
+      amount,
+      pDecimals,
+      pDecimals,
+      decimalDigits,
+      false,
+    );
     const tokenAmount = format.amountVer2(amount, pDecimals);
     const isTokenDecrease = change[0] === '-';
     const changeToNumber = Number(replace(change, '-', ''));
-    const changeStr = changeToNumber === 0 ? '' : `${isTokenDecrease ? '-' : '+'}${round(changeToNumber, 2)}%`;
+    const changeStr =
+      changeToNumber === 0
+        ? ''
+        : `${isTokenDecrease ? '-' : '+'}${round(changeToNumber, 2)}%`;
     const changeColor = isTokenDecrease ? COLORS.red2 : COLORS.green;
     return {
       amountCompare,
       price: formatPrice(price),
       tokenAmount,
       changeStr,
-      changeColor
+      changeColor,
     };
   }, [priceUsd, pricePrv, amount, isToggleUSD]);
 
   return (
-    <TouchableOpacity style={tokenStyled.container} onPress={onPress}>
-      <ImageCached style={tokenStyled.icon} uri={iconUrl} defaultImage={incognito} />
+    <TouchableOpacity
+      style={tokenStyled.container}
+      onPress={async () => {
+        await nextFrame();
+        typeof onPress === 'function' && onPress();
+      }}
+    >
+      <ImageCached
+        style={tokenStyled.icon}
+        uri={iconUrl}
+        defaultImage={incognito}
+      />
       <View style={tokenStyled.wrapFirst}>
-        <NormalText
-          style={tokenStyled.mainText}
-          text={symbol}
-        />
+        <NormalText style={tokenStyled.mainText} text={symbol} />
         <NormalText
           text={name}
           style={[tokenStyled.grayText, { color: colors.text3 }]}
@@ -60,19 +91,18 @@ const TokenDefault = React.memo((props) => {
           <View style={tokenStyled.wrapLoader}>
             <ActivityIndicator />
           </View>
-        )
-          : (
-            <NormalText
-              text={balance.amountCompare}
-              hasPSymbol
-              style={tokenStyled.mainText}
-              stylePSymbol={[
-                tokenStyled.mainText,
-                { fontFamily: FONT.NAME.specialRegular }
-              ]}
-              showBalance={!hideBalance}
-            />
-          )}
+        ) : (
+          <NormalText
+            text={balance.amountCompare}
+            hasPSymbol
+            style={tokenStyled.mainText}
+            stylePSymbol={[
+              tokenStyled.mainText,
+              { fontFamily: FONT.NAME.specialRegular },
+            ]}
+            showBalance={!hideBalance}
+          />
+        )}
         <NormalText
           text={`${balance.tokenAmount} ${symbol}`}
           style={[tokenStyled.grayText, { color: colors.text3 }]}
@@ -111,10 +141,11 @@ const Token = (props) => {
     );
   }
   return (
-    <View style={{
-      ...itemStyled.swipeout,
-      borderBottomColor: colors.border4,
-    }}
+    <View
+      style={{
+        ...itemStyled.swipeout,
+        borderBottomColor: colors.border4,
+      }}
     >
       <TokenDefault {...props} />
     </View>
@@ -136,7 +167,7 @@ Token.defaultProps = {
   percentChange: 0,
   pricePrv: 0,
   swipable: false,
-  handleRemoveToken: null
+  handleRemoveToken: null,
 };
 Token.propTypes = {
   pDecimals: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -166,7 +197,7 @@ TokenDefault.propTypes = {
   onPress: PropTypes.func.isRequired,
   isGettingBalance: PropTypes.bool.isRequired,
   showGettingBalance: PropTypes.bool.isRequired,
-  iconUrl: PropTypes.string.isRequired
+  iconUrl: PropTypes.string.isRequired,
 };
 
 export default withToken(memo(Token));
