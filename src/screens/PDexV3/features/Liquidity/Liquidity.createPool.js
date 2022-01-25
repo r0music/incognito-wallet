@@ -243,7 +243,6 @@ const CreatePool = ({
     onCloseModal();
     onInitCreatePool();
   };
-
   React.useEffect(() => {
     onInitCreatePool();
     return () => onFreeCreatePool();
