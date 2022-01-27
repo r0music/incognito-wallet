@@ -27,6 +27,29 @@ export const isFetchingSelector = createSelector(
   ({ isFetching }) => isFetching
 );
 
+const mapRewardToUSD = ({ rewards, getPrivacyDataByTokenID }) => {
+  let mapRewards = Object.keys(rewards).map(tokenId => ({
+    tokenId,
+    reward: rewards[tokenId]
+  }));
+  mapRewards = mapRewards.map(item => {
+    const token = getPrivacyDataByTokenID(item.tokenId);
+    const rewardUSD = convert.toHumanAmount(new BigNumber(item.reward).multipliedBy(token.priceUsd).toNumber(), token.pDecimals);
+    const rewardUSDStr = format.toFixed(rewardUSD, token.pDecimals);
+    const rewardUSDSymbolStr = `${rewardUSDStr} ${token.symbol}`;
+    const rewardStr = `${format.amountFull(item.reward, token.pDecimals)} ${token.symbol}`;
+    return {
+      ...item,
+      token,
+      rewardUSD,
+      rewardUSDStr,
+      rewardUSDSymbolStr,
+      rewardStr
+    };
+  });
+  return mapRewards;
+};
+
 export const listShareSelector = createSelector(
   portfolioSelector,
   shareDetailsSelector,
@@ -45,6 +68,7 @@ export const listShareSelector = createSelector(
         tokenId1,
         tokenId2,
         rewards,
+        orderRewards,
         nftId
       } = item;
       const poolDetail = shareDetails.find((share) => poolId === share.poolId);
@@ -74,33 +98,28 @@ export const listShareSelector = createSelector(
       const shareStr = getShareStr(share, totalShare);
       const validNFT = !!getValidRealAmountNFT(nftId);
       const disableBtn = isFetchingNFT || !validNFT;
-      let mapRewards = Object.keys(rewards).map(tokenId => ({
-        tokenId,
-        reward: rewards[tokenId]
-      }));
-      mapRewards = mapRewards.map(item => {
-        const token = getPrivacyDataByTokenID(item.tokenId);
-        const rewardUSD = convert.toHumanAmount(new BigNumber(item.reward).multipliedBy(token.priceUsd).toNumber(), token.pDecimals);
-        const rewardUSDStr = format.toFixed(rewardUSD, token.pDecimals);
-        const rewardUSDSymbolStr = `${rewardUSDStr} ${token.symbol}`;
-        const rewardStr = `${format.amountFull(item.reward, token.pDecimals)} ${token.symbol}`;
-        return {
-          ...item,
-          token,
-          rewardUSD,
-          rewardUSDStr,
-          rewardUSDSymbolStr,
-          rewardStr
-        };
-      });
-      const totalRewardUSD = mapRewards.reduce((prev, curr) => new BigNumber(prev).plus(curr.rewardUSD).toNumber(), 0);
+      const mapLPRewards = mapRewardToUSD({
+        rewards: rewards || {},
+        getPrivacyDataByTokenID
+      }) || [];
+      const mapOrderRewards = mapRewardToUSD({
+        rewards: orderRewards  || {},
+        getPrivacyDataByTokenID
+      }) || [];
+      const totalRewardUSD = mapLPRewards.concat(mapOrderRewards).reduce((prev, curr) => new BigNumber(prev).plus(curr.rewardUSD).toNumber(), 0);
       const totalRewardAmount = Math.ceil(new BigNumber(totalRewardUSD).multipliedBy(Math.pow(10, 9)).toNumber());
       const totalRewardUSDStr = format.amountVer2(totalRewardAmount, 9);
       const rewardUSDSymbolStr = `$${totalRewardUSDStr}`;
-      const hookRewards = mapRewards.map((item, index) => ({
+      const hookLPRewards = mapLPRewards.map((item) => ({
         label: 'Fees collected',
         valueText: item.rewardStr,
       }));
+
+      const hookOrderRewards = mapOrderRewards.map((item) => ({
+        label: 'Order reward collected',
+        valueText: item.rewardStr,
+      }));
+
       const hookFactories = [
         {
           label: `${token1.symbol} Balance`,
@@ -111,7 +130,7 @@ export const listShareSelector = createSelector(
           value: principal.token2,
         },
         {
-          label: 'Fees collected',
+          label: 'Rewards collected',
           value: rewardUSDSymbolStr,
         },
       ];
@@ -137,7 +156,8 @@ export const listShareSelector = createSelector(
           label: `${token2.symbol} Balance`,
           valueText: `${principal.token2} ${token2Network}`,
         },
-        ...hookRewards,
+        ...hookLPRewards,
+        ...hookOrderRewards,
       ];
 
       return {
@@ -161,7 +181,8 @@ export const listShareSelector = createSelector(
         poolId,
         validNFT,
         disableBtn,
-        mapRewards,
+        mapLPRewards,
+        mapOrderRewards,
         totalRewardUSD,
         totalRewardUSDStr,
         rewardUSDSymbolStr,
@@ -194,7 +215,7 @@ export const getDataShareByPoolIdSelector = createSelector(
     listShare.find((item) => item?.poolId === poolId),
 );
 
-export const totalShareSelector = createSelector(
+export const totalRewardCollectedSelector = createSelector(
   listShareSelector,
   (listShare) => {
     const rewardUSD = listShare.reduce((prev, cur) => {
@@ -205,7 +226,7 @@ export const totalShareSelector = createSelector(
   }
 );
 
-export const totalShareUSDSelector = createSelector(
+export const totalContributedUSDSelector = createSelector(
   listShareSelector,
   (listShare) => {
     const principalUSD = listShare.reduce((prev, cur) => {
