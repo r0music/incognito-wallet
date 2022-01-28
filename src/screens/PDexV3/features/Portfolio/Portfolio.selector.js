@@ -116,7 +116,7 @@ export const listShareSelector = createSelector(
       }));
 
       const hookOrderRewards = mapOrderRewards.map((item) => ({
-        label: 'Order reward collected',
+        label: 'Order reward',
         valueText: item.rewardStr,
       }));
 
