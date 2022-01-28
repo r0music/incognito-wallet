@@ -4,7 +4,7 @@ import com.incognito.wallet.generated.BasePackageList;
 import android.app.Application;
 
 import java.util.Arrays;
- 
+
 import org.unimodules.adapters.react.ModuleRegistryAdapter;
 import org.unimodules.adapters.react.ReactModuleRegistryProvider;
 import org.unimodules.core.interfaces.SingletonModule;
@@ -80,7 +80,7 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
-    long size = 50L * 1024L * 1024L; // 50 MB
+    long size = 200L * 1024L * 1024L; // 200 MB
     com.facebook.react.modules.storage.ReactDatabaseSupplier.getInstance(getApplicationContext()).setMaximumSize(size);
   }
 }

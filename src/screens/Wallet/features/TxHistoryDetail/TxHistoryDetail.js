@@ -73,7 +73,7 @@ export const Hook = (props) => {
   const handleOpenUrl = () =>
     typeof handleOpenLink === 'function'
       ? handleOpenLink()
-      : linkingService.openUrl(valueText);
+      : linkingService.openUrlInSide(valueText);
 
   const renderComponent = () => (
     <>

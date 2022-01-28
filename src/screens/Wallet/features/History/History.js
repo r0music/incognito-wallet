@@ -187,6 +187,7 @@ const History = () => {
   if (factories.length === 0) {
     return null;
   }
+  console.log('factories::: ', factories);
   const handleRefresh = () => dispatch(actionFetchTx());
   const onCopyData = () => {
     Clipboard.setString(JSON.stringify(tx));

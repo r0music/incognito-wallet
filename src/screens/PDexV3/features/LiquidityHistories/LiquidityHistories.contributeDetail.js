@@ -23,7 +23,7 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
   const { refundData, retryData } = history;
   const handleOpenLink = (txID) => {
     if (!txID) return;
-    linkingService.openUrl(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txID}`,);
+    linkingService.openUrlInSide(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txID}`,);
   };
   const onRefundTx = () => {
     const { tokenId, poolId, pairHash, nftId, amp } = refundData;

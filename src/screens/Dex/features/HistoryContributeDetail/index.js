@@ -30,7 +30,7 @@ const HistoryContributeDetail = React.memo(({
   const { pairId, statusText } = history;
   const handleOpenLink = (txID) => {
     if (!txID) return;
-    linkingService.openUrl(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txID}`,);
+    linkingService.openUrlInSide(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txID}`,);
   };
   const historyFactory = [
     {
