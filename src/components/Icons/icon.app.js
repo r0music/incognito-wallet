@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { View } from '@src/components/core';
+import { Image, StyleSheet } from 'react-native';
 import { COLORS } from '@src/styles';
+import AppImg from '@assets/images/app-icon.png';
 
 const styled = StyleSheet.create({
   icon: {
@@ -13,7 +13,7 @@ const styled = StyleSheet.create({
 });
 
 const AppIcon = (props) => {
-  return <View style={{ ...styled.icon, ...props?.style }} />;
+  return <Image source={AppImg} style={[props?.style, styled.icon]} />;
 };
 
 AppIcon.propTypes = {};
