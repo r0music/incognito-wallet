@@ -20,8 +20,8 @@ import { actionFetchPairs } from '@screens/PDexV3/features/Swap';
 import { actionFetchListPools } from '@screens/PDexV3/features/Pools';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { ANALYTICS } from '@src/constants';
-import {actionFetch as actionFetchHomeConfigs} from '@screens/Home/Home.actions';
-import {actionCheckUnreadNews} from '@screens/News';
+import { actionFetch as actionFetchHomeConfigs } from '@screens/Home/Home.actions';
+import { actionCheckUnreadNews } from '@screens/News';
 import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
 import withWizard from './GetStarted.enhanceWizard';
 import withWelcome from './GetStarted.enhanceWelcome';
@@ -60,13 +60,15 @@ const enhance = (WrappedComp) => (props) => {
       login();
       batch(() => {
         dispatch(actionFetchProfile());
-        dispatch(getPTokenList());
-        dispatch(getInternalTokenList());
         dispatch(getBanners());
         dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));
-        dispatch(actionFetchListPools());
-        dispatch(actionFetchPairs(true));
       });
+      await Promise.all([
+        dispatch(getPTokenList()),
+        dispatch(getInternalTokenList()),
+        dispatch(actionFetchListPools()),
+        dispatch(actionFetchPairs(true)),
+      ]);
       const servers = await serverService.get();
       if (!servers || servers?.length === 0) {
         await serverService.setDefaultList();

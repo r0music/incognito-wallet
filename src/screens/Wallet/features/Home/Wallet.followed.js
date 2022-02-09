@@ -1,4 +1,4 @@
-import React, {memo} from 'react';
+import React, { memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedPrivacySelector, tokenSelector } from '@src/redux/selectors';
 import { useNavigation } from 'react-navigation-hooks';
@@ -8,8 +8,11 @@ import routeNames from '@routers/routeNames';
 import { actionRemoveFollowToken } from '@src/redux/actions/token';
 import { RefreshControl, ScrollView, Toast, View } from '@components/core';
 import Token from '@screens/Wallet/features/Home/Wallet.token';
-import {CONSTANT_COMMONS} from '@src/constants';
-import {styledFollow, styledToken} from '@screens/Wallet/features/Home/_Wallet.styled';
+import { CONSTANT_COMMONS } from '@src/constants';
+import {
+  styledFollow,
+  styledToken,
+} from '@screens/Wallet/features/Home/_Wallet.styled';
 import { formatAmount } from '@components/Token';
 import convert from '@utils/convert';
 import orderBy from 'lodash/orderBy';
@@ -18,22 +21,32 @@ import { decimalDigitsSelector } from '@screens/Setting';
 const Followed = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const followed = useSelector(tokenSelector.tokensFollowedSelector);
-  const getPrivacyDataByTokenID = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID);
+  const followed = useSelector(tokenSelector.tokensRealFollowedSelector);
+  const getPrivacyDataByTokenID = useSelector(
+    selectedPrivacySelector.getPrivacyDataByTokenID,
+  );
   const decimalDigits = useSelector(decimalDigitsSelector);
 
   const _followed = React.useMemo(() => {
-    const data = followed.map(_token => {
-      const token = getPrivacyDataByTokenID(_token.id);
-      const amountUSD =
-        formatAmount(token.priceUsd, _token.amount, token.pDecimals, token.pDecimals, decimalDigits, false);
-      const amountUSDNumb = convert.toNumber(amountUSD, true);
-      return {
-        ..._token,
-        amountUSD,
-        amountUSDNumb,
-      };
-    });
+    const data = followed
+      .filter((token) => token?.id !== CONSTANT_COMMONS.PRV.id)
+      .map((_token) => {
+        const token = getPrivacyDataByTokenID(_token.id);
+        const amountUSD = formatAmount(
+          token.priceUsd,
+          _token.amount,
+          token.pDecimals,
+          token.pDecimals,
+          decimalDigits,
+          false,
+        );
+        const amountUSDNumb = convert.toNumber(amountUSD, true);
+        return {
+          ..._token,
+          amountUSD,
+          amountUSDNumb,
+        };
+      });
     return orderBy(data, 'amountUSDNumb', 'desc');
   }, [followed, getPrivacyDataByTokenID]);
 
@@ -54,12 +67,12 @@ const Followed = () => {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      refreshControl={(
+      refreshControl={
         <RefreshControl
           refreshing={isReloading}
           onRefresh={() => onRefresh(true)}
         />
-      )}
+      }
       style={styledFollow.scrollView}
       nestedScrollEnabled
     >
