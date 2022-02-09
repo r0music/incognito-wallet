@@ -36,6 +36,9 @@ import {
   ACTION_SET_ERROR,
   ACTION_REMOVE_ERROR,
   ACTION_CHANGE_SLIPPAGE,
+  ACTION_FETCHING_PANCAKE_REWARD_HISTORY,
+  ACTION_FETCHED_PANCAKE_REWARD_HISTORY,
+  ACTION_FETCH_FAIL_PANCAKE_REWARD_HISTORY
 } from './Swap.constant';
 
 const initialState = {
@@ -85,6 +88,7 @@ const initialState = {
   isPrivacyApp: false,
   error: null,
   slippage: '1',
+  pancakeRewardHistories: [],
 };
 
 const reducer = (state = initialState, action) => {
@@ -331,7 +335,17 @@ const reducer = (state = initialState, action) => {
       swapingToken: action.payload,
     };
   }
-
+  case ACTION_FETCHED_PANCAKE_REWARD_HISTORY: {
+    return {
+      ...state,
+      pancakeRewardHistories: action.payload,
+    };
+  }
+  case ACTION_FETCH_FAIL_PANCAKE_REWARD_HISTORY: {
+    return {
+      ...state
+    };
+  }
   default:
     return state;
   }
