@@ -180,7 +180,6 @@ class SelectedPrivacy {
     }
     this.amount = token?.amount;
     if (this.isMainCrypto) {
-      this.amount = account?.value;
       this.symbol = CONSTANT_COMMONS.PRV.symbol;
     }
     this.amount = this.amount || 0;

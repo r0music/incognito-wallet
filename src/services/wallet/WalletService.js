@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import nextFrame from '@src/utils/nextFrame';
 import AccountModel from '@src/models/account';
 import storage from '@src/services/storage';
 import {
@@ -58,6 +59,7 @@ export async function loadWallet(passphrase, name = 'Wallet', rootName = '') {
     wallet.Name = name;
     wallet.RootName = rootName;
     await configsWallet(wallet);
+    await nextFrame();
     wallet = await wallet.loadWallet(passphrase);
     return wallet?.Name ? wallet : false;
   } catch (error) {
@@ -98,8 +100,9 @@ export async function initWallet(walletName = 'Wallet', rootName) {
     let wallet = new Wallet();
     wallet.RootName = rootName;
     await configsWallet(wallet);
+    await nextFrame();
     await wallet.init(aesKey, storage, walletName, 'Anon');
-    await wallet.save(aesKey);
+    wallet.save(aesKey);
     return wallet;
   } catch (e) {
     throw e;
@@ -109,6 +112,7 @@ export async function initWallet(walletName = 'Wallet', rootName) {
 export async function saveWallet(wallet) {
   const { aesKey } = await getPassphrase();
   wallet.Storage = storage;
+  await nextFrame();
   wallet.save(aesKey);
 }
 
@@ -145,6 +149,7 @@ export async function importWallet(mnemonic, name) {
     await configsWallet(wallet);
     console.timeEnd('TIME_CONFIGS_WALLET');
     console.time('TIME_IMPORT_WALLET');
+    await nextFrame();
     await wallet.import(mnemonic, aesKey, name, storage);
     console.timeEnd('TIME_IMPORT_WALLET');
     return wallet;
@@ -189,7 +194,8 @@ export async function createDefaultAccounts(wallet) {
   }
 
   if (isCreatedNewAccount) {
-    const masterAccountInfo = await wallet.MasterAccount.getDeserializeInformation();
+    const masterAccountInfo =
+      await wallet.MasterAccount.getDeserializeInformation();
     await updateWalletAccounts(
       masterAccountInfo.PublicKeyCheckEncode,
       accounts.map((item) => ({
@@ -208,6 +214,7 @@ export async function storeWalletAccountIdsOnAPI(wallet) {
     name: account.AccountName,
     id: account.ID,
   }));
-  const masterAccountInfo = await wallet.MasterAccount.getDeserializeInformation();
+  const masterAccountInfo =
+    await wallet.MasterAccount.getDeserializeInformation();
   return updateWalletAccounts(masterAccountInfo.PublicKeyCheckEncode, accounts);
 }

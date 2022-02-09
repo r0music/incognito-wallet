@@ -23,6 +23,7 @@ import difference from 'lodash/difference';
 import { isUsePRVToPayFeeSelector } from '@screens/Setting';
 import flatten from 'lodash/flatten';
 import orderBy from 'lodash/orderBy';
+import nextFrame from '@src/utils/nextFrame';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -873,6 +874,7 @@ export const actionInitSwapForm =
   ({ refresh = true, defaultPair = {}, shouldFetchHistory = false } = {}) =>
     async (dispatch, getState) => {
       try {
+        await nextFrame();
         let state = getState();
         const defaultExchange = defaultExchangeSelector(state);
         const isUsePRVToPayFee = isUsePRVToPayFeeSelector(state);
@@ -905,7 +907,6 @@ export const actionInitSwapForm =
         const { selltoken } = pair;
         state = getState();
         const { slippage: defautSlippage } = swapSelector(state);
-        console.log('defautSlippage', defautSlippage);
         batch(() => {
           dispatch(
             change(
@@ -920,15 +921,15 @@ export const actionInitSwapForm =
           } else {
             dispatch(actionSetFeeToken(PRV.id));
           }
-          dispatch(getBalance(selltoken));
-          if (selltoken !== PRV_ID && refresh) {
-            dispatch(getBalance(PRV_ID));
-          }
-          if (shouldFetchHistory) {
-            dispatch(actionFetchHistory());
-            dispatch(actionFetchPancakeRewardHistories());
-          }
         });
+        await dispatch(getBalance(selltoken));
+        if (selltoken !== PRV_ID && refresh) {
+          await dispatch(getBalance(PRV_ID));
+        }
+        if (shouldFetchHistory) {
+          await dispatch(actionFetchHistory());
+          await dispatch(actionFetchPancakeRewardHistories());
+        }
       } catch (error) {
         new ExHandler(error).showErrorToast();
       } finally {
@@ -1151,6 +1152,7 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     const pDexV3 = await dispatch(actionGetPDexV3Inst());
     const defaultExchange = defaultExchangeSelector(state);
     const isPrivacyApp = isPrivacyAppSelector(state);
+    await nextFrame();
     if (!isPrivacyApp) {
       const [swapHistory, pancakeHistory] = await Promise.all([
         pDexV3.getSwapHistory({ version: PrivacyVersion.ver2 }),
@@ -1277,6 +1279,7 @@ export const actionSwitchPlatform =
       if (!field || errorEstTrade) {
         return;
       }
+      await nextFrame();
       switch (platformId) {
       case KEYS_PLATFORMS_SUPPORTED.incognito:
         await dispatch(actionHandleInjectEstDataForPDex());

@@ -2,7 +2,7 @@ import React, {memo} from 'react';
 import { ScrollView, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header, RowSpaceText, SuccessModal} from '@src/components';
+import { Header, RowSpaceText, SuccessModal } from '@src/components';
 import {
   LIQUIDITY_MESSAGES,
   formConfigsCreatePool,
@@ -243,17 +243,6 @@ const CreatePool = ({
     onCloseModal();
     onInitCreatePool();
   };
-
-  const renderContent = () => (
-    <>
-      <InputsGroup />
-      <View style={styled.padding}>
-        {!!_error && <Text style={styled.warning}>{_error}</Text>}
-        <ButtonCreatePool onSubmit={onSubmit} />
-        <Extra />
-      </View>
-    </>
-  );
   React.useEffect(() => {
     onInitCreatePool();
     return () => onFreeCreatePool();
@@ -267,7 +256,12 @@ const CreatePool = ({
           showsVerticalScrollIndicator={false}
         >
           <Form>
-            {renderContent()}
+            <InputsGroup />
+            <View style={styled.padding}>
+              {!!_error && <Text style={styled.warning}>{_error}</Text>}
+              <ButtonCreatePool onSubmit={onSubmit} />
+              <Extra />
+            </View>
           </Form>
         </ScrollView>
       </View>
@@ -305,5 +299,6 @@ export default compose(
   withLazy,
   withLiquidity,
   withLayout_2,
+  withLiquidity,
   withTransaction,
 )(memo(CreatePool));
