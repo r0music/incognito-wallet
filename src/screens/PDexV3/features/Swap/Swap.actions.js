@@ -55,6 +55,9 @@ import {
   ACTION_SET_ERROR,
   ACTION_REMOVE_ERROR,
   ACTION_CHANGE_SLIPPAGE,
+  ACTION_FETCHING_PANCAKE_REWARD_HISTORY,
+  ACTION_FETCHED_PANCAKE_REWARD_HISTORY,
+  ACTION_FETCH_FAIL_PANCAKE_REWARD_HISTORY,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -923,6 +926,7 @@ export const actionInitSwapForm =
           }
           if (shouldFetchHistory) {
             dispatch(actionFetchHistory());
+            dispatch(actionFetchPancakeRewardHistories());
           }
         });
       } catch (error) {
@@ -1120,6 +1124,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
     batch(() => {
       dispatch(actionFetchingSwap(false));
       dispatch(actionFetchHistory());
+      dispatch(actionFetchPancakeRewardHistories());
     });
   }
   return tx;
@@ -1168,6 +1173,38 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     console.log('actionFetchHistory-error', error);
     new ExHandler(error).showErrorToast();
     await dispatch(actionFetchFailOrderHistory());
+  }
+};
+
+
+// Reward history
+export const actionFetchingPancakeRewardHistories = () => ({
+  type: ACTION_FETCHING_PANCAKE_REWARD_HISTORY,
+});
+
+export const actionFetchedPancakeRewardHistories = (payload) => ({
+  type: ACTION_FETCHED_PANCAKE_REWARD_HISTORY,
+  payload,
+});
+
+export const actionFetchFailPancakeRewardHistories = () => ({
+  type: ACTION_FETCH_FAIL_PANCAKE_REWARD_HISTORY,
+});
+
+export const actionFetchPancakeRewardHistories = () => async (dispatch) => {
+  try {
+    await dispatch(actionFetchingPancakeRewardHistories());
+    const pDexV3 = await dispatch(actionGetPDexV3Inst());
+    const rewardHistoriesApiResponse = await pDexV3.getSwapPancakeRewardHistory({
+      page: 0,
+      limit: 1000
+    });
+    console.log('rewardHistoriesApiResponse', rewardHistoriesApiResponse);
+    dispatch(actionFetchedPancakeRewardHistories(rewardHistoriesApiResponse));
+  } catch (error) {
+    console.log('actionFetchHistory-error', error);
+    new ExHandler(error).showErrorToast();
+    await dispatch(actionFetchFailPancakeRewardHistories());
   }
 };
 

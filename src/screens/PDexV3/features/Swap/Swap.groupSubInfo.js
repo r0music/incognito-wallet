@@ -2,7 +2,12 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Tabs } from '@src/components/core';
 import History from './Swap.orderHistory';
-import { ROOT_TAB_SUB_INFO, TAB_HISTORY_ID } from './Swap.constant';
+import {
+  ROOT_TAB_SUB_INFO,
+  TAB_HISTORY_ID,
+  TAB_REWARD_HISTORY_ID,
+} from './Swap.constant';
+import RewardHistory from './Swap.rewardHistory';
 
 const styled = StyleSheet.create({
   container: {
@@ -23,7 +28,9 @@ const GroupSubInfo = () => {
         >
           <History />
         </View>
-        <View tabID="" label="" />
+        <View tabID={TAB_REWARD_HISTORY_ID} label="Reward history">
+          <RewardHistory />
+        </View>
       </Tabs>
     </View>
   );

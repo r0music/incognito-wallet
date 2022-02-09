@@ -48,12 +48,17 @@ export const ACTION_FREE_HISTORY_ORDERS = '[pDexV3][swap] Free history orders';
 
 export const ACTION_CHANGE_SLIPPAGE = '[pDexV3][swap] Change slippage';
 
+export const ACTION_FETCHING_PANCAKE_REWARD_HISTORY = '[pDexV3][swap] Fetching pancake reward history';
+export const ACTION_FETCHED_PANCAKE_REWARD_HISTORY = '[pDexV3][swap] Fetched pancake reward history';
+export const ACTION_FETCH_FAIL_PANCAKE_REWARD_HISTORY ='[pDexV3][swap] Fetch fail pancake reward history';
+
 export const TAB_SIMPLE_ID = '[swap] simple';
 export const TAB_PRO_ID = '[swap] pro';
 export const ROOT_TAB_ID = 'ROOT_TAB_SWAP';
 
 export const ROOT_TAB_SUB_INFO = 'ROOT_TAB_SUB_INFO';
 export const TAB_HISTORY_ID = '[swap_sub_info] history order';
+export const TAB_REWARD_HISTORY_ID = '[swap_sub_info] reward history';
 
 export const formConfigs = {
   formName: 'FORM_SWAP',
