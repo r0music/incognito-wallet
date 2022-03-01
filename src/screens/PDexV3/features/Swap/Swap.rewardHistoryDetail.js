@@ -101,7 +101,7 @@ const SwapRewardHistoryDetail = () => {
   return (
     <View2 style={styled.container}>
       <Header
-        title="Trading rewards detail"
+        title="Trading reward detail"
         rightHeader={<BtnCopy onPress={handleCopy} isHeader />}
       />
       <ScrollViewBorder style={styled.scrollview}>
