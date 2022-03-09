@@ -17,6 +17,7 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     isErc20Token,
     isBep20Token,
     isPolygonErc20Token,
+    isSPLToken,
     isMainCrypto,
     currencyType,
   } = selectedPrivacy;
@@ -42,6 +43,11 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     return isPolygonErc20Token ||
       currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
   }, [isPolygonErc20Token, currencyType]);
+
+  const isSPL = React.useMemo(() => {
+    return isSPLToken ||
+      currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SOL;
+  }, [isSPLToken, currencyType]);
 
   const getExternalAddressValidator = () => {
     if (!isAddressValidated) {
@@ -150,6 +156,9 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     }
     if (isExternalAddress && isPolygon20) {
       return 'You are exiting Incognito and going to Polygon network.';
+    }
+    if (isExternalAddress && isSPL) {
+      return 'You are exiting Incognito and going to Solana network.';
     }
     if (isExternalAddress) {
       return 'You are exiting Incognito and going public.';

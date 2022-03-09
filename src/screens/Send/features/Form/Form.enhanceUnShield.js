@@ -35,6 +35,7 @@ import {
   BurningPRVERC20RequestMeta,
   BurningPRVBEP20RequestMeta,
   PrivacyVersion,
+  BurningSOLRequestMeta,
   PRVIDSTR,
 } from 'incognito-chain-web-js/build/wallet';
 import { formName } from './Form.enhance';
@@ -87,6 +88,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     isErc20Token,
     isBep20Token,
     isPolygonErc20Token,
+    isSPLToken,
     externalSymbol,
     paymentAddress: walletAddress,
     symbol,
@@ -119,7 +121,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   const wallet = useSelector(walletSelector);
   const handleBurningToken = async (payload = {}, txHashHandler) => {
     try {
-      const { originalAmount, feeForBurn, paymentAddress, isBSC, isPolygon } = payload;
+      const { originalAmount, feeForBurn, paymentAddress, isBSC, isPolygon, isSOL } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
 
       const res = await accountService.createBurningRequest({
@@ -141,7 +143,9 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           ? BurningPBSCRequestMeta
           : isPolygon
             ? BurningPLGRequestMeta
-            : BurningRequestMeta,
+            : isSOL
+              ? BurningSOLRequestMeta
+              : BurningRequestMeta,
         version: PrivacyVersion.ver2,
       });
       if (res.txId) {
@@ -372,6 +376,11 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
           currencyType ===
             CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20,
+        isSOL:
+          isSPLToken ||
+          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SOL ||
+          currencyType ===
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SPL,
       };
       let res;
       if (isDecentralized) {

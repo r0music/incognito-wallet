@@ -126,7 +126,12 @@ const Extra = (props) => {
       selectedPrivacy?.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
       selectedPrivacy?.currencyType ===
-        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20;
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20 ||
+      selectedPrivacy?.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SOL ||
+      selectedPrivacy?.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SPL;
+
     let humanFee = convert.toNumber(
       (isNativeToken ? defaultFee?.estimateFee : defaultFee?.tokenFee) || 0,
       true,
