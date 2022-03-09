@@ -191,8 +191,33 @@ const BETA_66 = {
   web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
 };
 
+const SOL_TEST_SEVER = {
+  id: 'soltest',
+  default: false,
+  address: '51.89.21.38:8334',
+  username: '',
+  password: '',
+  name: 'Sol test server',
+  coinServices: 'http://51.89.21.38:3095',
+  pubsubServices: 'http://51.89.21.38:3096',
+  requestServices: 'http://51.89.21.38:3095',
+  apiServices: 'https://dev-api-service.incognito.org',
+  shardNumber: 2,
+  IncContractAddress: '0xE0D5e7217c6C4bc475404b26d763fAD3F14D2b86',
+  IncBSCContractAddress: '0x1ce57B254DC2DBB41e1aeA296Dc7dBD6fb549241',
+  explorer: 'https://testnet1.incognito.org',
+  portalServices: 'http://139.162.55.124:8010',
+  tradeServices: 'http://51.89.21.38:3095',
+  webviewChartServices: 'https://chart-webview-staging.incognito.org',
+  bscConfigs: BSC_CONSTANT.BSC_TESTNET_CONFIGS,
+  pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,
+  uniConfigs: UNI_CONSTANTS.UNI_TESTNET_CONFIGS,
+  web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
+};
+
 const DEFAULT_LIST_SERVER = [
   LOCAL_SERVER,
+  SOL_TEST_SEVER,
   TEST_NET_SERVER,
   TEST_NODE_SERVER,
   MAIN_NET_SERVER,
