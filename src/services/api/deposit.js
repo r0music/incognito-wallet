@@ -156,3 +156,25 @@ export const genPolygonDepositAddress = ({
   }
   return http.post('plg/generate', body).then(formatResponse);
 };
+
+export const genSolanaDepositAddress = ({
+  paymentAddress,
+  walletAddress,
+  tokenId,
+  currencyType,
+  signPublicKeyEncode,
+}) => {
+  if (!paymentAddress) return throw new Error('Missing paymentAddress');
+  if (!walletAddress) return throw new Error('Missing walletAddress');
+  if (!tokenId) return throw new Error('Missing tokenId');
+
+  let body = {
+    AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
+    WalletAddress: walletAddress ?? paymentAddress,
+    PrivacyTokenAddress: tokenId,
+  };
+  if (signPublicKeyEncode) {
+    body.SignPublicKeyEncode = signPublicKeyEncode;
+  }
+  return http.post('sol/generate', body).then(formatResponse);
+};

@@ -240,7 +240,7 @@ const Extra = (props) => {
     <View style={styled.extra}>
       {isPortal
         ? renderShieldPortalAddress()
-        : decentralized === 2 || decentralized === 3 || decentralized === 4
+        : decentralized === 2 || decentralized === 3 || decentralized === 4 || decentralized === 6
           ? renderShieldUserAddress()
           : renderShieldIncAddress()}
     </View>
