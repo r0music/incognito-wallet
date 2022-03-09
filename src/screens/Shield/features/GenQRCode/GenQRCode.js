@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, View as View3 } from 'react-native';
-import { View, ScrollViewBorder, Text } from '@components/core';
+import { View, ScrollViewBorder, Text, TextInput } from '@components/core';
 import { View2 } from '@src/components/core/View';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
@@ -27,6 +27,8 @@ import { ExHandler } from '@src/services/exception';
 import { colorsSelector, themeModeSelector } from '@src/theme/theme.selector';
 import { THEME_KEYS } from '@src/theme/theme.consts';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import { Row } from '@src/components';
+import SubmitInput from '@components/SubmitInput';
 import withGenQRCode from './GenQRCode.enhance';
 import { styled } from './GenQRCode.styled';
 

@@ -160,8 +160,8 @@ const PRIVATE_TOKEN_CURRENCY_TYPE = {
   DOT: 17,
   MATIC: 19,
   POLYGON_ERC20: 20,
-  SOL: 22,
-  SPL: 23 // SPL Token
+  SOL: 23,
+  SPL: 24 // SPL Token
 };
 
 const PRIVATE_TOKEN_CURRENCY_NAME = {

@@ -194,7 +194,7 @@ const BETA_66 = {
 const SOL_TEST_SEVER = {
   id: 'soltest',
   default: false,
-  address: '51.89.21.38:8334',
+  address: 'http://51.89.21.38:8334',
   username: '',
   password: '',
   name: 'Sol test server',
@@ -206,7 +206,7 @@ const SOL_TEST_SEVER = {
   IncContractAddress: '0xE0D5e7217c6C4bc475404b26d763fAD3F14D2b86',
   IncBSCContractAddress: '0x1ce57B254DC2DBB41e1aeA296Dc7dBD6fb549241',
   explorer: 'https://testnet1.incognito.org',
-  portalServices: 'http://139.162.55.124:8010',
+  portalServices: 'https://api-portalv4.incognito.org',
   tradeServices: 'http://51.89.21.38:3095',
   webviewChartServices: 'https://chart-webview-staging.incognito.org',
   bscConfigs: BSC_CONSTANT.BSC_TESTNET_CONFIGS,

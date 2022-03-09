@@ -93,6 +93,7 @@ const enhance = (WrappedComp) => (props) => {
     selectedPrivacy?.tokenId !== PRV_ID &&
     currencyType !== CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC &&
     currencyType !== CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20 &&
+    currencyType !== CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SOL &&
     currencyType !== CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SPL
   ) {
     return renderTermOfUse();

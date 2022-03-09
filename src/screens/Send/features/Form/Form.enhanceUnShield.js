@@ -123,7 +123,6 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     try {
       const { originalAmount, feeForBurn, paymentAddress, isBSC, isPolygon, isSOL } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
-
       const res = await accountService.createBurningRequest({
         wallet,
         account,

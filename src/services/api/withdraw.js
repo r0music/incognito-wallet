@@ -38,6 +38,7 @@ export const withdraw = (data) => {
     isErc20Token,
     isBep20Token,
     isPolygonErc20Token,
+    isSPLToken,
     paymentAddress,
     tokenId,
     burningTxId,
@@ -94,6 +95,15 @@ export const withdraw = (data) => {
     return http.post('plg/add-tx-withdraw', payload);
   }
 
+  // Sol Token
+  if (
+    isSPLToken ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SOL ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SPL
+  ) {
+    return http.post('sol/add-tx-withdraw', payload);
+  }
+
   return http.post('eta/add-tx-withdraw', payload);
 };
 
@@ -147,6 +157,7 @@ export const estimateUserFees = (data) => {
     isErc20Token,
     isBep20Token,
     isPolygonErc20Token,
+    isSPLToken,
     signPublicKeyEncode,
   } = data;
   if (
@@ -194,6 +205,15 @@ export const estimateUserFees = (data) => {
     currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20
   ) {
     return http.post('plg/estimate-fees', payload);
+  }
+
+  // Sol Token
+  if (
+    isSPLToken ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SOL ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SPL
+  ) {
+    return http.post('sol/estimate-fees', payload);
   }
 
   return http.post('eta/estimate-fees', payload);

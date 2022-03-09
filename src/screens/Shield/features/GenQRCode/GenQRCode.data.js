@@ -25,7 +25,8 @@ const enhance = (WrappedComp) => (props) => {
   const { decentralized } = useDebounceSelector(shieldDataSelector);
   const { isFetching, isFetched, isFetchFailed, isPortalCompatible, data } = useDebounceSelector(shieldSelector);
   const handleShield = async () => {
-    const isPortalToken  = await accountWallet.handleCheckIsPortalToken({ tokenID: tokenId});
+    // const isPortalToken  = await accountWallet.handleCheckIsPortalToken({ tokenID: tokenId});
+    const isPortalToken = false;
     if( isPortalToken ){
       dispatch(
         fetchPortalDataShield({ tokenID: tokenId, selectedPrivacy: tokenShield, account, accountWallet }),
