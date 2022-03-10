@@ -29,6 +29,7 @@ import { THEME_KEYS } from '@src/theme/theme.consts';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { Row } from '@src/components';
 import SubmitInput from '@components/SubmitInput';
+import http from '@services/http';
 import withGenQRCode from './GenQRCode.enhance';
 import { styled } from './GenQRCode.styled';
 
@@ -76,7 +77,8 @@ const Extra = (props) => {
   const { address, min, expiredAt, decentralized, isPortal } = useDebounceSelector(
     shieldDataSelector,
   );
-  const { selectedPrivacy, defaultFee, colors } = props;
+  const { selectedPrivacy, defaultFee, colors, account } = props;
+
   const navigation = useNavigation();
 
   const renderMinShieldAmount = () => {
@@ -210,12 +212,28 @@ const Extra = (props) => {
       </View>
       <View style={styled.hook}>{renderEstimateFee()}</View>
       <CopiableText data={address} textStyle={{color: colors.text1}} btnStyle={{backgroundColor: colors.background6}} />
-      <View style={{ marginTop: 15 }}>
+      <>
         <NormalText
-          style={[styled.text, {color: colors.text1}]}
+          style={[styled.text, { color: colors.text1, marginTop: 15 }]}
           text={`Send only ${selectedPrivacy?.externalSymbol ||
             selectedPrivacy?.symbol} to this shielding address.`}
         />
+        {(selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SOL || selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SPL) && (
+          <SubmitInput
+            containerStyle={{ marginTop: 15 }}
+            placeHolder="Transaction ID from Solana"
+            onSubmit={async (text) => {
+              try {
+                http.post('sol/add-tx-transfer', {
+                  TxID: text,
+                  WalletAddress: account?.paymentAddress
+                });
+              } catch (e) {
+                throw e;
+              }
+            }}
+          />
+        )}
         <NormalText
           style={{ marginTop: 10, color: colors.text1}}
           text={`Sending coins or tokens other than ${selectedPrivacy?.externalSymbol ||
@@ -225,7 +243,7 @@ const Extra = (props) => {
           text="Use at your own risk."
           style={[styled.smallText, { marginTop: 10 }]}
         />
-      </View>
+      </>
     </>
   );
 
@@ -271,6 +289,7 @@ const GenQRCode = (props) => {
     isFetchFailed,
     isPortalCompatible,
     data: shieldData,
+    account,
   } = props;
   const shieldDataBsc = useDebounceSelector(
     shieldDataBscSelector,
@@ -282,7 +301,6 @@ const GenQRCode = (props) => {
   const selectedPrivacy = useDebounceSelector(selectedPrivacySelector.selectedPrivacy);
   const [selectedPlatform, setPlatform] = React.useState(0);
   const [selectingPlatform, setSelectingPlatform] = React.useState(0);
-  const account = useDebounceSelector(defaultAccountSelector);
   const isPRV = selectedPrivacy?.tokenId === PRV_ID;
   const [defaultFee, setDefaultFee] = React.useState({
     estimateFee: 0,
@@ -454,6 +472,7 @@ GenQRCode.propTypes = {
   isFetching: PropTypes.bool.isRequired,
   isFetchFailed: PropTypes.bool.isRequired,
   isPortalCompatible: PropTypes.bool.isRequired,
+  account: PropTypes.object.isRequired
 };
 
 export default withGenQRCode(GenQRCode);
