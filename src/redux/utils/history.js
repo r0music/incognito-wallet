@@ -44,13 +44,14 @@ export const TX_STATUS_COLOR = {
 };
 
 export const CENTRALIZED_ARRAY = [0];
-export const DECENTRALIZE_ARRAY = [1, 2, 3, 4, 5];
+export const DECENTRALIZE_ARRAY = [1, 2, 3, 4, 5, 6];
 
 export const getStatusColorShield = (history) => {
   let statusColor = '';
   try {
     new Validator('getStatusColorShield-history', history).required().object();
     const { decentralized, status } = history;
+    console.log('SANG TEST::: ', status, decentralized);
     // Case1: Check centralized
     if (CENTRALIZED_ARRAY.includes(decentralized)) {
       if (
