@@ -222,16 +222,6 @@ const Extra = (props) => {
           <SubmitInput
             containerStyle={{ marginTop: 15 }}
             placeHolder="Transaction ID from Solana"
-            onSubmit={async (text) => {
-              try {
-                http.post('sol/add-tx-transfer', {
-                  TxID: text,
-                  WalletAddress: account?.paymentAddress
-                });
-              } catch (e) {
-                throw e;
-              }
-            }}
           />
         )}
         <NormalText

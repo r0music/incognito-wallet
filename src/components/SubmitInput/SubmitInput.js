@@ -6,6 +6,9 @@ import { Text9 } from '@src/components/core/Text';
 import { FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 import { TextInput, Toast } from '@components/core';
+import http from '@services/http';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import { defaultAccountSelector } from '@src/redux/selectors/account';
 
 const styled = StyleSheet.create({
   container: {
@@ -34,20 +37,23 @@ const styled = StyleSheet.create({
 });
 
 const SubmitInput = props => {
-  const { placeHolder, textStyle, btnStyle, onSubmit, containerStyle } = props;
+  const { placeHolder, textStyle, btnStyle, containerStyle } = props;
   const [text, setText] = React.useState('');
   const [isSubmited, setIsSubmited] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-
-  const handleSubmitInput = React.useCallback(() => {
-    if (typeof onSubmit !== 'function') return;
+  const account = useDebounceSelector(defaultAccountSelector);
+  const handleSubmitInput = React.useCallback(async () => {
     try {
       setIsSubmited(false);
       setIsSubmitting(true);
-      onSubmit(text);
+      await http.post('sol/add-tx-transfer', {
+        TxID: text,
+        WalletAddress: account?.paymentAddress
+      });
       setIsSubmited(true);
       Toast.showSuccess('Submited');
     } catch (e) {
+      Toast.showError(`Submit failed with error ${e}`);
       console.log('SUBMIT FAIL', e);
     } finally {
       setIsSubmitting(false);

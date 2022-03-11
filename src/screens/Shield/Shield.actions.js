@@ -65,7 +65,6 @@ export const actionGetAddressToShield = async ({
     if (!selectedPrivacy?.isPToken) {
       return null;
     }
-    console.log('SANG TEST::: ', selectedPrivacy);
     if (
       selectedPrivacy?.currencyType ===
       CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH
