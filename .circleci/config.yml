@@ -246,7 +246,7 @@ workflows:
             filters:
               branches:
                 only:
-                  - inc-next
+                  - features/solana-bridge
         - generate_data:
             requires:
               - checkout_code
