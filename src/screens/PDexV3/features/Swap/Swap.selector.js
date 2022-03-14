@@ -64,6 +64,11 @@ export const curvePairsSelector = createSelector(
   ({ curveTokens }) => curveTokens,
 );
 
+export const raydiumPairsSelector = createSelector(
+  swapSelector,
+  ({ raydiumTokens }) => raydiumTokens,
+);
+
 export const findTokenPancakeByIdSelector = createSelector(
   pancakePairsSelector,
   (pancakeTokens) =>
@@ -78,6 +83,12 @@ export const findTokenCurveByIdSelector = createSelector(
   curvePairsSelector,
   (curveTokens) =>
     memoize((tokenID) => curveTokens.find((t) => t?.tokenID === tokenID)),
+);
+
+export const findTokenRaydiumByIdSelector = createSelector(
+  raydiumPairsSelector,
+  (raydiumTokens) =>
+    memoize((tokenID) => raydiumTokens.find((t) => t?.tokenID === tokenID)),
 );
 
 export const hashmapContractIDsSelector = createSelector(
@@ -161,6 +172,21 @@ export const getTokenIdByCurveContractIdSelector = createSelector(
     }),
 );
 
+export const getTokenIdByRaydiumContractIdSelector = createSelector(
+  raydiumPairsSelector,
+  (raydiumTokens) =>
+    memoize((contractId) => {
+      let tokenID = '';
+      const foundToken = raydiumTokens.find((token) =>
+        isEqual(toLower(contractId), toLower(token?.contractId)),
+      );
+      if (foundToken) {
+        tokenID = foundToken?.tokenID;
+      }
+      return tokenID;
+    }),
+);
+
 export const purePairsSelector = createSelector(
   swapSelector,
   ({ pairs }) => pairs || [],
@@ -170,7 +196,7 @@ export const listPairsSelector = createSelector(
   swapSelector,
   getPrivacyDataByTokenIDSelector,
   (
-    { pairs, isPrivacyApp, defaultExchange, pancakeTokens, uniTokens, curveTokens },
+    { pairs, isPrivacyApp, defaultExchange, pancakeTokens, uniTokens, curveTokens, raydiumTokens },
     getPrivacyDataByTokenID,
   ) => {
     if (!pairs) {
@@ -220,6 +246,24 @@ export const listPairsSelector = createSelector(
         list = list.map((token: SelectedPrivacy) => {
           let { priority, isVerified } = token;
           const foundedToken = curveTokens.find(
+            (pt) => pt?.tokenID === token?.tokenId,
+          );
+          if (foundedToken) {
+            priority = foundedToken?.priority;
+            isVerified = foundedToken?.verify;
+          }
+          return {
+            ...token,
+            isVerified,
+            priority,
+          };
+        });
+        break;
+      }
+      case KEYS_PLATFORMS_SUPPORTED.raydium: {
+        list = list.map((token: SelectedPrivacy) => {
+          let { priority, isVerified } = token;
+          const foundedToken = raydiumTokens.find(
             (pt) => pt?.tokenID === token?.tokenId,
           );
           if (foundedToken) {
@@ -359,6 +403,30 @@ export const isPairSupportedTradeOnCurveSelector = createSelector(
   },
 );
 
+export const isPairSupportedTradeOnRaydiumSelector = createSelector(
+  findTokenRaydiumByIdSelector,
+  selltokenSelector,
+  buytokenSelector,
+  (
+    getRaydiumTokenParamReq,
+    sellToken: SelectedPrivacy,
+    buyToken: SelectedPrivacy,
+  ) => {
+    let isSupported = false;
+    try {
+      const tokenSellCurve = getRaydiumTokenParamReq(sellToken.tokenId);
+      const tokenBuyCurve = getRaydiumTokenParamReq(buyToken.tokenId);
+      if (!!tokenSellCurve && !!tokenBuyCurve) {
+        isSupported = true;
+      }
+    } catch (error) {
+      //
+      console.log('platformsSupportedSelector-error', error);
+    }
+    return isSupported;
+  },
+);
+
 // platform supported
 export const platformsSelector = createSelector(
   swapSelector,
@@ -376,12 +444,14 @@ export const platformsSupportedSelector = createSelector(
   isPairSupportedTradeOnPancakeSelector,
   isPairSupportedTradeOnUniSelector,
   isPairSupportedTradeOnCurveSelector,
+  isPairSupportedTradeOnRaydiumSelector,
   (
     { data },
     platforms,
     isPairSupportedTradeOnPancake,
     isPairSupportedTradeOnUni,
     isPairSupportedTradeOnCurve,
+    isPairSupportedTradeOnRaydium,
   ) => {
     let _platforms = [...platforms];
     try {
@@ -398,6 +468,11 @@ export const platformsSupportedSelector = createSelector(
       if (!isPairSupportedTradeOnCurve) {
         _platforms = _platforms.filter(
           (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.curve,
+        );
+      }
+      if (!isPairSupportedTradeOnRaydium) {
+        _platforms = _platforms.filter(
+          (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.raydium,
         );
       }
       _platforms = _platforms.filter(({ id: platformId }) => {
@@ -458,6 +533,7 @@ export const feetokenDataSelector = createSelector(
   platformSelectedSelector,
   getTokenIdByContractIdGetRateSelector,
   getTokenIdByCurveContractIdSelector,
+  getTokenIdByRaydiumContractIdSelector,
   getTokenIdByUniContractIdGetRateSelector,
   slippagetoleranceSelector,
   (
@@ -468,6 +544,7 @@ export const feetokenDataSelector = createSelector(
     platform,
     getTokenIdByContractIdGetRate, // get TokenId by ContractId PancakeSwap
     getTokenIdByCurveContractId, // get TokenId by ContractId Curve
+    getTokenIdByRaydiumContractId, // get TokenId by ContractId Raydium
     getTokenIdByUniContractIdGetRate,
     slippagetolerance,
   ) => {
@@ -615,7 +692,8 @@ export const feetokenDataSelector = createSelector(
 
       if (
         platformID === KEYS_PLATFORMS_SUPPORTED.uni ||
-        platformID === KEYS_PLATFORMS_SUPPORTED.curve
+        platformID === KEYS_PLATFORMS_SUPPORTED.curve ||
+        platformID === KEYS_PLATFORMS_SUPPORTED.raydium
       ) {
         // Calculate price impact for pUniswap
         const sellTokenPriceUSD = sellTokenData?.externalPriceUSD;
@@ -647,7 +725,7 @@ export const feetokenDataSelector = createSelector(
       let tradePathStr = '';
       let tradePathArr = [];
 
-      // get trade path array by platform 
+      // get trade path array by platform
       try {
         if (tokenRoute?.length > 0) {
           switch (platformID) {
@@ -699,6 +777,12 @@ export const feetokenDataSelector = createSelector(
             );
             break;
           }
+          case KEYS_PLATFORMS_SUPPORTED.raydium: {
+            tradePathArr = tokenRoute.map((contractId) =>
+              getTokenIdByRaydiumContractId(contractId),
+            );
+            break;
+          }
           default:
             break;
           }
@@ -708,6 +792,7 @@ export const feetokenDataSelector = createSelector(
         switch (platformID) {
         case KEYS_PLATFORMS_SUPPORTED.pancake:
         case KEYS_PLATFORMS_SUPPORTED.curve:
+        case KEYS_PLATFORMS_SUPPORTED.raydium:
           tradePathStr = tradePathArr
             .map((tokenID, index, arr) => {
               const token: SelectedPrivacy = getPrivacyDataByTokenID(tokenID);
@@ -807,6 +892,9 @@ export const feeTypesSelector = createSelector(
       break;
     }
     case KEYS_PLATFORMS_SUPPORTED.curve: {
+      break;
+    }
+    case KEYS_PLATFORMS_SUPPORTED.raydium: {
       break;
     }
     default:
@@ -985,7 +1073,7 @@ export const mappingOrderHistorySelector = createSelector(
           amountOut || minAccept,
         );
       }
-        
+
       let totalFee = fee;
       let networkFee = ACCOUNT_CONSTANT.MAX_FEE_PER_TX;
       if (feeToken.isMainCrypto) {

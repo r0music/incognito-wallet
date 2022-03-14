@@ -102,6 +102,12 @@ export const SelectItem = React.memo(
         <CurveIcon style={!isSelectItem ? styled.selectedIcon : styled.icon} />
       );
       break;
+    case KEYS_PLATFORMS_SUPPORTED.raydium:
+      // Update raydium
+      icon = (
+        <CurveIcon style={!isSelectItem ? styled.selectedIcon : styled.icon} />
+      );
+      break;
     default:
       break;
     }

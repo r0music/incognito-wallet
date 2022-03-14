@@ -205,6 +205,7 @@ export default {
   PrivacyAppsPancake: 'PrivacyAppsPancake',
   PrivacyAppsUni: 'PrivacyAppsUni',
   PrivacyAppsCurve: 'PrivacyAppsCurve',
+  PrivacyAppsRaydium: 'PrivacyAppsRaydium',
   MarketSearchCoins: 'MarketSearchCoins',
   HomeLP: 'TabHomeLP',
 };

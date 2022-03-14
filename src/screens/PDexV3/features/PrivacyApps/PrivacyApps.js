@@ -33,6 +33,7 @@ const PrivacyApps = () => {
   const dispatch = useDispatch();
   const getActivedTab = useSelector(activedTabSelector);
   const onPressItem = (id) => {
+    console.log('SANG TEST::: ', id);
     switch (id) {
     case KEYS_PLATFORMS_SUPPORTED.pancake:
       navigation.navigate(routeNames.PrivacyAppsPancake);
@@ -42,6 +43,9 @@ const PrivacyApps = () => {
       break;
     case KEYS_PLATFORMS_SUPPORTED.curve:
       navigation.navigate(routeNames.PrivacyAppsCurve);
+      break;
+    case KEYS_PLATFORMS_SUPPORTED.raydium:
+      navigation.navigate(routeNames.PrivacyAppsRaydium);
       break;
     default:
       break;
@@ -101,6 +105,24 @@ const PrivacyApps = () => {
           },
         ],
         desc: 'Trade anonymously on Polygon’s leading DEX. Deep liquidity and super low fees – now with privacy.',
+        onPressItem,
+      },
+      {
+        privacyAppId: KEYS_PLATFORMS_SUPPORTED.raydium,
+        icon: <CurveIcon2 />,
+        headerTitle: 'pRaydium',
+        headerSub: 'Private Raydium',
+        groupActions: [
+          {
+            id: 'Solana',
+            title: 'Solana',
+          },
+          {
+            id: 'DEX',
+            title: 'DEX',
+          },
+        ],
+        desc: 'Trade anonymously on Raydium’s leading DEX. Deep liquidity and super low fees – now with privacy.',
         onPressItem,
       },
     ];

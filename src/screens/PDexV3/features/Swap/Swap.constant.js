@@ -74,6 +74,7 @@ export const SCREENS_TO_SHOW_REWARD_HISTORY_TAB = [
   routeNames.PrivacyAppsPancake,
   routeNames.PrivacyAppsUni,
   routeNames.PrivacyAppsCurve,
+  routeNames.PrivacyAppsRaydium,
 ];
 
 export const formConfigs = {
@@ -89,6 +90,7 @@ export const KEYS_PLATFORMS_SUPPORTED = {
   pancake: 'pancake',
   uni: 'uni',
   curve: 'curve',
+  raydium: 'raydium'
 };
 
 export const PLATFORMS_SUPPORTED = [
@@ -116,6 +118,13 @@ export const PLATFORMS_SUPPORTED = [
   {
     id: KEYS_PLATFORMS_SUPPORTED.curve,
     title: 'Curve',
+    desc: '',
+    visible: true,
+    isSelected: false,
+  },
+  {
+    id: KEYS_PLATFORMS_SUPPORTED.raydium,
+    title: 'Raydium',
     desc: '',
     visible: true,
     isSelected: false,

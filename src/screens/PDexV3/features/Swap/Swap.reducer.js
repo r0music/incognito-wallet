@@ -67,6 +67,11 @@ const initialState = {
       feePrv: {},
       error: null,
     },
+    [KEYS_PLATFORMS_SUPPORTED.raydium]: {
+      // raydium
+      feePrv: {},
+      error: null,
+    },
   },
   buytoken: '',
   selltoken: '',
@@ -94,6 +99,7 @@ const initialState = {
   pancakeTokens: [],
   uniTokens: [],
   curveTokens: [],
+  raydiumTokens: [],
   platforms: [...PLATFORMS_SUPPORTED],
   field: '',
   useMax: false,
@@ -173,12 +179,9 @@ const reducer = (state = initialState, action) => {
     let feetoken = state.feetoken;
     switch (platformID) {
     case KEYS_PLATFORMS_SUPPORTED.pancake:
-      feetoken = PRV_ID;
-      break;
     case KEYS_PLATFORMS_SUPPORTED.uni:
-      feetoken = PRV_ID;
-      break;
     case KEYS_PLATFORMS_SUPPORTED.curve:
+    case KEYS_PLATFORMS_SUPPORTED.raydium:
       feetoken = PRV_ID;
       break;
     default:
@@ -260,7 +263,7 @@ const reducer = (state = initialState, action) => {
     };
   }
   case ACTION_FETCHED_LIST_PAIRS: {
-    const { pairs, pDEXPairs, pancakeTokens, uniTokens, curveTokens } = action.payload;
+    const { pairs, pDEXPairs, pancakeTokens, uniTokens, curveTokens, raydiumTokens } = action.payload;
     return {
       ...state,
       pairs,
@@ -268,6 +271,7 @@ const reducer = (state = initialState, action) => {
       pancakeTokens,
       uniTokens,
       curveTokens,
+      raydiumTokens,
     };
   }
   case ACTION_FETCH_SWAP: {
