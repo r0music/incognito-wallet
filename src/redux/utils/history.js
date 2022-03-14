@@ -51,7 +51,6 @@ export const getStatusColorShield = (history) => {
   try {
     new Validator('getStatusColorShield-history', history).required().object();
     const { decentralized, status } = history;
-    console.log('SANG TEST::: ', status, decentralized);
     // Case1: Check centralized
     if (CENTRALIZED_ARRAY.includes(decentralized)) {
       if (

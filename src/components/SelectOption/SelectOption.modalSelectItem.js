@@ -7,7 +7,7 @@ import { FONT } from '@src/styles';
 import ModalBottomSheet from '@src/components/Modal/features/ModalBottomSheet';
 import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme';
-import { AppIcon, PancakeIcon, UniIcon, CurveIcon } from '@src/components/Icons';
+import { AppIcon, PancakeIcon, UniIcon, CurveIcon, RaydiumIcon } from '@src/components/Icons';
 import { KEYS_PLATFORMS_SUPPORTED } from '@src/screens/PDexV3/features/Swap';
 
 const styled = StyleSheet.create({
@@ -105,7 +105,7 @@ export const SelectItem = React.memo(
     case KEYS_PLATFORMS_SUPPORTED.raydium:
       // Update raydium
       icon = (
-        <CurveIcon style={!isSelectItem ? styled.selectedIcon : styled.icon} />
+        <RaydiumIcon style={!isSelectItem ? styled.selectedIcon : styled.icon} />
       );
       break;
     default:

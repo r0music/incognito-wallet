@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { withLayout_2 } from '@src/components/Layout';
 import { View } from '@src/components/core';
-import { PancakeIcon2, UniIcon2, CurveIcon2 } from '@src/components/Icons';
+import { PancakeIcon2, UniIcon2, CurveIcon2, RaydiumIcon2 } from '@src/components/Icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { FONT } from '@src/styles';
 import { KEYS_PLATFORMS_SUPPORTED } from '@screens/PDexV3/features/Swap';
@@ -33,7 +33,6 @@ const PrivacyApps = () => {
   const dispatch = useDispatch();
   const getActivedTab = useSelector(activedTabSelector);
   const onPressItem = (id) => {
-    console.log('SANG TEST::: ', id);
     switch (id) {
     case KEYS_PLATFORMS_SUPPORTED.pancake:
       navigation.navigate(routeNames.PrivacyAppsPancake);
@@ -53,6 +52,24 @@ const PrivacyApps = () => {
   };
   const factories = React.useMemo(() => {
     return [
+      {
+        privacyAppId: KEYS_PLATFORMS_SUPPORTED.raydium,
+        icon: <RaydiumIcon2 />,
+        headerTitle: 'pRaydium',
+        headerSub: 'Private Raydium',
+        groupActions: [
+          {
+            id: 'Solana',
+            title: 'Solana',
+          },
+          {
+            id: 'DEX',
+            title: 'DEX',
+          },
+        ],
+        desc: 'Trade anonymously on Raydium’s leading DEX. Deep liquidity and super low fees – now with privacy.',
+        onPressItem,
+      },
       {
         privacyAppId: KEYS_PLATFORMS_SUPPORTED.pancake,
         icon: <PancakeIcon2 />,
@@ -105,24 +122,6 @@ const PrivacyApps = () => {
           },
         ],
         desc: 'Trade anonymously on Polygon’s leading DEX. Deep liquidity and super low fees – now with privacy.',
-        onPressItem,
-      },
-      {
-        privacyAppId: KEYS_PLATFORMS_SUPPORTED.raydium,
-        icon: <CurveIcon2 />,
-        headerTitle: 'pRaydium',
-        headerSub: 'Private Raydium',
-        groupActions: [
-          {
-            id: 'Solana',
-            title: 'Solana',
-          },
-          {
-            id: 'DEX',
-            title: 'DEX',
-          },
-        ],
-        desc: 'Trade anonymously on Raydium’s leading DEX. Deep liquidity and super low fees – now with privacy.',
         onPressItem,
       },
     ];

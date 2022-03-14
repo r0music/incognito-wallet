@@ -87,6 +87,8 @@ import {
   isExchangeVisibleSelector,
   errorEstimateTradeSelector,
   listPairsIDVerifiedSelector,
+  findTokenRaydiumByIdSelector,
+  isPairSupportedTradeOnRaydiumSelector,
 } from './Swap.selector';
 import {
   calMintAmountExpected,
@@ -489,6 +491,78 @@ export const actionHandleInjectEstDataForCurve =
     }
   };
 
+export const actionHandleInjectEstDataForRaydium =
+  () => async (dispatch, getState) => {
+    try {
+      await dispatch(actionSetFeeToken(PRV.id));
+      const state = getState();
+      const inputAmount = inputAmountSelector(state);
+      let sellInputToken, buyInputToken, inputToken, inputPDecimals;
+      sellInputToken = inputAmount(formConfigs.selltoken);
+      buyInputToken = inputAmount(formConfigs.buytoken);
+      const { tokenId: selltoken } = sellInputToken;
+      const { tokenId: buytoken } = buyInputToken;
+      const { field, useMax } = feetokenDataSelector(state);
+      const getRaydiumTokenParamReq = findTokenRaydiumByIdSelector(state);
+      const tokenSellRaydium = getRaydiumTokenParamReq(selltoken);
+      const tokenBuyRaydium = getRaydiumTokenParamReq(buytoken);
+      if (tokenSellRaydium == null || tokenBuyRaydium == null) {
+        throw 'This pair is not existed on raydium';
+      }
+      switch (field) {
+      case formConfigs.selltoken: {
+        inputPDecimals = tokenBuyRaydium.pDecimals;
+        inputToken = formConfigs.buytoken;
+        break;
+      }
+      case formConfigs.buytoken: {
+        inputPDecimals = tokenSellRaydium.pDecimals;
+        inputToken = formConfigs.selltoken;
+        break;
+      }
+      default:
+        break;
+      }
+      const { maxGet, minFeePRVFixed, availableFixedSellAmountPRV } =
+        feetokenDataSelector(state);
+      const slippagetolerance = slippagetoleranceSelector(state);
+      const originalMinAmountExpected =
+        field === formConfigs.buytoken
+          ? maxGet
+          : calMintAmountExpected({
+            maxGet,
+            slippagetolerance,
+          });
+      const minAmountExpectedToHumanAmount = convert.toHumanAmount(
+        originalMinAmountExpected,
+        inputPDecimals,
+      );
+      const minAmountExpectedToFixed = format.toFixed(
+        minAmountExpectedToHumanAmount,
+        inputPDecimals,
+      );
+      batch(() => {
+        if (useMax) {
+          dispatch(
+            change(
+              formConfigs.formName,
+              formConfigs.selltoken,
+              availableFixedSellAmountPRV,
+            ),
+          );
+        }
+        dispatch(
+          change(formConfigs.formName, inputToken, minAmountExpectedToFixed),
+        );
+        dispatch(
+          change(formConfigs.formName, formConfigs.feetoken, minFeePRVFixed),
+        );
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
 export const actionHandleInjectEstDataForUni =
   () => async (dispatch, getState) => {
     try {
@@ -659,7 +733,7 @@ export const actionEstimateTradeForCurve =
         destToken: tokenBuyCurve,
         amount: convert.toHumanAmount(sellamount, tokenSellCurve.pDecimals)
       };
-       
+
       const { sourceToken, destToken, amount } = payloadCurve;
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       const quote = await pDexV3Inst.getQuoteCurve({
@@ -672,7 +746,7 @@ export const actionEstimateTradeForCurve =
         throw 'No trade route found';
       }
       const paths = [sourceToken.contractId, destToken.contractId];
-      
+
       let originalMaxGet = quote?.amountOutRaw;
 
       const tokenDecimals = tokenBuyCurve.decimals;
@@ -691,7 +765,7 @@ export const actionEstimateTradeForCurve =
       const { feeAddress, tradeID, signAddress, originalTradeFee } = tradingFee;
       minSellOriginalAmount = sellamount;
       maxBuyOriginalAmount = maxGet;
-      
+
       await dispatch(
         actionChangeEstimateData({
           [KEYS_PLATFORMS_SUPPORTED.curve]: {
@@ -725,6 +799,108 @@ export const actionEstimateTradeForCurve =
       console.log('ERROR-actionEstimateTradeForCurve', error);
       dispatch(
         actionSetError({ platformId: KEYS_PLATFORMS_SUPPORTED.curve, error }),
+      );
+    }
+    return {
+      minSellOriginalAmount,
+      maxBuyOriginalAmount,
+    };
+  };
+
+export const actionEstimateTradeForRaydium =
+  (payload) => async (dispatch, getState) => {
+    let minSellOriginalAmount = 0;
+    let maxBuyOriginalAmount = 0;
+    let state = getState();
+    const isExchangeVisible = isExchangeVisibleSelector(state)(
+      KEYS_PLATFORMS_SUPPORTED.raydium,
+    );
+    if (!isExchangeVisible) {
+      return {
+        minSellOriginalAmount,
+        maxBuyOriginalAmount,
+      };
+    }
+    try {
+      const { selltoken, buytoken, sellamount } = payload;
+      const isPairSup = isPairSupportedTradeOnRaydiumSelector(state);
+      const getRaydiumTokenParamReq = findTokenRaydiumByIdSelector(state);
+      const tokenSellRaydium = getRaydiumTokenParamReq(selltoken);
+      const tokenBuyRaydium = getRaydiumTokenParamReq(buytoken);
+      if (!isPairSup) {
+        throw 'This pair is not existed on raydium';
+      }
+
+      let payloadRaydium = {
+        sourceToken: tokenSellRaydium,
+        destToken: tokenBuyRaydium,
+        amount: convert.toHumanAmount(sellamount, tokenSellRaydium.pDecimals)
+      };
+
+      const { sourceToken, destToken, amount } = payloadRaydium;
+      const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+      const quote = await pDexV3Inst.getQuoteRaydium({
+        tokenInContractId: sourceToken.contractId,
+        tokenOutContractId: destToken.contractId,
+        amount,
+      });
+      if (!quote || !quote?.amountOutRaw) {
+        new ExHandler('No trade route found').showErrorToast();
+        throw 'No trade route found';
+      }
+      const paths = [sourceToken.contractId, destToken.contractId];
+
+      let originalMaxGet = quote?.amountOutRaw;
+
+      const tokenDecimals = tokenBuyRaydium.decimals;
+      const tokenPDecimals = tokenBuyRaydium.pDecimals;
+      const maxGetHuman = convert.toHumanAmount(originalMaxGet, tokenDecimals);
+      const maxGet = convert.toOriginalAmount(maxGetHuman, tokenPDecimals);
+      // only PRV
+      const tradingFee = await pDexV3Inst.estimateRaydiumTradingFee({
+        srcTokens: selltoken,
+        destTokens: buytoken,
+        srcQties: sellamount,
+      });
+      if (!tradingFee) {
+        throw 'Can not estimate trading fee';
+      }
+      const { feeAddress, tradeID, signAddress, originalTradeFee } = tradingFee;
+      minSellOriginalAmount = sellamount;
+      maxBuyOriginalAmount = maxGet;
+      await dispatch(
+        actionChangeEstimateData({
+          [KEYS_PLATFORMS_SUPPORTED.raydium]: {
+            feePrv: {
+              fee: originalTradeFee,
+              isSignificant: false,
+              maxGet,
+              route: paths,
+              sellAmount: sellamount,
+              buyAmount: maxGet,
+              tokenRoute: paths,
+            },
+            feeToken: {
+              sellAmount: sellamount,
+              buyAmount: maxGet,
+              fee: 0,
+              isSignificant: false,
+              maxGet,
+              route: paths,
+              tokenRoute: paths,
+            },
+            tradeID,
+            feeAddress,
+            signAddress,
+            ...quote,
+            error: null,
+          },
+        }),
+      );
+    } catch (error) {
+      console.log('ERROR-actionEstimateTradeForRaydium', error);
+      dispatch(
+        actionSetError({ platformId: KEYS_PLATFORMS_SUPPORTED.raydium, error }),
       );
     }
     return {
@@ -1032,7 +1208,7 @@ export const actionEstimateTradeForPancake =
   };
 
 export const actionFindBestRateBetweenPlatforms =
-  ({ pDexData, pancakeData, uniData, curveData, params }) =>
+  ({ pDexData, pancakeData, uniData, curveData, raydiumData, params }) =>
     async (dispatch, getState) => {
       const { field } = params;
       const state = getState();
@@ -1052,6 +1228,10 @@ export const actionFindBestRateBetweenPlatforms =
         minSellOriginalAmount: sellCurveAmount,
         maxBuyOriginalAmount: buyCurveAmount,
       } = curveData;
+      const {
+        minSellOriginalAmount: sellRaydiumAmount,
+        maxBuyOriginalAmount: buyRaydiumAmount,
+      } = raydiumData;
       let platformIdHasBestRate;
       const isPairSupportedTradeOnPancake =
       isPairSupportedTradeOnPancakeSelector(state);
@@ -1059,10 +1239,13 @@ export const actionFindBestRateBetweenPlatforms =
         isPairSupportedTradeOnUniSelector(state);
       const isPairSupportedTradeOnCurve =
         isPairSupportedTradeOnCurveSelector(state);
+      const isPairSupportedTradeOnRaydium =
+        isPairSupportedTradeOnRaydiumSelector(state);
       console.log('pdexData', pDexData);
       console.log('pancakeData', pancakeData);
       console.log('uniData', uniData);
       console.log('curveData', curveData);
+      console.log('raydiumData', raydiumData);
       try {
         switch (field) {
         case formConfigs.selltoken: {
@@ -1098,6 +1281,15 @@ export const actionFindBestRateBetweenPlatforms =
             arrMaxBuyAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.curve,
               amount: buyCurveAmount,
+            });
+          }
+          if (
+            isPairSupportedTradeOnRaydium &&
+            new BigNumber(buyRaydiumAmount).isGreaterThan(0)
+          ) {
+            arrMaxBuyAmount.push({
+              id: KEYS_PLATFORMS_SUPPORTED.raydium,
+              amount: buyRaydiumAmount,
             });
           }
           if (arrMaxBuyAmount.length > 0) {
@@ -1141,6 +1333,15 @@ export const actionFindBestRateBetweenPlatforms =
               amount: sellCurveAmount,
             });
           }
+          if (
+            isPairSupportedTradeOnRaydium &&
+            new BigNumber(sellRaydiumAmount).isGreaterThan(0)
+          ) {
+            arrMinSellAmount.push({
+              id: KEYS_PLATFORMS_SUPPORTED.raydium,
+              amount: sellRaydiumAmount,
+            });
+          }
           if (arrMinSellAmount.length > 0) {
             const bestRate = findBestRateOfMinSellAmount(arrMinSellAmount);
             platformIdHasBestRate = bestRate?.id;
@@ -1168,7 +1369,7 @@ export const actionEstimateTrade =
       let state = getState();
       try {
         const params = { field, useMax };
-        
+
         // Show loading estimate trade and reset fee data
         dispatch(actionFetching(true));
         dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
@@ -1246,14 +1447,16 @@ export const actionEstimateTrade =
           dispatch(actionEstimateTradeForPancake(payload)),
           dispatch(actionEstimateTradeForUni(payload)),
           dispatch(actionEstimateTradeForCurve(payload)),
+          dispatch(actionEstimateTradeForRaydium(payload)),
         ];
-        const [pDexData, pancakeData, uniData, curveData] = await Promise.all(task);
+        const [pDexData, pancakeData, uniData, curveData, raydiumData] = await Promise.all(task);
         await dispatch(
           actionFindBestRateBetweenPlatforms({
             pDexData,
             pancakeData,
             uniData,
             curveData,
+            raydiumData,
             params,
             payload,
           }),
@@ -1299,6 +1502,7 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
   let pancakeTokens = [];
   let uniTokens = [];
   let curveTokens = [];
+  let raydiumTokens = [];
   try {
     let state = getState();
     const pDexV3Inst = await getPDexV3Instance();
@@ -1309,11 +1513,12 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
     const defaultExchange = defaultExchangeSelector(state);
     const isPrivacyApp = isPrivacyAppSelector(state);
     if (!isPrivacyApp) {
-      [pDEXPairs, pancakeTokens, uniTokens, curveTokens] = await Promise.all([
+      [pDEXPairs, pancakeTokens, uniTokens, curveTokens, raydiumTokens] = await Promise.all([
         pDexV3Inst.getListPair(),
         pDexV3Inst.getPancakeTokens(),
         pDexV3Inst.getUniTokens(),
         pDexV3Inst.getCurveTokens(),
+        pDexV3Inst.getRaydiumTokens(),
       ]);
       pairs = pDEXPairs.reduce(
         (prev, current) =>
@@ -1325,6 +1530,7 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
         ...pancakeTokens.map((t) => t?.tokenID),
         ...uniTokens.map((t) => t?.tokenID),
         ...curveTokens.map((t) => t?.tokenID),
+        ...raydiumTokens.map((t) => t?.tokenID),
       ];
       pairs = uniq(pairs);
     } else {
@@ -1341,6 +1547,10 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
         curveTokens = await pDexV3Inst.getCurveTokens();
         pairs = [...curveTokens.map((t) => t?.tokenID)];
         break;
+      case KEYS_PLATFORMS_SUPPORTED.raydium:
+        raydiumTokens = await pDexV3Inst.getRaydiumTokens();
+        pairs = [...raydiumTokens.map((t) => t?.tokenID)];
+        break;
       default:
         break;
       }
@@ -1348,7 +1558,7 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
-  dispatch(actionFetchedPairs({ pairs, pDEXPairs, pancakeTokens, uniTokens, curveTokens }));
+  dispatch(actionFetchedPairs({ pairs, pDEXPairs, pancakeTokens, uniTokens, curveTokens, raydiumTokens }));
   return pairs;
 };
 
@@ -1664,6 +1874,32 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       tx = response;
       break;
     }
+    case KEYS_PLATFORMS_SUPPORTED.raydium: {
+      const { tradeID, feeAddress, signAddress } = feeDataByPlatform;
+      const getRaydiumTokenParamReq = findTokenRaydiumByIdSelector(state);
+      const tokenSellRaydium = getRaydiumTokenParamReq(tokenIDToSell);
+      const tokenBuyRaydium = getRaydiumTokenParamReq(tokenIDToBuy);
+      const response = await pDexV3Inst.createAndSendTradeRequestRaydiumTx({
+        burningPayload: {
+          originalBurnAmount: sellAmount,
+          tokenID: tokenIDToSell,
+          signKey: signAddress,
+          feeAddress,
+          tradeFee: tradingFee,
+          info: String(tradeID),
+          feeToken: feetoken,
+        },
+        tradePayload: {
+          tradeID,
+          srcTokenID: tokenSellRaydium?.tokenID,
+          destTokenID: tokenBuyRaydium?.tokenID,
+          srcQties: String(sellAmount),
+          expectedDestAmt: String(minAcceptableAmount),
+        },
+      });
+      tx = response;
+      break;
+    }
     default:
       break;
     }
@@ -1709,15 +1945,16 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     const defaultExchange = defaultExchangeSelector(state);
     const isPrivacyApp = isPrivacyAppSelector(state);
     if (!isPrivacyApp) {
-      // Fetch history of all platform when current screen is pDexV3 
-      const [swapHistory, pancakeHistory, uniHistory, curveHistory] =
+      // Fetch history of all platform when current screen is pDexV3
+      const [swapHistory, pancakeHistory, uniHistory, curveHistory, raydiumHistory] =
         await Promise.all([
           pDexV3.getSwapHistory({ version: PrivacyVersion.ver2 }),
           pDexV3.getSwapPancakeHistory(),
           pDexV3.getSwapUniHistoryFromApi(),
           pDexV3.getSwapCurveHistoryFromApi(),
+          pDexV3.getSwapRaydiumHistoryFromApi(),
         ]);
-      history = flatten([swapHistory, pancakeHistory, uniHistory, curveHistory]);
+      history = flatten([swapHistory, pancakeHistory, uniHistory, curveHistory, raydiumHistory]);
     } else {
       switch (defaultExchange) {
       // Fetch PancakeSwap history when current screen is pPancakeSwap
@@ -1733,6 +1970,11 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
       // Fetch Curve history when current screen is pCurve
       case KEYS_PLATFORMS_SUPPORTED.curve: {
         history = await pDexV3.getSwapCurveHistoryFromApi();
+        break;
+      }
+      // Fetch Raydium history when current screen is pRaydium
+      case KEYS_PLATFORMS_SUPPORTED.raydium: {
+        history = await pDexV3.getSwapRaydiumHistoryFromApi();
         break;
       }
       default:
@@ -1789,6 +2031,14 @@ export const actionFetchRewardHistories = () => async (dispatch, getState) => {
         limit: 1000,
       });
     }
+
+    if (platform.id === KEYS_PLATFORMS_SUPPORTED.raydium) {
+      rewardHistoriesApiResponse = await pDexV3.getSwapRaydiumRewardHistory({
+        page: 0,
+        limit: 1000,
+      });
+    }
+
     console.log('rewardHistoriesApiResponse', rewardHistoriesApiResponse);
     dispatch(actionFetchedRewardHistories(rewardHistoriesApiResponse));
   } catch (error) {
@@ -1852,6 +2102,15 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
       });
       break;
     }
+    case EXCHANGE_SUPPORTED.raydium: {
+      _order = await pDexV3.getOrderSwapRaydiumDetail({
+        requestTx: order?.requestTx,
+        version: PrivacyVersion.ver2,
+        fromStorage: !!order?.fromStorage,
+        tradeID: order?.tradeID,
+      });
+      break;
+    }
     default:
       break;
     }
@@ -1896,6 +2155,9 @@ export const actionSwitchPlatform =
         break;
       case KEYS_PLATFORMS_SUPPORTED.curve:
         await dispatch(actionHandleInjectEstDataForCurve());
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.raydium:
+        await dispatch(actionHandleInjectEstDataForRaydium());
         break;
       default:
         break;

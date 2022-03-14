@@ -102,4 +102,6 @@ export { default as UniIcon } from './icon.uni';
 export { default as UniIcon2 } from './icon.uni2';
 export { default as CurveIcon } from './icon.curve';
 export { default as CurveIcon2 } from './icon.curve2';
+export { default as RaydiumIcon } from './icon.raydium';
+export { default as RaydiumIcon2 } from './icon.raydium2';
 

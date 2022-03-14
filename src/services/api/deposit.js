@@ -164,7 +164,6 @@ export const genSolanaDepositAddress = ({
   currencyType,
   signPublicKeyEncode,
 }) => {
-  console.log('SANG TEST::: ');
   if (!paymentAddress) return throw new Error('Missing paymentAddress');
   if (!walletAddress) return throw new Error('Missing walletAddress');
   if (!tokenId) return throw new Error('Missing tokenId');
