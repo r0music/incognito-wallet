@@ -11,14 +11,14 @@ import { useDispatch } from 'react-redux';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { swapInfoSelector } from '../Swap/Swap.selector';
 
-const PrivacyAppsPancake = () => {
+const PrivacyAppsCurve = () => {
   const dispatch = useDispatch();
   const swapInfo = useDebounceSelector(swapInfoSelector);
   const handleOnRefresh = async () => {
     await dispatch(
       actionSetDefaultExchange({
         isPrivacyApp: true,
-        exchange: KEYS_PLATFORMS_SUPPORTED.pancake,
+        exchange: KEYS_PLATFORMS_SUPPORTED.curve,
       }),
     );
     await dispatch(
@@ -35,15 +35,15 @@ const PrivacyAppsPancake = () => {
   return (
     <>
       <Header
-        title="pPancakeSwap"
+        title="pCurve"
         accountSelectable
         handleSelectedAccount={handleOnRefresh}
       />
-      <TabSwap isPrivacyApp exchange={KEYS_PLATFORMS_SUPPORTED.pancake} />
+      <TabSwap isPrivacyApp exchange={KEYS_PLATFORMS_SUPPORTED.curve} />
     </>
   );
 };
 
-PrivacyAppsPancake.propTypes = {};
+PrivacyAppsCurve.propTypes = {};
 
-export default withLayout_2(React.memo(PrivacyAppsPancake));
+export default withLayout_2(React.memo(PrivacyAppsCurve));

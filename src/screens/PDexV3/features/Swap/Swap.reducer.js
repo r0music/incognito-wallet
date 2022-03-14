@@ -62,6 +62,11 @@ const initialState = {
       feePrv: {},
       error: null,
     },
+    [KEYS_PLATFORMS_SUPPORTED.curve]: {
+      // curve
+      feePrv: {},
+      error: null,
+    },
   },
   buytoken: '',
   selltoken: '',
@@ -88,6 +93,7 @@ const initialState = {
   pDEXPairs: [],
   pancakeTokens: [],
   uniTokens: [],
+  curveTokens: [],
   platforms: [...PLATFORMS_SUPPORTED],
   field: '',
   useMax: false,
@@ -172,6 +178,9 @@ const reducer = (state = initialState, action) => {
     case KEYS_PLATFORMS_SUPPORTED.uni:
       feetoken = PRV_ID;
       break;
+    case KEYS_PLATFORMS_SUPPORTED.curve:
+      feetoken = PRV_ID;
+      break;
     default:
       break;
     }
@@ -251,13 +260,14 @@ const reducer = (state = initialState, action) => {
     };
   }
   case ACTION_FETCHED_LIST_PAIRS: {
-    const { pairs, pDEXPairs, pancakeTokens, uniTokens } = action.payload;
+    const { pairs, pDEXPairs, pancakeTokens, uniTokens, curveTokens } = action.payload;
     return {
       ...state,
       pairs,
       pDEXPairs,
       pancakeTokens,
-      uniTokens
+      uniTokens,
+      curveTokens,
     };
   }
   case ACTION_FETCH_SWAP: {

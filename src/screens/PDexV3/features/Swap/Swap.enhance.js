@@ -10,6 +10,8 @@ import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/Rem
 import { compose } from 'recompose';
 import withLazy from '@src/components/LazyHoc/LazyHoc';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import { useNavigation } from 'react-navigation-hooks';
+import routeNames from '@src/router/routeNames';
 import { formConfigs, KEYS_PLATFORMS_SUPPORTED } from './Swap.constant';
 import {
   actionInitSwapForm,
@@ -33,6 +35,7 @@ const enhance = (WrappedComp) => (props) => {
   const feeTokenData = useDebounceSelector(feetokenDataSelector);
   const [visibleSignificant, setVisibleSignificant] = React.useState(false);
   const [ordering, setOrdering] = React.useState(false);
+  const navigation = useNavigation();
   const {
     isPrivacyApp = false,
     exchange = KEYS_PLATFORMS_SUPPORTED.incognito,
@@ -121,9 +124,11 @@ const enhance = (WrappedComp) => (props) => {
   };
   React.useEffect(() => {
     handleInitSwapForm();
-    return () => {
-      unmountSwap();
-    };
+    if (navigation?.state?.routeName !== routeNames.Trade) {
+      return () => {
+        unmountSwap();
+      };
+    }
   }, []);
 
   return (

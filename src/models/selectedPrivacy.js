@@ -3,7 +3,6 @@ import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
 import { BIG_COINS } from '@src/screens/DexV2/constants';
 import { PRV_ID } from '@screens/Dex/constants';
 import { detectToken } from '@src/utils/misc';
-import convert from '@utils/convert';
 import PToken from './pToken';
 
 function getNetworkName() {
@@ -18,7 +17,14 @@ function getNetworkName() {
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
   const isSOL =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SOL;
-  if (this.isPrivateCoin) {
+
+  if (isBSC) {
+    name ='BNB BSC';
+  } else if (isBNB) {
+    name ='BNB Chain';
+  } else if (this.isIncognitoToken || this.isMainCrypto) {
+    name = 'Incognito';
+  } else if (this.isPrivateCoin) {
     name = `${this.name}`;
   } else if (this.isErc20Token) {
     name = 'ERC20';
@@ -30,9 +36,8 @@ function getNetworkName() {
     name = 'Polygon ERC20';
   } else if (this.isSPLToken) {
     name = 'SLP Token';
-  } else if (this.isIncognitoToken || this.isMainCrypto) {
-    name = 'Incognito';
   }
+
   let rootNetworkName = name;
   if (isETH || this?.isErc20Token) {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.ETHEREUM;
