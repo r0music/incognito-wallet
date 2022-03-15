@@ -43,7 +43,7 @@ export const PoolItem = React.memo((props) => {
           <Row style={styled.rowName} centerVertical>
             <Text style={styled.name}>{poolTitle}</Text>
           </Row>
-          <Text style={[styled.network, { backgroundColor: colors.secondary }]}>{`${token1.networkName} / ${token2.networkName}`}</Text>
+          <Text style={[styled.network]}>{`${token1.networkName} / ${token2.networkName}`}</Text>
         </View>
         <View style={styled.block2}>
           <Text style={styled.subText}>{`${apyStr}`}</Text>
