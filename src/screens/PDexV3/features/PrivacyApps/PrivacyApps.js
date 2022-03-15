@@ -69,7 +69,7 @@ const PrivacyApps = () => {
             title: 'DEX',
           },
         ],
-        desc: 'Trade anonymously on Raydium’s leading DEX. Deep liquidity and super low fees – now with privacy.',
+        desc: 'Explore DeFi on Solana with full anonymity for your swap and assets.',
         onPressItem,
       },
       {
