@@ -2032,12 +2032,12 @@ export const actionFetchRewardHistories = () => async (dispatch, getState) => {
       });
     }
 
-    if (platform.id === KEYS_PLATFORMS_SUPPORTED.raydium) {
-      rewardHistoriesApiResponse = await pDexV3.getSwapRaydiumRewardHistory({
-        page: 0,
-        limit: 1000,
-      });
-    }
+    // if (platform.id === KEYS_PLATFORMS_SUPPORTED.raydium) {
+    //   rewardHistoriesApiResponse = await pDexV3.getSwapRaydiumRewardHistory({
+    //     page: 0,
+    //     limit: 1000,
+    //   });
+    // }
 
     console.log('rewardHistoriesApiResponse', rewardHistoriesApiResponse);
     dispatch(actionFetchedRewardHistories(rewardHistoriesApiResponse));
