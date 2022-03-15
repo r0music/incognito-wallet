@@ -16,6 +16,8 @@ import routeNames from '@src/router/routeNames';
 import Header from '@src/components/Header';
 import { activedTabSelector, actionChangeTab } from '@src/components/core/Tabs';
 import { FlatList } from '@src/components/core/FlatList';
+import { compose } from 'recompose';
+import withLazy from '@components/LazyHoc/LazyHoc';
 import PrivacyAppsItem from './PrivacyApps.item';
 
 const styled = StyleSheet.create({
@@ -135,9 +137,9 @@ const PrivacyApps = () => {
     }
   });
 
-  const renderItem = ({ item }) => {
+  const renderItem = React.useCallback(({ item }) => {
     return <PrivacyAppsItem {...item} />;
-  };
+  }, []);
 
   const renderItemSeparatorComponent = () => {
     return <View style={styled.itemSpace} />;
@@ -152,7 +154,7 @@ const PrivacyApps = () => {
       <View borderTop fullFlex>
         <FlatList
           data={factories}
-          keyExtractor={(item) => item?.id?.toString()}
+          keyExtractor={(item) => item?.privacyAppId}
           renderItem={renderItem}
           ItemSeparatorComponent={renderItemSeparatorComponent}
           contentContainerStyle={styled.flatListContainer}
@@ -164,4 +166,7 @@ const PrivacyApps = () => {
 
 PrivacyApps.propTypes = {};
 
-export default withLayout_2(React.memo(PrivacyApps));
+export default compose(
+  withLazy,
+  withLayout_2
+)(React.memo(PrivacyApps));

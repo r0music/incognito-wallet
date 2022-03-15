@@ -28,7 +28,7 @@ const TEST_NODE_SERVER = {
 };
 const MAIN_NET_SERVER = {
   id: 'mainnet',
-  default: true,
+  default: false,
   address: MAINNET_FULLNODE,
   username: '',
   password: '',
@@ -217,7 +217,7 @@ const BETA_66 = {
 
 const SOL_TEST_SEVER = {
   id: 'soltest',
-  default: false,
+  default: true,
   address: 'http://51.89.21.38:8334',
   username: '',
   password: '',
