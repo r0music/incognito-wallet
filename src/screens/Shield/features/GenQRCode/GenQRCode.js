@@ -218,12 +218,6 @@ const Extra = (props) => {
           text={`Send only ${selectedPrivacy?.externalSymbol ||
             selectedPrivacy?.symbol} to this shielding address.`}
         />
-        {(selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SOL || selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.SPL) && (
-          <SubmitInput
-            containerStyle={{ marginTop: 15 }}
-            placeHolder="Transaction ID from Solana"
-          />
-        )}
         <NormalText
           style={{ marginTop: 10, color: colors.text1}}
           text={`Sending coins or tokens other than ${selectedPrivacy?.externalSymbol ||
