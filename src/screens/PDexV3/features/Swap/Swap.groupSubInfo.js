@@ -34,7 +34,7 @@ const GroupSubInfo = () => {
         </View>
         {/* Only show Reward history tab when screen is privacy app, not show in Dex
         screen */}
-        {routeName !== routeNames.Trade ? (
+        {(routeName !== routeNames.Trade && routeName !== routeNames.PrivacyAppsRaydium) ? (
           <View
             tabID={`${TAB_REWARD_HISTORY_ID} ${routeName}`}
             label="Trading rewards"
