@@ -35,7 +35,7 @@ function getNetworkName() {
   } else if (this.isPolygonErc20Token) {
     name = 'Polygon ERC20';
   } else if (this.isSPLToken) {
-    name = 'SLP Token';
+    name = 'SPL Token';
   }
 
   let rootNetworkName = name;
