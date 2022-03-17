@@ -68,7 +68,7 @@ const SwapRewardHistoryDetail = () => {
             copiable
             openUrl
             handleOpenUrl={() =>
-              LinkingService.openUrl(
+              LinkingService.openUrlInSide(
                 `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${rewardHistoryDetail?.tx}`,
               )
             }
