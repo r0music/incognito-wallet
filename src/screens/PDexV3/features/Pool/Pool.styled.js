@@ -45,7 +45,6 @@ export const styled = StyleSheet.create({
   network: {
     fontSize: FONT.SIZE.superSmall,
     fontFamily: FONT.NAME.medium,
-    paddingHorizontal: 4,
     lineHeight: 16,
     borderRadius: 4,
     overflow: 'hidden',
