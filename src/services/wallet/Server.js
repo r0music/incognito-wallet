@@ -124,30 +124,6 @@ const TEST_NET_1_SERVER = {
   portalServices: 'http://139.162.55.124:8010',
 };
 
-const TEST_NET_PCURVE = {
-  id: 'testnetPCurve',
-  default: true,
-  address: MAINNET_FULLNODE,
-  username: '',
-  password: '',
-  name: 'Testnet pCurve',
-  coinServices: 'https://api-coinservice.incognito.org',
-  pubsubServices: 'https://api-coinservice.incognito.org/txservice',
-  requestServices: 'https://api-coinservice.incognito.org',
-  apiServices: 'https://dev-api-service.incognito.org',
-  shardNumber: DEFAULT_SHARD_NUMBER,
-  IncContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
-  IncBSCContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
-  explorer: 'https://explorer.incognito.org',
-  tradeServices: 'https://api-coinservice.incognito.org',
-  portalServices: 'https://api-portalv4.incognito.org',
-  webviewChartServices: 'https://chart-webview.incognito.org',
-  bscConfigs: BSC_CONSTANT.BSC_MAINNET_CONFIGS,
-  pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
-  uniConfigs: UNI_CONSTANTS.UNI_MAINNET_CONFIGS,
-  web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
-};
-
 export const DEV_TEST_SERVER = {
   id: 'devtest',
   default: false,
@@ -221,7 +197,6 @@ const DEFAULT_LIST_SERVER = [
   TEST_NODE_SERVER,
   MAIN_NET_SERVER,
   TEST_NET_1_SERVER,
-  TEST_NET_PCURVE,
   DEV_TEST_SERVER,
   BETA_SERVER,
   PORTAL_SERVER,
