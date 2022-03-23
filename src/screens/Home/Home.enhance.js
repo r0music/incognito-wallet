@@ -3,7 +3,7 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import { compose } from 'recompose';
 import { withNavigation } from 'react-navigation';
 import { ExHandler } from '@src/services/exception';
-import withFCM from '@src/screens/Notification/Notification.withFCM';
+// import withFCM from '@src/screens/Notification/Notification.withFCM';
 import { useSelector, useDispatch } from 'react-redux';
 import { BackHandler } from 'react-native';
 import AppUpdater from '@components/AppUpdater';
@@ -48,7 +48,6 @@ const enhance = (WrappedComp) => (props) => {
 
 export default compose(
   withNavigation,
-  withFCM,
   withNews,
   enhance,
 );

@@ -1,6 +1,6 @@
 apply plugin: "com.android.application"
 apply from: "../../node_modules/react-native-unimodules/gradle.groovy"
-apply plugin: "io.fabric"
+// apply plugin: "io.fabric"
 
 import com.android.build.OutputFile
 
@@ -237,6 +237,12 @@ android {
     }
 }
 
+configurations.all {
+    exclude module : 'firebase-installations'
+    exclude module : 'firebase-messaging'
+}
+
+
 dependencies {
     implementation project(':react-native-fast-image')
     addUnimodulesDependencies()
@@ -248,14 +254,28 @@ dependencies {
     // Firebase dependencies
     implementation "com.google.android.gms:play-services-base:16.1.0"
 //    implementation "com.google.firebase:firebase-core:16.0.9"
-    implementation "com.google.firebase:firebase-auth:17.0.0"
-    implementation "com.google.firebase:firebase-database:17.0.0"
+//     implementation "com.google.firebase:firebase-auth:17.0.0"
+//     implementation "com.google.firebase:firebase-database:17.0.0"
 //    implementation "com.google.firebase:firebase-messaging:18.0.0"
-    implementation "com.google.firebase:firebase-core:16.0.8"
-    implementation "com.google.firebase:firebase-messaging:21.1.0"
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
-        transitive = true
-    }
+    // implementation ("com.google.firebase:firebase-core:16.0.8") {
+    //     exclude group: "com.google.firebase", module: 'firebase-ads'
+    //     exclude group: "com.google.firebase", module: 'admob'
+    //     exclude group: "com.google.firebase", module: 'firebase-analytics'
+    //     exclude group: 'com.google.firebase', module : 'play-services-ads'
+    //     exclude group: 'com.google.firebase', module : 'play-services-ads-identifier'
+    //     exclude group: 'com.google.firebase', module : 'play-services-ads-lite'
+    //     exclude module: 'firebase-analytics'
+    //     exclude module: 'admob'
+    //     exclude module: 'firebase-ads'
+    //     exclude group: 'io.invertase.firebase'
+    //     exclude group: 'io.invertase.firebase', module : 'firebase-analytics'
+    //     exclude group: 'io.invertase.firebase', module : 'firebase-ads'
+    //     exclude group: 'com.google.firebase', module: 'firebase-iid'
+    // }
+    // implementation "com.google.firebase:firebase-messaging:21.1.0"
+    // implementation('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
+    //     transitive = true
+    // }
 
     // For animated GIF support
     implementation 'com.facebook.fresco:fresco:1.12.0'
@@ -295,5 +315,5 @@ task downloadDependencies() {
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
-apply plugin: 'com.google.gms.google-services'
-googleServices { disableVersionCheck = true }
+// apply plugin: 'com.google.gms.google-services'
+// googleServices { disableVersionCheck = true }

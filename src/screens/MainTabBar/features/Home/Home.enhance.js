@@ -4,7 +4,7 @@ import { ExHandler } from '@src/services/exception';
 import { compose } from 'recompose';
 import {useDispatch, useSelector} from 'react-redux';
 import { getPTokenList } from '@src/redux/actions/token';
-import withFCM from '@screens/Notification/Notification.withFCM';
+// import withFCM from '@screens/Notification/Notification.withFCM';
 import Modal from '@src/components/Modal';
 import AppUpdater from '@src/components/AppUpdater';
 import {homeSelector} from '@screens/Home/Home.selector';
@@ -59,6 +59,5 @@ const enhance = (WrappedComp) => (props) => {
 };
 
 export default compose(
-  withFCM,
   enhance,
 );
