@@ -9,16 +9,10 @@ export const styled = StyleSheet.create({
     flex: 1,
     paddingTop: 10,
   },
-  wrapBar: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   label: {
     ...FONT.STYLE.normal,
     fontSize: FONT.SIZE.superSmall,
     lineHeight: FONT.SIZE.superSmall + 6,
-    height: FONT.SIZE.superSmall + 6,
-    marginTop: 2
   }
 });
 

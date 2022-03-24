@@ -156,7 +156,7 @@ export const mappingTxPTokenSelector = createSelector(
           decimalDigits,
         })
         : '';
-    const network = tokenId === PRVIDSTR && currencyType && currencyType !== 0 
+    const network = tokenId === PRVIDSTR && currencyType && currencyType !== 0
       ? CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_NAME[currencyType]
       : '';
     const result = {
@@ -230,7 +230,7 @@ export const mappingTxPortalSelector = createSelector(
       statusColor,
       statusDetail,
       inchainTx: inchainTxId ? `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${inchainTxId}` : '',
-      outchainTx: externalTxID ? `${CONSTANT_CONFIGS.BTC_EXPLORER_URL}/tx/${externalTxID}` : '', 
+      outchainTx: externalTxID ? `${CONSTANT_CONFIGS.BTC_EXPLORER_URL}/tx/${externalTxID}` : '',
     };
 
     if (!isShieldTx) {
@@ -312,7 +312,7 @@ export const historyDetailFactoriesSelector = createSelector(
             copyable: true,
             openUrl: !!txId,
             handleOpenUrl: () =>
-              LinkingService.openUrl(
+              LinkingService.openUrlInSide(
                 `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txId}`,
               ),
             disabled: !txId,
@@ -397,7 +397,7 @@ export const historyDetailFactoriesSelector = createSelector(
             value: `${txReceive}`,
             disabled: !txReceive,
             openUrl: !!txReceive,
-            handleOpenUrl: () => LinkingService.openUrl(txReceive),
+            handleOpenUrl: () => LinkingService.openUrlInSide(txReceive),
           },
           {
             label: 'Status',
@@ -430,14 +430,14 @@ export const historyDetailFactoriesSelector = createSelector(
             value: inChainTx,
             disabled: !inChainTx,
             openUrl: !!inChainTx,
-            handleOpenUrl: () => LinkingService.openUrl(inChainTx),
+            handleOpenUrl: () => LinkingService.openUrlInSide(inChainTx),
           },
           {
             label: 'Outchain TxID',
             value: outChainTx,
             disabled: !outChainTx,
             openUrl: !!outChainTx,
-            handleOpenUrl: () => LinkingService.openUrl(outChainTx),
+            handleOpenUrl: () => LinkingService.openUrlInSide(outChainTx),
           },
           {
             label: 'Contract',
@@ -479,7 +479,7 @@ export const historyDetailFactoriesSelector = createSelector(
           memo,
           network,
         } = tx;
-        
+
         return [
           {
             label: 'ID',
@@ -531,14 +531,14 @@ export const historyDetailFactoriesSelector = createSelector(
             value: inChainTx,
             disabled: !inChainTx,
             openUrl: !!inChainTx,
-            handleOpenUrl: () => LinkingService.openUrl(inChainTx),
+            handleOpenUrl: () => LinkingService.openUrlInSide(inChainTx),
           },
           {
             label: 'Outchain TxID',
             value: outChainTx,
             disabled: !outChainTx,
             openUrl: !!outChainTx,
-            handleOpenUrl: () => LinkingService.openUrl(outChainTx),
+            handleOpenUrl: () => LinkingService.openUrlInSide(outChainTx),
           },
           {
             label: 'Contract',
@@ -606,14 +606,14 @@ export const historyDetailFactoriesSelector = createSelector(
             value: inchainTx,
             disabled: !inchainTx,
             openUrl: !!inchainTx,
-            handleOpenUrl: () => LinkingService.openUrl(inchainTx),
+            handleOpenUrl: () => LinkingService.openUrlInSide(inchainTx),
           },
           {
             label: 'Outchain TxID',
             value: outchainTx,
             disabled: !outchainTx,
             openUrl: !!outchainTx,
-            handleOpenUrl: () => LinkingService.openUrl(outchainTx),
+            handleOpenUrl: () => LinkingService.openUrlInSide(outchainTx),
           },
           {
             label: 'Coin',
@@ -638,7 +638,7 @@ export const historyDetailFactoriesSelector = createSelector(
           statusDetail,
           txId,
         } = tx;
-      
+
         return [
           {
             label: 'Unshield',
@@ -680,13 +680,13 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !externalAddress,
             copyable: true,
           },
-          inchainTx ? 
+          inchainTx ?
             {
               label: 'Inchain TxID',
               value: inchainTx,
               disabled: !inchainTx,
               openUrl: !!inchainTx,
-              handleOpenUrl: () => LinkingService.openUrl(inchainTx),
+              handleOpenUrl: () => LinkingService.openUrlInSide(inchainTx),
             } :
             {
               label: 'TxID',
@@ -699,7 +699,7 @@ export const historyDetailFactoriesSelector = createSelector(
             value: outchainTx,
             disabled: !outchainTx,
             openUrl: !!outchainTx,
-            handleOpenUrl: () => LinkingService.openUrl(outchainTx),
+            handleOpenUrl: () => LinkingService.openUrlInSide(outchainTx),
           },
           {
             label: 'Coin',
@@ -730,7 +730,7 @@ export const historyDetailFactoriesSelector = createSelector(
             copyable: true,
             openUrl: !!txId,
             handleOpenUrl: () =>
-              LinkingService.openUrl(
+              LinkingService.openUrlInSide(
                 `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txId}`,
               ),
             disabled: !txId,

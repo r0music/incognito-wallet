@@ -11,12 +11,12 @@ const Wallet = React.memo(() => {
     <>
       <Extra />
       <Followed />
-      <StreamLineBottomBar />
+      {/*<StreamLineBottomBar />*/}
     </>
   );
 });
 
 export default compose(
   withWallet,
-  withNews
+  // withNews
 )(Wallet);

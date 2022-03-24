@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { KeyboardAwareScrollView, RefreshControl } from '@src/components/core';
 import { createForm } from '@src/components/core/reduxForm';
 import { ButtonBasic } from '@src/components/Button';
 import LoadingTx from '@src/components/LoadingTx';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import GroupSubInfo from './OrderLimit.groupSubInfo';
 import { formConfigs } from './OrderLimit.constant';
 import { styled } from './OrderLimit.styled';
@@ -27,7 +27,7 @@ const Form = createForm(formConfigs.formName, {
 });
 
 const OrderLimit = (props) => {
-  const { mainColor, btnActionTitle, ordering, calculating } = useSelector(
+  const { mainColor, btnActionTitle, ordering, calculating } = useDebounceSelector(
     orderLimitDataSelector,
   );
   const { handleConfirm, onRefresh } = props;

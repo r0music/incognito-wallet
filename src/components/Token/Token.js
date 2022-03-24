@@ -328,6 +328,8 @@ export const Symbol = (props) => {
     isErc20Token,
     isBep2Token,
     isBep20Token,
+    isPolygonErc20Token,
+    isFantomErc20Token,
     styledSymbol,
     visibleNetworkName = true,
   } = props;
@@ -337,7 +339,11 @@ export const Symbol = (props) => {
       style={[styled.bottomText, styledSymbol]}
       text={`${symbol} ${
         visibleNetworkName
-          ? isErc20Token || isBep2Token || isBep20Token
+          ? isErc20Token ||
+            isBep2Token ||
+            isBep20Token ||
+            isPolygonErc20Token ||
+            isFantomErc20Token
             ? `(${networkName})`
             : ''
           : ''

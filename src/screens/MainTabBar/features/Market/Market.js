@@ -7,10 +7,9 @@ import withMarket from '@screens/MainTabBar/features/Market/Market.enhance';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
-import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
-import {ROOT_TAB_TRADE, TAB_BUY_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
-import {actionInit, actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
-import {actionLogEvent} from '@screens/Performance';
+import { actionChangeTab } from '@components/core/Tabs/Tabs.actions';
+import { ROOT_TAB_TRADE, TAB_BUY_LIMIT_ID } from '@screens/PDexV3/features/Trade/Trade.constant';
+import { actionInit, actionSetPoolSelected } from '@screens/PDexV3/features/OrderLimit';
 import { marketTabSelector } from '@screens/Setting';
 import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 
@@ -22,9 +21,6 @@ const Market = React.memo((props) => {
   const onOrderPress = (item) => {
     const poolId = item.defaultPoolPair;
     navigation.navigate(routeNames.Trade, { tabIndex: 0 });
-    dispatch(actionLogEvent({
-      desc: 'POOL-SELECTED-Market-' + JSON.stringify(poolId || '')
-    }));
     if (poolId) {
       batch(() => {
         dispatch(actionSetPoolSelected(poolId));

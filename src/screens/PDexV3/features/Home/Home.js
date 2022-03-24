@@ -1,9 +1,9 @@
 import React from 'react';
 import { Row } from '@src/components';
-import { Tabs, Text, Text3, TouchableOpacity } from '@src/components/core';
+import { Tabs, Text, TouchableOpacity } from '@src/components/core';
 import Portfolio from '@src/screens/PDexV3/features/Portfolio';
 import { View } from 'react-native';
-import { batch, useDispatch, useSelector } from 'react-redux';
+import { batch, useDispatch } from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { liquidityActions } from '@screens/PDexV3/features/Liquidity';
@@ -17,6 +17,7 @@ import { PoolReward } from '@screens/PDexV3/features/Share';
 import PortfolioReward from '@screens/PDexV3/features/Portfolio/Portfolio.reward';
 import { SearchIcon } from '@components/Icons';
 import { PoolsListHeader } from '@screens/PDexV3/features/Pools/Pools.list';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import withHome from './Home.enhance';
 import { ROOT_TAB_HOME, TAB_POOLS_ID, TAB_PORTFOLIO_ID, TAB_REWARDS_ID } from './Home.constant';
 import { styled } from './Home.styled';
@@ -24,7 +25,7 @@ import { styled } from './Home.styled';
 const TabPools = React.memo(() => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const listPools = useSelector(listPoolsSelector);
+  const listPools = useDebounceSelector(listPoolsSelector);
   const onNavigateContribute = (poolId) => {
     batch(() => {
       dispatch(liquidityActions.actionSetContributeID({ poolId, nftId: '' }));

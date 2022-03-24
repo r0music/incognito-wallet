@@ -32,10 +32,10 @@ import {
   BurningPBSCRequestMeta,
   BurningRequestMeta,
   BurningPLGRequestMeta,
+  BurningFantomRequestMeta,
   BurningPRVERC20RequestMeta,
   BurningPRVBEP20RequestMeta,
   PrivacyVersion,
-  PRVIDSTR,
 } from 'incognito-chain-web-js/build/wallet';
 import { formName } from './Form.enhance';
 
@@ -87,12 +87,11 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     isErc20Token,
     isBep20Token,
     isPolygonErc20Token,
+    isFantomErc20Token,
     externalSymbol,
     paymentAddress: walletAddress,
-    symbol,
     pDecimals,
     isDecentralized,
-    name,
   } = childSelectedPrivacy ? childSelectedPrivacy : selectedPrivacy;
   const keySave = isDecentralized
     ? CONSTANT_KEYS.UNSHIELD_DATA_DECENTRALIZED
@@ -119,8 +118,22 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   const wallet = useSelector(walletSelector);
   const handleBurningToken = async (payload = {}, txHashHandler) => {
     try {
-      const { originalAmount, feeForBurn, paymentAddress, isBSC, isPolygon } = payload;
+      const {
+        originalAmount,
+        feeForBurn,
+        paymentAddress,
+        isBSC,
+        isPolygon,
+        isFantom,
+      } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
+
+      // set default BurningRequestMeta
+      let burningRequestMeta = BurningRequestMeta;
+
+      if (isBSC) burningRequestMeta = BurningPBSCRequestMeta;
+      if (isPolygon) burningRequestMeta = BurningPLGRequestMeta;
+      if (isFantom) burningRequestMeta = BurningFantomRequestMeta;
 
       const res = await accountService.createBurningRequest({
         wallet,
@@ -137,11 +150,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         info,
         remoteAddress: paymentAddress,
         txHashHandler,
-        burningType: isBSC
-          ? BurningPBSCRequestMeta
-          : isPolygon
-            ? BurningPLGRequestMeta
-            : BurningRequestMeta,
+        burningType: burningRequestMeta,
         version: PrivacyVersion.ver2,
       });
       if (res.txId) {
@@ -208,6 +217,8 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         currencyType: currencyType,
         isErc20Token: isErc20Token,
         isBep20Token: isBep20Token,
+        isPolygonErc20Token: isPolygonErc20Token,
+        isFantomErc20Token: isFantomErc20Token,
         externalSymbol: externalSymbol,
         isUsedPRVFee,
         userFeesData,
@@ -369,9 +380,10 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB,
         isPolygon:
           isPolygonErc20Token ||
-          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
-          currencyType ===
-            CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20,
+          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC,
+        isFantom:
+          isFantomErc20Token ||
+          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM,
       };
       let res;
       if (isDecentralized) {

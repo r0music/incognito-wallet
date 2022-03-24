@@ -48,7 +48,7 @@ const SwapOrderDetail = () => {
         copiable: true,
         openUrl: true,
         handleOpenUrl: () =>
-          LinkingService.openUrl(
+          LinkingService.openUrlInSide(
             `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${order?.requestTx}`,
           ),
       },
@@ -70,11 +70,7 @@ const SwapOrderDetail = () => {
       },
       {
         label: 'Rate',
-        customValue: order?.rateStr && (
-          <Row style={orderDetailStyled.rowValue}>
-            <Text style={orderDetailStyled.value}>{order?.rateStr}</Text>
-          </Row>
-        ),
+        value: order?.rateStr
       },
       {
         label: 'Fee',
@@ -103,7 +99,7 @@ const SwapOrderDetail = () => {
                 copiable
                 openUrl
                 handleOpenUrl={() =>
-                  LinkingService.openUrl(
+                  LinkingService.openUrlInSide(
                     `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${responseTx}`,
                   )
                 }

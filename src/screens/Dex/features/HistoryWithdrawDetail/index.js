@@ -15,7 +15,7 @@ const HistoryWithdrawDetail = React.memo(({ history, historyTab }) => {
   const getPrivacyDataByTokenID = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID);
   const handleOpenLink = (txID) => {
     if (!txID) return;
-    linkingService.openUrl(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txID}`,);
+    linkingService.openUrlInSide(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txID}`,);
   };
   const renderWithdrawHistories = () => {
     const { tokenId1, tokenId2, amount1, amount2, responseTx1, responseTx2, statusText, requestTx } = history;

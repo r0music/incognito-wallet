@@ -128,6 +128,16 @@ const HistoryList = (props) => {
       />
     );
   }
+  const renderItem = React.useCallback(({ item: history }) => {
+    return <HistoryItemWrapper {...{ history, onCancelEtaHistory }} />;
+  }, []);
+  const getItemLayout = React.useCallback((data, index) => (
+    { length: 74, offset: 74 * index, index}
+  ), []);
+  const onEndReached = React.useCallback(() =>
+    typeof onLoadmoreHistory === 'function' && onLoadmoreHistory(),
+  [onLoadmoreHistory]);
+  const renderKey = React.useCallback((item) => item?.txId || item?.id, []);
   return (
     <FlatList
       refreshControl={(
@@ -138,17 +148,17 @@ const HistoryList = (props) => {
         />
       )}
       data={histories}
-      renderItem={({ item: history }) => {
-        return <HistoryItemWrapper {...{ history, onCancelEtaHistory }} />;
-      }}
-      keyExtractor={(item) => item?.txId || item?.id}
-      onEndReached={() =>
-        typeof onLoadmoreHistory === 'function' && onLoadmoreHistory()
-      }
+      renderItem={renderItem}
+      keyExtractor={renderKey}
+      onEndReached={onEndReached}
+      getItemLayout={getItemLayout}
       ListFooterComponent={<View style={{ marginBottom: 30 }} />}
       ListEmptyComponent={
         showEmpty && typeof renderEmpty === 'function' && renderEmpty()
       }
+      initialNumToRender={10}
+      maxToRenderPerBatch={10}
+      windowSize={10}
     />
   );
 };

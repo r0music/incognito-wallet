@@ -10,18 +10,17 @@ import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import { actionFetch as actionFetchProfile } from '@screens/Profile';
 import withPin from '@components/pin.enhance';
 import KeepAwake from 'react-native-keep-awake';
-import { getInternalTokenList, getPTokenList } from '@src/redux/actions/token';
 import {
   actionLoadDefaultWallet,
   loadAllMasterKeyAccounts,
 } from '@src/redux/actions/masterKey';
-import { getBanners } from '@src/redux/actions/settings';
-import { actionFetchPairs } from '@screens/PDexV3/features/Swap';
 import { actionFetchListPools } from '@screens/PDexV3/features/Pools';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { ANALYTICS } from '@src/constants';
 import {actionFetch as actionFetchHomeConfigs} from '@screens/Home/Home.actions';
 import {actionCheckUnreadNews} from '@screens/News';
+import { actionFetchPairs } from '@screens/PDexV3/features/Swap';
+import { setTokenHeader } from '@services/http';
 import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
 import withWizard from './GetStarted.enhanceWizard';
 import withWelcome from './GetStarted.enhanceWelcome';
@@ -55,14 +54,27 @@ const enhance = (WrappedComp) => (props) => {
   const configsApp = async () => {
     console.time('CONFIGS_APP');
     let hasError;
+    let token;
     await setLoading(true);
     try {
+      try {
+        if (typeof global.login === 'function') {
+          token = await global.login();
+          setTokenHeader(token);
+        }
+      } catch (error) {
+        console.log('CANT LOAD NEW ACCESS TOKEN');
+        hasError = true;
+      } finally {
+        if (!token || hasError) {
+          setError('Hey, you there? Your internet connection is unstable. Please check your network settings and launch the app again.');
+        }
+      }
       login();
       batch(() => {
         dispatch(actionFetchProfile());
-        dispatch(getPTokenList());
-        dispatch(getInternalTokenList());
-        dispatch(getBanners());
+        // dispatch(getInternalTokenList());
+        // dispatch(getBanners());
         dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));
         dispatch(actionFetchListPools());
         dispatch(actionFetchPairs(true));
@@ -78,10 +90,14 @@ const enhance = (WrappedComp) => (props) => {
       await setError(getErrorMsg(error));
       throw error;
     }
-    await setLoading(false);
     console.timeEnd('CONFIGS_APP');
     if (!hasError) {
-      navigation.navigate(routeNames.MainTabBar);
+      setTimeout(() => {
+        setLoading(false);
+        navigation.navigate(routeNames.MainTabBar);
+      }, 2000);
+    } else {
+      setLoading(false);
     }
   };
 

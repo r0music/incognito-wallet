@@ -9,8 +9,10 @@ import {
 import serverService from '@src/services/wallet/Server';
 import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
 import { ExHandler } from '@src/services/exception';
+import routeNames from '@src/router/routeNames';
 import { change, reset } from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
+import Util from '@utils/Util';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { batch } from 'react-redux';
 import uniq from 'lodash/uniq';
@@ -19,10 +21,12 @@ import convert from '@src/utils/convert';
 import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
 import floor from 'lodash/floor';
+import { currentScreenSelector } from '@screens/Navigation';
 import difference from 'lodash/difference';
 import { isUsePRVToPayFeeSelector } from '@screens/Setting';
 import flatten from 'lodash/flatten';
 import orderBy from 'lodash/orderBy';
+import {CONSTANT_CONFIGS} from '@src/constants';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -55,6 +59,10 @@ import {
   ACTION_SET_ERROR,
   ACTION_REMOVE_ERROR,
   ACTION_CHANGE_SLIPPAGE,
+  ACTION_FETCHING_REWARD_HISTORY,
+  ACTION_FETCHED_REWARD_HISTORY,
+  ACTION_FETCH_FAIL_REWARD_HISTORY,
+  ACTION_RESET_DATA
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -69,9 +77,13 @@ import {
   defaultPairSelector,
   sellInputTokenSelector,
   findTokenPancakeByIdSelector,
+  findTokenCurveByIdSelector,
+  findTokenUniByIdSelector,
   hashmapContractIDsSelector,
   platformSelectedSelector,
   isPairSupportedTradeOnPancakeSelector,
+  isPairSupportedTradeOnUniSelector,
+  isPairSupportedTradeOnCurveSelector,
   defaultExchangeSelector,
   isPrivacyAppSelector,
   isExchangeVisibleSelector,
@@ -163,6 +175,11 @@ export const actionFetchFail = () => ({
 
 export const actionReset = (payload) => ({
   type: ACTION_RESET,
+  payload,
+});
+
+export const actionResetData = (payload) => ({
+  type: ACTION_RESET_DATA,
   payload,
 });
 
@@ -286,7 +303,7 @@ export const actionHandleInjectEstDataForPDex =
         break;
       }
       const slippagetolerance = slippagetoleranceSelector(state);
-      const originalMinAmountExpected = calMintAmountExpected({
+      const originalMinAmountExpected = field === formConfigs.buytoken ? maxGet : calMintAmountExpected({
         maxGet,
         slippagetolerance,
       });
@@ -402,6 +419,168 @@ export const actionEstimateTradeForPDex =
     };
   };
 
+export const setDefaultTradingPlatformOnPdexV3 = () => async (dispatch, getState) => {
+  const state = getState();
+  const isPairSupportedTradeOnPancake =
+    isPairSupportedTradeOnPancakeSelector(state);
+  const isPairSupportedTradeOnUni = isPairSupportedTradeOnUniSelector(state);
+  const isPairSupportedTradeOnCurve =
+    isPairSupportedTradeOnCurveSelector(state);
+  if (isPairSupportedTradeOnPancake) {
+    dispatch(actionChangeSelectedPlatform(KEYS_PLATFORMS_SUPPORTED.pancake));
+  } else if (isPairSupportedTradeOnUni) {
+    dispatch(actionChangeSelectedPlatform(KEYS_PLATFORMS_SUPPORTED.uni));
+  } else if (isPairSupportedTradeOnCurve) {
+    dispatch(actionChangeSelectedPlatform(KEYS_PLATFORMS_SUPPORTED.curve));
+  } else {
+    dispatch(actionChangeSelectedPlatform(KEYS_PLATFORMS_SUPPORTED.incognito));
+  }
+};
+
+export const actionHandleInjectEstDataForCurve =
+  () => async (dispatch, getState) => {
+    try {
+      await dispatch(actionSetFeeToken(PRV.id));
+      const state = getState();
+      const inputAmount = inputAmountSelector(state);
+      let sellInputToken, buyInputToken, inputToken, inputPDecimals;
+      sellInputToken = inputAmount(formConfigs.selltoken);
+      buyInputToken = inputAmount(formConfigs.buytoken);
+      const { tokenId: selltoken } = sellInputToken;
+      const { tokenId: buytoken } = buyInputToken;
+      const { field, useMax } = feetokenDataSelector(state);
+      const getCurveTokenParamReq = findTokenCurveByIdSelector(state);
+      const tokenSellCurve = getCurveTokenParamReq(selltoken);
+      const tokenBuyCurve = getCurveTokenParamReq(buytoken);
+      if (tokenSellCurve == null || tokenBuyCurve == null) {
+        throw 'This pair is not existed on curve';
+      }
+      switch (field) {
+      case formConfigs.selltoken: {
+        inputPDecimals = tokenBuyCurve.pDecimals;
+        inputToken = formConfigs.buytoken;
+        break;
+      }
+      case formConfigs.buytoken: {
+        inputPDecimals = tokenSellCurve.pDecimals;
+        inputToken = formConfigs.selltoken;
+        break;
+      }
+      default:
+        break;
+      }
+      const { maxGet, minFeePRVFixed, availableFixedSellAmountPRV } =
+        feetokenDataSelector(state);
+      const slippagetolerance = slippagetoleranceSelector(state);
+      const originalMinAmountExpected =
+        field === formConfigs.buytoken
+          ? maxGet
+          : calMintAmountExpected({
+            maxGet,
+            slippagetolerance,
+          });
+      const minAmountExpectedToHumanAmount = convert.toHumanAmount(
+        originalMinAmountExpected,
+        inputPDecimals,
+      );
+      const minAmountExpectedToFixed = format.toFixed(
+        minAmountExpectedToHumanAmount,
+        inputPDecimals,
+      );
+      batch(() => {
+        if (useMax) {
+          dispatch(
+            change(
+              formConfigs.formName,
+              formConfigs.selltoken,
+              availableFixedSellAmountPRV,
+            ),
+          );
+        }
+        dispatch(
+          change(formConfigs.formName, inputToken, minAmountExpectedToFixed),
+        );
+        dispatch(
+          change(formConfigs.formName, formConfigs.feetoken, minFeePRVFixed),
+        );
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+export const actionHandleInjectEstDataForUni =
+  () => async (dispatch, getState) => {
+    try {
+      await dispatch(actionSetFeeToken(PRV.id));
+      const state = getState();
+      const inputAmount = inputAmountSelector(state);
+      let sellInputToken, buyInputToken, inputToken, inputPDecimals;
+      sellInputToken = inputAmount(formConfigs.selltoken);
+      buyInputToken = inputAmount(formConfigs.buytoken);
+      const { tokenId: selltoken } = sellInputToken;
+      const { tokenId: buytoken } = buyInputToken;
+      const { field, useMax } = feetokenDataSelector(state);
+      const getUniTokenParamReq = findTokenUniByIdSelector(state);
+      const tokenSellUni = getUniTokenParamReq(selltoken);
+      const tokenBuyUni = getUniTokenParamReq(buytoken);
+      if (tokenSellUni == null || tokenBuyUni == null) {
+        throw 'This pair is not existed on uni';
+      }
+      switch (field) {
+      case formConfigs.selltoken: {
+        inputPDecimals = tokenBuyUni.pDecimals;
+        inputToken = formConfigs.buytoken;
+        break;
+      }
+      case formConfigs.buytoken: {
+        inputPDecimals = tokenSellUni.pDecimals;
+        inputToken = formConfigs.selltoken;
+        break;
+      }
+      default:
+        break;
+      }
+      const { maxGet, minFeePRVFixed, availableFixedSellAmountPRV } =
+        feetokenDataSelector(state);
+      const slippagetolerance = slippagetoleranceSelector(state);
+      const originalMinAmountExpected =
+        field === formConfigs.buytoken
+          ? maxGet
+          : calMintAmountExpected({
+            maxGet,
+            slippagetolerance,
+          });
+      const minAmountExpectedToHumanAmount = convert.toHumanAmount(
+        originalMinAmountExpected,
+        inputPDecimals,
+      );
+      const minAmountExpectedToFixed = format.toFixed(
+        minAmountExpectedToHumanAmount,
+        inputPDecimals,
+      );
+      batch(() => {
+        if (useMax) {
+          dispatch(
+            change(
+              formConfigs.formName,
+              formConfigs.selltoken,
+              availableFixedSellAmountPRV,
+            ),
+          );
+        }
+        dispatch(
+          change(formConfigs.formName, inputToken, minAmountExpectedToFixed),
+        );
+        dispatch(
+          change(formConfigs.formName, formConfigs.feetoken, minFeePRVFixed),
+        );
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
 export const actionHandleInjectEstDataForPancake =
   () => async (dispatch, getState) => {
     try {
@@ -437,7 +616,7 @@ export const actionHandleInjectEstDataForPancake =
       const { maxGet, minFeePRVFixed, availableFixedSellAmountPRV } =
         feetokenDataSelector(state);
       const slippagetolerance = slippagetoleranceSelector(state);
-      const originalMinAmountExpected = calMintAmountExpected({
+      const originalMinAmountExpected = field === formConfigs.buytoken ? maxGet : calMintAmountExpected({
         maxGet,
         slippagetolerance,
       });
@@ -469,6 +648,257 @@ export const actionHandleInjectEstDataForPancake =
     } catch (error) {
       throw error;
     }
+  };
+
+export const actionEstimateTradeForCurve =
+  (payload) => async (dispatch, getState) => {
+    let minSellOriginalAmount = 0;
+    let maxBuyOriginalAmount = 0;
+    let state = getState();
+    const isExchangeVisible = isExchangeVisibleSelector(state)(
+      KEYS_PLATFORMS_SUPPORTED.curve,
+    );
+    if (!isExchangeVisible) {
+      return {
+        minSellOriginalAmount,
+        maxBuyOriginalAmount,
+      };
+    }
+    try {
+      const { selltoken, buytoken, sellamount } = payload;
+      const isPairSup = isPairSupportedTradeOnCurveSelector(state);
+      const getCurveTokenParamReq = findTokenCurveByIdSelector(state);
+      const tokenSellCurve = getCurveTokenParamReq(selltoken);
+      const tokenBuyCurve = getCurveTokenParamReq(buytoken);
+      if (!isPairSup) {
+        throw 'This pair is not existed on curve';
+      }
+
+      let payloadCurve = {
+        sourceToken: tokenSellCurve,
+        destToken: tokenBuyCurve,
+        amount: convert.toHumanAmount(sellamount, tokenSellCurve.pDecimals)
+      };
+
+      const { sourceToken, destToken, amount } = payloadCurve;
+      const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+      const quote = await pDexV3Inst.getQuoteCurve({
+        tokenInContractId: sourceToken.contractId,
+        tokenOutContractId: destToken.contractId,
+        amount,
+      });
+      if (!quote || !quote?.amountOutRaw || !parseInt(quote?.amountOutRaw || 0)) {
+        new ExHandler('No trade route found').showErrorToast();
+        throw 'No trade route found';
+      }
+      const paths = [sourceToken.contractId, destToken.contractId];
+
+      let originalMaxGet = quote?.amountOutRaw;
+
+      const tokenDecimals = tokenBuyCurve.decimals;
+      const tokenPDecimals = tokenBuyCurve.pDecimals;
+      const maxGetHuman = convert.toHumanAmount(originalMaxGet, tokenDecimals);
+      const maxGet = convert.toOriginalAmount(maxGetHuman, tokenPDecimals);
+      // only PRV
+      const tradingFee = await pDexV3Inst.estimateCurveTradingFee({
+        srcTokens: selltoken,
+        destTokens: buytoken,
+        srcQties: sellamount,
+      });
+      if (!tradingFee) {
+        throw 'Can not estimate trading fee';
+      }
+      const { feeAddress, tradeID, signAddress, originalTradeFee } = tradingFee;
+      minSellOriginalAmount = sellamount;
+      maxBuyOriginalAmount = maxGet;
+
+      await dispatch(
+        actionChangeEstimateData({
+          [KEYS_PLATFORMS_SUPPORTED.curve]: {
+            feePrv: {
+              fee: originalTradeFee,
+              isSignificant: false,
+              maxGet,
+              route: paths,
+              sellAmount: sellamount,
+              buyAmount: maxGet,
+              tokenRoute: paths,
+            },
+            feeToken: {
+              sellAmount: sellamount,
+              buyAmount: maxGet,
+              fee: 0,
+              isSignificant: false,
+              maxGet,
+              route: paths,
+              tokenRoute: paths,
+            },
+            tradeID,
+            feeAddress,
+            signAddress,
+            ...quote,
+            error: null,
+          },
+        }),
+      );
+    } catch (error) {
+      console.log('ERROR-actionEstimateTradeForCurve', error);
+      dispatch(
+        actionSetError({ platformId: KEYS_PLATFORMS_SUPPORTED.curve, error }),
+      );
+    }
+    return {
+      minSellOriginalAmount,
+      maxBuyOriginalAmount,
+    };
+  };
+
+export const actionEstimateTradeForUni =
+  (payload) => async (dispatch, getState) => {
+    let minSellOriginalAmount = 0;
+    let maxBuyOriginalAmount = 0;
+    let state = getState();
+    const isExchangeVisible = isExchangeVisibleSelector(state)(
+      KEYS_PLATFORMS_SUPPORTED.uni,
+    );
+    if (!isExchangeVisible) {
+      return {
+        minSellOriginalAmount,
+        maxBuyOriginalAmount,
+      };
+    }
+    try {
+      const { selltoken, buytoken, sellamount, buyamount } = payload;
+      const isPairSup = isPairSupportedTradeOnUniSelector(state);
+      const { field } = feetokenDataSelector(state);
+      const getUniTokenParamReq = findTokenUniByIdSelector(state);
+      const tokenSellUni = getUniTokenParamReq(selltoken);
+      const tokenBuyUni = getUniTokenParamReq(buytoken);
+      if (!isPairSup) {
+        throw 'This pair is not existed on uni';
+      }
+      const server = await serverService.getDefault();
+      const { uniConfigs } = server;
+      let tokenDecimals, tokenPDecimals;
+      let payloadUni = {
+        sourceToken: tokenSellUni,
+        destToken: tokenBuyUni,
+        chainID: uniConfigs.chainID,
+      };
+      switch (field) {
+      case formConfigs.selltoken: {
+        payloadUni.amount = convert.toHumanAmount(
+          sellamount,
+          tokenSellUni.pDecimals,
+        );
+        payloadUni.isSwapFromBuyToSell = false;
+        tokenDecimals = tokenBuyUni.decimals;
+        tokenPDecimals = tokenBuyUni.pDecimals;
+        break;
+      }
+      case formConfigs.buytoken: {
+        payloadUni.amount = convert.toHumanAmount(
+          buyamount,
+          tokenBuyUni.pDecimals,
+        );
+        payloadUni.isSwapFromBuyToSell = true; // convert from buy -> sell
+        tokenDecimals = tokenSellUni.decimals;
+        tokenPDecimals = tokenSellUni.pDecimals;
+        break;
+      }
+      default:
+        break;
+      }
+      const { sourceToken, destToken, amount, isSwapFromBuyToSell } =
+        payloadUni;
+      const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+      const quoteDataResponse = await pDexV3Inst.getQuote({
+        tokenInContractId: sourceToken.contractId,
+        tokenOutContractId: destToken.contractId,
+        amount,
+        exactIn: isSwapFromBuyToSell ? false : true,
+        chainId: payloadUni.chainID,
+      });
+      const quote = quoteDataResponse?.data;
+      const paths = quote?.paths;
+      if (!quote || !paths || paths.length === 0) {
+        new ExHandler(
+          'Can not found best route for this pair',
+        ).showErrorToast();
+        throw 'Can not found best route for this pair';
+      }
+      let originalMaxGet = quote?.amountOutRaw;
+      const maxGetHuman = convert.toHumanAmount(originalMaxGet, tokenDecimals);
+      const maxGet = convert.toOriginalAmount(maxGetHuman, tokenPDecimals);
+      // only PRV
+      const tradingFee = await pDexV3Inst.estimateUniTradingFee({
+        srcTokens: selltoken,
+        destTokens: buytoken,
+        srcQties: String(isSwapFromBuyToSell ? maxGet : sellamount),
+      });
+      if (!tradingFee) {
+        throw 'Can not estimate trading fee';
+      }
+      const { feeAddress, tradeID, signAddress, originalTradeFee } = tradingFee;
+      let sellAmount = 0;
+      let buyAmount = 0;
+      switch (field) {
+      case formConfigs.selltoken: {
+        minSellOriginalAmount = sellamount;
+        maxBuyOriginalAmount = maxGet;
+        sellAmount = sellamount;
+        buyAmount = maxGet;
+        break;
+      }
+      case formConfigs.buytoken: {
+        minSellOriginalAmount = maxGet;
+        maxBuyOriginalAmount = buyamount;
+        sellAmount = maxGet;
+        buyAmount = buyamount;
+        break;
+      }
+      default:
+        break;
+      }
+      await dispatch(
+        actionChangeEstimateData({
+          [KEYS_PLATFORMS_SUPPORTED.uni]: {
+            feePrv: {
+              fee: originalTradeFee,
+              isSignificant: false,
+              maxGet,
+              route: paths,
+              sellAmount,
+              buyAmount,
+              tokenRoute: paths,
+            },
+            feeToken: {
+              sellAmount,
+              buyAmount,
+              fee: 0,
+              isSignificant: false,
+              maxGet,
+              route: paths,
+              tokenRoute: paths,
+            },
+            tradeID,
+            feeAddress,
+            signAddress,
+            ...quote,
+            error: null,
+          },
+        }),
+      );
+    } catch (error) {
+      console.log('ERROR-actionEstimateTradeForUni', error);
+      dispatch(
+        actionSetError({ platformId: KEYS_PLATFORMS_SUPPORTED.uni, error }),
+      );
+    }
+    return {
+      minSellOriginalAmount,
+      maxBuyOriginalAmount,
+    };
   };
 
 export const actionEstimateTradeForPancake =
@@ -560,17 +990,20 @@ export const actionEstimateTradeForPancake =
       }
       const { feeAddress, tradeID, signAddress, originalTradeFee } = tradingFee;
       let sellAmount = 0;
+      let buyAmount = 0;
       switch (field) {
       case formConfigs.selltoken: {
         minSellOriginalAmount = sellamount;
         maxBuyOriginalAmount = maxGet;
         sellAmount = sellamount;
+        buyAmount = maxGet;
         break;
       }
       case formConfigs.buytoken: {
         minSellOriginalAmount = maxGet;
         maxBuyOriginalAmount = buyamount;
         sellAmount = maxGet;
+        buyAmount = buyamount;
         break;
       }
       default:
@@ -585,11 +1018,13 @@ export const actionEstimateTradeForPancake =
               maxGet,
               route: paths,
               sellAmount,
+              buyAmount,
               impactAmount,
               tokenRoute: paths,
             },
             feeToken: {
               sellAmount,
+              buyAmount,
               fee: 0,
               isSignificant: false,
               maxGet,
@@ -617,7 +1052,7 @@ export const actionEstimateTradeForPancake =
   };
 
 export const actionFindBestRateBetweenPlatforms =
-  ({ pDexData, pancakeData, params }) =>
+  ({ pDexData, pancakeData, uniData, curveData, params }) =>
     async (dispatch, getState) => {
       const { field } = params;
       const state = getState();
@@ -629,11 +1064,25 @@ export const actionFindBestRateBetweenPlatforms =
         minSellOriginalAmount: sellPancakeAmount,
         maxBuyOriginalAmount: buyPancakeAmount,
       } = pancakeData;
+      const {
+        minSellOriginalAmount: sellUniAmount,
+        maxBuyOriginalAmount: buyUniAmount,
+      } = uniData;
+      const {
+        minSellOriginalAmount: sellCurveAmount,
+        maxBuyOriginalAmount: buyCurveAmount,
+      } = curveData;
       let platformIdHasBestRate;
       const isPairSupportedTradeOnPancake =
       isPairSupportedTradeOnPancakeSelector(state);
+      const isPairSupportedTradeOnUni =
+        isPairSupportedTradeOnUniSelector(state);
+      const isPairSupportedTradeOnCurve =
+        isPairSupportedTradeOnCurveSelector(state);
       console.log('pdexData', pDexData);
       console.log('pancakeData', pancakeData);
+      console.log('uniData', uniData);
+      console.log('curveData', curveData);
       try {
         switch (field) {
         case formConfigs.selltoken: {
@@ -646,11 +1095,29 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnPancake &&
-            new BigNumber(buyPancakeAmount).isGreaterThan(0)
+              new BigNumber(buyPancakeAmount).isGreaterThan(0)
           ) {
             arrMaxBuyAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.pancake,
               amount: buyPancakeAmount,
+            });
+          }
+          if (
+            isPairSupportedTradeOnUni &&
+              new BigNumber(buyUniAmount).isGreaterThan(0)
+          ) {
+            arrMaxBuyAmount.push({
+              id: KEYS_PLATFORMS_SUPPORTED.uni,
+              amount: buyUniAmount,
+            });
+          }
+          if (
+            isPairSupportedTradeOnCurve &&
+              new BigNumber(buyCurveAmount).isGreaterThan(0)
+          ) {
+            arrMaxBuyAmount.push({
+              id: KEYS_PLATFORMS_SUPPORTED.curve,
+              amount: buyCurveAmount,
             });
           }
           if (arrMaxBuyAmount.length > 0) {
@@ -669,11 +1136,29 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnPancake &&
-            new BigNumber(sellPancakeAmount).isGreaterThan(0)
+              new BigNumber(sellPancakeAmount).isGreaterThan(0)
           ) {
             arrMinSellAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.pancake,
               amount: sellPancakeAmount,
+            });
+          }
+          if (
+            isPairSupportedTradeOnUni &&
+              new BigNumber(sellUniAmount).isGreaterThan(0)
+          ) {
+            arrMinSellAmount.push({
+              id: KEYS_PLATFORMS_SUPPORTED.uni,
+              amount: sellUniAmount,
+            });
+          }
+          if (
+            isPairSupportedTradeOnCurve &&
+              new BigNumber(sellCurveAmount).isGreaterThan(0)
+          ) {
+            arrMinSellAmount.push({
+              id: KEYS_PLATFORMS_SUPPORTED.curve,
+              amount: sellCurveAmount,
             });
           }
           if (arrMinSellAmount.length > 0) {
@@ -685,9 +1170,20 @@ export const actionFindBestRateBetweenPlatforms =
         default:
           break;
         }
-        platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED[platformIdHasBestRate]
-          ? platformIdHasBestRate
-          : KEYS_PLATFORMS_SUPPORTED.incognito;
+
+        // Set default platformIdBestRate if can not find platformIdBestRate
+        if (!platformIdHasBestRate) {
+          if (isPairSupportedTradeOnPancake) {
+            platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.pancake;
+          } else if (isPairSupportedTradeOnUni) {
+            platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.uni;
+          } else if (isPairSupportedTradeOnCurve) {
+            platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.curve;
+          } else {
+            platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.incognito;
+          }
+        }
+
         if (platformIdHasBestRate) {
           await dispatch(actionSwitchPlatform(platformIdHasBestRate));
         }
@@ -703,7 +1199,11 @@ export const actionEstimateTrade =
       let state = getState();
       try {
         const params = { field, useMax };
+
+        // Show loading estimate trade and reset fee data
         dispatch(actionFetching(true));
+        dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
+
         const inputAmount = inputAmountSelector(state);
         let sellInputToken, buyInputToken, inputToken, inputPDecimals;
         sellInputToken = inputAmount(formConfigs.selltoken);
@@ -721,6 +1221,18 @@ export const actionEstimateTrade =
           sellAmount = availableSellOriginalAmount;
           useMax = true;
         }
+
+        // change sell token input when press max
+        if(useMax && sellAmount) {
+          dispatch(
+            change(
+              formConfigs.formName,
+              formConfigs.selltoken,
+              convert.toHumanAmount(sellAmount, sellPDecimals)?.toString(),
+            ),
+          );
+        }
+
         const {
           tokenId: buytoken,
           originalAmount: buyAmount,
@@ -767,20 +1279,32 @@ export const actionEstimateTrade =
         payload.inputToken = inputToken;
         if (
           isEmpty(sellInputToken) ||
-        isEmpty(buyInputToken) ||
-        isEmpty(feetoken)
+          isEmpty(buyInputToken) ||
+          isEmpty(feetoken)
         ) {
           return;
         }
         let task = [
           dispatch(actionEstimateTradeForPDex(payload)),
           dispatch(actionEstimateTradeForPancake(payload)),
+          dispatch(actionEstimateTradeForUni(payload)),
         ];
-        const [pDexData, pancakeData] = await Promise.all(task);
+        let pDexData = [];
+        let pancakeData = [];
+        let uniData = [];
+        let curveData = [];
+        if (CONSTANT_CONFIGS.isMainnet) {
+          task.push(dispatch(actionEstimateTradeForCurve(payload)));
+          [pDexData, pancakeData, uniData, curveData] = await Promise.all(task);
+        } else {
+          [pDexData, pancakeData, uniData] = await Promise.all(task);
+        }
         await dispatch(
           actionFindBestRateBetweenPlatforms({
             pDexData,
             pancakeData,
+            uniData,
+            curveData,
             params,
             payload,
           }),
@@ -788,7 +1312,7 @@ export const actionEstimateTrade =
         isFetched = true;
         state = getState();
         const { availableAmountText, availableOriginalAmount } =
-        sellInputTokenSelector(state);
+          sellInputTokenSelector(state);
         const errorEstTrade = errorEstimateTradeSelector(state);
         if (errorEstTrade) {
           new ExHandler(errorEstTrade).showErrorToast();
@@ -824,6 +1348,8 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
   let pairs = [];
   let pDEXPairs = [];
   let pancakeTokens = [];
+  let uniTokens = [];
+  let curveTokens = [];
   try {
     let state = getState();
     const pDexV3Inst = await getPDexV3Instance();
@@ -834,22 +1360,42 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
     const defaultExchange = defaultExchangeSelector(state);
     const isPrivacyApp = isPrivacyAppSelector(state);
     if (!isPrivacyApp) {
-      [pDEXPairs, pancakeTokens] = await Promise.all([
+      const tasks = [
         pDexV3Inst.getListPair(),
         pDexV3Inst.getPancakeTokens(),
-      ]);
+        pDexV3Inst.getUniTokens(),
+      ];
+      if (CONSTANT_CONFIGS.isMainnet) {
+        tasks.push(pDexV3Inst.getCurveTokens());
+        [pDEXPairs, pancakeTokens, uniTokens, curveTokens] = await Promise.all(tasks);
+      } else {
+        [pDEXPairs, pancakeTokens, uniTokens] = await Promise.all(tasks);
+      }
       pairs = pDEXPairs.reduce(
         (prev, current) =>
           (prev = prev.concat([current.tokenId1, current.tokenId2])),
         [],
       );
-      pairs = [...pairs, ...pancakeTokens.map((t) => t?.tokenID)];
+      pairs = [
+        ...pairs,
+        ...pancakeTokens.map((t) => t?.tokenID),
+        ...uniTokens.map((t) => t?.tokenID),
+        ...curveTokens.map((t) => t?.tokenID),
+      ];
       pairs = uniq(pairs);
     } else {
       switch (defaultExchange) {
       case KEYS_PLATFORMS_SUPPORTED.pancake:
         pancakeTokens = await pDexV3Inst.getPancakeTokens();
         pairs = [...pancakeTokens.map((t) => t?.tokenID)];
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.uni:
+        uniTokens = await pDexV3Inst.getUniTokens();
+        pairs = [...uniTokens.map((t) => t?.tokenID)];
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.curve:
+        curveTokens = await pDexV3Inst.getCurveTokens();
+        pairs = [...curveTokens.map((t) => t?.tokenID)];
         break;
       default:
         break;
@@ -858,7 +1404,7 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
-  dispatch(actionFetchedPairs({ pairs, pDEXPairs, pancakeTokens }));
+  dispatch(actionFetchedPairs({ pairs, pDEXPairs, pancakeTokens, uniTokens, curveTokens }));
   return pairs;
 };
 
@@ -877,9 +1423,10 @@ export const actionInitSwapForm =
         batch(() => {
           dispatch(actionInitingSwapForm(true));
           dispatch(reset(formConfigs.formName));
+          dispatch(actionResetData());
+          dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
           dispatch(actionSetSellTokenFetched(pair?.selltoken));
           dispatch(actionSetBuyTokenFetched(pair?.buytoken));
-          dispatch(actionChangeSelectedPlatform(defaultExchange));
           if (refresh && shouldFetchHistory) {
             dispatch(actionFreeHistoryOrders());
           }
@@ -923,8 +1470,18 @@ export const actionInitSwapForm =
           }
           if (shouldFetchHistory) {
             dispatch(actionFetchHistory());
+            const currentScreen = currentScreenSelector(state);
+            if(currentScreen !== routeNames.Trade) {
+              dispatch(actionFetchRewardHistories());
+            }
           }
         });
+        const currentScreen = currentScreenSelector(state);
+        if(currentScreen === routeNames.Trade) {
+          dispatch(setDefaultTradingPlatformOnPdexV3());
+        } else {
+          dispatch(actionChangeSelectedPlatform(defaultExchange));
+        }
       } catch (error) {
         new ExHandler(error).showErrorToast();
       } finally {
@@ -1033,8 +1590,9 @@ export const actionFetchingSwap = (payload) => ({
 
 export const actionFetchSwap = () => async (dispatch, getState) => {
   let tx;
+  const state = getState();
+  const currentScreen = currentScreenSelector(state);
   try {
-    const state = getState();
     const { disabledBtnSwap } = swapInfoSelector(state);
     if (disabledBtnSwap) {
       return;
@@ -1104,8 +1662,64 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
           srcQties: String(sellAmount),
           expectedDestAmt: String(minAcceptableAmount),
           isNative:
-              tokenBuyPancake?.contracId ===
+              tokenBuyPancake?.contractId ===
               '0x0000000000000000000000000000000000000000',
+        },
+      });
+      tx = response;
+      break;
+    }
+    case KEYS_PLATFORMS_SUPPORTED.uni: {
+      const { tradeID, feeAddress, signAddress } = feeDataByPlatform;
+      const getUniTokenParamReq = findTokenUniByIdSelector(state);
+      const tokenSellUni = getUniTokenParamReq(tokenIDToSell);
+      const tokenBuyUni = getUniTokenParamReq(tokenIDToBuy);
+      const response = await pDexV3Inst.createAndSendTradeRequestUniTx({
+        burningPayload: {
+          originalBurnAmount: sellAmount,
+          tokenID: tokenIDToSell,
+          signKey: signAddress,
+          feeAddress,
+          tradeFee: tradingFee,
+          info: String(tradeID),
+          feeToken: feetoken,
+        },
+        tradePayload: {
+          fees: JSON.stringify(feetokenData?.uni?.fees),
+          tradeID,
+          srcTokenID: tokenSellUni?.tokenID,
+          destTokenID: tokenBuyUni?.tokenID,
+          paths: JSON.stringify(tradePath),
+          srcQties: String(sellAmount),
+          expectedDestAmt: String(minAcceptableAmount),
+          percents: JSON.stringify(feetokenData?.uni?.percents),
+          isMulti: feetokenData?.uni?.multiRouter,
+        },
+      });
+      tx = response;
+      break;
+    }
+    case KEYS_PLATFORMS_SUPPORTED.curve: {
+      const { tradeID, feeAddress, signAddress } = feeDataByPlatform;
+      const getCurveTokenParamReq = findTokenCurveByIdSelector(state);
+      const tokenSellCurve = getCurveTokenParamReq(tokenIDToSell);
+      const tokenBuyCurve = getCurveTokenParamReq(tokenIDToBuy);
+      const response = await pDexV3Inst.createAndSendTradeRequestCurveTx({
+        burningPayload: {
+          originalBurnAmount: sellAmount,
+          tokenID: tokenIDToSell,
+          signKey: signAddress,
+          feeAddress,
+          tradeFee: tradingFee,
+          info: String(tradeID),
+          feeToken: feetoken,
+        },
+        tradePayload: {
+          tradeID,
+          srcTokenID: tokenSellCurve?.tokenID,
+          destTokenID: tokenBuyCurve?.tokenID,
+          srcQties: String(sellAmount),
+          expectedDestAmt: String(minAcceptableAmount),
         },
       });
       tx = response;
@@ -1120,6 +1734,14 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
     batch(() => {
       dispatch(actionFetchingSwap(false));
       dispatch(actionFetchHistory());
+      if (currentScreen !== routeNames.Trade) {
+        dispatch(actionFetchRewardHistories());
+      }
+      // Reset data after swap
+      dispatch(actionResetData());
+      dispatch(
+        change(formConfigs.formName, formConfigs.feetoken, ''),
+      );
     });
   }
   return tx;
@@ -1144,18 +1766,44 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     await dispatch(actionFetchingOrdersHistory());
     const state = getState();
     const pDexV3 = await dispatch(actionGetPDexV3Inst());
+    // get trading platform incognito | pancake | uni | curve
     const defaultExchange = defaultExchangeSelector(state);
     const isPrivacyApp = isPrivacyAppSelector(state);
     if (!isPrivacyApp) {
-      const [swapHistory, pancakeHistory] = await Promise.all([
+      // Fetch history of all platform when current screen is pDexV3
+      let swapHistory = [];
+      let pancakeHistory = [];
+      let uniHistory = [];
+      let curveHistory = [];
+      const tasks = [
         pDexV3.getSwapHistory({ version: PrivacyVersion.ver2 }),
         pDexV3.getSwapPancakeHistory(),
-      ]);
-      history = flatten([swapHistory, pancakeHistory]);
+        pDexV3.getSwapUniHistoryFromApi(),
+      ];
+      if (CONSTANT_CONFIGS.isMainnet) {
+        tasks.push(pDexV3.getSwapCurveHistoryFromApi());
+        [swapHistory, pancakeHistory, uniHistory, curveHistory] =
+            await Promise.all(tasks);
+      } else {
+        [swapHistory, pancakeHistory, uniHistory] =
+          await Promise.all(tasks);
+      }
+      history = flatten([swapHistory, pancakeHistory, uniHistory, curveHistory]);
     } else {
       switch (defaultExchange) {
+      // Fetch PancakeSwap history when current screen is pPancakeSwap
       case KEYS_PLATFORMS_SUPPORTED.pancake: {
         history = await pDexV3.getSwapPancakeHistory();
+        break;
+      }
+      // Fetch Uniswap history when current screen is pUniswap
+      case KEYS_PLATFORMS_SUPPORTED.uni: {
+        history = await pDexV3.getSwapUniHistoryFromApi();
+        break;
+      }
+      // Fetch Curve history when current screen is pCurve
+      case KEYS_PLATFORMS_SUPPORTED.curve: {
+        history = await pDexV3.getSwapCurveHistoryFromApi();
         break;
       }
       default:
@@ -1168,6 +1816,55 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     console.log('actionFetchHistory-error', error);
     new ExHandler(error).showErrorToast();
     await dispatch(actionFetchFailOrderHistory());
+  }
+};
+
+// Reward history
+export const actionFetchingRewardHistories = () => ({
+  type: ACTION_FETCHING_REWARD_HISTORY,
+});
+
+export const actionFetchedRewardHistories = (payload) => ({
+  type: ACTION_FETCHED_REWARD_HISTORY,
+  payload,
+});
+
+export const actionFetchFailRewardHistories = () => ({
+  type: ACTION_FETCH_FAIL_REWARD_HISTORY,
+});
+
+export const actionFetchRewardHistories = () => async (dispatch, getState) => {
+  try {
+    await dispatch(actionFetchingRewardHistories());
+    let state = getState();
+    const pDexV3 = await dispatch(actionGetPDexV3Inst());
+    const platform = platformSelectedSelector(state);
+    let rewardHistoriesApiResponse;
+    if(platform?.id === KEYS_PLATFORMS_SUPPORTED.pancake) {
+      rewardHistoriesApiResponse = await pDexV3.getSwapPancakeRewardHistory({
+        page: 0,
+        limit: 1000,
+      });
+    }
+
+    if(platform.id === KEYS_PLATFORMS_SUPPORTED.uni) {
+      rewardHistoriesApiResponse = await pDexV3.getSwapUniRewardHistory({
+        page: 0,
+        limit: 1000,
+      });
+    }
+
+    if (platform.id === KEYS_PLATFORMS_SUPPORTED.curve) {
+      rewardHistoriesApiResponse = await pDexV3.getSwapCurveRewardHistory({
+        page: 0,
+        limit: 1000,
+      });
+    }
+    console.log('rewardHistoriesApiResponse', rewardHistoriesApiResponse);
+    dispatch(actionFetchedRewardHistories(rewardHistoriesApiResponse));
+  } catch (error) {
+    console.log('actionFetchHistory-error', error);
+    await dispatch(actionFetchFailRewardHistories());
   }
 };
 
@@ -1201,6 +1898,24 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
     }
     case EXCHANGE_SUPPORTED.pancake: {
       _order = await pDexV3.getOrderSwapPancakeDetail({
+        requestTx: order?.requestTx,
+        version: PrivacyVersion.ver2,
+        fromStorage: !!order?.fromStorage,
+        tradeID: order?.tradeID,
+      });
+      break;
+    }
+    case EXCHANGE_SUPPORTED.uni: {
+      _order = await pDexV3.getOrderSwapUniDetail({
+        requestTx: order?.requestTx,
+        version: PrivacyVersion.ver2,
+        fromStorage: !!order?.fromStorage,
+        tradeID: order?.tradeID,
+      });
+      break;
+    }
+    case EXCHANGE_SUPPORTED.curve: {
+      _order = await pDexV3.getOrderSwapCurveDetail({
         requestTx: order?.requestTx,
         version: PrivacyVersion.ver2,
         fromStorage: !!order?.fromStorage,
@@ -1246,6 +1961,12 @@ export const actionSwitchPlatform =
         break;
       case KEYS_PLATFORMS_SUPPORTED.pancake:
         await dispatch(actionHandleInjectEstDataForPancake());
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.uni:
+        await dispatch(actionHandleInjectEstDataForUni());
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.curve:
+        await dispatch(actionHandleInjectEstDataForCurve());
         break;
       default:
         break;

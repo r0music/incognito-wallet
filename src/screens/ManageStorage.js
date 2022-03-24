@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import _ from 'lodash';
 import MainLayout from '@components/MainLayout';
@@ -8,7 +8,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Row from '@components/Row';
 import clipboard from '@services/clipboard';
 import Storage from '@services/storage';
-import Input from '@components/Input/input.text';
 import { ExHandler } from '@services/exception';
 
 const styles = StyleSheet.create({
@@ -22,8 +21,13 @@ const ManageStorage = () => {
   const [items, setItems] = useState([]);
   const [key, setKey] = useState('');
   const [value, setValue] = useState('');
-  const [size, setSize] = useState(5e5.toString());
+  const [size, setSize] = useState(20e6.toString());
   const [totalSize, setTotalSize] = useState(0);
+  const [searchText, setSearchText] = useState('');
+  const data = useMemo(() => {
+    if (!searchText) return items;
+    return items.filter(({ key }) => key.toLowerCase().includes(searchText.toLowerCase()));
+  }, [searchText, items]);
 
   const loadItems = async () => {
     const keys = await AsyncStorage.getAllKeys();
@@ -105,11 +109,17 @@ const ManageStorage = () => {
 
   return (
     <MainLayout header="Manage storage" scrollable>
+      <TextInput
+        style={{ flex: 1, backgroundColor: 'gray' }}
+        onChangeText={(text) => {
+          setSearchText(text);
+        }}
+      />
       <Text>Size in KB</Text>
       <TextInput onChangeText={onChangeSize} defaultValue={size} />
       <RoundCornerButton title="Spam data" onPress={handleSpamData} />
-      <Text>Total size: {formatSize(totalSize)}/50 MB</Text>
-      {items.map(item => (
+      <Text>Total size: {formatSize(totalSize)}/200 MB</Text>
+      {data.map(item => (
         <Row spaceBetween center style={styles.item} key={item.key}>
           <Text style={{ width: 200 }}>{item.key} ({item.data})</Text>
           <Row>

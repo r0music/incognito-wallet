@@ -28,9 +28,11 @@ const PortfolioReward = ({ onCreateWithdrawFeeLP }) => {
     const dataShare = getDataShare(shareId);
     if (!dataShare && typeof onCreateWithdrawFeeLP !== 'function') return;
     const { nftId, tokenId1, tokenId2, rewards, orderRewards } = dataShare;
+    let tokenIDs = [tokenId1, tokenId2].concat(Object.keys(rewards || {})).concat(Object.keys(orderRewards || {}));
+    tokenIDs = uniq(tokenIDs.map(tokenID => tokenID.toLowerCase()));
     const params = {
       fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,
-      withdrawTokenIDs: uniq([tokenId1, tokenId2].concat(Object.keys(rewards || {})).concat(orderRewards || {})),
+      withdrawTokenIDs: tokenIDs,
       poolPairID: poolId,
       nftID: nftId,
       amount1: String(0),

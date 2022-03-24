@@ -18,13 +18,27 @@ import { itemStyled } from '@screens/Setting/features/Keychain/keychain.styled';
 import { DeleteFillIcon } from '@components/Icons/icon.delete';
 import incognito from '@assets/images/new-icons/incognito.png';
 import { colorsSelector } from '@src/theme/theme.selector';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 
 const TokenDefault = React.memo((props) => {
-  const { symbol, priceUsd, amount, pDecimals, decimalDigits, pricePrv, change, onPress, name, isGettingBalance, showGettingBalance, iconUrl } = props;
+  const {
+    symbol,
+    priceUsd,
+    pDecimals,
+    decimalDigits,
+    pricePrv,
+    change,
+    onPress,
+    name,
+    isGettingBalance,
+    showGettingBalance,
+    iconUrl,
+    amount
+  } = props;
   const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
-  const isToggleUSD = useSelector(currencySelector);
-  const hideBalance = useSelector(hideWalletBalanceSelector);
-  const colors = useSelector(colorsSelector);
+  const isToggleUSD = useDebounceSelector(currencySelector);
+  const hideBalance = useDebounceSelector(hideWalletBalanceSelector);
+  const colors = useDebounceSelector(colorsSelector);
   const balance = React.useMemo(() => {
     const price = isToggleUSD ? priceUsd : pricePrv;
     const amountCompare = formatAmount(price, amount, pDecimals, pDecimals, decimalDigits, false);

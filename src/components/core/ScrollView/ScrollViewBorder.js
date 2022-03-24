@@ -23,8 +23,10 @@ const ScrollView = React.forwardRef(
     ref,
   ) => (
     <StyledScrollView
-      style={[styleSheet.root, globalStyled.defaultPadding, style]}
+      style={style}
       contentContainerStyle={[
+        styleSheet.root,
+        globalStyled.defaultPadding,
         paddingBottom && styleSheet.content,
         contentContainerStyle,
       ]}
@@ -41,7 +43,7 @@ ScrollView.defaultProps = {
   style: null,
   contentContainerStyle: null,
   paddingBottom: false,
-  border: false
+  border: false,
 };
 
 ScrollView.propTypes = {

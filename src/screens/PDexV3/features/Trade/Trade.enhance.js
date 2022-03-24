@@ -21,6 +21,9 @@ import {
 } from '@screens/PDexV3/features/OrderLimit';
 import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
 import { LoadingContainer } from '@src/components/core';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import { swapInfoSelector } from '../Swap/Swap.selector';
+
 import {
   ROOT_TAB_TRADE,
   TAB_SWAP_ID,
@@ -33,6 +36,7 @@ const enhance = (WrappedComp) => (props) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const { isFetching, isFetched } = useSelector(poolsSelector);
   const activedTab = useSelector(activedTabSelector)(ROOT_TAB_TRADE);
+  const swapInfo = useDebounceSelector(swapInfoSelector);
   const dispatch = useDispatch();
   const onRefresh = async () => {
     try {
@@ -40,7 +44,11 @@ const enhance = (WrappedComp) => (props) => {
       switch (activedTab) {
       case TAB_SWAP_ID: {
         await dispatch(
-          actionInitSwapForm({ refresh: true, shouldFetchHistory: true }),
+          actionInitSwapForm({
+            defaultPair: swapInfo?.defaultPair,
+            refresh: true,
+            shouldFetchHistory: true,
+          })
         );
         break;
       }

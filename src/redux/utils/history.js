@@ -44,7 +44,7 @@ export const TX_STATUS_COLOR = {
 };
 
 export const CENTRALIZED_ARRAY = [0];
-export const DECENTRALIZE_ARRAY = [1, 2, 3, 4];
+export const DECENTRALIZE_ARRAY = [1, 2, 3, 4, 5];
 
 export const getStatusColorShield = (history) => {
   let statusColor = '';
@@ -54,13 +54,11 @@ export const getStatusColorShield = (history) => {
     // Case1: Check centralized
     if (CENTRALIZED_ARRAY.includes(decentralized)) {
       if (
-        STATUS_CODE_SHIELD_CENTRALIZED.COMPLETE.includes(status) ||
-        STATUS_CODE_SHIELD_CENTRALIZED.COMPLETE === status
+        STATUS_CODE_SHIELD_CENTRALIZED.COMPLETE.includes(status)
       ) {
         statusColor = COLORS.green;
       } else if (
-        STATUS_CODE_SHIELD_CENTRALIZED.TIMED_OUT.includes(status) ||
-        STATUS_CODE_SHIELD_CENTRALIZED.TIMED_OUT === status
+        STATUS_CODE_SHIELD_CENTRALIZED.TIMED_OUT.includes(status)
       ) {
         statusColor = COLORS.orange;
       } else {
@@ -70,12 +68,10 @@ export const getStatusColorShield = (history) => {
     // Case 2: Check decentralized
     else if (DECENTRALIZE_ARRAY.includes(decentralized)) {
       if (
-        STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE.includes(status) ||
         STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE === status
       ) {
         statusColor = COLORS.green;
       } else if (
-        STATUS_CODE_SHIELD_DECENTRALIZED.TIMED_OUT.includes(status) ||
         STATUS_CODE_SHIELD_DECENTRALIZED.TIMED_OUT === status
       ) {
         statusColor = COLORS.orange;

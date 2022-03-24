@@ -1,8 +1,6 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import Modal from '@components/Modal';
-// import withPin from '@components/pin.enhance';
-import { compose } from 'recompose';
 
 const withTab = (WrappedComp) => (props) => {
   return (
@@ -17,7 +15,4 @@ const withTab = (WrappedComp) => (props) => {
   );
 };
 
-export default compose(
-  // withPin,
-  withTab
-);
+export default withTab;

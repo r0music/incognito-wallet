@@ -9,8 +9,9 @@ import {
 } from '@src/components/core/reduxForm';
 import { Button, View } from '@src/components/core';
 import styles from './style';
+import { AddManuallyContext } from '../../screens/AddManually/AddManually.enhance';
 
-const formName = 'addPolygonToken';
+const formName = 'addManualToken';
 const Form = createForm(formName, {
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
@@ -19,7 +20,8 @@ const isRequired = validator.required();
 
 const isNumber = validator.number({ message: 'Decimals must be a number' });
 
-class AddPolygonToken extends Component {
+class AddManualToken extends Component {
+  static contextType = AddManuallyContext
   constructor(props) {
     super(props);
   }
@@ -42,6 +44,7 @@ class AddPolygonToken extends Component {
 
   render() {
     const { isSearching, onAdd, data } = this.props;
+    const {type} = this.context;
     return (
       <Form
         initialValues={data && this.processFormData(data)}
@@ -54,7 +57,7 @@ class AddPolygonToken extends Component {
               component={InputQRField}
               name="address"
               label="Address"
-              placeholder="Search by Polygon Address"
+              placeholder={`Search by ${type} Address`}
               style={styles.input}
               validate={isRequired}
               componentProps={{
@@ -100,7 +103,7 @@ class AddPolygonToken extends Component {
   }
 }
 
-AddPolygonToken.defaultProps = {
+AddManualToken.defaultProps = {
   isSearching: false,
   data: {
     symbol: '',
@@ -110,7 +113,7 @@ AddPolygonToken.defaultProps = {
   },
 };
 
-AddPolygonToken.propTypes = {
+AddManualToken.propTypes = {
   onAdd: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
   isSearching: PropTypes.bool,
@@ -122,4 +125,4 @@ AddPolygonToken.propTypes = {
   }),
 };
 
-export default AddPolygonToken;
+export default AddManualToken;

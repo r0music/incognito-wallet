@@ -1,6 +1,5 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { useSelector } from 'react-redux';
 import { availableTokensSelector } from '@src/redux/selectors/shared';
 import { useSearchBox } from '@src/components/Header';
 import { handleFilterTokenByKeySearch } from '@src/components/Token';
@@ -8,21 +7,33 @@ import PropTypes from 'prop-types';
 import orderBy from 'lodash/orderBy';
 import {marketTabSelector} from '@screens/Setting';
 import {MarketTabs} from '@screens/MainTabBar/features/Market/Market.header';
-import {PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
+import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { useTokenList } from './Token.useEffect';
 
 const enhance = (WrappedComp) => (props) => {
   const { filterField, orderField } = props;
   const availableTokens =
-    props?.availableTokens || useSelector(availableTokensSelector);
-  const activeTab = useSelector(marketTabSelector);
-  let verifiedTokens = [];
-  let unVerifiedTokens = [];
-  availableTokens.map((token) =>
-    token?.isVerified
-      ? verifiedTokens.push(token)
-      : unVerifiedTokens.push(token),
-  );
+    props?.availableTokens || useDebounceSelector(availableTokensSelector);
+  const activeTab = useDebounceSelector(marketTabSelector);
+
+  const {
+    verifiedTokens,
+    unVerifiedTokens
+  } = React.useMemo(() => {
+    let verifiedTokens = [];
+    let unVerifiedTokens = [];
+    availableTokens.map((token) =>
+      token?.isVerified || token?.verified
+        ? verifiedTokens.push(token)
+        : unVerifiedTokens.push(token),
+    );
+    return {
+      verifiedTokens,
+      unVerifiedTokens
+    };
+  }, [availableTokens]);
+
   const [toggleUnVerified, onToggleUnVerifiedTokens] = useTokenList();
   const [_verifiedTokens, keySearch, handleFilterData] = useSearchBox({
     data: verifiedTokens,

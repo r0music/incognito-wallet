@@ -1,26 +1,81 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Hook } from '@screens/PDexV3/features/Extra';
+import { FONT } from '@src/styles';
 import { useSelector } from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
+import { Text } from '@src/components/core';
 import {
   feetokenDataSelector,
   swapInfoSelector,
   selltokenSelector,
 } from './Swap.selector';
+import { KEYS_PLATFORMS_SUPPORTED, platformIdSelectedSelector } from '.';
 
 const styled = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 16,
   },
+  text: {
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
+  },
+  tradePathRightContainer: {
+    alignItems: 'flex-end',
+    flex: 1,
+    marginLeft: 20,
+  },
+  percentContainer: {
+    width: 60,
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    backgroundColor: '#404040',
+    borderRadius: 4,
+    marginLeft: 8,
+  },
+  tradePathItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });
 
 export const useTabFactories = () => {
   const swapInfo = useSelector(swapInfoSelector);
   const selltoken: SelectedPrivacy = useSelector(selltokenSelector);
+  const platformId = useSelector(platformIdSelectedSelector);
   const feeTokenData = useSelector(feetokenDataSelector);
+  const tradePathArr = feeTokenData?.tradePathArr || [];
+
+  const renderTradePath = () => {
+    const percents = feeTokenData?.uni?.percents || [];
+    return (
+      <View style={styled.tradePathRightContainer}>
+        {tradePathArr?.map((tradePath, tradePathIndex) => {
+          return (
+            <View
+              key={tradePathIndex}
+              style={[
+                styled.tradePathItem,
+                { marginTop: tradePathIndex === 0 ? 0 : 4 },
+              ]}
+            >
+              <View>
+                <Text style={styled.text}>{tradePath}</Text>
+              </View>
+              {percents[tradePathIndex] && (
+                <View style={styled.percentContainer}>
+                  <Text style={styled.text}>{percents[tradePathIndex]}%</Text>
+                </View>
+              )}
+            </View>
+          );
+        })}
+      </View>
+    );
+  };
   const hooksFactories = React.useMemo(() => {
     let result = [
       {
@@ -34,6 +89,8 @@ export const useTabFactories = () => {
       {
         label: 'Trade path',
         value: feeTokenData?.tradePathStr,
+        valueNumberOfLine: 10,
+        customValue: platformId === KEYS_PLATFORMS_SUPPORTED.uni ? renderTradePath() : null
       },
       {
         label: 'Price impact',

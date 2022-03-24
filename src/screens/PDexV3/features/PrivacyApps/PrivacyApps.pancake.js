@@ -8,9 +8,12 @@ import TabSwap, {
 import { withLayout_2 } from '@src/components/Layout';
 import Header from '@src/components/Header';
 import { useDispatch } from 'react-redux';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import { swapInfoSelector } from '../Swap/Swap.selector';
 
 const PrivacyAppsPancake = () => {
   const dispatch = useDispatch();
+  const swapInfo = useDebounceSelector(swapInfoSelector);
   const handleOnRefresh = async () => {
     await dispatch(
       actionSetDefaultExchange({
@@ -18,7 +21,13 @@ const PrivacyAppsPancake = () => {
         exchange: KEYS_PLATFORMS_SUPPORTED.pancake,
       }),
     );
-    dispatch(actionInitSwapForm({ refresh: true, shouldFetchHistory: true }));
+    await dispatch(
+      actionInitSwapForm({
+        defaultPair: swapInfo?.defaultPair,
+        refresh: true,
+        shouldFetchHistory: true,
+      }),
+    );
   };
   React.useEffect(() => {
     dispatch(actionReset());

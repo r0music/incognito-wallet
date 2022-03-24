@@ -2,8 +2,8 @@ import React from 'react';
 import HistoryList from '@src/screens/Wallet/features/HistoryList';
 import { historyTxsSelector } from '@src/redux/selectors/history';
 import { useHistoryEffect } from '@src/screens/Wallet/features/History';
-import { useSelector } from 'react-redux';
 import { CONSTANT_COMMONS } from '@src/constants';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import EmptyHistory from './MainCryptoHistory.empty';
 
 const filterResponseType = (h) => {
@@ -17,7 +17,7 @@ const filterResponseType = (h) => {
 };
 
 const MainCryptoHistory = () => {
-  const { histories, isEmpty, loading, refreshing, oversize } = useSelector(
+  const { histories, isEmpty, loading, refreshing, oversize } = useDebounceSelector(
     historyTxsSelector,
   );
   const { handleRefresh } = useHistoryEffect();

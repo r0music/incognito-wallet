@@ -11,6 +11,7 @@ import { actionCheckNeedFaucetPRV } from '@src/redux/actions/token';
 import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
 import withLazy from '@src/components/LazyHoc/LazyHoc';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import {
   formConfigs,
   HISTORY_ORDERS_STATE,
@@ -34,11 +35,11 @@ const enhance = (WrappedComp) => (props) => {
   const { cfmTitle, disabledBtn, accountBalance } = useSelector(
     orderLimitDataSelector,
   );
-  const { isFetching, isFetched } = useSelector(orderLimitSelector);
-  const { nftTokenAvailable } = useSelector(nftTokenDataSelector);
-  const sellInputAmount = useSelector(sellInputAmountSelector);
+  const { isFetching, isFetched } = useDebounceSelector(orderLimitSelector);
+  const { nftTokenAvailable } = useDebounceSelector(nftTokenDataSelector);
+  const sellInputAmount = useDebounceSelector(sellInputAmountSelector);
   const [ordering, setOrdering] = React.useState(false);
-  const formErrors = useSelector((state) =>
+  const formErrors = useDebounceSelector((state) =>
     getFormSyncErrors(formConfigs.formName)(state),
   );
   const handleConfirm = async () => {

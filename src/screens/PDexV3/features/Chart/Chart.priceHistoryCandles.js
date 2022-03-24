@@ -17,6 +17,7 @@ import minBy from 'lodash/minBy';
 import { colorsSelector } from '@src/theme';
 import BigNumber from 'bignumber.js';
 import floor from 'lodash/floor';
+import { rateDataSelector } from '@screens/PDexV3/features/OrderLimit';
 import { poolSelectedSelector } from './Chart.selector';
 
 const styled = StyleSheet.create({
@@ -39,18 +40,18 @@ const styled = StyleSheet.create({
 });
 
 const periods = [
-  '15m',
-  '1h',
-  '4h',
-  '1d',
-  'W',
+  { label: '1D', period: '15m' },
+  { label: '1W', period: '1h' },
+  { label: '1M', period: '4h' },
+  { label: '2M', period: '1d' },
+  { label: '1Y', period: 'W' },
   // 'M',
   // 'Y'
 ];
 
 export const Period = React.memo(({ handleFetchData }) => {
   const colors = useSelector(colorsSelector);
-  const [actived, setActived] = React.useState(periods[3]);
+  const [actived, setActived] = React.useState(periods[0].period);
   return (
     <Row
       style={{
@@ -59,7 +60,7 @@ export const Period = React.memo(({ handleFetchData }) => {
         marginTop: 10,
       }}
     >
-      {periods?.map((period, index, arr) => (
+      {periods?.map(({ label, period }, index, arr) => (
         <ButtonBasic
           btnStyle={{
             ...styled.btnStyle,
@@ -71,7 +72,7 @@ export const Period = React.memo(({ handleFetchData }) => {
               ? { color: colors.mainText }
               : { color: colors.subText }),
           }}
-          title={period}
+          title={label}
           key={period}
           onPress={async () => {
             if (actived === period) {
@@ -87,6 +88,7 @@ export const Period = React.memo(({ handleFetchData }) => {
 });
 
 const PriceHistoryCandles = () => {
+  const { rateStr } = useSelector(rateDataSelector);
   const [initted, setInitted] = React.useState(false);
   const [uri, setURI] = React.useState('');
   const [visible, setVisible] = React.useState(false);
@@ -99,6 +101,10 @@ const PriceHistoryCandles = () => {
     if (ref?.current) {
       ref.current.postMessage(message);
     }
+  };
+  const UTCToLocalTimeStamp = (timeStamp) => {
+    const d = new Date(timeStamp * 1000);
+    return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds()) / 1000;
   };
   const handleFetchData = async (actived) => {
     try {
@@ -142,11 +148,23 @@ const PriceHistoryCandles = () => {
         const value = convert.toHumanAmountVer2(close, pDecimals);
         const result = {
           ...c,
-          time: timestamp,
+          time: UTCToLocalTimeStamp(timestamp),
           value,
         };
         return result;
       });
+      const timeNow = new Date().getTime() / 1000;
+      const rateNow = convert.toNumber(rateStr, true);
+      const chartDataNow = {
+        'close': rateNow,
+        'high': rateNow,
+        'low': rateNow,
+        'open': rateNow,
+        'time': UTCToLocalTimeStamp(timeNow),
+        'timestamp': UTCToLocalTimeStamp(timeNow),
+        'value': rateNow
+      };
+      chartData.push(chartDataNow);
       if (chartData.length > 0) {
         let width = Number(ScreenWidth);
         const minLow = minBy(chartData, (c) => c?.low)?.low || 0;
@@ -165,6 +183,7 @@ const PriceHistoryCandles = () => {
                   timeVisible: true,
                   visible: true,
                   borderColor: colors.grey8,
+                  secondsVisible: false,
                 },
                 rightPriceScale: {
                   timeVisible: true,
@@ -217,7 +236,7 @@ const PriceHistoryCandles = () => {
     const parseData = JSON.parse(data);
     if (parseData?.initted) {
       await setInitted(true);
-      handleFetchData(periods[3]);
+      handleFetchData(periods[0].period);
     }
   };
   const handleInit = async () => {
@@ -230,7 +249,7 @@ const PriceHistoryCandles = () => {
   };
   React.useEffect(() => {
     handleInit();
-  }, []);
+  }, [rateStr]);
   return (
     <View style={[styled.container]}>
       {!initted && <ActivityIndicator />}

@@ -3,20 +3,33 @@ import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
 import { BIG_COINS } from '@src/screens/DexV2/constants';
 import { PRV_ID } from '@screens/Dex/constants';
 import { detectToken } from '@src/utils/misc';
-import convert from '@utils/convert';
 import PToken from './pToken';
 
 function getNetworkName() {
   let name = 'Unknown';
+  // Native token of Ethereum network
   const isETH =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
+  // Native token of Binance Smart Chain network
   const isBSC =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
+  // Native token of Binance Chain network
   const isBNB =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
+  // Native token of Polygon network
   const isMATIC =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
-  if (this.isPrivateCoin) {
+  // Native token of Fantom network
+  const isFTM =
+    this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
+  
+  if (isBSC) {
+    name ='BSC';
+  } else if (isBNB) {
+    name ='BNB Chain';
+  } else if (this.isIncognitoToken || this.isMainCrypto) {
+    name = 'Incognito';
+  } else if (this.isPrivateCoin) {
     name = `${this.name}`;
   } else if (this.isErc20Token) {
     name = 'ERC20';
@@ -26,9 +39,12 @@ function getNetworkName() {
     name = 'BEP2';
   } else if (this.isPolygonErc20Token) {
     name = 'Polygon ERC20';
+  } else if (this.isFantomErc20Token) {
+    name = 'Fantom ERC20';
   } else if (this.isIncognitoToken || this.isMainCrypto) {
     name = 'Incognito';
   }
+
   let rootNetworkName = name;
   if (isETH || this?.isErc20Token) {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.ETHEREUM;
@@ -38,6 +54,8 @@ function getNetworkName() {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.BINANCE;
   } else if (isMATIC || this?.isPolygonErc20Token) {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.POLYGON;
+  } else if (isFTM || this?.isFantomErc20Token) {
+    rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.FANTOM;
   }
   return {
     networkName: name,
@@ -47,11 +65,11 @@ function getNetworkName() {
 
 function combineData(pData, incognitoData, defaultData) {
   if (this.isPToken) {
-    return pData;
+    return pData || incognitoData;
   }
 
   if (this.isIncognitoToken) {
-    return incognitoData;
+    return incognitoData || pData;
   }
 
   return defaultData;
@@ -79,7 +97,6 @@ function getIconUrl(chainTokenImageUri) {
 class SelectedPrivacy {
   constructor(account = {}, token = {}, pTokenData: PToken = {}, _tokenID) {
     const tokenId = pTokenData?.tokenId || token?.id;
-
     const isUnknown = _tokenID !== PRV_ID && !tokenId;
     const unknownText = 'Incognito Token';
 
@@ -105,6 +122,10 @@ class SelectedPrivacy {
       this.isPrivateToken &&
       this.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20;
+    this.isFantomErc20Token =
+      this.isPrivateToken &&
+      this.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FANTOM_ERC20;
     this.isBep20Token =
       this.isPrivateToken &&
       this.currencyType ===
@@ -156,7 +177,10 @@ class SelectedPrivacy {
       this.isPolygonErc20Token ||
       (this.isToken &&
         this.currencyType ===
-          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC);
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC) ||
+      this.isFantomErc20Token ||
+      (this.isToken &&
+        this.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM);
     this.isCentralized = this.isToken && !this.isDecentralized;
     this.incognitoTotalSupply =
       (this.isIncognitoToken && Number(token?.totalSupply)) || 0;
@@ -167,6 +191,7 @@ class SelectedPrivacy {
       !isUnknown,
     ); // PRV always is verified
     this.priceUsd = pTokenData?.priceUsd || 0;
+    this.externalPriceUSD = pTokenData?.externalPriceUSD || 0;
     this.pricePrv = pTokenData?.pricePrv || 0;
     this.pairWithPrv = pTokenData?.pairPrv;
     const { networkName, rootNetworkName } = getNetworkName.call(this);
@@ -185,12 +210,18 @@ class SelectedPrivacy {
     }
     this.amount = this.amount || 0;
     this.listChildToken = pTokenData?.listChildToken;
-    this.iconUrl = getIconUrl.call(this, token?.image);
+    this.iconUrl = getIconUrl.call(this, token?.image || pTokenData.image);
     this.change = pTokenData?.change;
     this.defaultPoolPair = pTokenData?.defaultPoolPair;
     this.defaultPairToken = pTokenData?.defaultPairToken;
     this.network = pTokenData.network;
     this.hasSameSymbol = pTokenData.hasSameSymbol;
+
+    // Native Token of Network
+    this.isETH = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
+    this.isBSC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
+    this.isBNB = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
+    this.isMATIC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
   }
 }
 

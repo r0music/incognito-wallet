@@ -5,6 +5,7 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
 import { BIG_COINS, PRIORITY_LIST } from '@src/screens/Dex/constants';
 import toLower from 'lodash/toLower';
+import { followTokensWalletSelector } from '@screens/Wallet/features/FollowList/FollowList.selector';
 import { defaultAccount } from './account';
 import token, {
   tokensFollowedSelector,
@@ -23,7 +24,8 @@ export const getPrivacyDataByTokenID = createSelector(
   internalTokens,
   pTokens,
   tokensFollowedSelector,
-  (account, internalTokens, pTokens, followed) =>
+  followTokensWalletSelector,
+  (account, internalTokens, pTokens, followed, tokenFollowWallet) =>
     memoize((tokenID) => {
       let data = {};
       if (!tokenID) {
@@ -37,6 +39,7 @@ export const getPrivacyDataByTokenID = createSelector(
           ) || {};
         const pTokenData = pTokens?.find((t) => t?.tokenId === tokenID);
         const followedTokenData = followed.find((t) => t?.id === tokenID) || {};
+        const isExistTokenFollowInWallet = tokenFollowWallet.some((t) => t?.id === tokenID);
         if (
           !internalTokenData &&
           !pTokenData &&
@@ -61,7 +64,8 @@ export const getPrivacyDataByTokenID = createSelector(
         data = {
           ...token,
           ...price,
-          isFollowed: followedTokenData?.id === tokenID,
+          amount: followedTokenData.amount,
+          isFollowed: isExistTokenFollowInWallet,
           priority,
         };
       } catch (e) {

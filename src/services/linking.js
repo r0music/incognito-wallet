@@ -27,6 +27,10 @@ const LinkingService = {
     NavigationService.navigate(routeNames.Community, { uri });
   },
 
+  openUrlInSide(uri) {
+    NavigationService.navigate(routeNames.WebView, { url: uri });
+  },
+
   openSettings() {
     Linking.openSettings();
   },

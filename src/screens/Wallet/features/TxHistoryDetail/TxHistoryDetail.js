@@ -73,7 +73,7 @@ export const Hook = (props) => {
   const handleOpenUrl = () =>
     typeof handleOpenLink === 'function'
       ? handleOpenLink()
-      : linkingService.openUrl(valueText);
+      : linkingService.openUrlInSide(valueText);
 
   const renderComponent = () => (
     <>
@@ -232,22 +232,29 @@ const TxHistoryDetail = (props) => {
     );
   }, [history]);
 
-  const historyShieldDecentralizeFactories = history?.addressType === CONSTANT_COMMONS.HISTORY.TYPE.SHIELD && (history?.decentralized === 2 || history?.decentralized === 3 || history?.decentralized === 4) ? [
-    {
-      label: 'Received funds',
-      valueText: receiveFund,
-    },
-    {
-      label: 'Shielding fees',
-      valueText: shieldingFee,
-    },
-    {
-      label: 'Received TxID',
-      valueText: history?.receivedTx,
-      openUrl: true,
-      disabled: !history?.receivedTx,
-    }
-  ] : [];
+  const historyShieldDecentralizeFactories =
+    history?.addressType === CONSTANT_COMMONS.HISTORY.TYPE.SHIELD &&
+    (history?.decentralized === 2 ||
+      history?.decentralized === 3 ||
+      history?.decentralized === 4 ||
+      history?.decentralized === 5)
+      ? [
+        {
+          label: 'Received funds',
+          valueText: receiveFund,
+        },
+        {
+          label: 'Shielding fees',
+          valueText: shieldingFee,
+        },
+        {
+          label: 'Received TxID',
+          valueText: history?.receivedTx,
+          openUrl: true,
+          disabled: !history?.receivedTx,
+        },
+      ]
+      : [];
 
   const historyFactories = [
     {
@@ -272,20 +279,33 @@ const TxHistoryDetail = (props) => {
     {
       label: 'Fee',
       valueText: `${formatFee} ${feeUnit}`,
-      disabled: !fee || (history?.decentralized === 2 || history?.decentralized === 3 || history?.decentralized === 4),
+      disabled:
+        !fee ||
+        history?.decentralized === 2 ||
+        history?.decentralized === 3 ||
+        history?.decentralized === 4 ||
+        history?.decentralized === 5,
     },
     {
       label: 'Status',
       valueText: statusMessage,
       valueTextStyle: { color: statusColor },
       disabled: !toggleHistoryDetail && !statusMessage,
-      canRetryExpiredDeposit: history?.canRetryExpiredDeposit || isBTCInvalidAmount,
+      canRetryExpiredDeposit:
+        history?.canRetryExpiredDeposit || isBTCInvalidAmount,
       handleRetryExpiredDeposit: onRetryExpiredDeposit,
       message: history?.statusDetail,
       handleRetryHistoryStatus: onRetryHistoryStatus,
       showReload,
       fetchingHistory,
-      notShowRetry: !(!history.isShieldTx && (history.decentralized && history.statusCode === 15 || history.statusCode === 16 || history.statusCode === 9 || history.statusCode === 10) || (!history.decentralized && history.statusCode === 15)),
+      notShowRetry: !(
+        (!history.isShieldTx &&
+          ((history.decentralized && history.statusCode === 15) ||
+            history.statusCode === 16 ||
+            history.statusCode === 9 ||
+            history.statusCode === 10)) ||
+        (!history.decentralized && history.statusCode === 15)
+      ),
     },
     {
       label: 'Time',
@@ -295,7 +315,11 @@ const TxHistoryDetail = (props) => {
     {
       label: 'Expired at',
       valueText: formatUtil.formatDateTime(history?.expiredAt),
-      disabled: isEmpty(history?.status) || history?.status.toLowerCase() !== CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING.toLowerCase() || !history?.expiredAt,
+      disabled:
+        isEmpty(history?.status) ||
+        history?.status.toLowerCase() !==
+          CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING.toLowerCase() ||
+        !history?.expiredAt,
     },
     {
       label: 'TxID',
@@ -347,7 +371,10 @@ const TxHistoryDetail = (props) => {
       label: 'Shield Address',
       valueText: history.depositAddress,
       copyable: false,
-      disabled: !history.depositAddress || history.statusText !== 'EXPIRED' || history.isShieldTx === false,
+      disabled:
+        !history.depositAddress ||
+        history.statusText !== 'EXPIRED' ||
+        history.isShieldTx === false,
     },
   ];
   const onCopyData = () => {

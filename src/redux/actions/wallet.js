@@ -7,9 +7,7 @@ import {
   setListAccount,
   setAccount,
   setDefaultAccount,
-  actionReloadFollowingToken,
-  actionSetNFTTokenData,
-  actionSetSignPublicKeyEncode,
+  actionSetSignPublicKeyEncode, actionSetNFTTokenData,
 } from '@src/redux/actions/account';
 import { currentMasterKeySelector } from '@src/redux/selectors/masterKey';
 import { walletSelector } from '@src/redux/selectors/wallet';
@@ -20,6 +18,8 @@ import {
 import { Validator } from 'incognito-chain-web-js/build/wallet';
 import { ExHandler } from '@src/services/exception';
 import isEqual from 'lodash/isEqual';
+import { FollowAction } from '@screens/Wallet/features/FollowList';
+import { getPTokenList } from '@src/redux/actions/token';
 
 export const setWallet = (
   wallet = throw new Error('Wallet object is required'),
@@ -46,7 +46,7 @@ export const reloadAccountList = () => async (dispatch, getState) => {
 };
 
 export const actionSubmitOTAKeyForListAccount =
-  (wallet) => async (dispatch, getState) => {
+  (wallet) => async () => {
     try {
       if (!wallet) {
         return;
@@ -112,11 +112,16 @@ export const reloadWallet =
             dispatch(setListAccount(listAccount));
             dispatch(setAccount(defaultAccount));
             dispatch(setDefaultAccount(defaultAccount));
-            dispatch(actionReloadFollowingToken());
-            dispatch(actionSetSignPublicKeyEncode());
-            dispatch(actionSyncAccountMasterKey());
+            dispatch(getPTokenList());
           });
-          await dispatch(actionSetNFTTokenData());
+          setTimeout(() => {
+            batch(() => {
+              dispatch(FollowAction.actionLoadFollowBalance());
+              dispatch(actionSetSignPublicKeyEncode());
+              dispatch(actionSyncAccountMasterKey());
+              dispatch(actionSetNFTTokenData());
+            });
+          }, 500);
         }
         return wallet;
       } catch (e) {

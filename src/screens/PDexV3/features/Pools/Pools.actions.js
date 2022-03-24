@@ -64,7 +64,7 @@ export const actionFetchListPools = () => async (dispatch, getState) => {
     const followIds = followPoolIdsSelector(state);
     await dispatch(actionFetching());
     const pDexV3Inst = await getPDexV3Instance();
-    const pools = (await pDexV3Inst.getListPools('all')) || [];
+    const pools = (await pDexV3Inst.getListPools('all&verify=true')) || [];
     const volume = pools.reduce(
       (prev, curr) => new BigNumber(Math.ceil(curr.volume)).plus(prev),
       new BigNumber(0),

@@ -103,6 +103,10 @@ export default class Util {
     return reg.test(email);
   }
 
+  static isNumber(n) {
+    return /^-?[\d.]+(?:e-?\d+)?$/.test(n);
+  }
+
   static timeout = (fn, timeSecond = 1) => {
     return new Promise(resolve => {
       setTimeout(() => resolve(fn), timeSecond * 1000);

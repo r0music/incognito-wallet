@@ -1,25 +1,24 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { selectedPrivacySelector, sharedSelector } from '@src/redux/selectors';
-import { useSelector } from 'react-redux';
+import { selectedPrivacySelector } from '@src/redux/selectors';
 import PropTypes from 'prop-types';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 
 export const TokenContext = React.createContext();
 
 const enhance = (WrappedComp) => (props) => {
-  const { tokenId } = props;
-  const token = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID)(
+  const { tokenId, amount } = props;
+  const token = useDebounceSelector(selectedPrivacySelector.getPrivacyDataByTokenID)(
     tokenId,
   );
 
-  const gettingBalance = useSelector(sharedSelector.isGettingBalance);
-  const isGettingBalance = gettingBalance.includes(tokenId);
-  const tokenProps = {
+  const tokenProps = React.useMemo(() => ({
     ...props,
     ...token,
-    isGettingBalance,
+    amount,
     symbol: token?.symbol || token?.externalSymbol || '',
-  };
+  }), [amount, token.name, token.priceUsd]);
+
   if (!token || !tokenId) {
     return null;
   }

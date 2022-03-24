@@ -1,7 +1,6 @@
 import React from 'react';
 import { Text, TouchableOpacity, Switch, Toast } from '@components/core/index';
 import Section, { sectionStyle } from '@screens/Setting/features/Section';
-import LocalDatabase from '@utils/LocalDatabase';
 import RNRestart from 'react-native-restart';
 import { AsyncStorage, Clipboard } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';

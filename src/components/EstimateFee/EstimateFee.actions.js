@@ -493,6 +493,8 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
     pDecimals,
     isDecentralized,
     isBep20Token,
+    isPolygonErc20Token,
+    isFantomErc20Token,
   } = selectedPrivacy;
   const { isETH, isUsedPRVFee, userFees, isUnShield } = feeDataSelector(state);
   const originalAmount = convert.toOriginalAmount(requestedAmount, pDecimals);
@@ -515,6 +517,8 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
         currencyType: currencyType,
         isErc20Token: isErc20Token,
         isBep20Token: isBep20Token,
+        isPolygonErc20Token: isPolygonErc20Token,
+        isFantomErc20Token: isFantomErc20Token,
         externalSymbol: externalSymbol,
         isUsedPRVFee,
         signPublicKeyEncode,

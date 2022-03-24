@@ -20,6 +20,7 @@ import { switchMasterKey } from '@src/redux/actions/masterKey';
 import { RatioIcon } from '@components/Icons';
 import styled from 'styled-components/native';
 import { actionToggleModal } from '@src/components/Modal';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import ModalSwitchingAccount from './SelectAccount.modalSwitching';
 
 const itemStyled = StyleSheet.create({
@@ -62,8 +63,8 @@ const AccountItem = React.memo(
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const onSelect = useNavigationParam('onSelect');
-    const account = useSelector(defaultAccount);
-    const switchingAccount = useSelector(switchAccountSelector);
+    const account = useDebounceSelector(defaultAccount);
+    const switchingAccount = useDebounceSelector(switchAccountSelector);
     if (!accountName) {
       return null;
     }

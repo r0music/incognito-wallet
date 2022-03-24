@@ -195,6 +195,7 @@ export default {
   RemoveLPDetail: 'RemoveLPDetail',
   WithdrawFeeLPDetail: 'WithdrawFeeLPDetail',
   OrdeSwapDetail: 'OrdeSwapDetail',
+  SwapRewardHistoryDetail: 'SwapRewardHistoryDetail',
   MainTabBar: 'MainTabBar',
   PoolsTab: 'PoolsTab',
   SelectTokenModal: 'SelectTokenModal',
@@ -202,5 +203,8 @@ export default {
   Market: 'Market',
   SelectOptionModal: 'SelectOptionModal',
   PrivacyAppsPancake: 'PrivacyAppsPancake',
-  MarketSearchCoins: 'MarketSearchCoins'
+  PrivacyAppsUni: 'PrivacyAppsUni',
+  PrivacyAppsCurve: 'PrivacyAppsCurve',
+  MarketSearchCoins: 'MarketSearchCoins',
+  HomeLP: 'TabHomeLP',
 };

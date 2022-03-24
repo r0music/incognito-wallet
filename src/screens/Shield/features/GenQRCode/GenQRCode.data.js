@@ -1,7 +1,7 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useNavigationParam } from 'react-navigation-hooks';
-import { batch, useDispatch, useSelector } from 'react-redux';
+import { batch, useDispatch } from 'react-redux';
 import {
   shieldDataSelector,
   shieldSelector,
@@ -13,16 +13,17 @@ import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import { actionAddFollowToken } from '@src/redux/actions/token';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
-  const account = useSelector(defaultAccountSelector);
-  const accountWallet = useSelector(getDefaultAccountWalletSelector);
+  const account = useDebounceSelector(defaultAccountSelector);
+  const accountWallet = useDebounceSelector(getDefaultAccountWalletSelector);
   const tokenShield = useNavigationParam('tokenShield') || {};
   const tokenSymbol = tokenShield?.externalSymbol || tokenShield?.symbol;
   const { tokenId } = tokenShield;
-  const { decentralized } = useSelector(shieldDataSelector);
-  const { isFetching, isFetched, isFetchFailed, isPortalCompatible, data } = useSelector(shieldSelector);
+  const { decentralized } = useDebounceSelector(shieldDataSelector);
+  const { isFetching, isFetched, isFetchFailed, isPortalCompatible, data } = useDebounceSelector(shieldSelector);
   const handleShield = async () => {
     const isPortalToken  = await accountWallet.handleCheckIsPortalToken({ tokenID: tokenId});
     if( isPortalToken ){
@@ -35,7 +36,7 @@ const enhance = (WrappedComp) => (props) => {
       );
     }
   };
-  
+
   const handleUpdateTokenSelector = () => {
     batch(() => {
       dispatch(setSelectedPrivacy(tokenId));

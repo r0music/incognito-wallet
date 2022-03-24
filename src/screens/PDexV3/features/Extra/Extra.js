@@ -67,6 +67,8 @@ export const Hook = React.memo((props) => {
     customStyledValue,
     styledHook,
     customStyledLabel,
+    labelNumberOfLine,
+    valueNumberOfLine
   } = props;
   const colors = useSelector(colorsSelector);
   return (
@@ -79,7 +81,7 @@ export const Hook = React.memo((props) => {
             boldLabel && styled.bold,
             customStyledLabel ?? customStyledLabel,
           ]}
-          numberOfLines={1}
+          numberOfLines={labelNumberOfLine || 1}
           ellipsizeMode="tail"
         >
           {label}
@@ -96,7 +98,7 @@ export const Hook = React.memo((props) => {
         customValue
       ) : (
         <Text
-          numberOfLines={1}
+          numberOfLines={valueNumberOfLine || 1}
           ellipsizeMode="tail"
           style={[
             styled.value,
@@ -135,6 +137,8 @@ Hook.propTypes = {
   onPressQuestionIcon: PropTypes.func,
   customValue: PropTypes.any,
   titleStyle: PropTypes.any,
+  labelNumberOfLine: PropTypes.number,
+  valueNumberOfLine: PropTypes.number,
 };
 
 Extra.propTypes = {

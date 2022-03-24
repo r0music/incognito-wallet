@@ -4,6 +4,7 @@ import {
   PANCAKE_CONSTANTS,
   WEB3_CONSTANT,
   BSC_CONSTANT,
+  UNI_CONSTANTS,
 } from 'incognito-chain-web-js/build/wallet';
 
 export const MAINNET_FULLNODE = 'https://lb-fullnode.incognito.org/fullnode';
@@ -45,6 +46,7 @@ const MAIN_NET_SERVER = {
   webviewChartServices: 'https://chart-webview.incognito.org',
   bscConfigs: BSC_CONSTANT.BSC_MAINNET_CONFIGS,
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
+  uniConfigs: UNI_CONSTANTS.UNI_MAINNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
 };
 const BETA_SERVER = {
@@ -54,19 +56,20 @@ const BETA_SERVER = {
   username: '',
   password: '',
   name: 'Beta',
-  coinServices: 'https://api-coinservice-beta.incognito.org',
-  pubsubServices: 'https://api-coinservice-beta.incognito.org/txservice',
-  requestServices: 'https://api-coinservice-beta.incognito.org',
+  coinServices: 'http://51.161.119.66:9005',
+  pubsubServices: 'http://51.161.119.66:9005/txservice',
+  requestServices: 'http://51.161.119.66:9005',
   apiServices: 'https://api-service.incognito.org',
   shardNumber: DEFAULT_SHARD_NUMBER,
   IncContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   IncBSCContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   explorer: 'https://explorer.incognito.org',
-  tradeServices: 'https://api-coinservice-beta.incognito.org',
-  portalServices: 'http://139.162.55.124:8010',
+  tradeServices: 'http://51.161.119.66:9005',
+  portalServices: 'https://api-portalv4.incognito.org',
   webviewChartServices: 'https://chart-webview.incognito.org',
   bscConfigs: BSC_CONSTANT.BSC_MAINNET_CONFIGS,
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
+  uniConfigs: UNI_CONSTANTS.UNI_MAINNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
 };
 const TEST_NET_SERVER = {
@@ -76,19 +79,20 @@ const TEST_NET_SERVER = {
   username: '',
   password: '',
   name: 'Testnet',
-  coinServices: 'https://api-coinservice-staging.incognito.org',
-  pubsubServices: 'https://api-coinservice-staging.incognito.org/txservice',
-  requestServices: 'https://api-coinservice-staging.incognito.org',
+  coinServices: 'http://51.89.21.38:8096',
+  pubsubServices: 'http://51.89.21.38:9096',
+  requestServices: 'http://51.89.21.38:8096',
   apiServices: 'https://staging-api-service.incognito.org',
   shardNumber: DEFAULT_SHARD_NUMBER,
   IncContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   IncBSCContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   explorer: 'https://testnet.incognito.org',
-  tradeServices: 'https://api-coinservice-staging.incognito.org',
+  tradeServices: 'http://51.89.21.38:8096',
   portalServices: 'http://51.161.119.66:8020',
   webviewChartServices: 'https://chart-webview-staging.incognito.org',
   bscConfigs: BSC_CONSTANT.BSC_TESTNET_CONFIGS,
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,
+  uniConfigs: UNI_CONSTANTS.UNI_TESTNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
 };
 
@@ -140,6 +144,7 @@ export const DEV_TEST_SERVER = {
   webviewChartServices: 'https://chart-webview-staging.incognito.org',
   bscConfigs: BSC_CONSTANT.BSC_TESTNET_CONFIGS,
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,
+  uniConfigs: UNI_CONSTANTS.UNI_TESTNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
 };
 
@@ -151,15 +156,63 @@ const PORTAL_SERVER = {
   password: '',
   name: 'Portal',
   portalServices: 'http://192.168.146.58:8091',
-  coinServices: 'https://api-coinservice-staging.incognito.org',
-  pubsubServices: 'https://api-coinservice-staging.incognito.org/txservice',
-  requestServices: 'https://api-coinservice-staging.incognito.org',
+  coinServices: 'http://51.89.21.38:8096',
+  pubsubServices: 'http://51.89.21.38:8096/txservice',
+  requestServices: 'http://51.89.21.38:8096',
   apiServices: 'https://staging-api-service.incognito.org',
   shardNumber: DEFAULT_SHARD_NUMBER,
   IncContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   IncBSCContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   explorer: 'https://testnet.incognito.org',
   webviewChartServices: 'https://chart-webview-staging.incognito.org',
+};
+
+const BETA_66 = {
+  id: 'beta66',
+  default: false,
+  address: MAINNET_FULLNODE,
+  username: '',
+  password: '',
+  name: 'Beta66',
+  coinServices: 'http://51.161.119.66:9005',
+  pubsubServices: 'http://51.161.119.66:8001',
+  requestServices: 'http://51.161.119.66:9005',
+  apiServices: 'https://api-service.incognito.org',
+  shardNumber: DEFAULT_SHARD_NUMBER,
+  IncContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
+  IncBSCContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
+  explorer: 'https://explorer.incognito.org',
+  tradeServices: 'http://51.161.119.66:9005',
+  portalServices: 'https://api-portalv4.incognito.org',
+  webviewChartServices: 'https://chart-webview.incognito.org',
+  bscConfigs: BSC_CONSTANT.BSC_MAINNET_CONFIGS,
+  pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
+  uniConfigs: UNI_CONSTANTS.UNI_MAINNET_CONFIGS,
+  web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
+};
+
+const BETA_2 = {
+  id: 'beta2',
+  default: false,
+  address: MAINNET_FULLNODE,
+  username: '',
+  password: '',
+  name: 'Beta2',
+  coinServices: 'https://api-coinservice-beta2.incognito.org',
+  pubsubServices: 'https://api-coinservice-beta2.incognito.org/txservice',
+  requestServices: 'https://api-coinservice-beta2.incognito.org',
+  apiServices: 'https://api-service.incognito.org',
+  shardNumber: DEFAULT_SHARD_NUMBER,
+  IncContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
+  IncBSCContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
+  explorer: 'https://explorer.incognito.org',
+  tradeServices: 'https://api-coinservice-beta2.incognito.org',
+  portalServices: 'https://api-portalv4.incognito.org',
+  webviewChartServices: 'https://chart-webview.incognito.org',
+  bscConfigs: BSC_CONSTANT.BSC_MAINNET_CONFIGS,
+  pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
+  uniConfigs: UNI_CONSTANTS.UNI_MAINNET_CONFIGS,
+  web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
 };
 
 const DEFAULT_LIST_SERVER = [
@@ -171,6 +224,8 @@ const DEFAULT_LIST_SERVER = [
   DEV_TEST_SERVER,
   BETA_SERVER,
   PORTAL_SERVER,
+  BETA_66,
+  BETA_2,
 ];
 
 export const KEY = {
@@ -247,6 +302,7 @@ export default class Server {
               bscConfigs: server?.bscConfigs || '',
               web3Configs: server?.web3Configs || '',
               pancakeConfigs: server?.pancakeConfigs || '',
+              uniConfigs: server?.uniConfigs || '',
             };
           }
         }
@@ -300,4 +356,10 @@ export default class Server {
     const strData = JSON.stringify(cachedList);
     return storage.setItem(KEY.SERVER, strData);
   }
+
+  static async getNetwork() {
+    const server = await Server.getDefault();
+    return server?.id;
+  }
+
 }

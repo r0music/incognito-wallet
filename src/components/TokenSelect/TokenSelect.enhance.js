@@ -1,12 +1,11 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import _ from 'lodash';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { View } from '@components/core';
 import {
   selectedPrivacySelector,
   tokenSelector,
-  settingsSelector,
 } from '@src/redux/selectors';
 import VerifiedText from '@components/VerifiedText/index';
 import TokenNetworkName from '@components/TokenNetworkName/index';
@@ -16,6 +15,7 @@ import { COINS } from '@src/constants';
 import PropTypes from 'prop-types';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import appConstant from '@src/constants/app';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 
 const generateMenu = (tokens, onSelect) => {
   const newMenu = [];
@@ -46,25 +46,15 @@ const generateMenu = (tokens, onSelect) => {
 const enhance = WrappedComp => props => {
   const { onSelect, onlyPToken, showOriginalSymbol } = props;
   const [menu, setMenu] = React.useState([]);
-  const [allTokens, setAllTokens] = React.useState([]);
-  const {
-    pTokens,
-    internalTokens,
-    getPrivacyDataByTokenID,
-  } = useSelector(state => ({
-    pTokens: tokenSelector.pTokens(state),
-    internalTokens: tokenSelector.internalTokens(state),
-    getPrivacyDataByTokenID: selectedPrivacySelector.getPrivacyDataByTokenID(
-      state,
-    ),
-    settings: settingsSelector.settings(state),
-  }));
-  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const pTokens = useDebounceSelector(tokenSelector.pTokens);
+  const internalTokens = useDebounceSelector(tokenSelector.internalTokens);
+  const getPrivacyDataByTokenID = useDebounceSelector(selectedPrivacySelector.getPrivacyDataByTokenID);
+  const selectedPrivacy = useDebounceSelector(selectedPrivacySelector.selectedPrivacy);
   const [onCentralizedPress, isCentralizedDisabled] = useFeatureConfig(appConstant.DISABLED.SHIELD_CENTRALIZED);
   const [onDecentralizedPress, isDecentralizedDisabled] = useFeatureConfig(appConstant.DISABLED.SHIELD_DECENTRALIZED);
   const dispatch = useDispatch();
 
-  React.useEffect(() => {
+  const allTokens = React.useMemo(() => {
     let allTokens;
     if (onlyPToken) {
       allTokens = _(pTokens).map(item => ({
@@ -123,9 +113,8 @@ const enhance = WrappedComp => props => {
         dispatch(setSelectedPrivacy(pTokens[0].tokenId));
       }
     }
-
-    setAllTokens(allTokens);
-  }, [internalTokens, pTokens]);
+    return allTokens;
+  }, []);
 
   const isTokenSelectable = tokenId => {
     if (!tokenId) {

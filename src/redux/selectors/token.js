@@ -1,6 +1,7 @@
 import { PRV_ID } from '@src/constants/common';
 import uniq from 'lodash/uniq';
 import { createSelector } from 'reselect';
+import memoize from 'memoize-one';
 
 export const followed = (state) => state?.token?.followed || [];
 export const isGettingBalance = (state) => state?.token?.isGettingBalance || [];
@@ -12,8 +13,9 @@ export const tokensFollowedSelector = createSelector(
 );
 export const pTokensSelector = createSelector(
   (state) => state?.token?.pTokens,
-  (pTokens) =>
-    pTokens.map((token) => ({ ...token, tokenID: token?.tokenId })) || [],
+  (pTokens) => {
+    return pTokens.map((token) => ({ ...token, tokenID: token?.tokenId })) || [];
+  },
 );
 
 export const internalTokensSelector = createSelector(
@@ -86,6 +88,9 @@ export const defaultPTokensIDsSelector = createSelector(
   (pTokens) =>
     pTokens.filter((token) => token.default).map((token) => token?.tokenId),
 );
+// memoize(() => {
+//   return pTokens.filter((token) => token.default).map((token) => token?.tokenId);
+// }),
 
 export const allTokensIDsSelector = createSelector(
   pTokensSelector,

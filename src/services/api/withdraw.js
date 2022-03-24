@@ -38,6 +38,7 @@ export const withdraw = (data) => {
     isErc20Token,
     isBep20Token,
     isPolygonErc20Token,
+    isFantomErc20Token,
     paymentAddress,
     tokenId,
     burningTxId,
@@ -88,10 +89,17 @@ export const withdraw = (data) => {
   // Polygon Token
   if (
     isPolygonErc20Token ||
-    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
-    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC
   ) {
     return http.post('plg/add-tx-withdraw', payload);
+  }
+
+  // Fantom Token
+  if (
+    isFantomErc20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM
+  ) {
+    return http.post('ftm/add-tx-withdraw', payload);
   }
 
   return http.post('eta/add-tx-withdraw', payload);
@@ -147,12 +155,14 @@ export const estimateUserFees = (data) => {
     isErc20Token,
     isBep20Token,
     isPolygonErc20Token,
+    isFantomErc20Token,
     signPublicKeyEncode,
   } = data;
   if (
     (isBep20Token ||
       isErc20Token ||
-      currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON) &&
+      isPolygonErc20Token ||
+      isFantomErc20Token) &&
     !tokenContractID
   ) {
     throw new Error('Missing tokenContractID');
@@ -190,10 +200,17 @@ export const estimateUserFees = (data) => {
   // Polygon Token
   if (
     isPolygonErc20Token ||
-    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
-    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC
   ) {
     return http.post('plg/estimate-fees', payload);
+  }
+
+  // Fantom Token
+  if (
+    isFantomErc20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM
+  ) {
+    return http.post('ftm/estimate-fees', payload);
   }
 
   return http.post('eta/estimate-fees', payload);

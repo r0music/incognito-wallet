@@ -29,6 +29,7 @@ import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanc
 import NetworkFee from '@src/components/NetworkFee';
 import {actionToggleModal} from '@components/Modal';
 import { withLayout_2 } from '@components/Layout';
+import useSendSelf from '@screens/PDexV3/features/Liquidity/Liquidity.useSendSelf';
 
 const initialFormValues = {
   inputToken: '',
@@ -187,10 +188,13 @@ const Contribute = ({
   onCreateContributes,
   visible,
   onCloseModal,
+  setLoading,
+  setError,
   error,
 }) => {
   const isFetching = useSelector(contributeSelector.statusSelector);
   const { feeAmountStr, showFaucet } = useSelector(contributeSelector.feeAmountSelector);
+  const _error = useSendSelf({ error, setLoading, setError });
   const onSubmit = (params) => {
     typeof onCreateContributes === 'function' && onCreateContributes(params);
   };
@@ -219,7 +223,7 @@ const Contribute = ({
               <>
                 <InputsGroup />
                 <View style={styled.padding}>
-                  {!!error && <Text style={styled.warning}>{error}</Text>}
+                  {!!_error && <Text style={styled.warning}>{_error}</Text>}
                   <ContributeButton onSubmit={onSubmit} />
                   {showFaucet && <NetworkFee feeStr={feeAmountStr} />}
                   <Extra />
@@ -253,6 +257,8 @@ Contribute.propTypes = {
   onCreateContributes: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
+  setError: PropTypes.func.isRequired,
+  setLoading: PropTypes.func.isRequired,
   error: PropTypes.string,
 };
 

@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
-import { ActivityIndicator } from '@components/core';
-import { View, StyleSheet } from 'react-native';
+// import { ActivityIndicator } from '@components/core';
+// import { View, StyleSheet } from 'react-native';
 import {AppIcon} from '@components/Icons';
 
 const ImageCached = (props) => {
   const { style, uri, defaultImage, ...rest } = props;
-  const [{ loading, error }, setState] = React.useState({
+  const [{ error }, setState] = React.useState({
     loading: false,
     error: false,
   });
@@ -30,25 +30,25 @@ const ImageCached = (props) => {
         onError={() => setState({ error: true, loading: false })}
         {...rest}
       />
-      {loading && (
-        <View style={[styled.loading]} zIndex={999}>
-          <ActivityIndicator />
-        </View>
-      )}
+      {/*{loading && (*/}
+      {/*  <View style={[styled.loading]} zIndex={999}>*/}
+      {/*    <ActivityIndicator />*/}
+      {/*  </View>*/}
+      {/*)}*/}
     </>
   );
 };
 
-const styled = StyleSheet.create({
-  loading: {
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    left: 24
-  },
-});
+// const styled = StyleSheet.create({
+//   loading: {
+//     width: 32,
+//     height: 32,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     position: 'absolute',
+//     left: 24
+//   },
+// });
 
 ImageCached.defaultProps = {
   defaultImage: null,

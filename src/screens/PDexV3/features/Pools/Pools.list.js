@@ -8,7 +8,7 @@ import {
 import { BaseTextInputCustom } from '@src/components/core/BaseTextInput';
 import { FONT, COLORS } from '@src/styles';
 import { StyleSheet } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Row } from '@src/components';
 import Pool from '@screens/PDexV3/features/Pool';
 import PropTypes from 'prop-types';
@@ -20,6 +20,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import { InfoIcon } from '@components/Icons';
 import routeNames from '@routers/routeNames';
 import helperConst from '@src/constants/helper';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { actionFetchPools } from './Pools.actions';
 import { handleFilterPoolByKeySeach } from './Pools.utils';
 import { isFetchingSelector } from './Pools.selector';
@@ -96,9 +97,12 @@ export const PoolsListHeader = React.memo(() => {
 });
 
 export const PoolsList = React.memo(({ onPressPool, pools }) => {
-  const refreshing = useSelector(isFetchingSelector);
+  const refreshing = useDebounceSelector(isFetchingSelector);
   const dispatch = useDispatch();
   const onRefresh = () => dispatch(actionFetchPools());
+  const getItemLayout = React.useCallback((data, index) => (
+    { length: 67, offset: 67 * index, index}
+  ), []);
   const data = React.useMemo(() => {
     return orderBy(pools, 'isFollowed', 'desc');
   }, [pools]);
@@ -123,6 +127,10 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
       )}
       keyExtractor={({ poolId }) => poolId}
       showsVerticalScrollIndicator={false}
+      getItemLayout={getItemLayout}
+      initialNumToRender={10}
+      maxToRenderPerBatch={10}
+      windowSize={10}
     />
   );
 });

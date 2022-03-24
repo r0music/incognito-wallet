@@ -52,7 +52,7 @@ export const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.medium + 7,
   },
   scrollview: {
-    paddingTop: 32,
+    flexGrow: 1,
   },
   countdown: {
     paddingHorizontal: 10,
@@ -97,7 +97,7 @@ export const styled = StyleSheet.create({
     marginTop: 10,
   },
   btnInfo: {
-    marginTop: 10
+    marginTop: 10,
   },
   input: {
     fontFamily: FONT.NAME.bold,
@@ -108,7 +108,7 @@ export const styled = StyleSheet.create({
     marginRight: 15,
     marginTop: 20,
     marginBottom: isAndroid() ? -UTILS.heightScale(16) : 10,
-    textAlign: 'center'
+    textAlign: 'center',
   },
 
   disconnectButton: {
@@ -139,7 +139,7 @@ export const styled = StyleSheet.create({
   },
   wrapMessage: {
     alignSelf: 'center',
-    marginTop: 10
+    marginTop: 10,
   },
   shieldMessage: {
     fontSize: 13,
@@ -147,7 +147,7 @@ export const styled = StyleSheet.create({
     marginTop: 5,
     color: COLORS.orange,
     fontFamily: FONT.NAME.bold,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   selectedBtn: {
     backgroundColor: '#EFEFEF',
@@ -165,16 +165,16 @@ export const styled = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     justifyContent: 'center',
-    width: '49%'
+    width: '49%',
   },
   optionContent: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   selectBox: {
     justifyContent: 'space-between',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   textSelectBox: {
     fontFamily: FONT.NAME.specialMedium,

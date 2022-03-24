@@ -9,16 +9,19 @@ import routeNames from '@src/router/routeNames';
 import PropTypes from 'prop-types';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import { withTokenVerified } from '@src/components/Token';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 
 const enhance = (WrappedComp) => (props) => {
   const navigation = useNavigation();
   const { allTokens, isTokenSelectable } = props;
-  const getPrivacyDataByTokenID = useSelector(
+  const getPrivacyDataByTokenID = useDebounceSelector(
     selectedPrivacySelector.getPrivacyDataByTokenID,
   );
-  const availableTokens = allTokens
-    .map((token) => getPrivacyDataByTokenID(token?.tokenId))
-    .filter((token) => token?.isDeposable);
+  const availableTokens = React.useMemo(() => {
+    return allTokens
+      .map((token) => getPrivacyDataByTokenID(token?.tokenId))
+      .filter((token) => token?.isDeposable);
+  }, [allTokens.length]);
   const handleWhyShield = () => navigation.navigate(routeNames.WhyShield);
   const handleShield = async (item) => {
     try {

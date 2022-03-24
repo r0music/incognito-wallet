@@ -5,6 +5,7 @@ import { createForm } from '@components/core/reduxForm';
 import { useSelector } from 'react-redux';
 import LoadingTx from '@src/components/LoadingTx';
 import { KeyboardAwareScrollView, RefreshControl } from '@src/components/core';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { styled } from './Swap.styled';
 import { formConfigs } from './Swap.constant';
 import withSwap from './Swap.enhance';
@@ -27,17 +28,17 @@ const Form = createForm(formConfigs.formName, {
 
 const Swap = (props) => {
   const { initSwapForm, handleConfirm } = props;
-  const swapInfo = useSelector(swapInfoSelector);
+  const swapInfo = useDebounceSelector(swapInfoSelector);
   return (
     <>
       <KeyboardAwareScrollView
         style={[styled.scrollview]}
-        refreshControl={
+        refreshControl={(
           <RefreshControl
             refreshing={swapInfo?.refreshing}
             onRefresh={initSwapForm}
           />
-        }
+        )}
       >
         <Form>
           {() => (

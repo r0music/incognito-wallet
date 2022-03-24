@@ -34,6 +34,7 @@ import {
 import {
   actionHandleInjectEstDataForPancake,
   actionHandleInjectEstDataForPDex,
+  actionHandleInjectEstDataForUni,
   actionSetFeeToken,
   actionSwitchPlatform,
   actionChangeSlippage,
@@ -81,6 +82,9 @@ const TabPro = React.memo(() => {
       break;
     case KEYS_PLATFORMS_SUPPORTED.pancake:
       await dispatch(actionHandleInjectEstDataForPancake());
+      break;
+    case KEYS_PLATFORMS_SUPPORTED.uni:
+      await dispatch(actionHandleInjectEstDataForUni());
       break;
     default:
       break;
@@ -190,11 +194,11 @@ const TabPro = React.memo(() => {
                 slippage,
               ),
             );
-            let defaultSlippage = slippage;
-            if (isNaN(slippage)) {
-              defaultSlippage = '1';
+            let _slippage = slippage;
+            if (isNaN(convert.toNumber(slippage, true))) {
+              _slippage = '1';
             }
-            dispatch(actionChangeSlippage(defaultSlippage));
+            dispatch(actionChangeSlippage(_slippage));
           }}
         />
       ),

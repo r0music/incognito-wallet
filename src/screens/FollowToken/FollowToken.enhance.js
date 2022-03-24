@@ -8,15 +8,16 @@ import {
   actionRemoveFollowToken,
 } from '@src/redux/actions/token';
 import { withTokenVerified } from '@src/components/Token';
+import withLazy from '@components/LazyHoc/LazyHoc';
 
 export const withFollow = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const handleToggleFollowToken = async (token) => {
     try {
       if (!token?.isFollowed) {
-        await dispatch(actionAddFollowToken(token?.tokenId));
+        dispatch(actionAddFollowToken(token?.tokenId));
       } else {
-        await dispatch(actionRemoveFollowToken(token?.tokenId));
+        dispatch(actionRemoveFollowToken(token?.tokenId));
       }
     } catch (error) {
       console.log(error);
@@ -35,6 +36,7 @@ export const withFollow = (WrappedComp) => (props) => {
 };
 
 export default compose(
+  withLazy,
   withTokenVerified,
   withFollow,
   withLayout_2,

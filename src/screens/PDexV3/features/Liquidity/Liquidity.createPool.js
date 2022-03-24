@@ -24,8 +24,8 @@ import routeNames from '@routers/routeNames';
 import NetworkFee from '@src/components/NetworkFee';
 import {actionToggleModal} from '@components/Modal';
 import { withLayout_2 } from '@components/Layout';
-import SelectedPrivacy from '@models/selectedPrivacy';
-import { formConfigs } from '@screens/PDexV3/features/Swap';
+import useSendSelf from '@screens/PDexV3/features/Liquidity/Liquidity.useSendSelf';
+import withLazy from '@components/LazyHoc/LazyHoc';
 
 const initialFormValues = {
   inputToken: '',
@@ -229,9 +229,12 @@ const CreatePool = ({
   onCreateNewPool,
   visible,
   onCloseModal,
-  error
+  setLoading,
+  setError,
+  error,
 }) => {
   const isFetching = useSelector(createPoolSelector.isFetchingSelector);
+  const _error = useSendSelf({ error, setLoading, setError });
   const onSubmit = (params) => {
     typeof onCreateNewPool === 'function' && onCreateNewPool(params);
   };
@@ -245,7 +248,7 @@ const CreatePool = ({
     <>
       <InputsGroup />
       <View style={styled.padding}>
-        {!!error && <Text style={styled.warning}>{error}</Text>}
+        {!!_error && <Text style={styled.warning}>{_error}</Text>}
         <ButtonCreatePool onSubmit={onSubmit} />
         <Extra />
       </View>
@@ -288,8 +291,10 @@ CreatePool.propTypes = {
   onFreeCreatePool: PropTypes.func.isRequired,
   onCreateNewPool: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired,
+  setLoading: PropTypes.func.isRequired,
+  setError: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
-  error: PropTypes.string
+  error: PropTypes.string,
 };
 
 ButtonCreatePool.propTypes = {
@@ -297,6 +302,7 @@ ButtonCreatePool.propTypes = {
 };
 
 export default compose(
+  withLazy,
   withLiquidity,
   withLayout_2,
   withTransaction,

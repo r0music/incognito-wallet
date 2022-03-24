@@ -7,22 +7,15 @@ import {
 } from '@src/components/core';
 import { colorsSelector } from '@src/theme/theme.selector';
 import { View2 } from '@src/components/core/View';
-import globalStyled from '@src/theme/theme.styled';
 import { useSelector } from 'react-redux';
-import AddERC20Token from '@src/components/AddERC20Token';
-import AddBep2Token from '@src/components/AddBep2Token';
-import AddBep20Token from '@src/components/AddBep20Token';
-import AddPolygonToken from '@src/components/AddPolygonToken';
+import AddManualTokenComponent from '@src/components/AddManualToken';
 import Icons from 'react-native-vector-icons/Fontisto';
 import Header from '@src/components/Header';
 import PureModal from '@src/components/Modal/features/PureModal';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import styles from './AddManually.styled';
-import withAddManually, {
-  AddManuallyContext,
-  TYPES,
-} from './AddManually.enhance';
+import withAddManually, { AddManuallyContext } from './AddManually.enhance';
 import AddManuallyModal from './AddManually.modal';
 
 const SelectType = (props) => {
@@ -61,7 +54,6 @@ const ModalSelectType = () => {
 };
 
 const AddManually = () => {
-  const { type } = React.useContext(AddManuallyContext);
   const navigation = useNavigation();
   const onGoBack = () => navigation.navigate(routeNames.FollowToken);
   const colors = useSelector(colorsSelector);
@@ -72,10 +64,7 @@ const AddManually = () => {
         <KeyboardAwareScrollView>
           <View style={styles.extra}>
             <SelectType colors={colors} />
-            {type === TYPES.BEP2.value && <AddBep2Token />}
-            {type === TYPES.ERC20.value && <AddERC20Token />}
-            {type === TYPES.BEP20.value && <AddBep20Token />}
-            {type === TYPES.POLYGON.value && <AddPolygonToken />}
+            <AddManualTokenComponent />
           </View>
         </KeyboardAwareScrollView>
         <ModalSelectType />

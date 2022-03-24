@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, Text, RefreshControl } from 'react-native';
+import {Text, RefreshControl } from 'react-native';
 import { useSelector } from 'react-redux';
 import Header from '@src/components/Header';
 import PropTypes from 'prop-types';
 import { camelCaseKeys } from '@src/utils';
-import { ScrollView } from '@src/components/core';
+import { ScrollView, View } from '@src/components/core';
 import { useFocusEffect } from 'react-navigation-hooks';
+import { View2 } from '@components/core/View';
+import withLazy from '@src/components/LazyHoc/LazyHoc';
 import withNews from './News.enhance';
 import { newsSelector } from './News.selector';
 import { LAYOUT_TYPE } from './News.constant';
@@ -13,7 +15,6 @@ import { styled } from './News.styled';
 import ListNews from './News.listNews';
 import { handleShouldRenderCategory } from './News.utils';
 import { userIdSelector } from '../Profile';
-
 
 const Title = React.memo(({ title, parentCatId }) => {
   if (!title) {
@@ -64,18 +65,7 @@ const Category = (props) => {
   if (!shouldRenderCategory) {
     return null;
   }
-  return (
-    <View
-      style={[
-        styled.category,
-        lastChild ? { marginBottom: 30 } : null,
-        firstChild ? { marginTop: 32 } : null,
-      ]}
-    >
-      <Title title={title} parentCatId={parentCatId} />
-      {renderChild()}
-    </View>
-  );
+  return <View>{renderChild()}</View>;
 };
 
 const News = (props) => {
@@ -89,28 +79,34 @@ const News = (props) => {
     }, []),
   );
   return (
-    <View style={styled.container}>      
+    <View2 style={styled.container}>
       <Header title="Bulletin" style={styled.header} />
-      <ScrollView
-        style={styled.scrollview}
-        refreshControl={
-          <RefreshControl refreshing={isFetching} onRefresh={handleFetchNews} />
-        }
-      >
-        {data.length > 0 &&
-          data
-            .sort((a, b) => a?.Type - b?.Type)
-            .map((category, index, arr) => (
-              <Category                
-                category={category}
-                firstChild={index === 0}
-                lastChild={index === arr.length - 1}
-                key={category?.ID}
-                lastNewsID={lastNewsID}
-              />
-            ))}
-      </ScrollView>
-    </View>
+      <View fullFlex borderTop style={{ overflow: 'hidden' }}>
+        <ScrollView
+          refreshControl={(
+            <RefreshControl
+              refreshing={isFetching}
+              onRefresh={handleFetchNews}
+            />
+          )}
+          style={styled.scrollViewContainer}
+          contentContainerStyle={styled.scrollViewContentContainer}
+        >
+          {data.length > 0 &&
+            data
+              .sort((a, b) => a?.Type - b?.Type)
+              .map((category, index, arr) => (
+                <Category
+                  category={category}
+                  firstChild={index === 0}
+                  lastChild={index === arr.length - 1}
+                  key={category?.ID}
+                  lastNewsID={lastNewsID}
+                />
+              ))}
+        </ScrollView>
+      </View>
+    </View2>
   );
 };
 
@@ -129,4 +125,4 @@ Category.propTypes = {
   lastChild: PropTypes.bool,
 };
 
-export default withNews(News);
+export default withLazy(withNews(News));

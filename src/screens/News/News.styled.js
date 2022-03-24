@@ -8,14 +8,22 @@ export const styled = StyleSheet.create({
   header: {
     paddingLeft: 25,
   },
+  scrollViewContainer: {
+    flex: 1,
+    paddingHorizontal: 0,
+  },
+  scrollViewContentContainer: {
+    flexGrow: 1,
+    paddingVertical: 16,
+  },
   category: {
     marginTop: 30,
   },
   title: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.black,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 4,
+    color: COLORS.white,
     paddingLeft: 25,
   },
   subTitle: {
@@ -27,10 +35,9 @@ export const styled = StyleSheet.create({
 });
 
 export const listNewsStyled = StyleSheet.create({
-
   highlights: {
     backgroundColor: '#D9F4FF',
-    padding: 15
+    padding: 15,
   },
 
   hook: {
@@ -53,12 +60,36 @@ export const listNewsStyled = StyleSheet.create({
     height: 55,
     marginRight: 20,
   },
+  title: {
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.regular,
+    color: COLORS.white,
+    flex: 1,
+  },
+  titleHighLight: {
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.regular,
+    color: COLORS.lightGrey36,
+    flex: 1,
+  },
+  descContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  },
   desc: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 5,
-    color: COLORS.colorGreyBold,
+    color: COLORS.blue5,
+    marginRight: 4,
+    lineHeight: FONT.SIZE.regular,
+  },
+  date: {
+    fontFamily: FONT.NAME.regular,
+    fontSize: FONT.SIZE.small,
+    color: COLORS.lightGrey36,
     flex: 1,
+    marginTop: 8,
   },
   descNoIcon: {
     flex: 0,
@@ -72,9 +103,10 @@ export const listNewsStyled = StyleSheet.create({
     marginTop: 5,
   },
   extra: {
-    flex: 1,
-    flexDirection: 'row',
-    marginLeft: 20,
+    borderBottomWidth: 1,
+    borderColor: '#363636',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
   },
   listNews: {},
 });

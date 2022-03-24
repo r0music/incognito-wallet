@@ -64,7 +64,10 @@ const enhance = (WrappedComp) => (props) => {
   React.useEffect(() => {
     try {
       if (children) {
-        const { tabID, onChangeTab } = children[defaultTabIndex]?.props;
+        let { tabID, onChangeTab } = children[defaultTabIndex]?.props;
+        if (activeTab) {
+          tabID = activeTab;
+        }
         dispatch(
           actionChangeTab({
             rootTabID,

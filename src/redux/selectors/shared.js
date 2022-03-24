@@ -3,7 +3,6 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import {
   pTokensSelector,
   internalTokensSelector,
-  tokensFollowedSelector,
 } from '@src/redux/selectors/token';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import { uniqBy, isNaN, compact, fromPairs } from 'lodash';
@@ -13,9 +12,9 @@ import { currencySelector, decimalDigitsSelector } from '@screens/Setting';
 import { formatAmount } from '@components/Token';
 import { PRV } from '@services/wallet/tokenService';
 import { getAccountWallet } from '@src/services/wallet/Wallet.shared';
+import { FollowSelector } from '@screens/Wallet/features/FollowList';
 import {
   defaultAccountName,
-  defaultAccountBalanceSelector,
   defaultAccountSelector,
 } from './account';
 import { walletSelector } from './wallet';
@@ -36,7 +35,7 @@ export const isGettingBalance = createSelector(
 export const availableTokensSelector = createSelector(
   pTokensSelector,
   internalTokensSelector,
-  tokensFollowedSelector,
+  FollowSelector.followTokensWalletSelector,
   selectedPrivacySelector.getPrivacyDataByTokenID,
   (pTokens, internalTokens, followedTokens, getPrivacyDataByTokenID) => {
     const followedTokenIds = followedTokens.map((t) => t?.id) || [];
@@ -65,7 +64,7 @@ export const availableTokensSelector = createSelector(
 export const marketTokens = createSelector(
   pTokensSelector,
   internalTokensSelector,
-  tokensFollowedSelector,
+  FollowSelector.followTokensWalletSelector,
   selectedPrivacySelector.getPrivacyDataByTokenID,
   (pTokens, internalTokens, followedTokens, getPrivacyDataByTokenID) => {
     const followedTokenIds = followedTokens.map((t) => t?.id) || [];
@@ -114,36 +113,31 @@ export const prefixCurrency = createSelector(
 );
 
 export const totalShieldedTokensSelector = createSelector(
-  availableTokensSelector,
   selectedPrivacySelector.getPrivacyDataByTokenID,
-  defaultAccountBalanceSelector,
-  tokensFollowedSelector,
+  FollowSelector.followTokensWalletSelector,
   pTokenSelector,
   decimalDigitsSelector,
   (
-    availableTokens,
     getPrivacyDataByTokenID,
-    accountBalance,
-    followed,
+    followTokens,
     currency,
     decimalDigits,
   ) => {
-    const { isToggleUSD, pToken: decimalDigit } = currency;
-    const tokens = followed.map((token) =>
-      availableTokens.find(
-        (t) => t?.tokenId === token?.id || t?.tokenId === token?.tokenId,
-      ),
-    );
-
-    const prv = {
-      ...getPrivacyDataByTokenID(CONSTANT_COMMONS.PRV.id),
-      amount: accountBalance,
-    };
-    const totalShielded = compact([...tokens, prv]).reduce(
+    const { isToggleUSD } = currency;
+    followTokens = followTokens.map(({ id, amount }) => {
+      const { priceUsd, pricePrv, pDecimals } = getPrivacyDataByTokenID(id);
+      return {
+        priceUsd,
+        pricePrv,
+        balance: amount,
+        pDecimals,
+      };
+    });
+    const totalShielded = compact([...followTokens]).reduce(
       (prevValue, currentValue) => {
         const totalShielded = prevValue;
         const pDecimals = currentValue?.pDecimals || 0;
-        const amount = currentValue?.amount || 0;
+        const amount = currentValue?.balance || 0;
         const price = isToggleUSD
           ? currentValue?.priceUsd
           : currentValue?.pricePrv || 0;
@@ -163,7 +157,6 @@ export const totalShieldedTokensSelector = createSelector(
       },
       0,
     );
-
     return convert.toOriginalAmount(totalShielded, PRV.pDecimals, true);
   },
 );

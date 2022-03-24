@@ -13,6 +13,7 @@ import { ButtonChart } from '@src/components/Button';
 import { useNavigationParam, useNavigation } from 'react-navigation-hooks';
 import SelectAccountButton from '@src/components/SelectAccountButton';
 import routeNames from '@src/router/routeNames';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import {
   ROOT_TAB_TRADE,
   TAB_SWAP_ID,
@@ -27,7 +28,7 @@ const Trade = (props) => {
   const { onRefresh } = props;
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const visibleBtnChart = useSelector(visibleBtnChartSelector);
+  const visibleBtnChart = useDebounceSelector(visibleBtnChartSelector);
   return (
     <View style={styled.container}>
       <Tabs

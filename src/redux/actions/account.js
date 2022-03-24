@@ -31,7 +31,8 @@ import MasterKeyModel from '@src/models/masterKey';
 import { batch } from 'react-redux';
 import uniq from 'lodash/uniq';
 import { cachePromise } from '@src/services/cache';
-import { getBalance as getTokenBalance, setListToken } from './token';
+import { FollowAction } from '@screens/Wallet/features/FollowList';
+import { getBalance as getTokenBalance, setListToken, setToken } from './token';
 
 export const setAccount = (
   account = throw new Error('Account object is required'),
@@ -202,6 +203,16 @@ export const getBalance = (account) => async (dispatch, getState) => {
       ...account,
       value: balance,
     };
+    const token = {
+      id: PRV.id,
+      amount: balance,
+      loading: false,
+    };
+    dispatch(FollowAction.actionFetchedTokenBalance({
+      token,
+      OTAKey: account.OTAKey
+    }));
+    dispatch(setToken(token));
     await dispatch(setAccount(accountMerge));
   } catch (e) {
     account &&

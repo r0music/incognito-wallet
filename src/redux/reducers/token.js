@@ -36,7 +36,9 @@ const setToken = (list, token) => {
   try {
     const foundIndex = list.findIndex((t) => t.id === token.id);
     if (foundIndex >= 0) {
-      newList[foundIndex] = token;
+      newList[foundIndex] = { ...newList[foundIndex], ...token };
+    } else {
+      newList.push(token);
     }
   } catch (e) {
     throw new Error('Save token failed');
@@ -141,7 +143,9 @@ const reducer = (state = initialState, action) => {
   case type.SET_INTERNAL_LIST:
     return {
       ...state,
-      internalTokens: setListToken(state.followed, action.data),
+      // TEST_REMOVE_LOGIC
+      // internalTokens: setListToken(state.followed, action.data),
+      internalTokens: []
     };
   case type.ACTION_FETCHING_HISTORY: {
     return {

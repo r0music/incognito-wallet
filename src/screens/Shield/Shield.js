@@ -6,6 +6,8 @@ import {ListAllToken, TokenFollow} from '@src/components/Token';
 import { View } from '@components/core';
 import globalStyled from '@src/theme/theme.styled';
 import { FONT } from '@src/styles';
+import { compose } from 'recompose';
+import withLazy from '@components/LazyHoc/LazyHoc';
 import { styled } from './Shield.styled';
 import withShield from './Shield.enhance';
 
@@ -56,4 +58,7 @@ Shield.propTypes = {
   hideBackButton: PropTypes.bool
 };
 
-export default withShield(Shield);
+export default compose(
+  withLazy,
+  withShield
+)(Shield);

@@ -6,8 +6,8 @@ import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/Rem
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import accountServices from '@src/services/wallet/accountService';
 import { walletSelector } from '@src/redux/selectors/wallet';
-import { actionReloadFollowingToken } from '@src/redux/actions/account';
-import {ClearFillIcon} from '@components/Icons/icon.clear';
+import { ClearFillIcon } from '@components/Icons/icon.clear';
+import { FollowAction } from '@screens/Wallet/features/FollowList';
 
 const RemoveBalanceCached = () => {
   const [visible, setVisible] = React.useState(false);
@@ -19,7 +19,8 @@ const RemoveBalanceCached = () => {
     try {
       await setClearing(true);
       await accountServices.removeCacheBalance(defaultAccount, wallet);
-      await dispatch(actionReloadFollowingToken(true));
+      // await dispatch(actionReloadFollowingToken(true));
+      await dispatch(FollowAction.actionLoadFollowBalance());
     } catch (error) {
       console.debug('ERROR', error);
     } finally {

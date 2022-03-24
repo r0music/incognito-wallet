@@ -6,6 +6,7 @@ import {
   genCentralizedDepositAddress,
   genBSCDepositAddress,
   genPolygonDepositAddress,
+  genFantomDepositAddress,
 } from '@src/services/api/deposit';
 import { ANALYTICS, CONSTANT_COMMONS } from '@src/constants';
 import config from '@src/constants/config';
@@ -120,6 +121,19 @@ export const actionGetAddressToShield = async ({
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC
     ) {
       generateResult = await genPolygonDepositAddress({
+        paymentAddress: account.PaymentAddress,
+        walletAddress: account.PaymentAddress,
+        tokenId: selectedPrivacy?.tokenId,
+        tokenContractID: selectedPrivacy?.contractId,
+        currencyType: selectedPrivacy?.currencyType,
+        signPublicKeyEncode,
+      });
+    } else if (
+      selectedPrivacy?.isFantomErc20Token ||
+      selectedPrivacy?.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM
+    ) {
+      generateResult = await genFantomDepositAddress({
         paymentAddress: account.PaymentAddress,
         walletAddress: account.PaymentAddress,
         tokenId: selectedPrivacy?.tokenId,

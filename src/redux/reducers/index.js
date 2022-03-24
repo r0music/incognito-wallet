@@ -21,6 +21,7 @@ import liquidity from '@screens/Dex/Liquidity.reducer';
 import convert from '@screens/Home/features/Convert/Convert.reducer';
 import { tabReducer as tabs } from '@src/components/core/Tabs';
 import { pDexV3Reducer as pDexV3 } from '@screens/PDexV3';
+import followList from '@screens/Wallet/features/FollowList/FollowList.reducer';
 import theme from '../../theme/theme.reducer';
 import wallet from './wallet';
 import account from './account';
@@ -72,6 +73,7 @@ const rootReducer = reduceReducers(
     tabs,
     pDexV3,
     theme,
+    followWallet: followList,
   }),
   globalReducer,
 );

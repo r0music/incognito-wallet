@@ -2,7 +2,7 @@ import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useSelector, useDispatch, batch } from 'react-redux';
 import { ExHandler } from '@src/services/exception';
-import { getPTokenList, getInternalTokenList } from '@src/redux/actions/token';
+import { getPTokenList } from '@src/redux/actions/token';
 import { actionFree } from '@src/redux/actions/history';
 import { actionReloadFollowingToken } from '@src/redux/actions/account';
 import { CONSTANT_KEYS } from '@src/constants';
@@ -73,7 +73,7 @@ const enhance = (WrappedComp) => (props) => {
       await setIsReloading(true);
       batch(() => {
         dispatch(getPTokenList());
-        dispatch(getInternalTokenList());
+        // dispatch(getInternalTokenList());
         dispatch(actionReloadFollowingToken(true));
         retryLastTxsUnshieldDecentralized();
         retryLastTxsUnshieldCentralized();

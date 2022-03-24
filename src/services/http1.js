@@ -1,8 +1,8 @@
 import axios from 'axios';
-import {CONSTANT_CONFIGS} from '@src/constants';
+import { CONSTANT_CONFIGS } from '@src/constants';
 import { CustomError, ErrorCode, ExHandler } from './exception';
 
-const HEADERS = {'Content-Type': 'application/json'};
+const HEADERS = {'Content-Type': 'application/json', 'Accept-Encoding': 'gzip'};
 const TIMEOUT = 20000;
 
 

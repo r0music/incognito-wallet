@@ -36,7 +36,7 @@ const Categories = [
       },
       {
         route: routeNames.Node,
-        label: routeNames.Node,
+        label: 'Power',
         icon: PowerIcon,
         key: appConstant.DISABLED.NODE
       },

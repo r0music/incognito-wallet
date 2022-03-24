@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { View, FlatList, RefreshControl, Divider } from '@src/components/core';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { poolIdSelector } from './OrderLimit.selector';
 import Order from './OrderLimit.order';
 import { actionFetchOrdersHistory } from './OrderLimit.actions';
@@ -17,7 +18,7 @@ const styled = StyleSheet.create({
 });
 
 export const useHistoryOrders = ({ field }) => {
-  const poolId = useSelector(poolIdSelector);
+  const poolId = useDebounceSelector(poolIdSelector);
   const dispatch = useDispatch();
   React.useEffect(() => {
     dispatch(actionFetchOrdersHistory(field));

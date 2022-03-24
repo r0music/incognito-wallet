@@ -10,8 +10,7 @@ import {
   groupButtonStyled,
 } from '@screens/Wallet/features/Home/Wallet.styled';
 import {
-  isGettingBalance as isGettingTotalBalanceSelector,
-  totalShieldedTokensSelector,
+  isGettingBalance as isGettingTotalBalanceSelector, totalShieldedTokensSelector,
 } from '@src/redux/selectors/shared';
 import isNaN from 'lodash/isNaN';
 import { Amount } from '@components/Token/Token';
@@ -30,9 +29,10 @@ import globalStyled from '@src/theme/theme.styled';
 import { View } from '@components/core';
 import { Row } from '@src/components';
 import AddToken from '@screens/Wallet/features/Home/Wallet.addToken';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 
 const Balance = React.memo(({ hideBalance }) => {
-  let totalShielded = useSelector(totalShieldedTokensSelector);
+  let totalShielded = useDebounceSelector(totalShieldedTokensSelector);
   const isGettingTotalBalance =
     useSelector(isGettingTotalBalanceSelector).length > 0;
   if (isNaN(totalShielded)) {

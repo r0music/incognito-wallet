@@ -7,7 +7,7 @@ import {
   selectedPrivacySelector,
   tokenSelector,
 } from '@src/redux/selectors';
-import { getTokenList } from '@src/services/api/token';
+import { getTokenList, getTokensInfo } from '@src/services/api/token';
 import tokenService from '@src/services/wallet/tokenService';
 import accountService from '@src/services/wallet/accountService';
 import {
@@ -26,8 +26,6 @@ import { ConfirmedTx } from '@src/services/wallet/WalletService';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { uniqBy } from 'lodash';
 import {
-  internalTokensSelector,
-  pTokensSelector,
   receiveHistorySelector,
 } from '@src/redux/selectors/token';
 import { MAX_LIMIT_RECEIVE_HISTORY_ITEM } from '@src/redux/reducers/token';
@@ -35,9 +33,10 @@ import { PRV_ID } from '@screens/DexV2/constants';
 import { Validator, PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import { EXPIRED_TIME } from '@services/cache';
 import Util from '@utils/Util';
-import { PRV } from '@src/constants/common';
 import BigNumber from 'bignumber.js';
 import { actionToggleModal } from '@src/components/Modal';
+import { FollowAction, FollowSelector } from '@screens/Wallet/features/FollowList';
+import { batch } from 'react-redux';
 import { setWallet } from './wallet';
 
 export const setToken = (
@@ -123,20 +122,25 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
   let balance = 0;
   try {
     await dispatch(getBalanceStart(tokenId));
-    await dispatch(actionAddFollowToken(tokenId));
+    // await dispatch(actionAddFollowToken(tokenId));
     balance = await accountService.getBalance({
       account,
       wallet,
       tokenID: tokenId,
       version: PrivacyVersion.ver2,
     });
-    dispatch(
-      setToken({
-        id: tokenId,
-        amount: balance,
-        loading: false,
-      }),
-    );
+    const token = {
+      id: tokenId,
+      amount: balance,
+      loading: false,
+    };
+    batch(() => {
+      dispatch(setToken(token));
+      dispatch(FollowAction.actionFetchedTokenBalance({
+        token,
+        OTAKey: account.OTAKey
+      }));
+    });
   } catch (e) {
     dispatch(
       setToken({
@@ -153,9 +157,21 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
 
 export const getPTokenList = ({ expiredTime = EXPIRED_TIME } = {}) => async (
   dispatch,
+  getState
 ) => {
   try {
-    const tokens = (await getTokenList({ expiredTime })) || [];
+    const state = getState();
+    const accountWallet = accountSelector.defaultAccountWalletSelector(state);
+    const keyInfo = (await accountWallet.getKeyInfo({ version: PrivacyVersion.ver2 })) || {};
+    const coinsIndex = Object.keys(keyInfo.coinindex || {}) || [];
+    const [
+      coinIndexTokens,
+      pTokens
+    ] = await Promise.all([
+      await getTokensInfo(coinsIndex),
+      await getTokenList({ expiredTime })
+    ]);
+    const tokens = uniqBy([...(coinIndexTokens || []), ...pTokens], 'tokenId');
     await dispatch(setListPToken(tokens));
     return tokens;
   } catch (e) {
@@ -193,25 +209,19 @@ export const actionAddFollowTokenSuccess = (payload) => ({
 export const actionAddFollowToken = (tokenID) => async (dispatch, getState) => {
   try {
     const state = getState();
-    let wallet = walletSelector(state);
-    const tokenData = selectedPrivacySelector.getPrivacyDataByTokenID(state)(
-      tokenID,
-    );
-    if (!tokenID || tokenID === PRV_ID || tokenData.isFollowed) {
-      return;
-    }
-    const account = accountSelector.defaultAccount(state);
-    const pTokens = pTokensSelector(state);
-    const internalTokens = internalTokensSelector(state);
-    const foundPToken = pTokens?.find((pToken) => pToken.tokenID === tokenID);
-    const foundInternalToken =
-      !foundPToken &&
-      internalTokens?.find((token) => token.tokenID === tokenID);
-    const token = foundPToken || foundInternalToken || { tokenID };
-    await accountService.addFollowingTokens([token], account, wallet);
+    const followTokens = FollowSelector.followTokensWalletSelector(state) || [];
+    const newFollowTokens = followTokens.concat([{
+      id: tokenID,
+      amount: 0,
+      loading: false
+    }]);
+    const account = accountSelector.defaultAccountSelector(state);
+    const OTAKey = account.OTAKey;
+    const wallet = walletSelector(state);
+    dispatch(FollowAction.actionUpdateTokenList({ newTokens: newFollowTokens, OTAKey }));
+    await accountService.addFollowingTokens([{ tokenID }], account, wallet);
     dispatch(setWallet(wallet));
-    const followed = await accountService.getFollowingTokens(account, wallet);
-    dispatch(setListToken(followed));
+    await dispatch(FollowAction.actionLoadFollowBalance());
   } catch (error) {
     dispatch(actionAddFollowTokenFail(tokenID));
     throw error;
@@ -220,30 +230,30 @@ export const actionAddFollowToken = (tokenID) => async (dispatch, getState) => {
 
 export const actionAddFollowTokenAfterMint = (tokenId) => async (
   dispatch,
-  getState,
+  // getState,
 ) => {
   try {
-    const state = getState();
-    let wallet = state.wallet;
+    // const state = getState();
+    // let wallet = state.wallet;
     if (!tokenId || tokenId === PRV_ID) {
       return;
     }
     await Util.sleep();
-    const tasks = [
-      await dispatch(getPTokenList({ expiredTime: 0 })),
-      await dispatch(getInternalTokenList({ expiredTime: 0 })),
-    ];
-    const account = accountSelector.defaultAccount(state);
-    const [pTokens, internalTokens] = await Promise.all(tasks);
-    const foundPToken = pTokens?.find((pToken) => pToken.tokenId === tokenId);
-    const foundInternalToken =
-      !foundPToken && internalTokens?.find((token) => token.id === tokenId);
-    const token =
-      (foundInternalToken && internalTokenModel.toJson(foundInternalToken)) ||
-      foundPToken?.convertToToken();
-    if (token) {
-      dispatch(actionAddFollowToken(token.ID));
-    }
+    dispatch(actionAddFollowToken(tokenId));
+    // const tasks = [
+    //   await dispatch(getPTokenList({ expiredTime: 0 })),
+    //   // await dispatch(getInternalTokenList({ expiredTime: 0 })),
+    // ];
+    // const account = accountSelector.defaultAccount(state);
+    // const [pTokens, internalTokens] = await Promise.all(tasks);
+    // const foundPToken = pTokens?.find((pToken) => pToken.tokenId === tokenId);
+    // const foundInternalToken =
+    //   !foundPToken && internalTokens?.find((token) => token.id === tokenId);
+    // const token =
+    //   (foundInternalToken && internalTokenModel.toJson(foundInternalToken)) ||
+    //   foundPToken?.convertToToken();
+    // if (token) {
+    // }
   } catch (error) {
     throw error;
   }
@@ -258,12 +268,16 @@ export const actionRemoveFollowToken = (tokenId) => async (
     return;
   }
   try {
+    const followTokens = FollowSelector.followTokensWalletSelector(state) || [];
+    const newFollowTokens = followTokens.filter(
+      ({ id }) => id !== tokenId);
     const account = accountSelector.defaultAccountSelector(state);
+    const OTAKey = account.OTAKey;
     const wallet = walletSelector(state);
+    dispatch(FollowAction.actionUpdateTokenList({ newTokens: newFollowTokens, OTAKey }));
     await accountService.removeFollowingToken(tokenId, account, wallet);
-    const followed = await accountService.getFollowingTokens(account, wallet);
-    dispatch(setListToken(followed));
     dispatch(setWallet(wallet));
+    await dispatch(FollowAction.actionLoadFollowBalance());
   } catch (error) {
     dispatch(actionAddFollowTokenFail(tokenId));
     throw error;

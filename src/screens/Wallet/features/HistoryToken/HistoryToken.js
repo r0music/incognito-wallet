@@ -1,12 +1,12 @@
 import React from 'react';
 import HistoryList from '@src/screens/Wallet/features/HistoryList';
-import { useSelector } from 'react-redux';
 import { historyTxsSelector } from '@src/redux/selectors/history';
 import { useHistoryEffect } from '@src/screens/Wallet/features/History/History.useEffect';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import EmptyHistory from './HistoryToken.empty';
 
 const HistoryToken = () => {
-  const { histories, isEmpty, loading, refreshing, oversize } = useSelector(
+  const { histories, isEmpty, loading, refreshing, oversize } = useDebounceSelector(
     historyTxsSelector,
   );
   const { handleRefresh, handleCancelEtaHistory } = useHistoryEffect();

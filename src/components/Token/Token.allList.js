@@ -36,7 +36,7 @@ const ListAllToken = (props) => {
   return (
     <KeyboardAwareScrollView
       defaultPadding={false}
-      style={[styled.paddingTop, styledContainer]}
+      contentContainerStyle={[styled.paddingTop, styledContainer]}
     >
       <ListToken {...tokensFactories[0]} renderItem={renderItem} />
       <BtnChecked

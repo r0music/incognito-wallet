@@ -1,4 +1,4 @@
-import _, { memoize } from 'lodash';
+import { memoize } from 'lodash';
 import { createSelector } from 'reselect';
 import { getAccountWallet } from '@src/services/wallet/Wallet.shared';
 import { walletSelector } from './wallet';

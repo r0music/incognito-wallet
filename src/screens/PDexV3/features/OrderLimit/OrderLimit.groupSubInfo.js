@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
 import { Tabs } from '@src/components/core';
 import { OrderBook } from '@screens/PDexV3/features/Chart/Chart.orderBook';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import {
   openOrdersSelector,
   orderHistorySelector,
 } from './OrderLimit.selector';
-import History, { useHistoryOrders } from './OrderLimit.orderHistory';
+import History from './OrderLimit.orderHistory';
 import {
   TAB_OPEN_ORDER,
   TAB_ORDER_BOOK,
@@ -23,8 +23,8 @@ const styled = StyleSheet.create({
 });
 
 const GroupSubInfo = () => {
-  const orderHistory = useSelector(orderHistorySelector);
-  const openOrders = useSelector(openOrdersSelector);
+  const orderHistory = useDebounceSelector(orderHistorySelector);
+  const openOrders = useDebounceSelector(openOrdersSelector);
   return (
     <View style={styled.container}>
       <Tabs rootTabID={ROOT_TAB_SUB_INFO}>

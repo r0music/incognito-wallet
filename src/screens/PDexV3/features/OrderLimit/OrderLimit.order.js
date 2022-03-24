@@ -13,6 +13,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { colorsSelector } from '@src/theme';
 import { CancelIcon } from '@src/components/Icons';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import {
   actionWithdrawOrder,
   actionFetchedOrderDetail,
@@ -76,7 +77,7 @@ const OrderValue = React.memo(({ style, value }) => {
 
 const Order = React.memo(({ data, visibleDivider }) => {
   const navigation = useNavigation();
-  const colors = useSelector(colorsSelector);
+  const colors = useDebounceSelector(colorsSelector);
   const dispatch = useDispatch();
   const [visible, setVisible] = React.useState(false);
   const [withdrawData, setWithdrawData] = React.useState({});
@@ -224,11 +225,11 @@ const Order = React.memo(({ data, visibleDivider }) => {
         subTitle={withdrawData?.subTitle || ''}
         acceptStr="Yes, cancel"
         canStr="Keep it"
-        icon={
+        icon={(
           <Row center style={{ marginBottom: 7 }}>
             <CancelIcon />
           </Row>
-        }
+        )}
       />
     </TouchableOpacity>
   );

@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
+    borderRadius: 25,
   },
   headerTitle: {
     ...FONT.TEXT.incognitoH5,
@@ -75,7 +76,7 @@ const PrivacyAppItem = (props) => {
         </View>
       </Row>
       <Row style={styles.groupActions}>
-        {groupActions.map(({ id, ...rest }, index) => (
+        {groupActions?.map(({ id, ...rest }, index) => (
           <ButtonTyni
             key={id}
             {...rest}

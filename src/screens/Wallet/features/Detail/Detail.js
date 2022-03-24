@@ -12,7 +12,7 @@ import {
 } from '@src/redux/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { BtnInfo } from '@src/components/Button';
-import { useNavigation } from 'react-navigation-hooks';
+import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { Amount, ChangePrice, Price } from '@src/components/Token/Token';
 import HistoryToken from '@screens/Wallet/features/HistoryToken';
@@ -39,8 +39,10 @@ import { actionToggleModal } from '@components/Modal';
 import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
 import { Row } from '@src/components';
 import { colorsSelector } from '@src/theme';
+import withLazy from '@components/LazyHoc/LazyHoc';
+import { followTokenItemSelector } from '@screens/Wallet/features/FollowList/FollowList.selector';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import {
-  styled,
   groupBtnStyled,
   balanceStyled,
   historyStyled,
@@ -49,7 +51,7 @@ import {
 const GroupButton = React.memo(() => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const selected = useDebounceSelector(selectedPrivacySelector.selectedPrivacy);
   const handleBuy = () => {
     navigation.navigate(routeNames.Trade, { tabIndex: 0 });
     const poolId = selected.defaultPoolPair;
@@ -101,9 +103,11 @@ const GroupButton = React.memo(() => {
 });
 
 const Balance = React.memo(() => {
-  const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const colors = useSelector(colorsSelector);
-  const isGettingBalance = useSelector(
+  const selected = useDebounceSelector(selectedPrivacySelector.selectedPrivacy);
+  const tokenID = useNavigationParam('tokenId');
+  const token = useDebounceSelector(followTokenItemSelector)(tokenID);
+  const colors = useDebounceSelector(colorsSelector);
+  const isGettingBalance = useDebounceSelector(
     sharedSelector.isGettingBalance,
   ).includes(selected?.tokenId);
   const tokenData = {
@@ -121,7 +125,7 @@ const Balance = React.memo(() => {
   };
   return (
     <View style={balanceStyled.container}>
-      <Amount {...amountProps} />
+      <Amount {...amountProps} amount={token?.amount} />
       <View style={balanceStyled.hook}>
         <Price pricePrv={selected.pricePrv} priceUsd={selected.priceUsd} textStyle={{ color: colors.text3 }} />
         <ChangePrice {...changePriceProps} />
@@ -131,7 +135,7 @@ const Balance = React.memo(() => {
 });
 
 const History = React.memo(() => {
-  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const selectedPrivacy = useDebounceSelector(selectedPrivacySelector.selectedPrivacy);
   return (
     <View style={[historyStyled.container, { marginTop: 12 }]}>
       {selectedPrivacy?.isMainCrypto ? <MainCryptoHistory /> : <HistoryToken />}
@@ -194,16 +198,16 @@ const CustomRightHeader = () => {
 
 const Detail = (props) => {
   const navigation = useNavigation();
-  const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const { isFetching } = useSelector(tokenSelector.historyTokenSelector);
-  const token = useSelector(
+  const selected = useDebounceSelector(selectedPrivacySelector.selectedPrivacy);
+  const { isFetching } = useDebounceSelector(tokenSelector.historyTokenSelector);
+  const token = useDebounceSelector(
     selectedPrivacySelector.selectedPrivacyByFollowedSelector,
   );
-  const isGettingTokenBalance = useSelector(isGettingTokenBalanceSelector);
-  const isGettingMainCryptoBalance = useSelector(
+  const isGettingTokenBalance = useDebounceSelector(isGettingTokenBalanceSelector);
+  const isGettingMainCryptoBalance = useDebounceSelector(
     isGettingMainCryptoBalanceSelector,
   );
-  const defaultAccount = useSelector(accountSelector.defaultAccountSelector);
+  const defaultAccount = useDebounceSelector(accountSelector.defaultAccountSelector);
   const refreshing =
     !!isFetching || selected?.isMainCrypto
       ? isGettingMainCryptoBalance.length > 0 || !defaultAccount
@@ -234,4 +238,4 @@ Detail.propTypes = {};
 
 History.propTypes = {};
 
-export default React.memo(Detail);
+export default withLazy(React.memo(Detail));

@@ -17,6 +17,7 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     isErc20Token,
     isBep20Token,
     isPolygonErc20Token,
+    isFantomErc20Token,
     isMainCrypto,
     currencyType,
   } = selectedPrivacy;
@@ -38,10 +39,15 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
       currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
   }, [isBep20Token, currencyType]);
 
-  const isPolygon20 = React.useMemo(() => {
+  const isPolygon = React.useMemo(() => {
     return isPolygonErc20Token ||
       currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
   }, [isPolygonErc20Token, currencyType]);
+
+  const isFantom = React.useMemo(() => {
+    return isFantomErc20Token ||
+      currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
+  }, [isFantomErc20Token, currencyType]);
 
   const getExternalAddressValidator = () => {
     if (!isAddressValidated) {
@@ -139,14 +145,20 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   };
 
   const getWarningAddress = () => {
+    if (isExternalAddress && (selectedPrivacy.isDecentralized || selectedPrivacy.isMainCrypto)) {
+      return 'To avoid loss of funds, please make sure your destination address can receive funds from smart contracts. If you’re not sure, a personal address is always recommended.';
+    }
     if (isExternalAddress && isERC20) {
       return 'You are exiting Incognito and going to Ethereum network.';
     }
     if (isExternalAddress && isBEP20) {
       return 'You are exiting Incognito and going to BSC network.';
     }
-    if (isExternalAddress && isPolygon20) {
+    if (isExternalAddress && isPolygon) {
       return 'You are exiting Incognito and going to Polygon network.';
+    }
+    if (isExternalAddress && isFantom) {
+      return 'You are exiting Incognito and going to Fantom network.';
     }
     if (isExternalAddress) {
       return 'You are exiting Incognito and going public.';

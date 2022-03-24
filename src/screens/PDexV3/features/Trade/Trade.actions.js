@@ -24,7 +24,7 @@ export const actionFetch = () => async (dispatch) => {
     await dispatch(actionFetching());
     const task = [
       dispatch(getPTokenList()),
-      dispatch(getInternalTokenList()),
+      // dispatch(getInternalTokenList()),
       dispatch(actionSetNFTTokenData()),
     ];
     await Promise.all(task);

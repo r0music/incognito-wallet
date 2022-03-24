@@ -69,12 +69,18 @@ const MarketList = (props) => {
     );
   }, [toggleUnVerified, tokensFactories]);
 
+  const isLoading = React.useMemo(() => {
+    return loading
+      || !tokensFactories
+      || tokensFactories[0]?.data.length === 0;
+  }, [loading, tokensFactories]);
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       style={styled.scrollView}
       refreshControl={
-        <RefreshControl refreshing={loading} onRefresh={onRefresh} />
+        <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
       }
     >
       {!keySearch && (
