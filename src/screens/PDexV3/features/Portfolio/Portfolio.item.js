@@ -1,17 +1,18 @@
 import {Row, RowSpaceText} from '@src/components';
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
-import { batch, useDispatch, useSelector } from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
-import { actionToggleModal } from '@components/Modal';
+import {actionSetPoolModal} from '@screens/PDexV3/features/Portfolio/Portfolio.actions';
+import {actionToggleModal} from '@components/Modal';
 import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
 import PortfolioModal from '@screens/PDexV3/features/Portfolio/Portfolio.detail';
 import styled from 'styled-components/native';
 import TwoTokenImage from '@screens/PDexV3/features/Portfolio/Portfolio.image';
 import { NormalText } from '@components/Token/Token';
 import { isIOS } from '@utils/platform';
-import { portfolioItemStyled as styles } from './Portfolio.styled';
-import { getDataByShareIdSelector } from './Portfolio.selector';
+import {portfolioItemStyled as styles} from './Portfolio.styled';
+import {getDataByShareIdSelector} from './Portfolio.selector';
 
 export const Hook = React.memo(({ label, value }) => (
   <RowSpaceText
@@ -68,7 +69,7 @@ const PortfolioItem = ({ shareId, isLast, onWithdrawFeeLP }) => {
   const { hookFactories, token1, token2 } = data || {};
   return (
     <CustomTouchableOpacity
-      style={[styles.container, isLast && styles.lastItem]}
+      style={[styles.container, isLast && { borderBottomWidth: 0, marginBottom: 50 }]}
       onPress={onPress}
       key={shareId}
     >

@@ -8,6 +8,8 @@ import {
   ACTION_FETCHED,
   ACTION_FETCH_FAIL,
   ACTION_SET_SHARE_DETAIL,
+  ACTION_FREE_MODAL,
+  ACTION_SET_POOL_MODAL,
 } from './Portfolio.constant';
 import { portfolioSelector } from './Portfolio.selector';
 
@@ -27,6 +29,15 @@ export const actionFetchFail = () => ({
 export const actionSetShareDetail = (payload) => ({
   type: ACTION_SET_SHARE_DETAIL,
   payload,
+});
+
+export const actionSetPoolModal = ({ poolId }) => ({
+  type: ACTION_SET_POOL_MODAL,
+  payload: { poolId },
+});
+
+export const actionFreeModal = () => ({
+  type: ACTION_FREE_MODAL,
 });
 
 export const actionFetch = () => async (dispatch, getState) => {

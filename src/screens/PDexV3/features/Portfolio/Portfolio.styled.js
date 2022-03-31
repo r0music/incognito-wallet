@@ -61,9 +61,5 @@ export const portfolioItemStyled = StyleSheet.create({
   withdrawing: {
     height: 28,
     width: 85,
-  },
-  lastItem: {
-    borderBottomWidth: 0,
-    marginBottom: 50
   }
 });
