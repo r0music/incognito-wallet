@@ -65,10 +65,7 @@ const actionInitContribute = () => async (dispatch, getState) => {
     const poolID = contributeSelector.poolIDSelector(state);
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
-    const [poolDetails] = await Promise.all([
-      (await pDexV3Inst.getListPoolsDetail([poolID])) || [],
-      await dispatch(actionSetNFTTokenData()),
-    ]);
+    const poolDetails =(await pDexV3Inst.getListPoolsDetail([poolID])) || [];
     if (poolDetails.length > 0) {
       const contributePool = poolDetails[0];
       if (!contributePool) return;

@@ -90,10 +90,10 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
       dispatch(
         liquidityActions.actionSetContributeID({
           poolId: data.poolId,
-          nftId: data.nftId || '',
+          accessKey: data.nftId || '',
         }),
       );
-      navigation.navigate(routeNames.ContributePool);
+      navigation.navigate(routeNames.OTAContributePool);
     });
   };
   const onClaimReward = () => {

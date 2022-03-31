@@ -191,6 +191,12 @@ export const formatAccessOTAShare = (
 ) => {
   return nftShare.map((item) => {
     const data = formatPureData(item, shareDetails, getPrivacyDataByTokenID);
-    return data;
+    const validNFT = true;
+    const disableBtn = false;
+    return {
+      ...data,
+      validNFT,
+      disableBtn,
+    };
   });
 };

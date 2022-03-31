@@ -1,0 +1,259 @@
+import React from 'react';
+import withInitAccessOTALP from '@screens/PDexV3/features/Liquidity/features/AccessOTA/AccessOTA.enhance';
+import { compose } from 'recompose';
+import PropTypes from 'prop-types';
+import { Header, RowSpaceText, SuccessModal } from '@src/components';
+import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
+import withLazy from '@components/LazyHoc/LazyHoc';
+import { withLayout_2 } from '@components/Layout';
+import { createForm, RFTradeInputAmount as TradeInputAmount, validator } from '@components/core/reduxForm';
+import {
+  formConfigsContribute,
+  LIQUIDITY_MESSAGES,
+  liquidityActions,
+  SUCCESS_MODAL
+} from '@screens/PDexV3/features/Liquidity';
+import { useDispatch, useSelector } from 'react-redux';
+import { AddBreakLine, RefreshControl, View } from '@components/core';
+import { Field, focus, getFormSyncErrors } from 'redux-form';
+import { styled as mainStyle } from '@screens/PDexV3/PDexV3.styled';
+import { actionToggleModal } from '@components/Modal';
+import { NFTTokenModal } from '@screens/PDexV3/features/NFTToken';
+import { ButtonTrade } from '@components/Button';
+import useSendSelf from '@screens/PDexV3/features/Liquidity/Liquidity.useSendSelf';
+import { ScrollView, Text } from 'react-native';
+import NetworkFee from '@components/NetworkFee';
+import { OTAContributeSelector } from '@screens/PDexV3/features/Liquidity/features/AccessOTA';
+
+const initialFormValues = {
+  inputToken: '',
+  outputToken: '',
+};
+
+const Form = createForm(formConfigsContribute.formName, {
+  initialValues: initialFormValues,
+  destroyOnUnmount: true,
+  enableReinitialize: true,
+});
+
+const InputsGroup = React.memo(() => {
+  const dispatch = useDispatch();
+  const { inputToken, outputToken } = useSelector(
+    OTAContributeSelector.mappingDataSelector,
+  );
+  const onChangeInput = (newText) =>
+    dispatch(liquidityActions.actionChangeInputContribute(newText));
+  const onChangeOutput = (newText) =>
+    dispatch(liquidityActions.actionChangeOutputContribute(newText));
+  const onMaxInput = () =>
+    dispatch(
+      liquidityActions.actionChangeInputContribute(
+        inputAmount.maxOriginalAmountText,
+      ),
+    );
+  const onMaxOutput = () =>
+    dispatch(
+      liquidityActions.actionChangeOutputContribute(
+        outputAmount.maxOriginalAmountText,
+      ),
+    );
+  const amountSelector = useSelector(OTAContributeSelector.inputAmountSelector);
+  const inputAmount = amountSelector(
+    formConfigsContribute.formName,
+    formConfigsContribute.inputToken,
+  );
+  const outputAmount = amountSelector(
+    formConfigsContribute.formName,
+    formConfigsContribute.outputToken,
+  );
+  const _validateInput = React.useCallback(() => {
+    return inputAmount.error;
+  }, [inputAmount.error]);
+  const _validateOutput = React.useCallback(() => {
+    return outputAmount.error;
+  }, [outputAmount.error]);
+  return (
+    <View style={styled.inputBox}>
+      <Field
+        component={TradeInputAmount}
+        name={formConfigsContribute.inputToken}
+        symbol={inputToken && inputToken?.symbol}
+        srcIcon={inputToken && inputToken?.iconUrl}
+        validate={[_validateInput, ...validator.combinedAmount]}
+        hasInfinityIcon
+        onChange={onChangeInput}
+        editableInput={!inputAmount.loadingBalance}
+        loadingBalance={inputAmount.loadingBalance}
+        onPressInfinityIcon={onMaxInput}
+      />
+      <AddBreakLine />
+      <Field
+        component={TradeInputAmount}
+        name={formConfigsContribute.outputToken}
+        hasInfinityIcon
+        symbol={outputToken && outputToken?.symbol}
+        srcIcon={outputToken && outputToken?.iconUrl}
+        validate={[_validateOutput, ...validator.combinedAmount]}
+        visibleHeader
+        onChange={onChangeOutput}
+        editableInput={!outputAmount.loadingBalance}
+        loadingBalance={outputAmount.loadingBalance}
+        onPressInfinityIcon={onMaxOutput}
+      />
+    </View>
+  );
+});
+
+export const Extra = React.memo(() => {
+  const data = useSelector(OTAContributeSelector.mappingDataSelector);
+  const renderHooks = () => {
+    if (!data) return;
+    return (data?.hookFactories || []).map((item) => (
+      <RowSpaceText {...item} key={item?.label} />
+    ));
+  };
+  return <View style={mainStyle.extra}>{renderHooks()}</View>;
+});
+
+const ContributeButton = React.memo(({ onSubmit }) => {
+  const dispatch = useDispatch();
+  const amountSelector = useSelector(OTAContributeSelector.inputAmountSelector);
+  const inputAmount = amountSelector(
+    formConfigsContribute.formName,
+    formConfigsContribute.inputToken,
+  );
+  const outputAmount = amountSelector(
+    formConfigsContribute.formName,
+    formConfigsContribute.outputToken,
+  );
+  const { feeAmount } = useSelector(OTAContributeSelector.feeAmountSelector);
+  const poolId = useSelector(OTAContributeSelector.poolIDSelector);
+  const { amp } = useSelector(OTAContributeSelector.mappingDataSelector);
+  // const { nftToken } = useSelector(OTAContributeSelector.nftTokenSelector);
+  const { isDisabled } = useSelector(OTAContributeSelector.disableContribute);
+  const formErrors = useSelector((state) =>
+    getFormSyncErrors(formConfigsContribute.formName)(state),
+  );
+  const paramsSubmit = useSelector(OTAContributeSelector.compressParamsContribute);
+  const createContributes = async () => {
+    // focus input field get error
+    const fields = [
+      formConfigsContribute.inputToken,
+      formConfigsContribute.outputToken,
+    ];
+    for (let index = 0; index < fields.length; index++) {
+      const field = fields[index];
+      if (formErrors[field]) {
+        return dispatch(focus(formConfigsContribute.formName, field));
+      }
+    }
+
+    if (isDisabled) return;
+
+    const params = {
+      fee: feeAmount / 2,
+      tokenId1: inputAmount.tokenId,
+      tokenId2: outputAmount.tokenId,
+      amount1: String(inputAmount.originalInputAmount),
+      amount2: String(outputAmount.originalInputAmount),
+      poolPairID: poolId,
+      amp,
+      // nftID: nftToken,
+    };
+    onSubmit(params);
+  };
+
+  return (
+    <ButtonTrade
+      btnStyle={mainStyle.button}
+      title={LIQUIDITY_MESSAGES.addLiquidity}
+      onPress={createContributes}
+    />
+  );
+});
+
+const OTAContribute = ({
+  onInitContribute,
+  onCreateContributes,
+  visible,
+  onCloseModal,
+  setLoading,
+  setError,
+  error,
+}) => {
+  const isFetching = useSelector(OTAContributeSelector.statusSelector);
+  const { feeAmountStr, showFaucet } = useSelector(OTAContributeSelector.feeAmountSelector);
+  const _error = useSendSelf({ error, setLoading, setError });
+  const onSubmit = (params) => {
+    typeof onCreateContributes === 'function' && onCreateContributes(params);
+  };
+  const onClose = () => {
+    onCloseModal();
+    onInitContribute();
+  };
+  React.useEffect(() => {
+    if (typeof onInitContribute === 'function') onInitContribute();
+  }, []);
+  return (
+    <>
+      <Header style={styled.padding} />
+      <View borderTop style={styled.container}>
+        <ScrollView
+          refreshControl={(
+            <RefreshControl
+              refreshing={isFetching}
+              onRefresh={onInitContribute}
+            />
+          )}
+          showsVerticalScrollIndicator={false}
+        >
+          <Form>
+            {() => (
+              <>
+                <InputsGroup />
+                <View style={styled.padding}>
+                  {!!_error && <Text style={styled.warning}>{_error}</Text>}
+                  <ContributeButton onSubmit={onSubmit} />
+                  {showFaucet && <NetworkFee feeStr={feeAmountStr} />}
+                  <Extra />
+                </View>
+              </>
+            )}
+          </Form>
+        </ScrollView>
+      </View>
+      <SuccessModal
+        closeSuccessDialog={onClose}
+        title={SUCCESS_MODAL.CREATE_POOL.title}
+        buttonTitle="OK"
+        extraInfo={SUCCESS_MODAL.CREATE_POOL.desc}
+        visible={visible}
+      />
+    </>
+  );
+};
+
+
+ContributeButton.propTypes = {
+  onSubmit: PropTypes.func.isRequired
+};
+
+OTAContribute.defaultProps = {
+  error: '',
+};
+
+OTAContribute.propTypes = {
+  onInitContribute: PropTypes.func.isRequired,
+  onCreateContributes: PropTypes.func.isRequired,
+  onCloseModal: PropTypes.func.isRequired,
+  visible: PropTypes.bool.isRequired,
+  setError: PropTypes.func.isRequired,
+  setLoading: PropTypes.func.isRequired,
+  error: PropTypes.string,
+};
+
+export default compose(
+  withLazy,
+  withLayout_2,
+  withInitAccessOTALP
+)(OTAContribute);

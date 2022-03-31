@@ -39,7 +39,7 @@ const PortfolioVer2 = React.memo(() => {
   return (
     <ScrollView>
       {AccessOTAShareSection}
-      {NFTShareSection}
+      {/*{NFTShareSection}*/}
     </ScrollView>
   );
 });

@@ -29,8 +29,8 @@ const TabPools = React.memo(() => {
   const listPools = useDebounceSelector(listPoolsSelector);
   const onNavigateContribute = (poolId) => {
     batch(() => {
-      dispatch(liquidityActions.actionSetContributeID({ poolId, nftId: '' }));
-      navigation.navigate(routeNames.ContributePool);
+      dispatch(liquidityActions.actionSetContributeID({ poolId, accessKey: '' }));
+      navigation.navigate(routeNames.OTAContributePool);
     });
   };
   return (

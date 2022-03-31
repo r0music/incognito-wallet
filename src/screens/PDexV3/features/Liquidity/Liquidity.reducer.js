@@ -4,7 +4,7 @@ import {ACCOUNT_CONSTANT, PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
 const contributeState = {
   isFetching: false,
   poolId: '',
-  nftId: '',
+  accessKey: '',
   data: undefined,
   inputToken: undefined,
   outputToken: undefined,

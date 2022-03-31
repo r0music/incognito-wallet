@@ -226,7 +226,7 @@ const ACCESS_KEY = {
   pubsubServices: 'http://51.89.21.38:4096',
   requestServices: 'http://51.89.21.38:4095',
   apiServices: 'https://staging-api-service.incognito.org',
-  shardNumber: DEFAULT_SHARD_NUMBER,
+  shardNumber: 2,
   IncContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   IncBSCContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   explorer: 'https://explorer.incognito.org',
