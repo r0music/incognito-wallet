@@ -3,18 +3,16 @@ import {
   ACTION_FETCHED,
   ACTION_FETCH_FAIL,
   ACTION_SET_SHARE_DETAIL,
-  ACTION_SET_POOL_MODAL,
-  ACTION_FREE_MODAL,
 } from './Portfolio.constant';
 
 const initialState = {
   isFetching: false,
   isFetched: false,
-  data: [],
+
+  // Data get from share detail, get AMP, total pool contribute...
   shareDetails: {},
-  modal: {
-    poolId: undefined
-  },
+
+  // Pure data collected from list share
   dataShare: {
     nftShare: [],
     accessOTAShare: [],
@@ -52,23 +50,6 @@ export default (state = initialState, action) => {
     return {
       ...state,
       shareDetails: action.payload
-    };
-  }
-  case ACTION_SET_POOL_MODAL: {
-    const { poolId } = action.payload;
-    return {
-      ...state,
-      modal: {
-        poolId
-      }
-    };
-  }
-  case ACTION_FREE_MODAL: {
-    return {
-      ...state,
-      modal: {
-        poolId: undefined
-      }
     };
   }
   default:
