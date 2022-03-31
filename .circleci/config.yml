@@ -318,7 +318,7 @@ workflows:
           filters:
             branches:
               only:
-                - inc-next3
+                - dev/accessOTA
       - generate_data:
           requires:
             - checkout_code

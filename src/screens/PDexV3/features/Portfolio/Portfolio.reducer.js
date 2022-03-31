@@ -11,9 +11,13 @@ const initialState = {
   isFetching: false,
   isFetched: false,
   data: [],
-  shareDetails: [],
+  shareDetails: {},
   modal: {
     poolId: undefined
+  },
+  dataShare: {
+    nftShare: [],
+    accessOTAShare: [],
   }
 };
 
@@ -26,11 +30,15 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_FETCHED: {
+    const { nftShare, accessOTAShare } = action.payload;
     return {
       ...state,
       isFetching: false,
       isFetched: true,
-      data: action.payload,
+      dataShare: {
+        nftShare: nftShare || [],
+        accessOTAShare: accessOTAShare || []
+      }
     };
   }
   case ACTION_FETCH_FAIL: {
