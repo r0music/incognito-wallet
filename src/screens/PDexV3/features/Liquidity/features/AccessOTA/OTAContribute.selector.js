@@ -31,17 +31,17 @@ const poolDataSelector = createSelector(
 const accessKeySelector = createSelector(
   contributeSelector,
   accessOTAShareFormatedSelector,
-  ({ accessKey, poolId }, listOTAShare) => {
-    let _accessKey = '';
-    if (accessKey) {
-      _accessKey = accessKey;
+  ({ accessID, poolId }, listOTAShare) => {
+    let _accessID = '';
+    if (accessID) {
+      _accessID = accessID;
     } else {
       const foundShare = listOTAShare.find((share) => share.poolId === poolId);
       if (foundShare) {
-        _accessKey = foundShare.nftId;
+        _accessID = foundShare.nftId;
       }
     }
-    return _accessKey;
+    return _accessID;
   },
 );
 
@@ -86,7 +86,7 @@ export const mappingDataSelector = createSelector(
   feeAmountSelector,
   inputAmountSelector,
   (
-    { data: poolData, accessKey },
+    { data: poolData, accessID },
     getPrivacyDataByTokenID,
     { inputToken, outputToken },
     isGettingBalance,
@@ -125,7 +125,7 @@ export const mappingDataSelector = createSelector(
       token1PoolValue,
       token2PoolValue,
       isLoadingBalance,
-      accessKey,
+      accessID,
     };
   }
 );
@@ -147,7 +147,7 @@ const compressParamsContribute = createSelector(
   poolIDSelector,
   mappingDataSelector,
   accessKeySelector,
-  (inputAmount, feeSelector, poolId, { amp }, accessKey) => {
+  (inputAmount, feeSelector, poolId, { amp }, accessID) => {
     const {
       tokenId: tokenId1,
       originalInputAmount: originalInputAmount1
@@ -164,7 +164,7 @@ const compressParamsContribute = createSelector(
       amount2: String(originalInputAmount2),
       poolPairID: poolId,
       amp,
-      accessKey,
+      accessID: accessID,
     };
   }
 );

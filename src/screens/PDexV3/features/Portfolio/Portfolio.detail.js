@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import { Text } from '@components/core';
 import { colorsSelector } from '@src/theme';
 import TwoTokenImage from '@screens/PDexV3/features/Portfolio/Portfolio.image';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -68,8 +69,8 @@ const styles = StyleSheet.create({
 const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const colors = useSelector(colorsSelector);
-  const data = useSelector(getDataByShareIdSelector)(shareId);
+  const colors = useDebounceSelector(colorsSelector);
+  const data = useDebounceSelector(getDataByShareIdSelector)(shareId);
   const onClose = () => dispatch(actionToggleModal());
   const onWithdrawPress = () => {
     batch(() => {
@@ -81,7 +82,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
         }),
       );
       dispatch(liquidityActions.actionSetRemoveShareID(data.shareId));
-      navigation.navigate(routeNames.RemovePool);
+      navigation.navigate(routeNames.NFTRemovePool);
     });
   };
   const onInvestPress = () => {
@@ -90,7 +91,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
       dispatch(
         liquidityActions.actionSetContributeID({
           poolId: data.poolId,
-          accessKey: data.nftId || '',
+          accessID: data.nftId || '',
         }),
       );
       navigation.navigate(routeNames.OTAContributePool);

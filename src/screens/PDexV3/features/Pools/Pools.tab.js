@@ -108,7 +108,7 @@ const PoolsTab = () => {
       return onPressPoolParam(poolId);
     }
     batch(() => {
-      dispatch(liquidityActions.actionSetContributeID({ poolId, accessKey: '' }));
+      dispatch(liquidityActions.actionSetContributeID({ poolId, accessID: '' }));
       navigation.navigate(routeNames.OTAContributePool);
     });
     // goBack();

@@ -132,7 +132,7 @@ import {
   StakingHistoryDetail,
 } from '@screens/PDexV3/features/Staking';
 import {
-  RemovePool,
+  RemovePool as NFTRemovePool,
 } from '@screens/PDexV3/features/Liquidity';
 import PairList from '@screens/PDexV3/features/PairList';
 import MainTabBar from '@screens/MainTabBar';
@@ -215,8 +215,12 @@ const pDexV3Routes = [
     name: routeNames.OTAContributePool,
   },
   {
-    screen: RemovePool,
-    name: routeNames.RemovePool,
+    screen: NFTRemovePool,
+    name: routeNames.NFTRemovePool,
+  },
+  {
+    screen: OTARemovePool,
+    name: routeNames.OTARemovePool,
   },
   {
     screen: ReviewOrder,
