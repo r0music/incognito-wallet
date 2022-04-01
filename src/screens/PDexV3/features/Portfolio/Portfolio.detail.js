@@ -82,7 +82,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
         }),
       );
       dispatch(liquidityActions.actionSetRemoveShareID(data.shareId));
-      navigation.navigate(routeNames.NFTRemovePool);
+      navigation.navigate(routeNames.RemovePool);
     });
   };
   const onInvestPress = () => {

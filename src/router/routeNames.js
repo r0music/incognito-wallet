@@ -165,7 +165,7 @@ export default {
   OTACreatePool: 'OTACreatePool',
   OTAContributePool: 'OTAContributePool',
   OTARemovePool: 'OTARemovePool',
-  NFTRemovePool: 'NFTRemovePool',
+  RemovePool: 'RemovePool',
   OrderLimit: 'OrderLimit',
   SelectTokenTrade: 'SelectTokenTrade',
   Standby: 'Standby',

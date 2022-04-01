@@ -42,7 +42,6 @@ const Form = createForm(formConfigsRemovePool.formName, {
 
 const InputsGroup = () => {
   const dispatch = useDispatch();
-  const [percent, setPercent] = React.useState(0);
   const inputAmount = useSelector(removePoolSelector.inputAmountSelector);
   const inputToken = inputAmount(
     formConfigsRemovePool.formName,
@@ -52,20 +51,11 @@ const InputsGroup = () => {
     formConfigsRemovePool.formName,
     formConfigsRemovePool.outputToken,
   );
-  const { maxInputShareStr, maxOutputShareStr } =
-    useSelector(removePoolSelector.maxShareAmountSelector) || {};
   const onChangeInput = (text) =>
     dispatch(liquidityActions.actionChangeInputRemovePool(text));
   const onChangeOutput = (text) =>
     dispatch(liquidityActions.actionChangeOutputRemovePool(text));
   const onMaxPress = () => dispatch(liquidityActions.actionMaxRemovePool());
-  const onChangePercent = (_percent) => {
-    setPercent(_percent);
-    if (_percent === 100) {
-      return onMaxPress();
-    }
-    dispatch(liquidityActions.actionChangePercentRemovePool(_percent));
-  };
   const _validateInput = React.useCallback(() => {
     return inputToken.error;
   }, [inputToken.error]);
@@ -104,7 +94,7 @@ const InputsGroup = () => {
   );
 };
 
-const RemoveLPButton = React.memo(({ onSubmit }) => {
+const BTNRemovePool = React.memo(({ onSubmit }) => {
   const { disabled } = useSelector(removePoolSelector.disableRemovePool);
   const amountSelector = useSelector(removePoolSelector.inputAmountSelector);
   const { feeAmount } = useSelector(removePoolSelector.feeAmountSelector);
@@ -167,7 +157,7 @@ const RemovePool = ({
       <InputsGroup />
       <View style={styled.padding}>
         {!!error && <Text style={styled.warning}>{error}</Text>}
-        <RemoveLPButton onSubmit={onSubmit} />
+        <BTNRemovePool onSubmit={onSubmit} />
         {showFaucet && <NetworkFee feeStr={feeAmountStr} />}
       </View>
     </>
@@ -215,7 +205,7 @@ RemovePool.propTypes = {
   error: PropTypes.string,
 };
 
-RemoveLPButton.propTypes = {
+BTNRemovePool.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 

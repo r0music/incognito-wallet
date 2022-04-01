@@ -132,7 +132,7 @@ import {
   StakingHistoryDetail,
 } from '@screens/PDexV3/features/Staking';
 import {
-  RemovePool as NFTRemovePool,
+  RemovePool,
 } from '@screens/PDexV3/features/Liquidity';
 import PairList from '@screens/PDexV3/features/PairList';
 import MainTabBar from '@screens/MainTabBar';
@@ -149,7 +149,6 @@ import HomeLP from '@screens/MainTabBar/features/HomeLP';
 
 import OTAContribute from '@screens/PDexV3/features/Liquidity/features/AccessOTA/OTAContribute';
 import OTACreatePool from '@screens/PDexV3/features/Liquidity/features/AccessOTA/OTACreatePool';
-import OTARemovePool from '@screens/PDexV3/features/Liquidity/features/AccessOTA/OTARemovePool';
 
 const masterKeyRoutes = [
   {
@@ -215,12 +214,8 @@ const pDexV3Routes = [
     name: routeNames.OTAContributePool,
   },
   {
-    screen: NFTRemovePool,
-    name: routeNames.NFTRemovePool,
-  },
-  {
-    screen: OTARemovePool,
-    name: routeNames.OTARemovePool,
+    screen: RemovePool,
+    name: routeNames.RemovePool,
   },
   {
     screen: ReviewOrder,

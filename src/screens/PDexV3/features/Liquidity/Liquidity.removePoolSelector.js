@@ -11,6 +11,9 @@ import format from '@utils/format';
 import convert from '@utils/convert';
 import {formConfigsRemovePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {getValidRealAmountNFTSelector} from '@src/redux/selectors/account';
+import {
+  ACCOUNT_CONSTANT,
+} from 'incognito-chain-web-js/build/wallet';
 
 const removePoolSelector = createSelector(
   liquiditySelector,
@@ -109,7 +112,12 @@ export const inputAmountSelector = createSelector(
 export const nftTokenSelector = createSelector(
   shareDataSelector,
   getValidRealAmountNFTSelector,
-  ({ nftId: _nftId }, getValidRealAmountNFT) => {
+  ({ nftId: _nftId, txType }, getValidRealAmountNFT) => {
+    // Case AccessOTA
+    if (txType === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
+      return _nftId;
+    }
+    // Case NFT ID
     let _nftToken;
     const nftToken = getValidRealAmountNFT(_nftId);
     if (nftToken) {
@@ -131,7 +139,7 @@ export const disableRemovePool = createSelector(
   }
 );
 
-
+const compressRemovePoolParams = createSelector();
 export default ({
   isFetchingSelector,
   feeAmountSelector,
