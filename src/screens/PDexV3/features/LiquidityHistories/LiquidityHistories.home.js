@@ -7,6 +7,7 @@ import withHistories from '@screens/PDexV3/features/LiquidityHistories/Liquidity
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {compose} from 'recompose';
 import {withLayout_2} from '@components/Layout';
+import withLazy from '@components/LazyHoc/LazyHoc';
 import WithdrawRewardHistories from './LiquidityHistories.reward';
 import RemovePoolHistories from './LiquidityHistories.removePool';
 import ContributeHistories from './LiquidityHistories.contribute';
@@ -43,6 +44,7 @@ Home.propTypes = {
 };
 
 export default compose(
+  withLazy,
   withHistories,
   withLayout_2,
 )(memo(Home));

@@ -57,7 +57,7 @@ const withLPTransaction = WrappedComp => props => {
     try {
       setLoading(true);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      await pDexV3Inst.createContributeTxs(params);
+      await pDexV3Inst.createContributeTxsWithAccessToken(params);
       onShowSuccess();
     } catch (error) {
       setError(new ExHandler(error).getMessage(error?.message));

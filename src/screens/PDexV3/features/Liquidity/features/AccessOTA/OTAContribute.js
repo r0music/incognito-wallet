@@ -13,7 +13,7 @@ import {
   liquidityActions,
   SUCCESS_MODAL
 } from '@screens/PDexV3/features/Liquidity';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AddBreakLine, RefreshControl, View } from '@components/core';
 import { Field, focus, getFormSyncErrors } from 'redux-form';
 import { styled as mainStyle } from '@screens/PDexV3/PDexV3.styled';
@@ -23,7 +23,6 @@ import { ScrollView, Text } from 'react-native';
 import NetworkFee from '@components/NetworkFee';
 import { OTAContributeSelector } from '@screens/PDexV3/features/Liquidity/features/AccessOTA';
 import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
-import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 
 const initialFormValues = {
   inputToken: '',
@@ -38,7 +37,7 @@ const Form = createForm(formConfigsContribute.formName, {
 
 const InputsGroup = React.memo(() => {
   const dispatch = useDispatch();
-  const { inputToken, outputToken } = useDebounceSelector(
+  const { inputToken, outputToken } = useSelector(
     OTAContributeSelector.mappingDataSelector,
   );
   const onChangeInput = (newText) =>
@@ -57,7 +56,7 @@ const InputsGroup = React.memo(() => {
         outputAmount.maxOriginalAmountText,
       ),
     );
-  const amountSelector = useDebounceSelector(OTAContributeSelector.inputAmountSelector);
+  const amountSelector = useSelector(OTAContributeSelector.inputAmountSelector);
   const inputAmount = amountSelector(
     formConfigsContribute.formName,
     formConfigsContribute.inputToken,
@@ -105,7 +104,7 @@ const InputsGroup = React.memo(() => {
 });
 
 export const Extra = React.memo(() => {
-  const data = useDebounceSelector(OTAContributeSelector.mappingDataSelector);
+  const data = useSelector(OTAContributeSelector.mappingDataSelector);
   const renderHooks = () => {
     if (!data) return;
     return (data?.hookFactories || []).map((item) => (
@@ -117,11 +116,11 @@ export const Extra = React.memo(() => {
 
 const ContributeButton = React.memo(({ onSubmit }) => {
   const dispatch = useDispatch();
-  const { isDisabled } = useDebounceSelector(OTAContributeSelector.disableContribute);
-  const formErrors = useDebounceSelector((state) =>
+  const { isDisabled } = useSelector(OTAContributeSelector.disableContribute);
+  const formErrors = useSelector((state) =>
     getFormSyncErrors(formConfigsContribute.formName)(state),
   );
-  const paramsSubmit = useDebounceSelector(OTAContributeSelector.compressParamsContribute);
+  const paramsSubmit = useSelector(OTAContributeSelector.compressParamsContribute);
   const createContributes = async () => {
     // focus input field get error
     const fields = [
@@ -156,8 +155,8 @@ const OTAContribute = ({
   setError,
   error,
 }) => {
-  const isFetching = useDebounceSelector(OTAContributeSelector.statusSelector);
-  const { feeAmountStr, showFaucet } = useDebounceSelector(OTAContributeSelector.feeAmountSelector);
+  const isFetching = useSelector(OTAContributeSelector.statusSelector);
+  const { feeAmountStr, showFaucet } = useSelector(OTAContributeSelector.feeAmountSelector);
   const _error = useSendSelf({ error, setLoading, setError });
   const onSubmit = (params) => {
     typeof createContributeTxsWithAccessToken === 'function' && createContributeTxsWithAccessToken(params);

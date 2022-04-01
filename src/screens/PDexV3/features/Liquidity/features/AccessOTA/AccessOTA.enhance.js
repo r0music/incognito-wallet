@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { liquidityActions } from '@screens/PDexV3/features/Liquidity/index';
 import debounce from 'lodash/debounce';
 import { actionRefresh } from '@screens/PDexV3/features/Home';
+import throttle from 'lodash/throttle';
 
 const withInitAccessOTALP = WrappedComp => props => {
   const dispatch = useDispatch();
@@ -22,11 +23,11 @@ const withInitAccessOTALP = WrappedComp => props => {
   const _debounceRefreshPool = React.useCallback(debounce(onRefreshPool, 300), []);
 
   const onFree = () => dispatch(liquidityActions.actionFree());
-  const _debounceFree = React.useCallback(debounce(onFree, 100), []);
+  const _throttleFree = React.useCallback(throttle(onFree, 100), []);
 
   React.useEffect(() => {
     _debounceRefreshPool();
-    return () => _debounceFree();
+    return () => _throttleFree();
   }, []);
 
   return (
