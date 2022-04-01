@@ -13,18 +13,17 @@ import {
   liquidityActions,
   SUCCESS_MODAL
 } from '@screens/PDexV3/features/Liquidity';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { AddBreakLine, RefreshControl, View } from '@components/core';
 import { Field, focus, getFormSyncErrors } from 'redux-form';
 import { styled as mainStyle } from '@screens/PDexV3/PDexV3.styled';
-import { actionToggleModal } from '@components/Modal';
-import { NFTTokenModal } from '@screens/PDexV3/features/NFTToken';
 import { ButtonTrade } from '@components/Button';
 import useSendSelf from '@screens/PDexV3/features/Liquidity/Liquidity.useSendSelf';
 import { ScrollView, Text } from 'react-native';
 import NetworkFee from '@components/NetworkFee';
 import { OTAContributeSelector } from '@screens/PDexV3/features/Liquidity/features/AccessOTA';
 import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 
 const initialFormValues = {
   inputToken: '',
@@ -39,7 +38,7 @@ const Form = createForm(formConfigsContribute.formName, {
 
 const InputsGroup = React.memo(() => {
   const dispatch = useDispatch();
-  const { inputToken, outputToken } = useSelector(
+  const { inputToken, outputToken } = useDebounceSelector(
     OTAContributeSelector.mappingDataSelector,
   );
   const onChangeInput = (newText) =>
@@ -58,7 +57,7 @@ const InputsGroup = React.memo(() => {
         outputAmount.maxOriginalAmountText,
       ),
     );
-  const amountSelector = useSelector(OTAContributeSelector.inputAmountSelector);
+  const amountSelector = useDebounceSelector(OTAContributeSelector.inputAmountSelector);
   const inputAmount = amountSelector(
     formConfigsContribute.formName,
     formConfigsContribute.inputToken,
@@ -106,7 +105,7 @@ const InputsGroup = React.memo(() => {
 });
 
 export const Extra = React.memo(() => {
-  const data = useSelector(OTAContributeSelector.mappingDataSelector);
+  const data = useDebounceSelector(OTAContributeSelector.mappingDataSelector);
   const renderHooks = () => {
     if (!data) return;
     return (data?.hookFactories || []).map((item) => (
@@ -118,11 +117,11 @@ export const Extra = React.memo(() => {
 
 const ContributeButton = React.memo(({ onSubmit }) => {
   const dispatch = useDispatch();
-  const { isDisabled } = useSelector(OTAContributeSelector.disableContribute);
-  const formErrors = useSelector((state) =>
+  const { isDisabled } = useDebounceSelector(OTAContributeSelector.disableContribute);
+  const formErrors = useDebounceSelector((state) =>
     getFormSyncErrors(formConfigsContribute.formName)(state),
   );
-  const paramsSubmit = useSelector(OTAContributeSelector.compressParamsContribute);
+  const paramsSubmit = useDebounceSelector(OTAContributeSelector.compressParamsContribute);
   const createContributes = async () => {
     // focus input field get error
     const fields = [
@@ -157,8 +156,8 @@ const OTAContribute = ({
   setError,
   error,
 }) => {
-  const isFetching = useSelector(OTAContributeSelector.statusSelector);
-  const { feeAmountStr, showFaucet } = useSelector(OTAContributeSelector.feeAmountSelector);
+  const isFetching = useDebounceSelector(OTAContributeSelector.statusSelector);
+  const { feeAmountStr, showFaucet } = useDebounceSelector(OTAContributeSelector.feeAmountSelector);
   const _error = useSendSelf({ error, setLoading, setError });
   const onSubmit = (params) => {
     typeof createContributeTxsWithAccessToken === 'function' && createContributeTxsWithAccessToken(params);

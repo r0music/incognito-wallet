@@ -15,7 +15,7 @@ const withInitAccessOTALP = WrappedComp => props => {
   const _debounceInitRemovePool = React.useCallback(debounce(onInitRemovePool, 300), []);
 
   const onFreeCreatePool = () => dispatch(liquidityActions.actionFeeCreatePool());
-  const onInitCreatePool = () => dispatch(liquidityActions.actionInitCreatePool());
+  const onInitCreatePool = (params) => dispatch(liquidityActions.actionInitCreatePool(params));
   const _debounceInitCreatePool = React.useCallback(debounce(onInitCreatePool, 300), []);
 
   const onRefreshPool = () => dispatch(actionRefresh());

@@ -4,7 +4,11 @@ import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/r
 import {sharedSelector} from '@src/redux/selectors';
 import {getExchangeRate, getPairRate} from '@screens/PDexV3';
 import {allTokensIDsSelector} from '@src/redux/selectors/token';
-import {filterTokenList, getInputAmount, convertAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
+import {
+  getInputAmount,
+  convertAmount,
+  memoizedFilterTokenList
+} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import {formConfigsCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {listPoolsPureSelector} from '@screens/PDexV3/features/Pools';
 import {nftTokenDataSelector} from '@src/redux/selectors/account';
@@ -95,7 +99,7 @@ export const outputTokensListSelector = createSelector(
   listPoolsPureSelector,
   (tokenIDs, { inputToken, outputToken }, getPrivacyDataByTokenID, pools) => {
     if (!tokenIDs || !outputToken) return [];
-    const tokens = filterTokenList({
+    const tokens = memoizedFilterTokenList({
       tokenId: inputToken.tokenId,
       pools,
       tokenIds: tokenIDs,

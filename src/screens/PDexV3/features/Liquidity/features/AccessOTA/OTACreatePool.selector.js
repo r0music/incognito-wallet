@@ -4,10 +4,13 @@ import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src
 import { sharedSelector } from '@src/redux/selectors';
 import { getExchangeRate, getPairRate } from '@screens/PDexV3';
 import { allTokensIDsSelector } from '@src/redux/selectors/token';
-import { filterTokenList, getInputAmount, convertAmount } from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
+import {
+  getInputAmount,
+  convertAmount,
+  memoizedFilterTokenList
+} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import { formConfigsCreatePool } from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import { listPoolsPureSelector } from '@screens/PDexV3/features/Pools';
-import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import BigNumber from 'bignumber.js';
 import convert from '@utils/convert';
 import isNaN from 'lodash/isNaN';
@@ -95,7 +98,7 @@ export const outputTokensListSelector = createSelector(
   listPoolsPureSelector,
   (tokenIDs, { inputToken, outputToken }, getPrivacyDataByTokenID, pools) => {
     if (!tokenIDs || !outputToken) return [];
-    const tokens = filterTokenList({
+    const tokens = memoizedFilterTokenList({
       tokenId: inputToken.tokenId,
       pools,
       tokenIds: tokenIDs,
@@ -156,16 +159,34 @@ export const isTypingSelector = createSelector(
 export const disableCreatePool = createSelector(
   inputAmountSelector,
   isFetchingSelector,
-  nftTokenDataSelector,
   isTypingSelector,
-  ( inputAmount, isFetching, { nftToken }, isTyping ) => {
+  ( inputAmount, isFetching, isTyping ) => {
     const { error: inputError } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
     const { error: outputError } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
-    const disabled = !!inputError || !!outputError || isFetching || !nftToken || isTyping;
+    const disabled = !!inputError || !!outputError || isFetching || isTyping;
     return {
       disabled,
-      nftTokenAvailable: !!nftToken
     };
+  }
+);
+
+const compressParamsCreatePool = createSelector(
+  feeAmountSelector,
+  inputAmountSelector,
+  ampValueSelector,
+  ({ feeAmount }, inputAmount, { amp }) => {
+    const { originalInputAmount: originalInputAmount1, tokenId: tokenId1 } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
+    const { originalInputAmount: originalInputAmount2, tokenId: tokenId2 } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
+    const params = {
+      fee: feeAmount / 2,
+      tokenId1,
+      tokenId2,
+      amount1: String(originalInputAmount1),
+      amount2: String(originalInputAmount2),
+      amp,
+    };
+    console.log('params: ', params);
+    return params;
   }
 );
 
@@ -182,4 +203,5 @@ export default ({
   isFetchingSelector,
   focusFieldSelector,
   isTypingSelector,
+  compressParamsCreatePool,
 });
