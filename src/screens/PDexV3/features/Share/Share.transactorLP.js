@@ -19,21 +19,22 @@ const withLPTransaction = WrappedComp => props => {
     setVisible(false);
   };
 
-  const onCreateContributes = async ({ fee, tokenId1, tokenId2, amount1, amount2, poolPairID, amp, nftID }) => {
+  /**
+   * @param params Information contribute liquidity params.
+   * @param {string} params.tokenId1 Token 1 contributed.
+   * @param {string} params.tokenId2 Token 2 contributed.
+   * @param {string} params.amount1 Amount Token 1 contribute.
+   * @param {string} params.amount2 Amount Token 2 contribute.
+   * @param {string | undefined} params.poolPairID Pool pair contribute ID.
+   * @param {number} params.amp Amplifier.
+   * @param {string | undefined} params.accessID AccessID identify .
+   */
+  const createContributeTxsWithAccessToken = async (params) => {
     if (loading) return;
     try {
       setLoading(true);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      await pDexV3Inst.createContributeTxs({
-        fee,
-        tokenId1,
-        tokenId2,
-        amount1,
-        amount2,
-        poolPairID,
-        amp,
-        nftID,
-      });
+      await pDexV3Inst.createContributeTxsWithAccessToken(params);
       onShowSuccess();
     } catch (error) {
       setError(new ExHandler(error).getMessage(error?.message));
@@ -42,20 +43,21 @@ const withLPTransaction = WrappedComp => props => {
     }
   };
 
-  const onCreateNewPool = async ({ fee, tokenId1, tokenId2, amount1, amount2, amp }) => {
+
+  /**
+   * @param params Information contribute liquidity params.
+   * @param {string} params.tokenId1 Token 1 contributed.
+   * @param {string} params.tokenId2 Token 2 contributed.
+   * @param {string} params.amount1 Amount Token 1 contribute.
+   * @param {string} params.amount2 Amount Token 2 contribute.
+   * @param {number} params.amp Amplifier.
+   */
+  const createNewPoolTxsWithAccessToken = async (params) => {
     if (loading) return;
     try {
       setLoading(true);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      await pDexV3Inst.createContributeTxs({
-        fee,
-        tokenId1,
-        tokenId2,
-        amount1,
-        amount2,
-        poolPairID: '',
-        amp
-      });
+      await pDexV3Inst.createContributeTxs(params);
       onShowSuccess();
     } catch (error) {
       setError(new ExHandler(error).getMessage(error?.message));
@@ -115,10 +117,13 @@ const withLPTransaction = WrappedComp => props => {
       <WrappedComp
         {...{
           ...props,
-          onCreateContributes,
-          onCreateNewPool,
+
+          // Transactions
+          createContributeTxsWithAccessToken,
+          createNewPoolTxsWithAccessToken,
           onRemoveContribute,
           onCreateWithdrawFeeLP,
+
           onCloseModal: onClose,
           loading,
           setLoading,

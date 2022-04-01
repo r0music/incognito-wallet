@@ -24,6 +24,7 @@ import useSendSelf from '@screens/PDexV3/features/Liquidity/Liquidity.useSendSel
 import { ScrollView, Text } from 'react-native';
 import NetworkFee from '@components/NetworkFee';
 import { OTAContributeSelector } from '@screens/PDexV3/features/Liquidity/features/AccessOTA';
+import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
 
 const initialFormValues = {
   inputToken: '',
@@ -117,19 +118,6 @@ export const Extra = React.memo(() => {
 
 const ContributeButton = React.memo(({ onSubmit }) => {
   const dispatch = useDispatch();
-  const amountSelector = useSelector(OTAContributeSelector.inputAmountSelector);
-  const inputAmount = amountSelector(
-    formConfigsContribute.formName,
-    formConfigsContribute.inputToken,
-  );
-  const outputAmount = amountSelector(
-    formConfigsContribute.formName,
-    formConfigsContribute.outputToken,
-  );
-  const { feeAmount } = useSelector(OTAContributeSelector.feeAmountSelector);
-  const poolId = useSelector(OTAContributeSelector.poolIDSelector);
-  const { amp } = useSelector(OTAContributeSelector.mappingDataSelector);
-  // const { nftToken } = useSelector(OTAContributeSelector.nftTokenSelector);
   const { isDisabled } = useSelector(OTAContributeSelector.disableContribute);
   const formErrors = useSelector((state) =>
     getFormSyncErrors(formConfigsContribute.formName)(state),
@@ -147,20 +135,8 @@ const ContributeButton = React.memo(({ onSubmit }) => {
         return dispatch(focus(formConfigsContribute.formName, field));
       }
     }
-
     if (isDisabled) return;
-
-    const params = {
-      fee: feeAmount / 2,
-      tokenId1: inputAmount.tokenId,
-      tokenId2: outputAmount.tokenId,
-      amount1: String(inputAmount.originalInputAmount),
-      amount2: String(outputAmount.originalInputAmount),
-      poolPairID: poolId,
-      amp,
-      // nftID: nftToken,
-    };
-    onSubmit(params);
+    onSubmit(paramsSubmit);
   };
 
   return (
@@ -174,7 +150,7 @@ const ContributeButton = React.memo(({ onSubmit }) => {
 
 const OTAContribute = ({
   onInitContribute,
-  onCreateContributes,
+  createContributeTxsWithAccessToken,
   visible,
   onCloseModal,
   setLoading,
@@ -185,7 +161,7 @@ const OTAContribute = ({
   const { feeAmountStr, showFaucet } = useSelector(OTAContributeSelector.feeAmountSelector);
   const _error = useSendSelf({ error, setLoading, setError });
   const onSubmit = (params) => {
-    typeof onCreateContributes === 'function' && onCreateContributes(params);
+    typeof createContributeTxsWithAccessToken === 'function' && createContributeTxsWithAccessToken(params);
   };
   const onClose = () => {
     onCloseModal();
@@ -244,7 +220,7 @@ OTAContribute.defaultProps = {
 
 OTAContribute.propTypes = {
   onInitContribute: PropTypes.func.isRequired,
-  onCreateContributes: PropTypes.func.isRequired,
+  createContributeTxsWithAccessToken: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
   setError: PropTypes.func.isRequired,
@@ -255,5 +231,6 @@ OTAContribute.propTypes = {
 export default compose(
   withLazy,
   withLayout_2,
-  withInitAccessOTALP
+  withInitAccessOTALP,
+  withLPTransaction,
 )(OTAContribute);

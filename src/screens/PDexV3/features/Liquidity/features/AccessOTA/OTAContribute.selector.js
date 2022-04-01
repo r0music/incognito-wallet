@@ -156,7 +156,7 @@ const compressParamsContribute = createSelector(
       tokenId: tokenId2,
       originalInputAmount: originalInputAmount2
     } = inputAmount(formConfigsContribute.formName, formConfigsContribute.outputToken);
-    const params = {
+    return {
       fee: feeSelector.feeAmount / 2,
       tokenId1,
       tokenId2,
@@ -166,7 +166,6 @@ const compressParamsContribute = createSelector(
       amp,
       accessKey,
     };
-    console.log('params::: ', params);
   }
 );
 
