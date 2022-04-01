@@ -21,12 +21,12 @@ const withInitAccessOTALP = WrappedComp => props => {
   const onRefreshPool = () => dispatch(actionRefresh());
   const _debounceRefreshPool = React.useCallback(debounce(onRefreshPool, 300), []);
 
-  // const onFree = () => dispatch(liquidityActions.actionFree());
-  // const _debounceFree = React.useCallback(debounce(onFree, 100), []);
+  const onFree = () => dispatch(liquidityActions.actionFree());
+  const _debounceFree = React.useCallback(debounce(onFree, 100), []);
 
   React.useEffect(() => {
     _debounceRefreshPool();
-    // return () => _debounceFree();
+    return () => _debounceFree();
   }, []);
 
   return (
