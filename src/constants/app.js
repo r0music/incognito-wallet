@@ -30,6 +30,8 @@ const DISABLED = {
   SETTING: 'setting',
   HOME: 'home',
   PRIVACYAPP: 'privacy-app',
+  EXPORT_CSV: 'Export CSV',
+  CONSOLIDATE: 'Consolidate UTXOs for each keychain',
 };
 
 const FEATURES_ROUTE_MAP = {

@@ -1,5 +1,9 @@
 import orderBy from 'lodash/orderBy';
-import { Validator, ACCOUNT_CONSTANT, PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
+import {
+  Validator,
+  ACCOUNT_CONSTANT,
+  PRVIDSTR,
+} from 'incognito-chain-web-js/build/wallet';
 import { createSelector } from 'reselect';
 import formatUtil from '@src/utils/format';
 import { decimalDigitsSelector } from '@src/screens/Setting';
@@ -13,8 +17,18 @@ import {
 } from '@src/redux/utils/history';
 import { PRV } from '@src/constants/common';
 import { CONSTANT_CONFIGS, CONSTANT_COMMONS } from '@src/constants';
+import BigNumber from 'bignumber.js';
 import { selectedPrivacy } from './selectedPrivacy';
 import { burnerAddressSelector } from './account';
+
+export const renderNoClipAmount = (params) => {
+  const { amount, pDecimals } = params;
+  return (
+    new BigNumber(amount || 0)
+      .dividedBy(Math.pow(10, pDecimals || 9))
+      .toFixed() || ''
+  );
+};
 
 export const renderAmount = (params) => {
   const { amount, pDecimals, decimalDigits } = params;
@@ -71,7 +85,8 @@ export const mappingTxTransactorSelector = createSelector(
 export const historyTransactorSelector = createSelector(
   historySelector,
   mappingTxTransactorSelector,
-  ({ txsTransactor }, mappingTxt) => txsTransactor.map((txt) => mappingTxt(txt)),
+  ({ txsTransactor }, mappingTxt) =>
+    txsTransactor.map((txt) => mappingTxt(txt)),
 );
 
 // txs receiver
@@ -127,9 +142,15 @@ export const mappingTxPTokenSelector = createSelector(
       } = txp;
       const shouldRenderQrShieldingAddress =
         isShieldTx &&
-        (isShielding || isExpiredShieldCentralized || (status === 17 && currencyType !== 1 && currencyType !== 3));
-      const expiredAtStr = decentralized ? '' : formatUtil.formatDateTime(expiredAt);
-      const statusColor = isShieldTx ? getStatusColorShield(txp) : getStatusColorUnshield(txp);
+        (isShielding ||
+          isExpiredShieldCentralized ||
+          (status === 17 && currencyType !== 1 && currencyType !== 3));
+      const expiredAtStr = decentralized
+        ? ''
+        : formatUtil.formatDateTime(expiredAt);
+      const statusColor = isShieldTx
+        ? getStatusColorShield(txp)
+        : getStatusColorUnshield(txp);
       const showDetail = !!statusDetail;
       let receivedFundsStr =
         isShieldTx && receivedAmount
@@ -187,7 +208,8 @@ export const mappingTxPTokenSelector = createSelector(
 export const historyPTokenSelector = createSelector(
   historySelector,
   mappingTxPTokenSelector,
-  (history, mappingTxPToken) => history.txsPToken.map((txp) => mappingTxPToken(txp)),
+  (history, mappingTxPToken) =>
+    history.txsPToken.map((txp) => mappingTxPToken(txp)),
 );
 
 export const mappingTxPortalSelector = createSelector(
@@ -195,7 +217,16 @@ export const mappingTxPortalSelector = createSelector(
   decimalDigitsSelector,
   ({ pDecimals, symbol }, decimalDigits) =>
     (txp) => {
-      const { amount, fee, time, txType, externalFee, txId, reqTxID, externalTxID } = txp;
+      const {
+        amount,
+        fee,
+        time,
+        txType,
+        externalFee,
+        txId,
+        reqTxID,
+        externalTxID,
+      } = txp;
 
       const isShieldTx = txType === ACCOUNT_CONSTANT.TX_TYPE.SHIELDPORTAL;
       const statusColor = getPortalStatusColor(txp);
@@ -212,8 +243,12 @@ export const mappingTxPortalSelector = createSelector(
         symbol,
         statusColor,
         statusDetail,
-        inchainTx: inchainTxId ? `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${inchainTxId}` : '',
-        outchainTx: externalTxID ? `${CONSTANT_CONFIGS.BTC_EXPLORER_URL}/tx/${externalTxID}` : '',
+        inchainTx: inchainTxId
+          ? `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${inchainTxId}`
+          : '',
+        outchainTx: externalTxID
+          ? `${CONSTANT_CONFIGS.BTC_EXPLORER_URL}/tx/${externalTxID}`
+          : '',
       };
 
       if (!isShieldTx) {
@@ -238,7 +273,8 @@ export const mappingTxPortalSelector = createSelector(
 export const historyPortalSelector = createSelector(
   historySelector,
   mappingTxPortalSelector,
-  (history, mappingTxPortal) => history.txsPortal.map((txp) => mappingTxPortal(txp)),
+  (history, mappingTxPortal) =>
+    history.txsPortal.map((txp) => mappingTxPortal(txp)),
 );
 
 export const historyTxsSelector = createSelector(
@@ -249,7 +285,8 @@ export const historyTxsSelector = createSelector(
   historyPortalSelector,
   (history, txsTransactor, txsReceiver, txsPToken, txsPortal) => {
     const { isFetching, isFetched } = history;
-    const histories = [...txsTransactor, ...txsReceiver, ...txsPToken, ...txsPortal] || [];
+    const histories =
+      [...txsTransactor, ...txsReceiver, ...txsPToken, ...txsPortal] || [];
     const sort = orderBy(histories, 'time', 'desc');
     return {
       ...history,
@@ -262,7 +299,10 @@ export const historyTxsSelector = createSelector(
   },
 );
 
-export const historyDetailSelector = createSelector(historySelector, ({ detail }) => detail);
+export const historyDetailSelector = createSelector(
+  historySelector,
+  ({ detail }) => detail,
+);
 
 export const historyDetailFactoriesSelector = createSelector(
   historyDetailSelector,
@@ -273,7 +313,17 @@ export const historyDetailFactoriesSelector = createSelector(
     try {
       switch (txType) {
         case ACCOUNT_CONSTANT.TX_TYPE.RECEIVE: {
-          const { txId, statusColor, amount, time, timeStr, status, statusStr, txTypeStr, memo } = tx;
+          const {
+            txId,
+            statusColor,
+            amount,
+            time,
+            timeStr,
+            status,
+            statusStr,
+            txTypeStr,
+            memo,
+          } = tx;
           return [
             {
               label: 'TxID',
@@ -281,7 +331,9 @@ export const historyDetailFactoriesSelector = createSelector(
               copyable: true,
               openUrl: !!txId,
               handleOpenUrl: () =>
-                LinkingService.openUrlInSide(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txId}`),
+                LinkingService.openUrlInSide(
+                  `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txId}`,
+                ),
               disabled: !txId,
             },
             {
@@ -697,7 +749,9 @@ export const historyDetailFactoriesSelector = createSelector(
               copyable: true,
               openUrl: !!txId,
               handleOpenUrl: () =>
-                LinkingService.openUrlInSide(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txId}`),
+                LinkingService.openUrlInSide(
+                  `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txId}`,
+                ),
               disabled: !txId,
             },
             {
@@ -748,7 +802,9 @@ export const historyDetailFactoriesSelector = createSelector(
           ];
           try {
             if (receiverAddress === burnerAddress) {
-              let foundIndex = factories.findIndex((item) => item.value === receiverAddress);
+              let foundIndex = factories.findIndex(
+                (item) => item.value === receiverAddress,
+              );
               if (foundIndex > -1) {
                 factories[foundIndex].label = 'Burn address';
               }

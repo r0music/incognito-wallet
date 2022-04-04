@@ -1,13 +1,12 @@
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import formatUtil from '@utils/format';
-import {renderAmount} from '@src/redux/selectors/history';
-import {COINS} from '@src/constants';
-import BigNumber from 'bignumber.js';
+import { renderNoClipAmount } from '@src/redux/selectors/history';
+import { COINS } from '@src/constants';
 import flatten from 'lodash/flatten';
 
 const withExportCSVVer1 = (WrappedComp) => (props) => {
@@ -28,25 +27,24 @@ const withExportCSVVer1 = (WrappedComp) => (props) => {
       (items &&
         items.length > 0 &&
         items.reduce((currentResult, item) => {
-          const { amount = 0, time = 0, fee = 0 } = item;
+          const { amount = 0, time = 0, fee = 0, txTypeStr = '' } = item;
           if (item.statusStr === 'Success') {
             const data = {
               Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
               'Received Quantity': '',
               'Received Currency': '',
-              'Send Quantity': `${renderAmount({
+              'Send Quantity': `${renderNoClipAmount({
                 amount: amount || 0,
                 pDecimals: token.pDecimals || 9,
-                decimalDigits: false,
               })}`,
-              'Send Currency': token.symbol || '',
-              'Fee Amount': `${
-                new BigNumber(fee || 0)
-                  .dividedBy(Math.pow(10, COINS.PRV.pDecimals || 9))
-                  .toFixed() || ''
-              }`,
+              'Send Currency': token.symbol || token.externalSymbol || '',
+              'Fee Amount': `${renderNoClipAmount({
+                amount: fee || 0,
+                pDecimals: COINS.PRV.pDecimals || 9,
+              })}`,
               'Fee Currency': COINS.PRV.symbol || '',
               Tag: 'Send',
+              TxType: txTypeStr,
             };
             currentResult.push(data);
           }
@@ -61,21 +59,21 @@ const withExportCSVVer1 = (WrappedComp) => (props) => {
       (items &&
         items.length > 0 &&
         items.reduce((currentResult, item) => {
-          const { amount = 0, time = 0 } = item;
+          const { amount = 0, time = 0, txTypeStr = '' } = item;
           if (item.statusStr === 'Success') {
             const data = {
               Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
-              'Received Quantity': `${renderAmount({
+              'Received Quantity': `${renderNoClipAmount({
                 amount: amount || 0,
                 pDecimals: token.pDecimals || 9,
-                decimalDigits: true,
               })}`,
-              'Received Currency': token.symbol || '',
+              'Received Currency': token.symbol || token.externalSymbol || '',
               'Send Quantity': '',
               'Send Currency': '',
               'Fee Amount': '',
               'Fee Currency': '',
               Tag: 'Receive',
+              TxType: txTypeStr,
             };
             currentResult.push(data);
           }
@@ -92,23 +90,20 @@ const withExportCSVVer1 = (WrappedComp) => (props) => {
       isPToken: tokenSelected.isPToken,
       version: PrivacyVersion.ver1,
     });
-    let {
-      txsReceiver = [],
-      txsTransactor = [],
-    } = data;
-    txsTransactor = txsTransactor.filter(({ txTypeStr }) => !txTypeStr.includes('Convert'));
+    let { txsReceiver = [], txsTransactor = [] } = data;
+    txsTransactor = txsTransactor.filter(
+      ({ txTypeStr }) => !txTypeStr.includes('Convert'),
+    );
     const sendFormated = formatSendItems(txsTransactor, tokenSelected);
     const receiveFormated = formatReceiveItems(txsReceiver, tokenSelected);
     counterSuccess.current = counterSuccess.current + 1;
     setForcePercent(() =>
       Math.round(
-        (counterSuccess.current / (tokenIDsVer2.length + tokenIDsVer1.length)) * 100,
+        (counterSuccess.current / (tokenIDsVer2.length + tokenIDsVer1.length)) *
+          100,
       ),
     );
-    return [
-      ...sendFormated,
-      ...receiveFormated,
-    ];
+    return [...sendFormated, ...receiveFormated];
   };
 
   const getTxsHistoryCoinsVer1 = async () => {
@@ -135,13 +130,9 @@ const withExportCSVVer1 = (WrappedComp) => (props) => {
 
   const getKeyInfo = async () => {
     setDisableBtn(true);
-    await Promise.all([
-      getKeyInfoCoinsV1(),
-      getKeyInfoCoinsV2()
-    ]);
+    await Promise.all([getKeyInfoCoinsV1(), getKeyInfoCoinsV2()]);
     setDisableBtn(false);
   };
-
 
   useEffect(() => {
     getKeyInfo();

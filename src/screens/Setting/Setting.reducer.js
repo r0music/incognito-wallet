@@ -88,6 +88,7 @@ const persistConfig = {
     'toggleBackupAllKeys',
     'usePRVToPayFee',
     'marketTab',
+    'showWalletBalance',
   ],
   stateReconciler: autoMergeLevel2,
 };

@@ -14,20 +14,23 @@ export const headerStyled = StyleSheet.create({
     height: 45,
   },
   icon: {
-    marginRight: 16
+    marginRight: 16,
   },
   notify: {
     position: 'absolute',
     width: 8,
     height: 8,
     right: 15,
-    borderRadius: 4
+    borderRadius: 4,
   },
 });
 
 export const styledBalance = StyleSheet.create({
   container: {
     marginTop: 32,
+  },
+  wrapperAmount: {
+    flexDirection: 'row',
   },
   title: {
     fontFamily: FONT.NAME.regular,
@@ -54,7 +57,7 @@ export const styledBalance = StyleSheet.create({
     minHeight: FONT.SIZE.veryLarge + 10,
   },
   iconHide: {
-    marginLeft: 5
+    marginLeft: 5,
   },
   btnHideBalance: {
     position: 'absolute',
@@ -67,7 +70,7 @@ export const styledBalance = StyleSheet.create({
 
 export const groupButtonStyled = StyleSheet.create({
   container: {
-    marginTop: 24
+    marginTop: 24,
   },
   tooltip: {
     // backgroundColor: COLORS.colorBlue,
@@ -115,7 +118,7 @@ export const tokenStyled = StyleSheet.create({
     ...globalStyled.defaultPaddingHorizontal,
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 16
+    marginVertical: 16,
   },
   wrapFirst: {
     flex: 1,
@@ -138,7 +141,7 @@ export const tokenStyled = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 7,
     textAlign: 'left',
-    marginBottom: isIOS() ? 0 : 5
+    marginBottom: isIOS() ? 0 : 5,
   },
   grayText: {
     ...FONT.STYLE.medium,
@@ -146,11 +149,11 @@ export const tokenStyled = StyleSheet.create({
     lineHeight: FONT.SIZE.small + 5,
   },
   centerVertical: {
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   iconVerify: {
     width: 12,
-    height: 12
+    height: 12,
   },
   icon: {
     width: 40,
@@ -159,15 +162,14 @@ export const tokenStyled = StyleSheet.create({
   },
   wrapHeader: {
     marginTop: 5,
-    marginBottom: 10
+    marginBottom: 10,
   },
   wrapLoader: {
     height: FONT.SIZE.medium + 9,
-    justifyContent: 'center'
-  }
+    justifyContent: 'center',
+  },
 });
 
 export const styledAddToken = StyleSheet.create({
-  container: {
-  },
+  container: {},
 });

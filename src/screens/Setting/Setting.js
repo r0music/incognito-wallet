@@ -74,16 +74,18 @@ const Setting = () => {
 
   return (
     <>
-      {!!showHeader && (
-        <Header title="Settings" />
-      )}
+      {!!showHeader && <Header title="Settings" />}
       <ScrollViewBorder
         style={{ paddingHorizontal: 0 }}
         showsVerticalScrollIndicator={false}
       >
         <View style={settingStyle.container}>
           {sectionItemFactories.map((item, index) => (
-            <SectionItem data={item} key={`${item.title} ${item.desc}`} firstItem={index === 0} />
+            <SectionItem
+              data={item}
+              key={`${item.title} ${item.desc}`}
+              firstItem={index === 0}
+            />
           ))}
           {/* <PayFeeByPRV /> */}
           <PINSection />
@@ -91,8 +93,8 @@ const Setting = () => {
           <DecimalDigitsSection />
           {/*<CurrencySection />*/}
           <AddressBookSection />
-          <ExportCSVSection handlePress={handlePressExportCSV} />
-          <UTXOSection />
+          {/* <ExportCSVSection handlePress={handlePressExportCSV} /> */}
+          {/* <UTXOSection /> */}
           <ConvertCoinsSection />
           <RemoveStorage />
           <RemoveBalanceCached />
@@ -106,13 +108,9 @@ const Setting = () => {
             }`}
           </Text>
         </View>
-
       </ScrollViewBorder>
     </>
   );
 };
 
-export default compose(
-  withLayout_2,
-  withSetting
-)(Setting);
+export default compose(withLayout_2, withSetting)(Setting);

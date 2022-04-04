@@ -4,22 +4,38 @@ import { Toast } from '@src/components/core';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { COINS } from '@src/constants';
 import { selectedPrivacySelector } from '@src/redux/selectors';
-import { renderAmount } from '@src/redux/selectors/history';
+import { renderNoClipAmount } from '@src/redux/selectors/history';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 import {
   checkWriteStoragePermission,
   exportAndSaveCSVFile,
 } from '@src/screens/Setting/features/ExportCSVSection/ExportCSVSection.utils';
 import formatUtil from '@src/utils/format';
-import BigNumber from 'bignumber.js';
-import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import flatten from 'lodash/flatten';
 import moment from 'moment';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import Share from 'react-native-share';
 import { useSelector } from 'react-redux';
 import { compose } from 'recompose';
 import withExportCSVVer1 from '@screens/Setting/features/ExportCSVSection/ExportCSVSection.withCoinsV1';
+
+export const formatConsolidateTxs = (tx) => {
+  const { time = 0, txTypeStr = '' } = tx;
+  return {
+    Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+    'Received Quantity': '',
+    'Received Currency': '',
+    'Send Quantity': '',
+    'Send Currency': '',
+    'Fee Amount': `${renderNoClipAmount({
+      amount: 100,
+      pDecimals: COINS.PRV.pDecimals || 9,
+    })}`,
+    'Fee Currency': COINS.PRV.symbol || '',
+    Tag: 'Send',
+    TxType: txTypeStr,
+  };
+};
 
 const enhance = (WrappedComp) => (props) => {
   const {
@@ -34,37 +50,40 @@ const enhance = (WrappedComp) => (props) => {
   } = props;
 
   const accountWallet = useSelector(getDefaultAccountWalletSelector);
-
   const selectedPrivacyWithTokenIDFn = useSelector(
     selectedPrivacySelector.getPrivacyDataByTokenID,
   );
 
-  const formatSendItems = (items) => {
+  const formatSendItems = (items, token) => {
     const results =
       (items &&
         items.length > 0 &&
         items.reduce((currentResult, item) => {
-          const { amount = 0, time = 0, fee = 0 } = item;
+          const { amount = 0, time = 0, fee = 0, txTypeStr = '' } = item;
           if (item.statusStr === 'Success') {
-            const data = {
-              Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
-              'Received Quantity': '',
-              'Received Currency': '',
-              'Send Quantity': `${renderAmount({
-                amount: amount || 0,
-                pDecimals: COINS.PRV.pDecimals || 9,
-                decimalDigits: false,
-              })}`,
-              'Send Currency': COINS.PRV.symbol || '',
-              'Fee Amount': `${
-                new BigNumber(fee || 0)
-                  .dividedBy(Math.pow(10, COINS.PRV.pDecimals || 9))
-                  .toFixed() || ''
-              }`,
-              'Fee Currency': COINS.PRV.symbol || '',
-              Tag: 'Send',
-            };
-            currentResult.push(data);
+            if (txTypeStr.toLowerCase().includes('consolidate')) {
+              const data = formatConsolidateTxs(item);
+              currentResult.push(data);
+            } else {
+              const data = {
+                Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+                'Received Quantity': '',
+                'Received Currency': '',
+                'Send Quantity': `${renderNoClipAmount({
+                  amount: amount || 0,
+                  pDecimals: token.pDecimals || 9,
+                })}`,
+                'Send Currency': token.symbol || token?.externalSymbol || '',
+                'Fee Amount': `${renderNoClipAmount({
+                  amount: fee || 0,
+                  pDecimals: COINS.PRV.pDecimals,
+                })}`,
+                'Fee Currency': COINS.PRV.symbol || '',
+                Tag: 'Send',
+                TxType: txTypeStr,
+              };
+              currentResult.push(data);
+            }
           }
           return currentResult;
         }, [])) ||
@@ -72,28 +91,37 @@ const enhance = (WrappedComp) => (props) => {
     return results;
   };
 
-  const formatReceiveItems = (items) => {
+  const formatReceiveItems = (items, token) => {
     const results =
       (items &&
         items.length > 0 &&
         items.reduce((currentResult, item) => {
-          const { amount = 0, time = 0 } = item;
+          const { amount = 0, time = 0, txTypeStr = '' } = item;
           if (item.statusStr === 'Success') {
-            const data = {
-              Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
-              'Received Quantity': `${renderAmount({
-                amount: amount || 0,
-                pDecimals: COINS.PRV.pDecimals || 9,
-                decimalDigits: true,
-              })}`,
-              'Received Currency': COINS.PRV.symbol || '',
-              'Send Quantity': '',
-              'Send Currency': '',
-              'Fee Amount': '',
-              'Fee Currency': '',
-              Tag: 'Receive',
-            };
-            currentResult.push(data);
+            if (
+              txTypeStr.toLowerCase().includes('consolidate') ||
+              txTypeStr.toLowerCase().includes('convert')
+            ) {
+              const data = formatConsolidateTxs(item);
+              currentResult.push(data);
+            } else {
+              const data = {
+                Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+                'Received Quantity': `${renderNoClipAmount({
+                  amount: amount || 0,
+                  pDecimals: token.pDecimals || 9,
+                })}`,
+                'Received Currency':
+                  token.symbol || token?.externalSymbol || '',
+                'Send Quantity': '',
+                'Send Currency': '',
+                'Fee Amount': '',
+                'Fee Currency': '',
+                Tag: 'Receive',
+                TxType: txTypeStr,
+              };
+              currentResult.push(data);
+            }
           }
           return currentResult;
         }, [])) ||
@@ -114,20 +142,27 @@ const enhance = (WrappedComp) => (props) => {
             outchainFee = 0,
           } = item;
           if (statusMessage === 'Complete') {
+            if (
+              txTypeStr.toLowerCase().includes('consolidate') ||
+              txTypeStr.toLowerCase().includes('convert')
+            ) {
+              const data = formatConsolidateTxs(item);
+              currentResult.push(data);
+            }
             if (txTypeStr === 'Shield') {
               const data = {
                 Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
-                'Received Quantity': `${renderAmount({
+                'Received Quantity': `${renderNoClipAmount({
                   amount: incognitoAmount || 0,
-                  pDecimals: COINS.PRV.pDecimals || 9,
-                  decimalDigits: true,
+                  pDecimals: token.pDecimals || 9,
                 })}`,
                 'Received Currency': token?.externalSymbol || token?.symbol,
                 'Send Quantity': '',
                 'Send Currency': '',
                 'Fee Amount': '',
                 'Fee Currency': '',
-                Tag: 'Shield',
+                Tag: 'Receive',
+                TxType: txTypeStr,
               };
               currentResult.push(data);
             }
@@ -137,19 +172,18 @@ const enhance = (WrappedComp) => (props) => {
                 Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
                 'Received Quantity': '',
                 'Received Currency': '',
-                'Send Quantity': `${renderAmount({
+                'Send Quantity': `${renderNoClipAmount({
                   amount: incognitoAmount || 0,
-                  pDecimals: COINS.PRV.pDecimals || 9,
-                  decimalDigits: true,
+                  pDecimals: token.pDecimals || 9,
                 })}`,
                 'Send Currency': token?.externalSymbol || token?.symbol,
-                'Fee Amount': `${
-                  new BigNumber(outchainFee || 0)
-                    .dividedBy(Math.pow(10, COINS.PRV.pDecimals || 9))
-                    .toFixed() || ''
-                }`,
+                'Fee Amount': `${renderNoClipAmount({
+                  amount: outchainFee || 0,
+                  pDecimals: COINS.PRV.pDecimals,
+                })}`,
                 'Fee Currency': COINS.PRV.symbol || '',
-                Tag: 'Unshield',
+                Tag: 'Send',
+                TxType: txTypeStr,
               };
               currentResult.push(data);
             }
@@ -174,20 +208,27 @@ const enhance = (WrappedComp) => (props) => {
             txTypeStr = '',
           } = item;
           if (statusStr === 'Complete') {
+            if (
+              txTypeStr.toLowerCase().includes('consolidate') ||
+              txTypeStr.toLowerCase().includes('convert')
+            ) {
+              const data = formatConsolidateTxs(item);
+              currentResult.push(data);
+            }
             if (txTypeStr === 'Shield') {
               const data = {
                 Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
-                'Received Quantity': `${renderAmount({
+                'Received Quantity': `${renderNoClipAmount({
                   amount: amount || 0,
-                  pDecimals: COINS.PRV.pDecimals || 9,
-                  decimalDigits: true,
+                  pDecimals: token.pDecimals || 9,
                 })}`,
                 'Received Currency': token?.externalSymbol || token?.symbol,
                 'Send Quantity': '',
                 'Send Currency': '',
                 'Fee Amount': '',
                 'Fee Currency': '',
-                Tag: 'Shield',
+                Tag: 'Receive',
+                TxType: txTypeStr,
               };
               currentResult.push(data);
             }
@@ -197,19 +238,18 @@ const enhance = (WrappedComp) => (props) => {
                 Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
                 'Received Quantity': '',
                 'Received Currency': '',
-                'Send Quantity': `${renderAmount({
+                'Send Quantity': `${renderNoClipAmount({
                   amount: amount || 0,
                   pDecimals: COINS.PRV.pDecimals || 9,
-                  decimalDigits: true,
                 })}`,
                 'Send Currency': token?.externalSymbol || token?.symbol,
-                'Fee Amount': `${
-                  new BigNumber(externalFee || 0)
-                    .dividedBy(Math.pow(10, COINS.PRV.pDecimals || 9))
-                    .toFixed() || ''
-                }`,
+                'Fee Amount': `${renderNoClipAmount({
+                  amount: externalFee || 0,
+                  pDecimals: COINS.PRV.pDecimals || 9,
+                })}`,
                 'Fee Currency': token?.externalSymbol || token?.symbol || '',
-                Tag: 'Unshield',
+                Tag: 'Send',
+                TxType: txTypeStr,
               };
               currentResult.push(data);
             }
@@ -267,7 +307,10 @@ const enhance = (WrappedComp) => (props) => {
         setLoading(true);
         const mergedDataCSV = await getAllHistory();
         if (mergedDataCSV && mergedDataCSV.length > 0) {
-          const path = await exportAndSaveCSVFile(mergedDataCSV);
+          const path = await exportAndSaveCSVFile(
+            mergedDataCSV,
+            accountWallet.name,
+          );
           setTimeout(() => {
             Share.open({
               url: path,

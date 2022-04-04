@@ -27,7 +27,7 @@ export const checkWriteStoragePermission = async () => {
   return write;
 };
 
-export const exportAndSaveCSVFile = (arr) => {
+export const exportAndSaveCSVFile = (arr, accWalletName = '') => {
   return new Promise((resolve, reject) => {
     converter.json2csv(arr, (err, csv) => {
       if (err) {
@@ -41,7 +41,7 @@ export const exportAndSaveCSVFile = (arr) => {
           : rnfs.DocumentDirectoryPath;
 
       if (dir) {
-        const path = `${dir}/incognito_${time}.csv`;
+        const path = `${dir}/incognito_${time}_${accWalletName}.csv`;
         // console.log('PATH CSV ', path);
         rnfs
           .writeFile(path, csv, 'utf8')
