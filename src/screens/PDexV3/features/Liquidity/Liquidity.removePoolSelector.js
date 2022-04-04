@@ -112,9 +112,9 @@ export const inputAmountSelector = createSelector(
 export const nftTokenSelector = createSelector(
   shareDataSelector,
   getValidRealAmountNFTSelector,
-  ({ nftId: _nftId, txType }, getValidRealAmountNFT) => {
+  ({ nftId: _nftId, versionTx }, getValidRealAmountNFT) => {
     /** Case AccessOTA **/
-    if (txType === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
+    if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
       return _nftId;
     }
 
@@ -156,19 +156,31 @@ const compressRemovePoolParams = createSelector(
       originalInputAmount: amount2
     } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
 
-    let params = {};
-    // if (txType === )
-    console.log('shareData: ', shareData);
-    // const params = {
-    //   fee: fee.feeAmount,
-    //   poolTokenIDs: [tokenId1, tokenId2],
-    //   poolPairID: poolId,
-    //   shareAmount,
-    //   // nftID: nftId,
-    //   amount1: String(amount1),
-    //   amount2: String(amount2),
-    // };
-    return params;
+    let params = {
+      fee: fee.feeAmount,
+      poolTokenIDs: [tokenId1, tokenId2],
+      poolPairID: poolId,
+      shareAmount,
+      // nftID: nftId,
+      amount1: String(amount1),
+      amount2: String(amount2),
+    };
+    if (shareData.versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
+      params = {
+        ...params,
+        burnOTA: shareData?.currentAccessOta,
+        accessID: shareData.nftId,
+      };
+    } else {
+      params = {
+        ...params,
+        nftID: shareData.nftId,
+      };
+    }
+    console.log('shareData: ', params);
+    return {
+      params,
+    };
   }
 );
 export default ({

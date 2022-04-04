@@ -99,10 +99,13 @@ const InputsGroup = () => {
 
 const BTNRemovePool = React.memo(({ onSubmit }) => {
   const { disabled } = useSelector(removePoolSelector.disableRemovePool);
-  const compressParams = useSelector(removePoolSelector.compressRemovePoolParams);
+  const {
+    params,
+    versionTx
+  } = useSelector(removePoolSelector.compressRemovePoolParams);
   const handleSubmit = () => {
     if (disabled) return;
-    onSubmit(compressParams);
+    onSubmit(params, versionTx);
   };
 
   return (
@@ -116,7 +119,7 @@ const BTNRemovePool = React.memo(({ onSubmit }) => {
 
 const RemovePool = ({
   onInitRemovePool,
-  onRemoveContribute,
+  createAndSendWithdrawContributeRequestTx,
   onCloseModal,
   visible,
   error,
@@ -124,8 +127,9 @@ const RemovePool = ({
   const navigation = useNavigation();
   const isFetching = useSelector(removePoolSelector.isFetchingSelector);
   const { feeAmountStr, showFaucet } = useSelector(removePoolSelector.feeAmountSelector);
-  const onSubmit = (params) => {
-    typeof onRemoveContribute === 'function' && onRemoveContribute(params);
+  const onSubmit = (params, versionTx) => {
+    typeof createAndSendWithdrawContributeRequestTx === 'function'
+    && createAndSendWithdrawContributeRequestTx(params, versionTx);
   };
   const onClose = () => {
     batch(() => {
@@ -182,7 +186,7 @@ RemovePool.defaultProps = {
 
 RemovePool.propTypes = {
   onInitRemovePool: PropTypes.func.isRequired,
-  onRemoveContribute: PropTypes.func.isRequired,
+  createAndSendWithdrawContributeRequestTx: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
   error: PropTypes.string,

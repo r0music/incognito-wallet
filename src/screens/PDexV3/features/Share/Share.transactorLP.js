@@ -6,6 +6,7 @@ import { ExHandler } from '@services/exception';
 import { Toast } from '@components/core';
 import { actionFetch } from '@screens/PDexV3/features/Portfolio';
 import Loading from '@screens/DexV2/components/Loading';
+import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 
 const withLPTransaction = WrappedComp => props => {
   const dispatch = useDispatch();
@@ -67,21 +68,16 @@ const withLPTransaction = WrappedComp => props => {
     }
   };
 
-  /**
-   * @param params Information remove contribute liquidity params.
-   * @param {string[]} params.poolTokenIDs Token 1, 2 contributed.
-   * @param {string | undefined} params.poolPairID Pool pair contribute ID.
-   * @param {string} params.amount2 Amount Token 2 contribute.
-   * @param {number} params.amp Amplifier.
-   */
-  const onRemoveContribute = async (params) => {
+  const createAndSendWithdrawContributeRequestTx = async (params, versionTx) => {
     if (loading) return;
     try {
       setLoading(true);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      // await pDexV3Inst.createAndSendWithdrawContributeRequestTx({
-      //   fee, poolTokenIDs, poolPairID, shareAmount, nftID, amount1, amount2
-      // });
+      if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
+        await pDexV3Inst.createAndSendWithdrawContributeRequestTx(params);
+      } else {
+        await pDexV3Inst.createAndSendWithdrawContributeRequestTxWithAccessToken(params);
+      }
       onShowSuccess();
     } catch (error) {
       setError(new ExHandler(error).getMessage(error?.message));
@@ -129,7 +125,7 @@ const withLPTransaction = WrappedComp => props => {
           // Transactions
           createContributeTxsWithAccessToken,
           createNewPoolTxsWithAccessToken,
-          onRemoveContribute,
+          createAndSendWithdrawContributeRequestTx,
           onCreateWithdrawFeeLP,
 
           onCloseModal: onClose,
