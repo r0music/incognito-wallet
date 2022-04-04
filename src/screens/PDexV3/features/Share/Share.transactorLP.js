@@ -93,19 +93,16 @@ const withLPTransaction = WrappedComp => props => {
     });
   };
 
-  const onCreateWithdrawFeeLP = async ({ fee, withdrawTokenIDs, poolPairID, nftID, amount1, amount2 }) => {
+  const createAndSendWithdrawLPFee = async (params, versionTx) => {
     if (loading) return;
     try {
       setLoading(true);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      await pDexV3Inst.createAndSendWithdrawLPFeeRequestTx({
-        fee,
-        withdrawTokenIDs,
-        poolPairID,
-        nftID,
-        amount1,
-        amount2,
-      });
+      if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
+        await pDexV3Inst.createAndSendWithdrawLPFeeRequestTxWithAccessToken(params);
+      } else {
+        await pDexV3Inst.createAndSendWithdrawLPFeeRequestTx(params);
+      }
       endWithdrawFee();
     } catch (error) {
       Toast.showError(error.message || typeof error === 'string' && error);
@@ -126,7 +123,7 @@ const withLPTransaction = WrappedComp => props => {
           createContributeTxsWithAccessToken,
           createNewPoolTxsWithAccessToken,
           createAndSendWithdrawContributeRequestTx,
-          onCreateWithdrawFeeLP,
+          createAndSendWithdrawLPFee,
 
           onCloseModal: onClose,
           loading,
