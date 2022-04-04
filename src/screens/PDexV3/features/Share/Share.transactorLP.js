@@ -48,8 +48,9 @@ const withLPTransaction = WrappedComp => props => {
    * @param params Information contribute liquidity params.
    * @param {string} params.tokenId1 Token 1 contributed.
    * @param {string} params.tokenId2 Token 2 contributed.
-   * @param {string} params.amount1 Amount Token 1 contribute.
-   * @param {string} params.amount2 Amount Token 2 contribute.
+   * @param {string} params.shareAmount Value withdraw.
+   * @param {string} params.amount1 Amount Token 1 withdraw.
+   * @param {string} params.amount2 Amount Token 2 withdraw.
    * @param {number} params.amp Amplifier.
    */
   const createNewPoolTxsWithAccessToken = async (params) => {
@@ -66,14 +67,21 @@ const withLPTransaction = WrappedComp => props => {
     }
   };
 
-  const onRemoveContribute = async ({ fee, poolTokenIDs, poolPairID, shareAmount, nftID, amount1, amount2 }) => {
+  /**
+   * @param params Information remove contribute liquidity params.
+   * @param {string[]} params.poolTokenIDs Token 1, 2 contributed.
+   * @param {string | undefined} params.poolPairID Pool pair contribute ID.
+   * @param {string} params.amount2 Amount Token 2 contribute.
+   * @param {number} params.amp Amplifier.
+   */
+  const onRemoveContribute = async (params) => {
     if (loading) return;
     try {
       setLoading(true);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      await pDexV3Inst.createAndSendWithdrawContributeRequestTx({
-        fee, poolTokenIDs, poolPairID, shareAmount, nftID, amount1, amount2
-      });
+      // await pDexV3Inst.createAndSendWithdrawContributeRequestTx({
+      //   fee, poolTokenIDs, poolPairID, shareAmount, nftID, amount1, amount2
+      // });
       onShowSuccess();
     } catch (error) {
       setError(new ExHandler(error).getMessage(error?.message));

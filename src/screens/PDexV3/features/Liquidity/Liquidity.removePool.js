@@ -28,6 +28,9 @@ import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanc
 import { useNavigation } from 'react-navigation-hooks';
 import NetworkFee from '@src/components/NetworkFee';
 import { withLayout_2 } from '@components/Layout';
+import withLazy from '@components/LazyHoc/LazyHoc';
+import withInitAccessOTALP from '@screens/PDexV3/features/Liquidity/features/AccessOTA/AccessOTA.enhance';
+import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
 
 const initialFormValues = {
   inputToken: '',
@@ -96,30 +99,10 @@ const InputsGroup = () => {
 
 const BTNRemovePool = React.memo(({ onSubmit }) => {
   const { disabled } = useSelector(removePoolSelector.disableRemovePool);
-  const amountSelector = useSelector(removePoolSelector.inputAmountSelector);
-  const { feeAmount } = useSelector(removePoolSelector.feeAmountSelector);
-  const poolId = useSelector(removePoolSelector.poolIDSelector);
-  const nftId = useSelector(removePoolSelector.nftTokenSelector);
-  const inputAmount = amountSelector(
-    formConfigsRemovePool.formName,
-    formConfigsRemovePool.inputToken,
-  );
-  const outputAmount = amountSelector(
-    formConfigsRemovePool.formName,
-    formConfigsRemovePool.outputToken,
-  );
+  const compressParams = useSelector(removePoolSelector.compressRemovePoolParams);
   const handleSubmit = () => {
     if (disabled) return;
-    const params = {
-      fee: feeAmount,
-      poolTokenIDs: [inputAmount.tokenId, outputAmount.tokenId],
-      poolPairID: poolId,
-      shareAmount: inputAmount.withdraw,
-      nftID: nftId,
-      amount1: String(inputAmount.originalInputAmount),
-      amount2: String(outputAmount.originalInputAmount),
-    };
-    onSubmit(params);
+    onSubmit(compressParams);
   };
 
   return (
@@ -210,7 +193,8 @@ BTNRemovePool.propTypes = {
 };
 
 export default compose(
-  withLiquidity,
+  withLazy,
   withLayout_2,
-  withTransaction,
+  withInitAccessOTALP,
+  withLPTransaction,
 )(memo(RemovePool));
