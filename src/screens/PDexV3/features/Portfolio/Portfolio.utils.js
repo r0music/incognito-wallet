@@ -185,14 +185,14 @@ export const formatNFTShare = (
 
 
 export const formatAccessOTAShare = (
-  nftShare,
+  accessOTAShare,
   shareDetails,
   getPrivacyDataByTokenID,
 ) => {
-  return nftShare.map((item) => {
+  return accessOTAShare.map((item) => {
     const data = formatPureData(item, shareDetails, getPrivacyDataByTokenID);
     const validNFT = true;
-    const disableBtn = false;
+    const disableBtn = item.isBurningTx;
     return {
       ...data,
       validNFT,

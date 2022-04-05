@@ -104,8 +104,48 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
     }, 500);
   };
   if (!data) return null;
-  const { withdrawable, withdrawing, validNFT, disableBtn, share, } = data;
+  const { withdrawable, withdrawing, validNFT, disableBtn, share } = data;
   const { hookFactoriesDetail, token1, token2 } = data || {};
+
+  const renderRemoveBtn = () => {
+    if (!showRemove) return null;
+    return (
+      <BtnPrimary
+        title="Remove"
+        textStyle={[styles.btnText, { color: colors.background10 }]}
+        wrapperStyle={[styles.btnSmall, { backgroundColor: colors.background4 }]}
+        onPress={onWithdrawPress}
+        disabled={disableBtn || !share}
+      />
+    );
+  };
+
+  const renderAddBtn = () => {
+    if (!share) return null;
+    return (
+      <BtnPrimary
+        title="Contribute more"
+        onPress={onInvestPress}
+        wrapperStyle={{ flex: 1 }}
+        background={COLORS.colorBlue}
+        disabled={!validNFT}
+      />
+    );
+  };
+
+  const renderRewardBtn = () => {
+    if (!withdrawable) return;
+    return (
+      <BtnSecondary
+        title="Withdraw rewards"
+        onPress={onClaimReward}
+        wrapperStyle={[{ flex: 1 }, !!share && { marginRight: 8 }]}
+        textStyle={{ color: COLORS.colorBlue }}
+        disabled={withdrawing || disableBtn}
+      />
+    );
+  };
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.content}>
@@ -117,15 +157,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
             >{`${token1.symbol} / ${token2.symbol}`}
             </Text>
           </Row>
-          {showRemove && (
-            <BtnPrimary
-              title="Remove"
-              textStyle={[styles.btnText, { color: colors.background10 }]}
-              wrapperStyle={[styles.btnSmall, { backgroundColor: colors.background4 }]}
-              onPress={onWithdrawPress}
-              disabled={disableBtn || !share}
-            />
-          )}
+          {renderRemoveBtn()}
         </Row>
         <ScrollView
           style={styles.scrollView}
@@ -148,24 +180,8 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
           </Text>
         )}
         <Row spaceBetween style={{ marginTop: 10 }}>
-          {!!withdrawable && (
-            <BtnSecondary
-              title="Withdraw rewards"
-              onPress={onClaimReward}
-              wrapperStyle={[{ flex: 1 }, !!share && { marginRight: 8 }]}
-              textStyle={{ color: COLORS.colorBlue }}
-              disabled={withdrawing || disableBtn}
-            />
-          )}
-          {!!share && (
-            <BtnPrimary
-              title="Contribute more"
-              onPress={onInvestPress}
-              wrapperStyle={{ flex: 1 }}
-              background={COLORS.colorBlue}
-              disabled={!validNFT}
-            />
-          )}
+          {renderRewardBtn()}
+          {renderAddBtn()}
         </Row>
       </View>
     </View>
