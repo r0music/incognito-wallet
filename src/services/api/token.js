@@ -97,25 +97,27 @@ export const addFantomToken = ({ symbol, name, contractId, decimals }) => {
 export const detectTokenInNetwork = ({ address, network }) => {
   if (!address) throw new Error(`Missing ${network} address to detect`);
   if (!network) throw new Error('Missing network');
+  let fn;
   switch (network) {
   case 'ERC20':
-    detectERC20Token(address);
+    fn = detectERC20Token(address);
     break;
   case 'BEP2':
-    detectBEP2Token(address);
+    fn = detectBEP2Token(address);
     break;
   case 'BEP20':
-    detectBEP20Token(address);
+    fn = detectBEP20Token(address);
     break;
   case 'POLYGON':
     detectPolygonToken(address);
     break;
   case 'FANTOM':
-    detectFantomToken(address);
+    fn = detectFantomToken(address);
     break;
   default:
     break;
   }
+  return fn;
 };
 
 export const detectBEP20Token = (bep20Address) => {
@@ -179,25 +181,28 @@ export const addManuallyToken = ({
   decimals,
   network,
 }) => {
+  let fn;
+  console.log('data: ', network);
   switch (network) {
   case 'ERC20':
-    addERC20Token({ symbol, name, contractId, decimals });
+    fn = addERC20Token({ symbol, name, contractId, decimals });
     break;
   case 'BEP2':
-    addBEP2Token({ symbol, name, contractId, decimals });
+    fn = addBEP2Token({ symbol, name, contractId, decimals });
     break;
   case 'BEP20':
-    addBEP20Token({ symbol, name, contractId, decimals });
+    fn = addBEP20Token({ symbol, name, contractId, decimals });
     break;
   case 'POLYGON':
-    addPolygonToken({ symbol, name, contractId, decimals });
+    fn = addPolygonToken({ symbol, name, contractId, decimals });
     break;
   case 'FANTOM':
-    addFantomToken({ symbol, name, contractId, decimals });
+    fn = addFantomToken({ symbol, name, contractId, decimals });
     break;
   default:
     break;
   }
+  return fn;
 };
 
 export const addBEP2Token = ({ symbol, name, originalSymbol }) => {
