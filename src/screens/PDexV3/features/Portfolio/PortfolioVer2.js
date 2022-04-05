@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import {
   accessOTAShareFormatedSelector,
   nftShareFormatedSelector
@@ -11,6 +11,65 @@ import { compose } from 'recompose';
 import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
 import { useSelector } from 'react-redux';
 import { compressParamsWithdrawFee } from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
+import { ScrollView, Text } from '@components/core';
+import { ArrowFillIcon } from '@components/Icons';
+import { FONT } from '@src/styles';
+import styled from 'styled-components/native';
+import { Row } from '@src/components';
+
+export const styles = StyleSheet.create({
+  title: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 10,
+    marginRight: 4,
+  },
+  group: {
+    marginTop: 8
+  },
+  wrapArrow: {
+    width: 16,
+    height: 16,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  child: {
+    marginTop: 16
+  }
+});
+
+export const CustomRow = styled(Row)`
+  background-color: ${({ theme }) => theme.btnBG3};
+  height: 50px;
+  border-radius: 8px;
+  padding-left: 16px;
+  padding-right: 16px;
+`;
+
+const GroupButton = React.memo((props) => {
+  const { ExpandView, title } = props;
+  const [isExpand, setIsExpand] = React.useState(true);
+
+  const onPress = React.useCallback(() => {
+    setIsExpand(value => !value);
+  }, [isExpand]);
+
+  return (
+    <>
+      <TouchableOpacity style={styles.group} onPress={onPress}>
+        <TouchableOpacity style={styles.group} onPress={onPress}>
+          <CustomRow centerVertical spaceBetween>
+            <Text style={styles.title}>{title}</Text>
+            <View style={styles.wrapArrow}>
+              <ArrowFillIcon position={isExpand ? 'DOWN' : 'UP'} />
+            </View>
+          </CustomRow>
+        </TouchableOpacity>
+      </TouchableOpacity>
+      {isExpand && ExpandView}
+    </>
+  );
+});
 
 const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
   const nftShare = useDebounceSelector(nftShareFormatedSelector);
@@ -30,7 +89,7 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
     createAndSendWithdrawLPFee(params, versionTx);
   };
 
-  const renderItem = React.useCallback((shareId) => {
+  const renderItem = React.useCallback(({ item: shareId }) => {
     return (
       <PortfolioItem
         shareId={shareId}
@@ -41,17 +100,29 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
   }, []);
 
   const NFTShareSection = React.useMemo(() => {
-    return nftShareIDs.map(renderItem);
+    return (
+      <FlatList
+        data={nftShareIDs}
+        renderItem={renderItem}
+        keyExtractor={item => item}
+      />
+    );
   }, [nftShareIDs.length]);
 
   const AccessOTAShareSection = React.useMemo(() => {
-    return accessOTAShareIDs.map(renderItem);
+    return (
+      <FlatList
+        data={accessOTAShareIDs}
+        renderItem={renderItem}
+        keyExtractor={item => item}
+      />
+    );
   }, [accessOTAShareIDs.length]);
 
   return (
     <ScrollView>
-      {AccessOTAShareSection}
-      {/*{NFTShareSection}*/}
+      <GroupButton ExpandView={AccessOTAShareSection} title="Liquidity version 2" />
+      <GroupButton ExpandView={NFTShareSection} title="Liquidity version 1" />
     </ScrollView>
   );
 });
