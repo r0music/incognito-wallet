@@ -19,3 +19,4 @@ export const ACTION_FETCHING_USER_FEES = '[estimateFee] Fetching user fees';
 export const ACTION_FETCH_FAIL_USER_FEES = '[estimateFee] Fetch fail user fees';
 export const ACTION_TOGGLE_FAST_FEE = '[estimateFee] Toggle fast fee';
 export const ACTION_REMOVE_FEE_TYPE = '[estimateFee] Remove fee type';
+export const ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN = '[estimateFee] Reset form support send in-chain';

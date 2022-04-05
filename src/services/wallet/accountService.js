@@ -1005,6 +1005,7 @@ export default class Account {
     tokenId,
     burnAmount,
     prvPayments,
+    tokenPayments,
     info,
     remoteAddress,
     txHashHandler,
@@ -1017,6 +1018,7 @@ export default class Account {
     new Validator('tokenId', tokenId).required().string();
     new Validator('burnAmount', burnAmount).required().amount();
     new Validator('prvPayments', prvPayments).required().array();
+    new Validator('tokenPayments', tokenPayments).required().array();
     new Validator('remoteAddress', remoteAddress).required().string();
     new Validator('info', info).string();
     new Validator('burningType', burningType).required().number();
@@ -1027,6 +1029,7 @@ export default class Account {
         fee,
         tokenID: tokenId,
         prvPayments,
+        tokenPayments,
         info,
       },
       extra: {

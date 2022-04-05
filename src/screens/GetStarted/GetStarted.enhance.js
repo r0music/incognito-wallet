@@ -21,6 +21,7 @@ import {actionFetch as actionFetchHomeConfigs} from '@screens/Home/Home.actions'
 import {actionCheckUnreadNews} from '@screens/News';
 import { actionFetchPairs } from '@screens/PDexV3/features/Swap';
 import { setTokenHeader } from '@services/http';
+import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
 import withWizard from './GetStarted.enhanceWizard';
 import withWelcome from './GetStarted.enhanceWelcome';
@@ -94,6 +95,8 @@ const enhance = (WrappedComp) => (props) => {
     if (!hasError) {
       setTimeout(() => {
         setLoading(false);
+        // navigation.navigate(routeNames.Send);
+        // dispatch(setSelectedPrivacy('880ea0787f6c1555e59e3958a595086b7802fc7a38276bcd80d4525606557fbc'));
         navigation.navigate(routeNames.MainTabBar);
       }, 2000);
     } else {
