@@ -26,10 +26,10 @@ const ExportCSV = (props) => {
   };
 
   return (
-    <MainLayout header="Reporting" scrollable>
+    <MainLayout header="CSV Export" scrollable>
       <Text style={styles.text}>
         {
-          'We need file and folder permission so we can export csv and stored it in your device. Please grant us the permission. \n\n We will export transaction data of trade, provide and withdraw node rewards.'
+          'CSV exported file will be stored locally in your device. Please grant us the permission to access your file and folder. \n\nData exported includes: trade and provide transactions, node rewards withdrawals.'
         }
       </Text>
       <RoundCornerButton

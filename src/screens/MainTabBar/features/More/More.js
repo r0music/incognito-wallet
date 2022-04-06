@@ -75,7 +75,7 @@ const Categories = [
       },
       {
         route: routeNames.ExportCSV,
-        label: 'Report',
+        label: 'CSV Export',
         icon: ReportIcon,
         key: appConstant.DISABLED.EXPORT_CSV,
         params: {
