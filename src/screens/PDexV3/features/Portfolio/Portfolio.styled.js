@@ -15,7 +15,7 @@ export const styled = StyleSheet.create({
 
 export const portfolioItemStyled = StyleSheet.create({
   container: {
-    ...globalStyled.defaultPaddingHorizontal,
+    // ...globalStyled.defaultPaddingHorizontal,
     paddingVertical: 16
   },
   hookContainer: {
