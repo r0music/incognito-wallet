@@ -42,7 +42,8 @@ const formatPureData = (poolShare, shareDetails, getPrivacyDataByTokenID) => {
     tokenId2,
     rewards,
     orderRewards,
-    nftId
+    nftId,
+    versionTx,
   } = poolShare;
 
   const poolDetail = shareDetails[poolId];
@@ -83,11 +84,14 @@ const formatPureData = (poolShare, shareDetails, getPrivacyDataByTokenID) => {
   const totalRewardAmount = Math.ceil(new BigNumber(totalRewardUSD).multipliedBy(Math.pow(10, 9)).toNumber());
   const totalRewardUSDStr = format.amountVer2(totalRewardAmount, 9);
   const rewardUSDSymbolStr = `$${totalRewardUSDStr}`;
+
+  // Collected contribute pool fee
   const hookLPRewards = mapLPRewards.map((item) => ({
     label: 'Fees collected',
     valueText: item.rewardStr,
   }));
 
+  // Collected order rewards fee
   const hookOrderRewards = mapOrderRewards.map((item) => ({
     label: 'Order reward',
     valueText: item.rewardStr,
