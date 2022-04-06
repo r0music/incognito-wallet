@@ -2,7 +2,7 @@ import React, {useCallback} from 'react';
 import { StyleSheet } from 'react-native';
 import { withLayout_2 } from '@src/components/Layout';
 import { View } from '@src/components/core';
-import { PancakeIcon2, UniIcon2, CurveIcon2 } from '@src/components/Icons';
+import { PancakeIcon2, UniIcon2, CurveIcon2, SpookySwapIcon } from '@src/components/Icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { FONT } from '@src/styles';
 import { KEYS_PLATFORMS_SUPPORTED } from '@screens/PDexV3/features/Swap';
@@ -49,6 +49,24 @@ const PrivacyApps = () => {
   };
   const factories = React.useMemo(() => {
     return [
+      {
+        privacyAppId: KEYS_PLATFORMS_SUPPORTED.spookyswap,
+        icon: <SpookySwapIcon />,
+        headerTitle: 'pSpookySwap',
+        headerSub: 'Private SpookySwap',
+        groupActions: [
+          {
+            id: 'FANTOMSPOOKY',
+            title: 'Fantom',
+          },
+          {
+            id: 'DEX',
+            title: 'DEX',
+          },
+        ],
+        desc: 'Trade anonymously on the leading AMM on Fantom, Experience seamless swapping thanks to the chain\'s low fees and fast transaction times.',
+        onPressItem,
+      },
       {
         privacyAppId: KEYS_PLATFORMS_SUPPORTED.pancake,
         icon: <PancakeIcon2 />,

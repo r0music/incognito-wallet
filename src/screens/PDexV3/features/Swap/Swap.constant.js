@@ -89,6 +89,7 @@ export const KEYS_PLATFORMS_SUPPORTED = {
   pancake: 'pancake',
   uni: 'uni',
   curve: 'curve',
+  spookyswap: 'spookyswap',
 };
 
 export const PLATFORMS_SUPPORTED = [
