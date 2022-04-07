@@ -473,7 +473,7 @@ export const actionBookOrder = () => async (dispatch, getState) => {
     default:
       break;
     }
-    const tx = await pDexV3Inst.createAndSendOrderRequestTx({ extra });
+    const tx = await pDexV3Inst.createAndSendOrderRequestTxWithAccessToken({ extra });
     dispatch(actionSetNFTTokenDataNoCache());
     dispatch(actionFetchOrdersHistory(OPEN_ORDERS_STATE));
     return tx;
