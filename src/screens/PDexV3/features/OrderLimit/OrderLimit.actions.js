@@ -383,23 +383,22 @@ export const actionWithdrawingOrder = (payload) => ({
 });
 
 export const actionWithdrawOrder =
-  ({ requestTx, txType, nftid, poolId: poolid, token1ID, token2ID }) =>
-    async (dispatch, getState) => {
+  ({ requestTx, txType, nftid, poolId: poolid, token1ID, token2ID, currentAccessOta }) =>
+    async (dispatch) => {
       try {
-        const state = getState();
         const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
         if (!requestTx || !poolid) {
           return;
         }
         await dispatch(actionWithdrawingOrder(requestTx));
-        const data = {
+
+        let data = {
           withdrawTokenIDs: [token1ID, token2ID],
           poolPairID: poolid,
           orderID: requestTx,
           amount: '0',
           version: PrivacyVersion.ver2,
           txType,
-          nftID: nftid,
           callback: async (tx) => {
             await Promise.all([
               dispatch(actionFetchWithdrawOrderTxs()),
@@ -407,7 +406,20 @@ export const actionWithdrawOrder =
             ]);
           },
         };
-        await pDexV3Inst.createAndSendWithdrawOrderRequestTx({ extra: data });
+        if (currentAccessOta) {
+          data = {
+            ...data,
+            burnOTA: currentAccessOta,
+            accessID: nftid,
+          };
+          await pDexV3Inst.createAndSendWithdrawOrderRequestTxWithAccessToken({ extra: data });
+        } else {
+          data = {
+            ...data,
+            nftID: nftid
+          };
+          await pDexV3Inst.createAndSendWithdrawOrderRequestTx({ extra: data });
+        }
       } catch (error) {
         new ExHandler(error).showErrorToast();
       } finally {
