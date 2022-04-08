@@ -444,6 +444,7 @@ export const mappingOrderHistorySelector = createSelector(
           poolId,
           isMintingNewAccessOta,
           currentAccessOta,
+          versionTx,
         } = order;
         let pool = getDataByPoolId(poolId);
         if (!pool) {
@@ -528,8 +529,10 @@ export const mappingOrderHistorySelector = createSelector(
         const foundNFT = list.find((nft) => nft?.nftToken === nftid);
 
         /**-----> Case AccessOTA <----*/
-        if (!!currentAccessOta && !isMintingNewAccessOta) {
-          visibleBtnAction = true;
+        if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
+          if (!!currentAccessOta && !isMintingNewAccessOta && !fromStorage) {
+            visibleBtnAction = true;
+          }
         } else if (foundNFT) {
           /**-----> Case NFT <----*/
           if (new BigNumber(foundNFT?.realAmount).eq(1)) {

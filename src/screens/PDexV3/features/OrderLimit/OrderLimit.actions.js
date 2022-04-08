@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
+import { PrivacyVersion, ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { activedTabSelector } from '@src/components/core/Tabs/Tabs.selector';
 import { PRV } from '@src/constants/common';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
@@ -383,7 +383,7 @@ export const actionWithdrawingOrder = (payload) => ({
 });
 
 export const actionWithdrawOrder =
-  ({ requestTx, txType, nftid, poolId: poolid, token1ID, token2ID, currentAccessOta }) =>
+  ({ requestTx, txType, nftid, poolId: poolid, token1ID, token2ID, currentAccessOta, versionTx }) =>
     async (dispatch) => {
       try {
         const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
@@ -406,7 +406,7 @@ export const actionWithdrawOrder =
             ]);
           },
         };
-        if (currentAccessOta) {
+        if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
           data = {
             ...data,
             burnOTA: currentAccessOta,

@@ -11,11 +11,13 @@ import { compose } from 'recompose';
 import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
 import { useSelector } from 'react-redux';
 import { compressParamsWithdrawFee } from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
-import { ScrollView, Text } from '@components/core';
+import { ScrollView, Tabs, Text } from '@components/core';
 import { ArrowFillIcon } from '@components/Icons';
 import { FONT } from '@src/styles';
 import styled from 'styled-components/native';
 import { Row } from '@src/components';
+import { ROOT_TAB_HOME, TAB_PORTFOLIO_ID } from '@screens/PDexV3/features/Home/Home.constant';
+import SelectAccountButton from '@components/SelectAccountButton';
 
 export const styles = StyleSheet.create({
   title: {
@@ -121,8 +123,19 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
 
   return (
     <ScrollView>
-      <GroupButton ExpandView={AccessOTAShareSection} title="Liquidity version 2" />
-      <GroupButton ExpandView={NFTShareSection} title="Liquidity version 1" />
+      <Tabs
+        rootTabID="TAB-PORTFOLIO-DETAIL"
+        useTab1
+        defaultTabHeader
+        styledTabs={{ marginTop: 12, backgroundColor: 'red' }}
+      >
+        <View tabID="TAB-PORTFOLIO-DETAIL-ACCESS-OTA" label="Version 2">
+          {AccessOTAShareSection}
+        </View>
+        <View tabID="TAB-PORTFOLIO-DETAIL-ACCESS-NFT" label="Version 1">
+          {NFTShareSection}
+        </View>
+      </Tabs>
     </ScrollView>
   );
 });
