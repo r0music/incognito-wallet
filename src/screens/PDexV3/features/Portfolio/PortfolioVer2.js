@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux';
 import { compressParamsWithdrawFee } from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
 import { ScrollView, Tabs, Text } from '@components/core';
 import { ArrowFillIcon } from '@components/Icons';
-import { FONT } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 import styled from 'styled-components/native';
 import { Row } from '@src/components';
 import { ROOT_TAB_HOME, TAB_PORTFOLIO_ID } from '@screens/PDexV3/features/Home/Home.constant';
@@ -50,7 +50,15 @@ export const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: '#404040',
     height: 40
-  }
+  },
+  btnStyleEnabled: {
+    borderBottomColor: COLORS.colorBlue,
+  },
+  btnStyleDisabled: {
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    borderBottomColor: 'transparent',
+  },
 });
 
 export const CustomRow = styled(Row)`
@@ -143,10 +151,15 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
         defaultTabHeader={false}
         styledTabs={styled.wrapTap}
       >
-        <View tabID="TAB-PORTFOLIO-DETAIL-ACCESS-OTA" label="Version 2">
+        <View
+          tabID="TAB-PORTFOLIO-DETAIL-ACCESS-OTA"
+          label="Version 2"
+          tabStyled={styled.tabStyled}
+          tabStyledDisabled={styled.btnStyleEnabled}
+        >
           {AccessOTAShareSection}
         </View>
-        <View tabID="TAB-PORTFOLIO-DETAIL-ACCESS-NFT" label="Version 1">
+        <View tabID="TAB-PORTFOLIO-DETAIL-ACCESS-NFT" label="Version 1" tabStyled={styled.tabStyled}>
           {NFTShareSection}
         </View>
       </Tabs>
