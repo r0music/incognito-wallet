@@ -38,6 +38,18 @@ export const styles = StyleSheet.create({
   },
   child: {
     marginTop: 16
+  },
+  wrapTap: {
+    marginTop: 12,
+    backgroundColor: 'transparent'
+  },
+  tabStyled: {
+    borderRadius: 100,
+    padding: 0,
+    marginRight: 0,
+    overflow: 'hidden',
+    backgroundColor: '#404040',
+    height: 40
   }
 });
 
@@ -128,8 +140,8 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
       <Tabs
         rootTabID="TAB-PORTFOLIO-DETAIL"
         useTab1
-        defaultTabHeader
-        styledTabs={{ marginTop: 12, backgroundColor: colors.background7 }}
+        defaultTabHeader={false}
+        styledTabs={styled.wrapTap}
       >
         <View tabID="TAB-PORTFOLIO-DETAIL-ACCESS-OTA" label="Version 2">
           {AccessOTAShareSection}
