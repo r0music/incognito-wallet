@@ -188,9 +188,14 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
   );
 };
 
+PortfolioModal.defaultProps = {
+  showRemove: true
+};
+
 PortfolioModal.propTypes = {
   shareId: PropTypes.string.isRequired,
   onWithdrawFeeLP: PropTypes.func.isRequired,
+  showRemove: PropTypes.bool
 };
 
 export default memo(PortfolioModal);

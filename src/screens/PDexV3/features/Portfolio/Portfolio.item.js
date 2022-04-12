@@ -43,7 +43,7 @@ export const Extra = React.memo(({ shareId }) => {
   );
 });
 
-const PortfolioItem = ({ shareId, isLast, onWithdrawFeeLP }) => {
+const PortfolioItem = ({ shareId, isLast, onWithdrawFeeLP, showRemove }) => {
   const dispatch = useDispatch();
   const data = useSelector(getDataByShareIdSelector)(shareId);
   if (!data) {
@@ -58,7 +58,7 @@ const PortfolioItem = ({ shareId, isLast, onWithdrawFeeLP }) => {
           <ModalBottomSheet
             style={{ height: '60%' }}
             customContent={
-              <PortfolioModal shareId={data.shareId} onWithdrawFeeLP={onWithdrawFeeLP} />
+              <PortfolioModal shareId={data.shareId} onWithdrawFeeLP={onWithdrawFeeLP} showRemove={showRemove} />
             }
           />
         )})
@@ -85,6 +85,7 @@ PortfolioItem.propTypes = {
   shareId: PropTypes.string.isRequired,
   isLast: PropTypes.bool.isRequired,
   onWithdrawFeeLP: PropTypes.func.isRequired,
+  showRemove: PropTypes.bool.isRequired
 };
 
 Extra.propTypes = {
