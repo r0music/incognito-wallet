@@ -18,6 +18,7 @@ import styled from 'styled-components/native';
 import { Row } from '@src/components';
 import { ROOT_TAB_HOME, TAB_PORTFOLIO_ID } from '@screens/PDexV3/features/Home/Home.constant';
 import SelectAccountButton from '@components/SelectAccountButton';
+import { colorsSelector } from '@src/theme';
 
 export const styles = StyleSheet.create({
   title: {
@@ -77,6 +78,7 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
   const nftShare = useDebounceSelector(nftShareFormatedSelector);
   const accessOTAShare = useDebounceSelector(accessOTAShareFormatedSelector);
   const onCompressParamsWithdrawFee = useSelector(compressParamsWithdrawFee);
+  const colors = useSelector(colorsSelector);
 
   const nftShareIDs = React.useMemo(() =>
     nftShare.map(({ shareId }) => shareId) || []
@@ -127,7 +129,7 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
         rootTabID="TAB-PORTFOLIO-DETAIL"
         useTab1
         defaultTabHeader
-        styledTabs={{ marginTop: 12, backgroundColor: 'red' }}
+        styledTabs={{ marginTop: 12, backgroundColor: colors.background7 }}
       >
         <View tabID="TAB-PORTFOLIO-DETAIL-ACCESS-OTA" label="Version 2">
           {AccessOTAShareSection}
@@ -140,4 +142,4 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
   );
 });
 
-export default compose(withLazy, withLPTransaction)(PortfolioVer2);
+export default compose(withLPTransaction)(PortfolioVer2);
