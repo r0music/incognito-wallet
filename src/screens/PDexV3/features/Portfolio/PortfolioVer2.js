@@ -1,24 +1,17 @@
 import React from 'react';
-import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import {
   accessOTAShareFormatedSelector,
   nftShareFormatedSelector
 } from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import PortfolioItem from '@screens/PDexV3/features/Portfolio/Portfolio.item';
-import withLazy from '@components/LazyHoc/LazyHoc';
 import { compose } from 'recompose';
 import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
 import { useSelector } from 'react-redux';
 import { compressParamsWithdrawFee } from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
-import { ScrollView, Tabs, Text } from '@components/core';
-import { ArrowFillIcon } from '@components/Icons';
-import { COLORS, FONT } from '@src/styles';
-import styled from 'styled-components/native';
-import { Row } from '@src/components';
-import { ROOT_TAB_HOME, TAB_PORTFOLIO_ID } from '@screens/PDexV3/features/Home/Home.constant';
-import SelectAccountButton from '@components/SelectAccountButton';
-import { colorsSelector } from '@src/theme';
+import { ScrollView, Tabs } from '@components/core';
+import { FONT } from '@src/styles';
 
 export const styles = StyleSheet.create({
   title: {
@@ -41,7 +34,8 @@ export const styles = StyleSheet.create({
   },
   wrapTap: {
     marginTop: 12,
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
+    paddingHorizontal: 24
   },
   tabStyled: {
     borderRadius: 100,
@@ -49,56 +43,31 @@ export const styles = StyleSheet.create({
     marginRight: 0,
     overflow: 'hidden',
     backgroundColor: '#404040',
-    height: 40
-  },
-  btnStyleEnabled: {
-    borderBottomColor: COLORS.colorBlue,
+    height: 32
   },
   btnStyleDisabled: {
     backgroundColor: 'transparent',
     borderColor: 'transparent',
     borderBottomColor: 'transparent',
   },
-});
-
-export const CustomRow = styled(Row)`
-  background-color: ${({ theme }) => theme.btnBG3};
-  height: 50px;
-  border-radius: 8px;
-  padding-left: 16px;
-  padding-right: 16px;
-`;
-
-const GroupButton = React.memo((props) => {
-  const { ExpandView, title } = props;
-  const [isExpand, setIsExpand] = React.useState(true);
-
-  const onPress = React.useCallback(() => {
-    setIsExpand(value => !value);
-  }, [isExpand]);
-
-  return (
-    <>
-      <TouchableOpacity style={styles.group} onPress={onPress}>
-        <TouchableOpacity style={styles.group} onPress={onPress}>
-          <CustomRow centerVertical spaceBetween>
-            <Text style={styles.title}>{title}</Text>
-            <View style={styles.wrapArrow}>
-              <ArrowFillIcon position={isExpand ? 'DOWN' : 'UP'} />
-            </View>
-          </CustomRow>
-        </TouchableOpacity>
-      </TouchableOpacity>
-      {isExpand && ExpandView}
-    </>
-  );
+  titleStyled: {
+    padding: 0,
+    margin: 0,
+    fontSize: FONT.SIZE.small,
+    fontFamily: FONT.NAME.medium,
+    lineHeight: FONT.SIZE.regular + 5,
+    paddingHorizontal: 14,
+    paddingVertical: 0,
+  },
+  titleDisabledStyle: {
+    color: '#9C9C9C',
+  },
 });
 
 const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
   const nftShare = useDebounceSelector(nftShareFormatedSelector);
   const accessOTAShare = useDebounceSelector(accessOTAShareFormatedSelector);
   const onCompressParamsWithdrawFee = useSelector(compressParamsWithdrawFee);
-  const colors = useSelector(colorsSelector);
 
   const nftShareIDs = React.useMemo(() =>
     nftShare.map(({ shareId }) => shareId) || []
@@ -129,6 +98,7 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
         data={nftShareIDs}
         renderItem={renderItem}
         keyExtractor={item => item}
+        contentContainerStyle={{ paddingHorizontal: 24 }}
       />
     );
   }, [nftShareIDs.length]);
@@ -139,31 +109,39 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
         data={accessOTAShareIDs}
         renderItem={renderItem}
         keyExtractor={item => item}
+        contentContainerStyle={{ paddingHorizontal: 24 }}
       />
     );
   }, [accessOTAShareIDs.length]);
 
   return (
-    <ScrollView>
-      <Tabs
-        rootTabID="TAB-PORTFOLIO-DETAIL"
-        useTab1
-        defaultTabHeader={false}
-        styledTabs={styled.wrapTap}
+    <Tabs
+      rootTabID="TAB-PORTFOLIO-DETAIL"
+      useTab1
+      defaultTabHeader={false}
+      styledTabs={styles.wrapTap}
+    >
+      <View
+        tabID="TAB-PORTFOLIO-DETAIL-ACCESS-OTA"
+        label="Version 2"
+        tabStyled={styles.tabStyled}
+        tabStyledDisabled={styles.btnStyleDisabled}
+        titleStyled={styles.titleStyled}
+        titleDisabledStyle={styles.titleDisabledStyle}
       >
-        <View
-          tabID="TAB-PORTFOLIO-DETAIL-ACCESS-OTA"
-          label="Version 2"
-          tabStyled={styled.tabStyled}
-          tabStyledDisabled={styled.btnStyleEnabled}
-        >
-          {AccessOTAShareSection}
-        </View>
-        <View tabID="TAB-PORTFOLIO-DETAIL-ACCESS-NFT" label="Version 1" tabStyled={styled.tabStyled}>
-          {NFTShareSection}
-        </View>
-      </Tabs>
-    </ScrollView>
+        {AccessOTAShareSection}
+      </View>
+      <View
+        tabID="TAB-PORTFOLIO-DETAIL-ACCESS-NFT"
+        label="Version 1"
+        tabStyled={styles.tabStyled}
+        tabStyledDisabled={styles.btnStyleDisabled}
+        titleStyled={styles.titleStyled}
+        titleDisabledStyle={styles.titleDisabledStyle}
+      >
+        {NFTShareSection}
+      </View>
+    </Tabs>
   );
 });
 
