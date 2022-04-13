@@ -2,16 +2,19 @@ import React from 'react';
 import {
   listShareSelector,
 } from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { compressParamsWithdrawFee } from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
 import PortfolioItem from '@screens/PDexV3/features/Portfolio/Portfolio.item';
 import { ScrollView } from 'react-native';
 import { compose } from 'recompose';
 import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
 import orderBy from 'lodash/orderBy';
+import { RefreshControl } from '@components/core';
+import { actionFetch } from '@screens/PDexV3/features/Portfolio/Portfolio.actions';
 
 const PortfolioReward = React.memo(({ createAndSendWithdrawLPFee }) => {
   const onCompressParamsWithdrawFee = useSelector(compressParamsWithdrawFee);
+  const dispatch = useDispatch();
 
   const data = useSelector(listShareSelector);
 
@@ -38,7 +41,12 @@ const PortfolioReward = React.memo(({ createAndSendWithdrawLPFee }) => {
   }, [createAndSendWithdrawLPFee]);
 
   return (
-    <ScrollView contentContainerStyle={{ paddingHorizontal: 24 }}>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={false} onRefresh={() => dispatch(actionFetch())} />
+      }
+      contentContainerStyle={{ paddingHorizontal: 24 }}
+    >
       {listShareRewardID.map(renderItem)}
     </ScrollView>
   );

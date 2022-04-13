@@ -8,10 +8,11 @@ import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import PortfolioItem from '@screens/PDexV3/features/Portfolio/Portfolio.item';
 import { compose } from 'recompose';
 import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { compressParamsWithdrawFee } from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
-import { ScrollView, Tabs } from '@components/core';
+import { RefreshControl, ScrollView, Tabs } from '@components/core';
 import { FONT } from '@src/styles';
+import { actionFetch } from '@screens/PDexV3/features/Portfolio/Portfolio.actions';
 
 export const styles = StyleSheet.create({
   title: {
@@ -66,6 +67,7 @@ export const styles = StyleSheet.create({
 
 const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
   const nftShare = useDebounceSelector(nftShareFormatedSelector);
+  const dispatch = useDispatch();
   const accessOTAShare = useDebounceSelector(accessOTAShareFormatedSelector);
   const onCompressParamsWithdrawFee = useSelector(compressParamsWithdrawFee);
 
@@ -95,6 +97,9 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
   const NFTShareSection = React.useMemo(() => {
     return (
       <FlatList
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={() => dispatch(actionFetch())} />
+        }
         data={nftShareIDs}
         renderItem={renderItem}
         keyExtractor={item => item}
@@ -106,6 +111,9 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
   const AccessOTAShareSection = React.useMemo(() => {
     return (
       <FlatList
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={() => dispatch(actionFetch())} />
+        }
         data={accessOTAShareIDs}
         renderItem={renderItem}
         keyExtractor={item => item}
