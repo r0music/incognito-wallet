@@ -185,7 +185,6 @@ const compressParamsCreatePool = createSelector(
       amount2: String(originalInputAmount2),
       amp,
     };
-    console.log('params: ', params);
     return params;
   }
 );
