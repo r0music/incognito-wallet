@@ -1,8 +1,6 @@
 import React from 'react';
-import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import {
-  accessOTAShareFormatedSelector,
-  nftShareFormatedSelector
+  listShareSelector,
 } from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
 import { useSelector } from 'react-redux';
 import { compressParamsWithdrawFee } from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
@@ -10,18 +8,17 @@ import PortfolioItem from '@screens/PDexV3/features/Portfolio/Portfolio.item';
 import { ScrollView } from 'react-native';
 import { compose } from 'recompose';
 import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
+import orderBy from 'lodash/orderBy';
 
 const PortfolioReward = React.memo(({ createAndSendWithdrawLPFee }) => {
-  const nftShare = useDebounceSelector(nftShareFormatedSelector);
-  const accessOTAShare = useDebounceSelector(accessOTAShareFormatedSelector);
   const onCompressParamsWithdrawFee = useSelector(compressParamsWithdrawFee);
 
-  const nftShareIDs = React.useMemo(() =>
-      nftShare.map(({ shareId }) => shareId) || []
-    , [nftShare.length]);
-  const accessOTAShareIDs = React.useMemo(() =>
-      accessOTAShare.map(({ shareId }) => shareId)
-    , [accessOTAShare.length]);
+  const data = useSelector(listShareSelector);
+
+  const listShareRewardID = React.useMemo(() => {
+    if (!data) return [];
+    return orderBy(data, 'totalRewardAmount', 'desc').filter(item => item.withdrawable).map(({ shareId }) => shareId);
+  }, [data]);
 
   const handleWithdrawFee = ({ poolId, shareId }) => {
     const { params, versionTx } = onCompressParamsWithdrawFee({ poolId, shareId });
@@ -42,8 +39,7 @@ const PortfolioReward = React.memo(({ createAndSendWithdrawLPFee }) => {
 
   return (
     <ScrollView contentContainerStyle={{ paddingHorizontal: 24 }}>
-      {accessOTAShareIDs.map(renderItem)}
-      {nftShareIDs.map(renderItem)}
+      {listShareRewardID.map(renderItem)}
     </ScrollView>
   );
 });
