@@ -156,7 +156,6 @@ const OTAContribute = ({
   error,
 }) => {
   const isFetching = useSelector(OTAContributeSelector.statusSelector);
-  console.log('SANG TEST::: ', isFetching);
   const { feeAmountStr, showFaucet } = useSelector(OTAContributeSelector.feeAmountSelector);
   const _error = useSendSelf({ error, setLoading, setError });
   const onSubmit = (params) => {

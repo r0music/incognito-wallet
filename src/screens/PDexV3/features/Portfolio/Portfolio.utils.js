@@ -2,6 +2,7 @@ import { getExchangeRate, getPrincipal, getShareStr } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
 import format from '@utils/format';
 import convert from '@utils/convert';
+import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 
 const mapRewardToUSD = ({ rewards, getPrivacyDataByTokenID }) => {
   let mapRewards = Object.keys(rewards).map(tokenId => ({
@@ -92,9 +93,10 @@ const formatPureData = (poolShare, shareDetails, getPrivacyDataByTokenID) => {
   }));
 
   // Collected order rewards fee
+  const autoWithdrawStr = '(auto withdraw)';
   const hookOrderRewards = mapOrderRewards.map((item) => ({
     label: 'Order reward',
-    valueText: item.rewardStr,
+    valueText: `${item.rewardStr} ${versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID ? autoWithdrawStr : ''}`,
   }));
 
   const hookFactories = [
