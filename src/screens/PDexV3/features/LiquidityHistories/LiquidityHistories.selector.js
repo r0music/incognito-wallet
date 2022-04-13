@@ -80,36 +80,27 @@ const mapContributeData = createSelector(
         };
       });
 
-      const { refund, retry, nftid: nftId, pairHash } = history;
+      const { refund, retry, nftid: nftId } = history;
       let refundData;
       let retryData;
-      if (!isEmpty(refund) && refund.amp) {
-        const { tokenId, amount, amp } = refund;
+      if (!isEmpty(refund) && refund.tokenId) {
+        const { tokenId } = refund;
         const token = getPrivacyDataByTokenID(tokenId);
         refundData = {
-          tokenId,
-          amount,
-          token,
+          ...refund,
           title: 'Refund',
-          pairHash,
-          nftId,
-          amp,
-          poolId: history.poolId,
+          token,
+          nftId
         };
       }
 
-      if (!isEmpty(retry) && retry.amp) {
-        const { tokenId, amount, amp } = retry;
+      if (!isEmpty(retry) && retry.tokenId) {
+        const { tokenId } = retry;
         const token = getPrivacyDataByTokenID(tokenId);
         retryData = {
-          tokenId,
-          amount,
+          ...retry,
           token,
           title: 'Retry',
-          pairHash,
-          nftId,
-          amp,
-          poolId: history.poolId,
         };
       }
       const statusColor = mapLiquidityHistoryStatusColor(history.statusStr);
