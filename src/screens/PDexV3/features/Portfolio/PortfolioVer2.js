@@ -13,6 +13,7 @@ import { compressParamsWithdrawFee } from '@screens/PDexV3/features/Liquidity/Li
 import { RefreshControl, ScrollView, Tabs } from '@components/core';
 import { FONT } from '@src/styles';
 import { actionFetch } from '@screens/PDexV3/features/Portfolio/Portfolio.actions';
+import { EmptyBookIcon } from '@components/Icons';
 
 export const styles = StyleSheet.create({
   title: {
@@ -63,6 +64,9 @@ export const styles = StyleSheet.create({
   titleDisabledStyle: {
     color: '#9C9C9C',
   },
+  contentContainerStyle: {
+    paddingHorizontal: 24, flex: 1
+  }
 });
 
 const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
@@ -103,7 +107,10 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
         data={nftShareIDs}
         renderItem={renderItem}
         keyExtractor={item => item}
-        contentContainerStyle={{ paddingHorizontal: 24 }}
+        contentContainerStyle={styles.contentContainerStyle}
+        ListEmptyComponent={
+          <EmptyBookIcon message="Join a pool to contribute liquidity and earn rewards." />
+        }
       />
     );
   }, [nftShareIDs.length]);
@@ -117,7 +124,10 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
         data={accessOTAShareIDs}
         renderItem={renderItem}
         keyExtractor={item => item}
-        contentContainerStyle={{ paddingHorizontal: 24 }}
+        contentContainerStyle={styles.contentContainerStyle}
+        ListEmptyComponent={
+          <EmptyBookIcon message="Join a pool to contribute liquidity and earn rewards." />
+        }
       />
     );
   }, [accessOTAShareIDs.length]);
