@@ -15,7 +15,7 @@ import mainStyles from '@screens/PoolV2/style';
 import { colorsSelector } from '@src/theme';
 import { useSelector } from 'react-redux';
 import globalStyled from '@src/theme/theme.styled';
-import withData from './data.enhance';
+import withData, { LockStatus } from './data.enhance';
 import styles from './style';
 
 const LockHistory = ({
@@ -49,8 +49,9 @@ const LockHistory = ({
         ? (
           <ScrollViewBorder style={[mainStyles.coinContainerNoMargin, { paddingHorizontal: 0, paddingTop: 24 }]}>
             {lockHistories.map((item, index) => {
+              const isEndTerm = item.active === LockStatus.Finished;
               return (
-                <>
+                <View>
                   <View key={item.symbol} style={globalStyled.defaultPaddingHorizontal}>
                     <Row>
                       <View>
@@ -75,13 +76,30 @@ const LockHistory = ({
                         <Text style={[mainStyles.textRight, styles.unlockDate]}>
                           {item.displayUnlockDate}
                         </Text>
+                        {isEndTerm && (
+                          <View style={{
+                            backgroundColor: colors.btnBG3, alignSelf: 'flex-end', borderRadius: 12,
+                            paddingHorizontal: 8
+                          }}
+                          >
+                            <Text style={[
+                              mainStyles.textCenter,
+                              styles.endTerm,
+                              { color: colors.blue1 }
+                            ]}
+                            >
+                              End Term
+                            </Text>
+                          </View>
+                        )}
                       </View>
                     </Row>
                   </View>
                   {index === lockHistories.length - 1  ? null :  <Divider color={COLORS.lightGrey31} dividerStyled={styles.divider} />}
-                </>
+                </View>
               );
             })}
+            <View style={{ height: 30 }} />
           </ScrollViewBorder>
         )
         : renderEmptyList()

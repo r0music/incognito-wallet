@@ -21,6 +21,7 @@ const ListReceivers = (props) => {
     <>
       {receivers?.map((receiver, index) => (
         <DropdownMenu
+          defaultToggle={index === 0}
           sections={[receiver]}
           renderItem={({ item }) => {
             return (

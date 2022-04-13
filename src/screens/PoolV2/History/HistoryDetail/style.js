@@ -17,6 +17,7 @@ export default StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 8,
     marginVertical: 5,
+    overflow: 'hidden'
   },
   error: {
     color: COLORS.red,

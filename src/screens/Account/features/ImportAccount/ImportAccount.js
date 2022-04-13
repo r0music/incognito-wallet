@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View, Button } from '@src/components/core';
+import { Text, TouchableOpacity, View, Button, ScrollView, ScrollViewBorder } from '@src/components/core';
 import { Text4 } from '@src/components/core/Text';
 import PropTypes from 'prop-types';
 import { Field } from 'redux-form';
@@ -9,10 +9,13 @@ import {
 } from '@src/components/core/reduxForm';
 import React from 'react';
 import { ButtonBasic } from '@src/components/Button';
-import MainLayout from '@components/MainLayout/index';
+import { Header } from '@src/components';
+import { compose } from 'recompose';
+import { withLayout_2 } from '@components/Layout';
 import styleSheet from './ImportAccount.styled';
 // eslint-disable-next-line import/no-cycle
 import withImportAccount from './ImportAccount.enhance';
+
 
 export const formImportAccount = {
   formName: 'formImportAccount',
@@ -118,9 +121,12 @@ const ImportAccount = (props) => {
   };
 
   return (
-    <MainLayout header="Import keychain" scrollable keyboardAware noPaddingBottom>
-      {wantImport ? renderConfirm() : renderForm()}
-    </MainLayout>
+    <>
+      <Header title="Import keychain" />
+      <ScrollViewBorder>
+        {wantImport ? renderConfirm() : renderForm()}
+      </ScrollViewBorder>
+    </>
   );
 };
 
@@ -141,4 +147,7 @@ ImportAccount.propTypes = {
   checking: PropTypes.bool.isRequired,
 };
 
-export default withImportAccount(ImportAccount);
+export default compose(
+  withLayout_2,
+  withImportAccount
+)(ImportAccount);

@@ -153,6 +153,8 @@ export class PoolHistory {
       'Withdraw reward',
       'None',
       'Migrate',
+      '',
+      'Provide'
     ][data.Type];
 
     if (this.locked) {

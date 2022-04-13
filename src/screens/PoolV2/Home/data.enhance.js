@@ -10,6 +10,7 @@ import { useFocusEffect } from 'react-navigation-hooks';
 import { useSelector } from 'react-redux';
 import { PRV_ID } from '@src/screens/DexV2/constants';
 import { selectedPrivacySelector } from '@src/redux/selectors';
+import { LockStatus } from '@screens/PoolV2/LockHistory/LockHistoryList/data.enhance';
 
 const withPoolData = (WrappedComp) => (props) => {
   const [loading, setLoading] = useState(false);
@@ -89,8 +90,9 @@ const withPoolData = (WrappedComp) => (props) => {
         });
         let mapCoin = {...newItem.coin};
         if (sameIDItems && sameIDItems.length > 0) {
-          let totalBalance = new BigNumber(item.balance);
-          let totalReward = new BigNumber(item.rewardBalance);
+          const isEndTerm = item.locked && item.active === LockStatus.Finished;
+          let totalBalance = new BigNumber(isEndTerm ? 0 : item.balance);
+          let totalReward = new BigNumber(isEndTerm ? 0 : item.rewardBalance);
           let totalPendingBalance = new BigNumber(item.pendingBalance);
           let totalUnstakePendingBalance = new BigNumber(item.unstakePendingBalance);
           let totalWithdrawPendingBalance = new BigNumber(item.withdrawPendingBalance);
@@ -102,8 +104,9 @@ const withPoolData = (WrappedComp) => (props) => {
             }
           ];
           sameIDItems.map(i => {
-            totalBalance = totalBalance.plus(new BigNumber(i.balance));
-            totalReward = totalReward.plus(new BigNumber(i.rewardBalance));
+            const isEndTerm = i.locked && i.active === LockStatus.Finished;
+            totalBalance = totalBalance.plus(new BigNumber(isEndTerm ? 0 : i.balance));
+            totalReward = totalReward.plus(new BigNumber(isEndTerm ? 0 : i.rewardBalance));
             totalPendingBalance = totalPendingBalance.plus(new BigNumber(i.pendingBalance));
             totalUnstakePendingBalance = totalUnstakePendingBalance.plus(new BigNumber(i.unstakePendingBalance));
             totalWithdrawPendingBalance = totalWithdrawPendingBalance.plus(new BigNumber(i.withdrawPendingBalance));
@@ -162,8 +165,10 @@ const withPoolData = (WrappedComp) => (props) => {
       setWithdrawable(false);
     }
 
-    const totalReducer = (accumulator, item) =>
-      accumulator + item.rewardBalance;
+    const totalReducer = (accumulator, item) => {
+      const isLocked = item.locked;
+      return accumulator + (isLocked ? 0 : item.rewardBalance);
+    };
     const totalRewards = userData.reduce(totalReducer, 0);
 
     const totalReducerNonLock = (accumulator, item) =>
