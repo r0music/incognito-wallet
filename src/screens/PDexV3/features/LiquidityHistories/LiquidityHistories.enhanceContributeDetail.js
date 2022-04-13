@@ -10,7 +10,6 @@ import {liquidityHistoryActions} from '@screens/PDexV3/features/LiquidityHistori
 import {actionSetNFTTokenData} from '@src/redux/actions/account';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
-import {ACCOUNT_CONSTANT} from 'incognito-chain-web-js/build/wallet';
 
 const withContributeDetail = WrappedComp => props => {
   const dispatch = useDispatch();
@@ -28,47 +27,21 @@ const withContributeDetail = WrappedComp => props => {
     });
     setTimeout(() => { navigation.navigate(routeNames.LiquidityHistories); }, 500);
   };
-  const handleRefund = async (refundData) => {
+  const handleRefund = async ({ fee, tokenID, poolPairID, pairHash, nftID, amplifier }) => {
     if (loading) return;
     setLoading(true);
     try {
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      const {
-        versionTx,
-        tokenId: tokenID,
-        poolPairID,
-        pairHash,
-        amplifier,
-        accessID,
-        sharedAccessReceiver ,
-        isFirstContribution,
-        nftID
-      } = refundData;
-      if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
-        await pDexV3Inst.createAndSendContributeRequestTxWithAccessToken({
-          transfer: { fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX, tokenID },
-          extra: {
-            poolPairID,
-            pairHash,
-            contributedAmount: String(1),
-            accessID,
-            amplifier,
-            sharedAccessReceiver,
-            isFirstContribution
-          },
-        });
-      } else {
-        await pDexV3Inst.createAndSendContributeRequestTx({
-          transfer: { fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX, tokenID },
-          extra: {
-            poolPairID,
-            pairHash,
-            contributedAmount: String(1),
-            nftID,
-            amplifier,
-          },
-        });
-      }
+      await pDexV3Inst.createAndSendContributeRequestTx({
+        transfer: { fee, tokenID },
+        extra: {
+          poolPairID,
+          pairHash,
+          contributedAmount: String(1),
+          nftID,
+          amplifier,
+        },
+      });
       onSuccess();
     } catch (error) {
       new ExHandler(error).showErrorToast();
@@ -76,48 +49,21 @@ const withContributeDetail = WrappedComp => props => {
       setLoading(false);
     }
   };
-  const handleRetry = async (retryData) => {
+  const handleRetry = async ({ fee, tokenID, poolPairID, pairHash, nftID, amplifier, amount }) => {
     if (loading) return;
     setLoading(true);
     try {
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      const {
-        versionTx,
-        tokenId: tokenID,
-        poolPairID,
-        pairHash,
-        amplifier,
-        accessID,
-        sharedAccessReceiver ,
-        isFirstContribution,
-        nftID,
-        contributedAmount
-      } = retryData;
-      if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
-        await pDexV3Inst.createAndSendContributeRequestTxWithAccessToken({
-          transfer: { fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX, tokenID },
-          extra: {
-            poolPairID,
-            pairHash,
-            contributedAmount: String(contributedAmount),
-            accessID,
-            amplifier,
-            sharedAccessReceiver,
-            isFirstContribution
-          },
-        });
-      } else {
-        await pDexV3Inst.createAndSendContributeRequestTx({
-          transfer: { fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX, tokenID },
-          extra: {
-            poolPairID,
-            pairHash,
-            contributedAmount: String(contributedAmount),
-            nftID,
-            amplifier,
-          },
-        });
-      }
+      await pDexV3Inst.createAndSendContributeRequestTx({
+        transfer: { fee, tokenID },
+        extra: {
+          poolPairID,
+          pairHash,
+          contributedAmount: String(amount),
+          nftID,
+          amplifier,
+        },
+      });
       onSuccess();
     } catch (error) {
       new ExHandler(error).showErrorToast();
