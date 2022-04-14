@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
   wrapTap: {
     marginTop: 12,
     backgroundColor: 'transparent',
-    paddingHorizontal: 24
+    paddingHorizontal: 24,
   },
   tabStyled: {
     borderRadius: 100,
@@ -65,7 +65,10 @@ export const styles = StyleSheet.create({
     color: '#9C9C9C',
   },
   contentContainerStyle: {
-    paddingHorizontal: 24, flex: 1
+    paddingHorizontal: 24,
+  },
+  fullFlex: {
+    flex: 1
   }
 });
 
@@ -96,6 +99,10 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
         onWithdrawFeeLP={handleWithdrawFee}
       />
     );
+  }, []);
+
+  const EmptyList = React.useMemo(() => {
+    return <EmptyBookIcon message="Join a pool to contribute liquidity and earn rewards." />;
   }, []);
 
   const NFTShareSection = React.useMemo(() => {
@@ -147,7 +154,7 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
         titleStyled={styles.titleStyled}
         titleDisabledStyle={styles.titleDisabledStyle}
       >
-        {AccessOTAShareSection}
+        {accessOTAShareIDs.length > 0 ? AccessOTAShareSection : EmptyList}
       </View>
       <View
         tabID="TAB-PORTFOLIO-DETAIL-ACCESS-NFT"
@@ -157,7 +164,7 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
         titleStyled={styles.titleStyled}
         titleDisabledStyle={styles.titleDisabledStyle}
       >
-        {NFTShareSection}
+        {nftShareIDs.length > 0 ? NFTShareSection : EmptyList}
       </View>
     </Tabs>
   );
