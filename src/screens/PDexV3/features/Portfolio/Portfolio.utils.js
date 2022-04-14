@@ -90,6 +90,7 @@ const formatPureData = (poolShare, shareDetails, getPrivacyDataByTokenID) => {
   const hookLPRewards = mapLPRewards.map((item) => ({
     label: 'Fees collected',
     valueText: item.rewardStr,
+    disabled: !item.rewardUSD
   }));
 
   // Collected order rewards fee
@@ -97,6 +98,7 @@ const formatPureData = (poolShare, shareDetails, getPrivacyDataByTokenID) => {
   const hookOrderRewards = mapOrderRewards.map((item) => ({
     label: 'Order reward',
     valueText: `${item.rewardStr} ${versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID ? autoWithdrawStr : ''}`,
+    disabled: !item.rewardUSD
   }));
 
   const hookFactories = [
