@@ -9,7 +9,7 @@ import { ScrollView } from 'react-native';
 import { compose } from 'recompose';
 import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
 import orderBy from 'lodash/orderBy';
-import { RefreshControl } from '@components/core';
+import { RefreshControl, View } from '@components/core';
 import { actionFetch } from '@screens/PDexV3/features/Portfolio/Portfolio.actions';
 import { EmptyBookIcon } from '@components/Icons';
 
@@ -41,15 +41,16 @@ const PortfolioReward = React.memo(({ createAndSendWithdrawLPFee }) => {
     );
   }, [createAndSendWithdrawLPFee]);
   return (
-    <ScrollView
-      refreshControl={
-        <RefreshControl refreshing={false} onRefresh={() => dispatch(actionFetch())} />
-      }
-      contentContainerStyle={{ paddingHorizontal: 24, flex: 1 }}
-    >
-      {listShareRewardID.length > 0 ? listShareRewardID.map(renderItem) : <EmptyBookIcon message="Join a pool to contribute liquidity and earn rewards." />}
-      {listShareRewardID.map(renderItem)}
-    </ScrollView>
+    <View fullFlex>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={() => dispatch(actionFetch())} />
+        }
+        contentContainerStyle={{ paddingHorizontal: 24 }}
+      >
+        {listShareRewardID.length > 0 ? listShareRewardID.map(renderItem) : <EmptyBookIcon message="Join a pool to contribute liquidity and earn rewards." />}
+      </ScrollView>
+    </View>
   );
 });
 
