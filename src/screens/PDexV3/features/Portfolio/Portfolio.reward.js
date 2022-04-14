@@ -25,7 +25,7 @@ const PortfolioReward = React.memo(({ createAndSendWithdrawLPFee }) => {
   }, [data]);
 
   const handleWithdrawFee = ({ poolId, shareId }) => {
-    const { params, versionTx } = onCompressParamsWithdrawFee({ poolId, shareId });
+    const { params, versionTx } = onCompressParamsWithdrawFee({ poolId, shareId }) || {};
     if (typeof createAndSendWithdrawLPFee !== 'function' || !params) return;
     createAndSendWithdrawLPFee(params, versionTx);
   };

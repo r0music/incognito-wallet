@@ -17,7 +17,7 @@ export const compressParamsWithdrawFee = createSelector(
 
     // Get params
     const { nftId, tokenId1, tokenId2, rewards, orderRewards, currentAccessOta, versionTx } = dataShare;
-    if (!currentAccessOta) return null;
+    if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID && !currentAccessOta) return null;
 
     // Get Token fee
     let tokenIDs = [tokenId1, tokenId2]
