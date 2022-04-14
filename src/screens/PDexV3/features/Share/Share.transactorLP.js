@@ -44,7 +44,6 @@ const withLPTransaction = WrappedComp => props => {
     }
   };
 
-
   /**
    * @param params Information contribute liquidity params.
    * @param {string} params.tokenId1 Token 1 contributed.
@@ -74,9 +73,9 @@ const withLPTransaction = WrappedComp => props => {
       setLoading(true);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
-        await pDexV3Inst.createAndSendWithdrawContributeRequestTx(params);
-      } else {
         await pDexV3Inst.createAndSendWithdrawContributeRequestTxWithAccessToken(params);
+      } else {
+        await pDexV3Inst.createAndSendWithdrawContributeRequestTx(params);
       }
       onShowSuccess();
     } catch (error) {
