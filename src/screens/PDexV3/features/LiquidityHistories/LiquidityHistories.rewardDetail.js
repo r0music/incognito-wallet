@@ -23,6 +23,7 @@ const WithdrawFeeLPDetail = () => {
         label: 'TicketID',
         valueText: nftId,
         copyable: true,
+        disabled: !nftId,
       },
       {
         label: 'TxID',
