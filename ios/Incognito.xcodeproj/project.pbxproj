@@ -29,8 +29,7 @@
 		20B559AF22C393B10079FC06 /* Gomobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B559AE22C393B10079FC06 /* Gomobile.m */; };
 		3B50FECFE455494A8373E5A6 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ECBE1563D1B5449E86A7658F /* libRNVectorIcons.a */; };
 		3EF0EC91E7FE4B16A434459C /* libRNZmqService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */; };
-		52B50DA9280EA0D900C2DC64 /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52B50DA5280EA0D900C2DC64 /* Gomobile.framework */; };
-		52FE258D2806BAED0080A3FA /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52FE258C2806BAED0080A3FA /* Gomobile.framework */; };
+		52B50DBF280EDCF000C2DC64 /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52B50DBE280EDCF000C2DC64 /* Gomobile.framework */; };
 		712C447B244313E700A3CBA6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 712C447A244313E700A3CBA6 /* GoogleService-Info.plist */; };
 		71ACEF372477D8CE003AE3E3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 71ACEF362477D8CE003AE3E3 /* Images.xcassets */; };
 		7951D9F679874B4EA8E3CFEE /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27AAED89E8AD4248BBC41F79 /* libRNFirebase.a */; };
@@ -139,8 +138,7 @@
 		4BA287542ADF445498FC2188 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		50F2B7356C5248EC3BD2EFD3 /* Pods-Incognito.next3.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Incognito.next3.xcconfig"; path = "Target Support Files/Pods-Incognito/Pods-Incognito.next3.xcconfig"; sourceTree = "<group>"; };
 		51B80536E38043E2810D70AD /* PostGroteskLightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskLightItalic.otf; path = ../src/assets/fonts/PostGroteskLightItalic.otf; sourceTree = "<group>"; };
-		52B50DA5280EA0D900C2DC64 /* Gomobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gomobile.framework; sourceTree = "<group>"; };
-		52FE258C2806BAED0080A3FA /* Gomobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gomobile.framework; sourceTree = "<group>"; };
+		52B50DBE280EDCF000C2DC64 /* Gomobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gomobile.framework; sourceTree = "<group>"; };
 		570EC87F438D402B8F1B76AE /* PostGroteskBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskBold.otf; path = ../src/assets/fonts/PostGroteskBold.otf; sourceTree = "<group>"; };
 		59AFD324B84E4A7DB397B0B9 /* PostGroteskBoldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskBoldItalic.otf; path = ../src/assets/fonts/PostGroteskBoldItalic.otf; sourceTree = "<group>"; };
 		5A53B1ED9DEB4B68B5B3BA7F /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
@@ -224,7 +222,7 @@
 				FE5C9FA82355D46900AC6E90 /* libreact-native-netinfo.a in Frameworks */,
 				FEEBD6E32355CBB3006EFECD /* libreact-native-camera.a in Frameworks */,
 				FEEBD6DB2355CA94006EFECD /* libRNPermissions.a in Frameworks */,
-				52FE258D2806BAED0080A3FA /* Gomobile.framework in Frameworks */,
+				52B50DBF280EDCF000C2DC64 /* Gomobile.framework in Frameworks */,
 				FEEBD6D72355CA35006EFECD /* libreact-native-randombytes.a in Frameworks */,
 				FE86096522D747230050666A /* libFirebaseCore.a in Frameworks */,
 				ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */,
@@ -238,7 +236,6 @@
 				7951D9F679874B4EA8E3CFEE /* libRNFirebase.a in Frameworks */,
 				C2E73AA50DDC4747BAD7CC54 /* libRNOS.a in Frameworks */,
 				D7BDB11DB76A47B9A686E426 /* libTcpSockets.a in Frameworks */,
-				52B50DA9280EA0D900C2DC64 /* Gomobile.framework in Frameworks */,
 				3EF0EC91E7FE4B16A434459C /* libRNZmqService.a in Frameworks */,
 				C944FB71546FC63E3C584A22 /* libPods-Incognito.a in Frameworks */,
 			);
@@ -361,8 +358,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				52FE258C2806BAED0080A3FA /* Gomobile.framework */,
-				52B50DA5280EA0D900C2DC64 /* Gomobile.framework */,
+				52B50DBE280EDCF000C2DC64 /* Gomobile.framework */,
 				1F29808A246D5526000EE1C6 /* fonts */,
 				FD6F21E024750AA0000CC07D /* BridgeLottie.swift */,
 				FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */,
