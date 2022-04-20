@@ -177,9 +177,9 @@ const compressRemovePoolParams = createSelector(
         nftID: shareData.nftId,
       };
     }
-    console.log('shareData: ', params);
     return {
       params,
+      versionTx: shareData.versionTx
     };
   }
 );
