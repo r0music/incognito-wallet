@@ -10,7 +10,6 @@ import {CONSTANT_CONFIGS} from '@src/constants';
 import {ButtonBasic} from '@components/Button';
 import withContributeDetail
   from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.enhanceContributeDetail';
-import {ACCOUNT_CONSTANT} from 'incognito-chain-web-js/build/wallet';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout';
@@ -26,30 +25,11 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
     linkingService.openUrlInSide(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txID}`,);
   };
   const onRefundTx = () => {
-    const { tokenId, poolId, pairHash, nftId, amp } = refundData;
-    const params = {
-      fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,
-      tokenID: tokenId,
-      poolPairID: poolId || '',
-      pairHash,
-      nftID: nftId,
-      amplifier: amp || 0,
-    };
-    handleRefund(params);
+    handleRefund(refundData);
   };
 
   const onRetryTx = () => {
-    const { tokenId, poolId, pairHash, nftId, amp, amount } = retryData;
-    const params = {
-      fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,
-      tokenID: tokenId,
-      poolPairID: poolId || '',
-      pairHash,
-      nftID: nftId,
-      amplifier: amp || 0,
-      amount,
-    };
-    handleRetry(params);
+    handleRetry(retryData);
   };
   const hookFactories = React.useMemo(() => {
     const { pairId, poolId, statusStr, contributes, storageValue, timeStr, returnValue, statusColor } = history;

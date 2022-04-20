@@ -10,6 +10,7 @@ import {liquidityHistoryActions} from '@screens/PDexV3/features/LiquidityHistori
 import {actionSetNFTTokenData} from '@src/redux/actions/account';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
+import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 
 const withContributeDetail = WrappedComp => props => {
   const dispatch = useDispatch();
@@ -27,21 +28,24 @@ const withContributeDetail = WrappedComp => props => {
     });
     setTimeout(() => { navigation.navigate(routeNames.LiquidityHistories); }, 500);
   };
-  const handleRefund = async ({ fee, tokenID, poolPairID, pairHash, nftID, amplifier }) => {
+  const handleRefund = async (params) => {
     if (loading) return;
     setLoading(true);
     try {
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      await pDexV3Inst.createAndSendContributeRequestTx({
-        transfer: { fee, tokenID },
+      const { tokenId, versionTx } = params;
+      const reFundParams = {
+        transfer: { tokenID: tokenId, fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX },
         extra: {
-          poolPairID,
-          pairHash,
-          contributedAmount: String(1),
-          nftID,
-          amplifier,
+          ...params,
         },
-      });
+      };
+
+      if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
+        await pDexV3Inst.createAndSendContributeRequestTxWithAccessToken(reFundParams);
+      } else {
+        await pDexV3Inst.createAndSendContributeRequestTx(reFundParams);
+      }
       onSuccess();
     } catch (error) {
       new ExHandler(error).showErrorToast();
@@ -49,21 +53,23 @@ const withContributeDetail = WrappedComp => props => {
       setLoading(false);
     }
   };
-  const handleRetry = async ({ fee, tokenID, poolPairID, pairHash, nftID, amplifier, amount }) => {
+  const handleRetry = async (params) => {
     if (loading) return;
     setLoading(true);
     try {
+      const { tokenId, versionTx } = params;
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      await pDexV3Inst.createAndSendContributeRequestTx({
-        transfer: { fee, tokenID },
+      const reTryParams = {
+        transfer: { tokenID: tokenId, fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX },
         extra: {
-          poolPairID,
-          pairHash,
-          contributedAmount: String(amount),
-          nftID,
-          amplifier,
+          ...params,
         },
-      });
+      };
+      if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
+        await pDexV3Inst.createAndSendContributeRequestTxWithAccessToken(reTryParams);
+      } else {
+        await pDexV3Inst.createAndSendContributeRequestTx(reTryParams);
+      }
       onSuccess();
     } catch (error) {
       new ExHandler(error).showErrorToast();
