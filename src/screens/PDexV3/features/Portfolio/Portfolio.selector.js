@@ -8,7 +8,8 @@ import {
 } from '@screens/PDexV3';
 import format from '@src/utils/format';
 import convert from '@utils/convert';
-import {getValidRealAmountNFTSelector, isFetchingNFTSelector} from '@src/redux/selectors/account';
+import { getValidRealAmountNFTSelector, isFetchingNFTSelector } from '@src/redux/selectors/account';
+import { formatAccessOTAShare, formatNFTShare } from '@screens/PDexV3/features/Portfolio/Portfolio.utils';
 
 export const portfolioSelector = createSelector(
   (state) => state.pDexV3,
@@ -50,149 +51,36 @@ const mapRewardToUSD = ({ rewards, getPrivacyDataByTokenID }) => {
   return mapRewards;
 };
 
-export const listShareSelector = createSelector(
+const nftShareSelector = createSelector(
   portfolioSelector,
+  ({ dataShare }) => dataShare.nftShare
+);
+
+const accessOTAShareSelector = createSelector(
+  portfolioSelector,
+  ({ dataShare }) => dataShare.accessOTAShare
+);
+
+export const nftShareFormatedSelector = createSelector(
+  nftShareSelector,
   shareDetailsSelector,
   getPrivacyDataByTokenIDSelector,
   getValidRealAmountNFTSelector,
   isFetchingNFTSelector,
-  (portfolio, shareDetails, getPrivacyDataByTokenID, getValidRealAmountNFT, isFetchingNFT) => {
-    const { data } = portfolio;
-    return data.map((item) => {
-      const {
-        share,
-        totalShare,
-        poolId,
-        withdrawing,
-        withdrawable,
-        tokenId1,
-        tokenId2,
-        rewards,
-        orderRewards,
-        nftId
-      } = item;
-      const poolDetail = shareDetails.find((share) => poolId === share.poolId);
-      let { amp, apy, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolDetail || {};
-      apy = apy || 0;
-      const token1 = getPrivacyDataByTokenID(tokenId1);
-      const token2 = getPrivacyDataByTokenID(tokenId2);
-      const shareId = `${nftId}-${poolId}`;
-      const exchangeRateStr = getExchangeRate(
-        token1,
-        token2,
-        token1PoolValue,
-        token2PoolValue,
-      );
-      const principal = getPrincipal({
-        token1,
-        token2,
-        shareData: {
-          ...item,
-          token1PoolValue,
-          token2PoolValue,
-        }
-      });
-      const principalUSDHuman = new BigNumber(principal.token1USDHuman).plus(principal.token2USDHuman).toNumber();
-      const principalUSD = format.amountVer2(Math.ceil(new BigNumber(principalUSDHuman).multipliedBy(Math.pow(10, 9)).toNumber()), 9);
+  formatNFTShare,
+);
 
-      const shareStr = getShareStr(share, totalShare);
-      const validNFT = !!getValidRealAmountNFT(nftId);
-      const disableBtn = isFetchingNFT || !validNFT;
-      const mapLPRewards = mapRewardToUSD({
-        rewards: rewards || {},
-        getPrivacyDataByTokenID
-      }) || [];
-      const mapOrderRewards = mapRewardToUSD({
-        rewards: orderRewards  || {},
-        getPrivacyDataByTokenID
-      }) || [];
-      const totalRewardUSD = mapLPRewards.concat(mapOrderRewards).reduce((prev, curr) => new BigNumber(prev).plus(curr.rewardUSD).toNumber(), 0);
-      const totalRewardAmount = Math.ceil(new BigNumber(totalRewardUSD).multipliedBy(Math.pow(10, 9)).toNumber());
-      const totalRewardUSDStr = format.amountVer2(totalRewardAmount, 9);
-      const rewardUSDSymbolStr = `$${totalRewardUSDStr}`;
-      const hookLPRewards = mapLPRewards.map((item) => ({
-        label: 'Fees collected',
-        valueText: item.rewardStr,
-      }));
+export const accessOTAShareFormatedSelector = createSelector(
+  accessOTAShareSelector,
+  shareDetailsSelector,
+  getPrivacyDataByTokenIDSelector,
+  formatAccessOTAShare
+);
 
-      const hookOrderRewards = mapOrderRewards.map((item) => ({
-        label: 'Order reward',
-        valueText: item.rewardStr,
-      }));
-
-      const hookFactories = [
-        {
-          label: `${token1.symbol} Balance`,
-          value: principal.token1,
-        },
-        {
-          label: `${token2.symbol} Balance`,
-          value: principal.token2,
-        },
-        {
-          label: 'Rewards collected',
-          value: rewardUSDSymbolStr,
-        },
-      ];
-      const apyStr = format.amount(apy, 0);
-      let token1Network = '';
-      let token2Network = '';
-      if (token1.networkName) {
-        token1Network = `(${token1.networkName})`;
-      }
-      if (token2.networkName) {
-        token2Network = `(${token2.networkName})`;
-      }
-      const hookFactoriesDetail = [
-        {
-          label: 'APR',
-          valueText: `${apyStr}%`,
-        },
-        {
-          label: `${token1.symbol} Balance`,
-          valueText: `${principal.token1} ${token1Network}`,
-        },
-        {
-          label: `${token2.symbol} Balance`,
-          valueText: `${principal.token2} ${token2Network}`,
-        },
-        ...hookLPRewards,
-        ...hookOrderRewards,
-      ];
-
-      return {
-        ...item,
-        shareId,
-        token1,
-        token2,
-        exchangeRateStr,
-        principal,
-        shareStr,
-        hookFactories,
-        amp,
-        apy,
-        apyStr,
-        token1PoolValue,
-        token2PoolValue,
-        hookFactoriesDetail,
-        withdrawing,
-        withdrawable,
-        nftId,
-        poolId,
-        validNFT,
-        disableBtn,
-        mapLPRewards,
-        mapOrderRewards,
-        totalRewardUSD,
-        totalRewardUSDStr,
-        rewardUSDSymbolStr,
-        totalRewardAmount,
-        token1USDHuman: principal.token1USDHuman,
-        token2USDHuman: principal.token2USDHuman,
-        principalUSD,
-      };
-    });
-  },
+export const listShareSelector = createSelector(
+  nftShareFormatedSelector,
+  accessOTAShareFormatedSelector,
+  (nftShare, accessOTAShare) => [...nftShare, ...accessOTAShare],
 );
 
 export const listShareIDsSelector = createSelector(

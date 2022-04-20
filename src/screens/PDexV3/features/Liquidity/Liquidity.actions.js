@@ -7,23 +7,23 @@ import {
   formConfigsRemovePool,
   createPoolSelector
 } from '@screens/PDexV3/features/Liquidity';
-import {batch} from 'react-redux';
-import {getBalance} from '@src/redux/actions/token';
-import {ExHandler} from '@services/exception';
+import { batch } from 'react-redux';
+import { getBalance } from '@src/redux/actions/token';
+import { ExHandler } from '@services/exception';
 import uniq from 'lodash/uniq';
-import {mappingDataSelector} from '@screens/PDexV3/features/Liquidity/Liquidity.contributeSelector';
-import {actionGetPDexV3Inst, calculateContributeValue, getPDexV3Instance, parseInputWithText} from '@screens/PDexV3';
-import {change} from 'redux-form';
-import {allTokensIDsSelector} from '@src/redux/selectors/token';
-import {actionFetch as actionFetchPortfolio} from '@screens/PDexV3/features/Portfolio';
+import { mappingDataSelector } from '@screens/PDexV3/features/Liquidity/Liquidity.contributeSelector';
+import { actionGetPDexV3Inst, calculateContributeValue, getPDexV3Instance, parseInputWithText } from '@screens/PDexV3';
+import { change } from 'redux-form';
+import { allTokensIDsSelector } from '@src/redux/selectors/token';
+import { actionFetch as actionFetchPortfolio } from '@screens/PDexV3/features/Portfolio';
 import BigNumber from 'bignumber.js';
 import format from '@utils/format';
 import convertUtil from '@utils/convert';
-import {defaultAccountWalletSelector} from '@src/redux/selectors/account';
-import {actionSetNFTTokenData} from '@src/redux/actions/account';
-import {filterTokenList} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
-import {listPoolsPureSelector} from '@screens/PDexV3/features/Pools';
-import {debounce} from 'lodash';
+import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
+import { actionSetNFTTokenData } from '@src/redux/actions/account';
+import { memoizedFilterTokenList } from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
+import { listPoolsPureSelector } from '@screens/PDexV3/features/Pools';
+import { debounce } from 'lodash';
 
 /***
  *================================================================
@@ -65,10 +65,7 @@ const actionInitContribute = () => async (dispatch, getState) => {
     const poolID = contributeSelector.poolIDSelector(state);
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
-    const [poolDetails] = await Promise.all([
-      (await pDexV3Inst.getListPoolsDetail([poolID])) || [],
-      await dispatch(actionSetNFTTokenData()),
-    ]);
+    const poolDetails =(await pDexV3Inst.getListPoolsDetail([poolID])) || [];
     if (poolDetails.length > 0) {
       const contributePool = poolDetails[0];
       if (!contributePool) return;
@@ -219,7 +216,7 @@ const actionUpdateCreatePoolInputToken = (tokenId) => async (dispatch, getState)
     if (newInputToken === outputToken.tokenId) {
       newOutputToken = inputToken.tokenId;
     }
-    const outputTokens = filterTokenList({
+    const outputTokens = memoizedFilterTokenList({
       tokenId: newInputToken,
       pools,
       tokenIds,
@@ -267,19 +264,20 @@ const actionUpdateCreatePoolOutputToken = (tokenId) => async (dispatch, getState
   }
 };
 
-const actionInitCreatePool = () => async (dispatch, getState) => {
+const actionInitCreatePool = ({
+  tokenIDs,
+  listPools,
+}) => async (dispatch, getState) => {
   try {
     const state = getState();
     const isFetching = createPoolSelector.isFetchingSelector(state);
     if (isFetching) return;
     dispatch(actionSetFetchingCreatePool({ isFetching: true }));
-    const tokenIDs = allTokensIDsSelector(state);
-    const listPools = listPoolsPureSelector(state);
     const { inputToken, outputToken } = createPoolSelector.tokenSelector(state);
     let newInputToken, newOutputToken;
     if (!inputToken && !outputToken) {
       newInputToken = tokenIDs[0];
-      const outputTokens = filterTokenList({ tokenId: newInputToken, pools: listPools, tokenIds: tokenIDs, ignoreTokens: [newInputToken] });
+      const outputTokens = memoizedFilterTokenList({ tokenId: newInputToken, pools: listPools, tokenIds: tokenIDs, ignoreTokens: [newInputToken] });
       newOutputToken = outputTokens[0];
     } else {
       newInputToken = inputToken.tokenId;
@@ -288,7 +286,6 @@ const actionInitCreatePool = () => async (dispatch, getState) => {
     await Promise.all([
       dispatch(actionSetCreatePoolToken({ inputToken: newInputToken, outputToken: newOutputToken })),
       dispatch(actionGetBalance([newInputToken, newOutputToken])),
-      dispatch(actionSetNFTTokenData()),
     ]);
   } catch (error) {
     new ExHandler(error).showErrorToast();

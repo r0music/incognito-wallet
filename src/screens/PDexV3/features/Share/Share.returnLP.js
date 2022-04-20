@@ -10,7 +10,7 @@ import routeNames from '@routers/routeNames';
 const CreatePoolIcon = React.memo(() => {
   const navigation = useNavigation();
   return (
-    <TouchableOpacity onPress={() => navigation.navigate(routeNames.CreatePool)}>
+    <TouchableOpacity onPress={() => navigation.navigate(routeNames.OTACreatePool)}>
       <AddSolidIcon />
     </TouchableOpacity>
   );

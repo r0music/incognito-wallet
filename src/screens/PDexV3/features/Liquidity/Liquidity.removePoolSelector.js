@@ -11,6 +11,9 @@ import format from '@utils/format';
 import convert from '@utils/convert';
 import {formConfigsRemovePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {getValidRealAmountNFTSelector} from '@src/redux/selectors/account';
+import {
+  ACCOUNT_CONSTANT,
+} from 'incognito-chain-web-js/build/wallet';
 
 const removePoolSelector = createSelector(
   liquiditySelector,
@@ -109,7 +112,13 @@ export const inputAmountSelector = createSelector(
 export const nftTokenSelector = createSelector(
   shareDataSelector,
   getValidRealAmountNFTSelector,
-  ({ nftId: _nftId }, getValidRealAmountNFT) => {
+  ({ nftId: _nftId, versionTx }, getValidRealAmountNFT) => {
+    /** Case AccessOTA **/
+    if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
+      return _nftId;
+    }
+
+    /** Case NFT ID **/
     let _nftToken;
     const nftToken = getValidRealAmountNFT(_nftId);
     if (nftToken) {
@@ -131,7 +140,49 @@ export const disableRemovePool = createSelector(
   }
 );
 
+const compressRemovePoolParams = createSelector(
+  inputAmountSelector,
+  poolIDSelector,
+  feeAmountSelector,
+  shareDataSelector,
+  (inputAmount, poolId, fee, shareData) => {
+    const {
+      tokenId: tokenId1,
+      originalInputAmount: amount1,
+      withdraw: shareAmount
+    } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken);
+    const {
+      tokenId: tokenId2,
+      originalInputAmount: amount2
+    } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
 
+    let params = {
+      fee: fee.feeAmount,
+      poolTokenIDs: [tokenId1, tokenId2],
+      poolPairID: poolId,
+      shareAmount,
+      // nftID: nftId,
+      amount1: String(amount1),
+      amount2: String(amount2),
+    };
+    if (shareData.versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
+      params = {
+        ...params,
+        burnOTA: shareData?.currentAccessOta,
+        accessID: shareData.nftId,
+      };
+    } else {
+      params = {
+        ...params,
+        nftID: shareData.nftId,
+      };
+    }
+    return {
+      params,
+      versionTx: shareData.versionTx
+    };
+  }
+);
 export default ({
   isFetchingSelector,
   feeAmountSelector,
@@ -142,4 +193,5 @@ export default ({
   maxShareAmountSelector,
   disableRemovePool,
   nftTokenSelector,
+  compressRemovePoolParams,
 });

@@ -239,6 +239,30 @@ const BETA_2 = {
   web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
 };
 
+const ACCESS_KEY = {
+  id: 'accessKey',
+  default: false,
+  address: 'http://139.162.55.124:8334',
+  username: '',
+  password: '',
+  name: 'accessKey',
+  coinServices: 'http://51.89.21.38:4095',
+  pubsubServices: 'http://51.89.21.38:4096',
+  requestServices: 'http://51.89.21.38:4095',
+  apiServices: 'https://staging-api-service.incognito.org',
+  shardNumber: 2,
+  IncContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
+  IncBSCContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
+  explorer: 'https://explorer.incognito.org',
+  tradeServices: 'http://51.89.21.38:4095',
+  portalServices: 'https://api-portalv4.incognito.org',
+  webviewChartServices: 'https://chart-webview.incognito.org',
+  bscConfigs: BSC_CONSTANT.BSC_MAINNET_CONFIGS,
+  pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
+  uniConfigs: UNI_CONSTANTS.UNI_MAINNET_CONFIGS,
+  web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
+};
+
 const DEFAULT_LIST_SERVER = [
   LOCAL_SERVER,
   TEST_NET_SERVER,
@@ -251,6 +275,7 @@ const DEFAULT_LIST_SERVER = [
   BETA_66,
   BETA_2,
   DEV_TEST_UNIFIED_TOKEN_SERVER,
+  ACCESS_KEY,
 ];
 
 export const KEY = {

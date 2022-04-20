@@ -1,18 +1,17 @@
 import {Row, RowSpaceText} from '@src/components';
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import {actionSetPoolModal} from '@screens/PDexV3/features/Portfolio/Portfolio.actions';
-import {actionToggleModal} from '@components/Modal';
+import { actionToggleModal } from '@components/Modal';
 import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
 import PortfolioModal from '@screens/PDexV3/features/Portfolio/Portfolio.detail';
 import styled from 'styled-components/native';
 import TwoTokenImage from '@screens/PDexV3/features/Portfolio/Portfolio.image';
 import { NormalText } from '@components/Token/Token';
 import { isIOS } from '@utils/platform';
-import {portfolioItemStyled as styles} from './Portfolio.styled';
-import {getDataByShareIdSelector} from './Portfolio.selector';
+import { portfolioItemStyled as styles } from './Portfolio.styled';
+import { getDataByShareIdSelector } from './Portfolio.selector';
 
 export const Hook = React.memo(({ label, value }) => (
   <RowSpaceText
@@ -44,7 +43,7 @@ export const Extra = React.memo(({ shareId }) => {
   );
 });
 
-const PortfolioItem = ({ shareId, isLast, onWithdrawFeeLP }) => {
+const PortfolioItem = ({ shareId, isLast, onWithdrawFeeLP, showRemove }) => {
   const dispatch = useDispatch();
   const data = useSelector(getDataByShareIdSelector)(shareId);
   if (!data) {
@@ -59,7 +58,7 @@ const PortfolioItem = ({ shareId, isLast, onWithdrawFeeLP }) => {
           <ModalBottomSheet
             style={{ height: '60%' }}
             customContent={
-              <PortfolioModal shareId={data.shareId} onWithdrawFeeLP={onWithdrawFeeLP} />
+              <PortfolioModal shareId={data.shareId} onWithdrawFeeLP={onWithdrawFeeLP} showRemove={showRemove} />
             }
           />
         )})
@@ -86,6 +85,7 @@ PortfolioItem.propTypes = {
   shareId: PropTypes.string.isRequired,
   isLast: PropTypes.bool.isRequired,
   onWithdrawFeeLP: PropTypes.func.isRequired,
+  showRemove: PropTypes.bool.isRequired
 };
 
 Extra.propTypes = {

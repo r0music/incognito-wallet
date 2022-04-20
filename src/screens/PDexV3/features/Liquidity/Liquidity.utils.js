@@ -8,6 +8,7 @@ import {MESSAGES} from '@screens/Dex/constants';
 import BigNumber from 'bignumber.js';
 import {formConfigsRemovePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import uniq from 'lodash/uniq';
+import memoize from 'memoize-one';
 
 export const convertAmount = ({ originalNum, pDecimals }) => {
   const humanAmount = convert.toHumanAmount(originalNum, pDecimals);
@@ -158,6 +159,8 @@ export const filterTokenList = ({
   }, []));
   return tokenIds.filter(_tokenId => !ignoreTokens.includes(_tokenId) && !existTokens.includes(_tokenId));
 };
+
+export const memoizedFilterTokenList = memoize(filterTokenList);
 
 export const getShareDataValue = ({
   shareData,

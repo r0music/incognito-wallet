@@ -50,18 +50,37 @@ export const actionFetch = () => async (dispatch, getState) => {
     await dispatch(actionFetching());
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
-    const [listShare] = await Promise.all([
+
+    /** get list share  */
+    const [{
+      accessOTAContribute,
+      nftContribute,
+    }] = await Promise.all([
       await pDexV3Inst.getListShare(),
       await dispatch(actionSetNFTTokenData()),
     ]);
-    const poolIds = (listShare || []).map(({ poolId }) => poolId);
-    let poolDetails = [];
+
+    /** get share detail need total Pool contribute, APY, AMP */
+    const rawData = (accessOTAContribute || []).concat(nftContribute || []);
+    const poolIds = rawData.map(({ poolId }) => poolId);
+    let poolDetails = {};
     if (poolIds.length > 0) {
-      poolDetails = await pDexV3Inst.getListPoolsDetail(poolIds);
+      const detailList = (await pDexV3Inst.getListPoolsDetail(poolIds)) || [];
+      detailList.forEach((pool) => {
+        poolDetails = {
+          ...poolDetails,
+          [pool.poolId]: pool
+        };
+      });
     }
+
+    /** update reducer */
     batch(() => {
       dispatch(actionSetShareDetail(poolDetails));
-      dispatch(actionFetched(listShare));
+      dispatch(actionFetched({
+        nftShare: nftContribute,
+        accessOTAShare: accessOTAContribute
+      }));
     });
   } catch (error) {
     new ExHandler(error).showErrorToast();

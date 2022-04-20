@@ -28,6 +28,9 @@ import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanc
 import { useNavigation } from 'react-navigation-hooks';
 import NetworkFee from '@src/components/NetworkFee';
 import { withLayout_2 } from '@components/Layout';
+import withLazy from '@components/LazyHoc/LazyHoc';
+import withInitAccessOTALP from '@screens/PDexV3/features/Liquidity/features/AccessOTA/AccessOTA.enhance';
+import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
 
 const initialFormValues = {
   inputToken: '',
@@ -42,7 +45,6 @@ const Form = createForm(formConfigsRemovePool.formName, {
 
 const InputsGroup = () => {
   const dispatch = useDispatch();
-  const [percent, setPercent] = React.useState(0);
   const inputAmount = useSelector(removePoolSelector.inputAmountSelector);
   const inputToken = inputAmount(
     formConfigsRemovePool.formName,
@@ -52,20 +54,11 @@ const InputsGroup = () => {
     formConfigsRemovePool.formName,
     formConfigsRemovePool.outputToken,
   );
-  const { maxInputShareStr, maxOutputShareStr } =
-    useSelector(removePoolSelector.maxShareAmountSelector) || {};
   const onChangeInput = (text) =>
     dispatch(liquidityActions.actionChangeInputRemovePool(text));
   const onChangeOutput = (text) =>
     dispatch(liquidityActions.actionChangeOutputRemovePool(text));
   const onMaxPress = () => dispatch(liquidityActions.actionMaxRemovePool());
-  const onChangePercent = (_percent) => {
-    setPercent(_percent);
-    if (_percent === 100) {
-      return onMaxPress();
-    }
-    dispatch(liquidityActions.actionChangePercentRemovePool(_percent));
-  };
   const _validateInput = React.useCallback(() => {
     return inputToken.error;
   }, [inputToken.error]);
@@ -104,32 +97,15 @@ const InputsGroup = () => {
   );
 };
 
-const RemoveLPButton = React.memo(({ onSubmit }) => {
+const BTNRemovePool = React.memo(({ onSubmit }) => {
   const { disabled } = useSelector(removePoolSelector.disableRemovePool);
-  const amountSelector = useSelector(removePoolSelector.inputAmountSelector);
-  const { feeAmount } = useSelector(removePoolSelector.feeAmountSelector);
-  const poolId = useSelector(removePoolSelector.poolIDSelector);
-  const nftId = useSelector(removePoolSelector.nftTokenSelector);
-  const inputAmount = amountSelector(
-    formConfigsRemovePool.formName,
-    formConfigsRemovePool.inputToken,
-  );
-  const outputAmount = amountSelector(
-    formConfigsRemovePool.formName,
-    formConfigsRemovePool.outputToken,
-  );
+  const {
+    params,
+    versionTx
+  } = useSelector(removePoolSelector.compressRemovePoolParams);
   const handleSubmit = () => {
     if (disabled) return;
-    const params = {
-      fee: feeAmount,
-      poolTokenIDs: [inputAmount.tokenId, outputAmount.tokenId],
-      poolPairID: poolId,
-      shareAmount: inputAmount.withdraw,
-      nftID: nftId,
-      amount1: String(inputAmount.originalInputAmount),
-      amount2: String(outputAmount.originalInputAmount),
-    };
-    onSubmit(params);
+    onSubmit(params, versionTx);
   };
 
   return (
@@ -143,7 +119,7 @@ const RemoveLPButton = React.memo(({ onSubmit }) => {
 
 const RemovePool = ({
   onInitRemovePool,
-  onRemoveContribute,
+  createAndSendWithdrawContributeRequestTx,
   onCloseModal,
   visible,
   error,
@@ -151,8 +127,9 @@ const RemovePool = ({
   const navigation = useNavigation();
   const isFetching = useSelector(removePoolSelector.isFetchingSelector);
   const { feeAmountStr, showFaucet } = useSelector(removePoolSelector.feeAmountSelector);
-  const onSubmit = (params) => {
-    typeof onRemoveContribute === 'function' && onRemoveContribute(params);
+  const onSubmit = (params, versionTx) => {
+    typeof createAndSendWithdrawContributeRequestTx === 'function'
+    && createAndSendWithdrawContributeRequestTx(params, versionTx);
   };
   const onClose = () => {
     batch(() => {
@@ -167,7 +144,7 @@ const RemovePool = ({
       <InputsGroup />
       <View style={styled.padding}>
         {!!error && <Text style={styled.warning}>{error}</Text>}
-        <RemoveLPButton onSubmit={onSubmit} />
+        <BTNRemovePool onSubmit={onSubmit} />
         {showFaucet && <NetworkFee feeStr={feeAmountStr} />}
       </View>
     </>
@@ -209,18 +186,19 @@ RemovePool.defaultProps = {
 
 RemovePool.propTypes = {
   onInitRemovePool: PropTypes.func.isRequired,
-  onRemoveContribute: PropTypes.func.isRequired,
+  createAndSendWithdrawContributeRequestTx: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
   error: PropTypes.string,
 };
 
-RemoveLPButton.propTypes = {
+BTNRemovePool.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
 export default compose(
-  withLiquidity,
+  withLazy,
   withLayout_2,
-  withTransaction,
+  withInitAccessOTALP,
+  withLPTransaction,
 )(memo(RemovePool));

@@ -136,12 +136,7 @@ import {
   StakingHistoryDetail,
 } from '@screens/PDexV3/features/Staking';
 import {
-  Contribute,
-  CreatePool,
   RemovePool,
-  ContributeConfirm,
-  CreatePoolConfirm,
-  RemovePoolConfirm,
 } from '@screens/PDexV3/features/Liquidity';
 import PairList from '@screens/PDexV3/features/PairList';
 import MainTabBar from '@screens/MainTabBar';
@@ -155,6 +150,9 @@ import {
 } from '@screens/PDexV3/features/PrivacyApps';
 import MarketSearchCoins from '@screens/MainTabBar/features/Market/Market.searchCoins';
 import HomeLP from '@screens/MainTabBar/features/HomeLP';
+
+import OTAContribute from '@screens/PDexV3/features/Liquidity/features/AccessOTA/OTAContribute';
+import OTACreatePool from '@screens/PDexV3/features/Liquidity/features/AccessOTA/OTACreatePool';
 
 const masterKeyRoutes = [
   {
@@ -212,12 +210,12 @@ const pDexV3Routes = [
     name: routeNames.Trade,
   },
   {
-    screen: CreatePool,
-    name: routeNames.CreatePool,
+    screen: OTACreatePool,
+    name: routeNames.OTACreatePool,
   },
   {
-    screen: Contribute,
-    name: routeNames.ContributePool,
+    screen: OTAContribute,
+    name: routeNames.OTAContributePool,
   },
   {
     screen: RemovePool,
@@ -314,18 +312,6 @@ const pDexV3Routes = [
   {
     screen: OrderLimitDetail,
     name: routeNames.OrderLimitDetail,
-  },
-  {
-    screen: ContributeConfirm,
-    name: routeNames.ContributeConfirm,
-  },
-  {
-    screen: CreatePoolConfirm,
-    name: routeNames.CreatePoolConfirm,
-  },
-  {
-    screen: RemovePoolConfirm,
-    name: routeNames.RemovePoolConfirm,
   },
   {
     screen: OrdeSwapDetail,
