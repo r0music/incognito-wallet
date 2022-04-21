@@ -79,10 +79,10 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
   const onCompressParamsWithdrawFee = useSelector(compressParamsWithdrawFee);
 
   const nftShareIDs = React.useMemo(() =>
-    nftShare.map(({ shareId }) => shareId) || []
+      nftShare.filter(({ hasContributedAmount }) => !!hasContributedAmount).map(({ shareId }) => shareId) || []
     , [nftShare.length]);
   const accessOTAShareIDs = React.useMemo(() =>
-    accessOTAShare.map(({ shareId }) => shareId)
+      accessOTAShare.filter(({ hasContributedAmount }) => !!hasContributedAmount).map(({ shareId }) => shareId)
     , [accessOTAShare.length]);
 
   const handleWithdrawFee = ({ poolId, shareId }) => {

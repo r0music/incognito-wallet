@@ -168,6 +168,7 @@ const formatPureData = (poolShare, shareDetails, getPrivacyDataByTokenID) => {
     token1USDHuman: principal.token1USDHuman,
     token2USDHuman: principal.token2USDHuman,
     principalUSD,
+    hasContributedAmount: share
   };
 };
 
