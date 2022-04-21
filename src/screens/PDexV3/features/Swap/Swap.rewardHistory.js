@@ -2,29 +2,25 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import {
   Divider,
-  FlatList,
-  RefreshControl,
   Text,
   TouchableOpacity,
   View,
 } from '@src/components/core';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import { Row } from '@src/components';
 import { FONT, COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { PRV } from '@src/constants/common';
-import { swapHistorySelector } from './Swap.selector';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import PropTypes from 'prop-types';
+// import { swapHistorySelector } from './Swap.selector';
 
 const styled = StyleSheet.create({
   container: {
     flex: 1,
     minHeight: 200,
-  },
-  flatlist: {
-    flex: 1,
-    paddingBottom: 24,
   },
   itemContainer: {
     flex: 1,
@@ -98,32 +94,37 @@ const RewardHistoryItem = React.memo(({ data }) => {
   );
 });
 
-const RewardHistory = () => {
-  const { isFetching } = useSelector(swapHistorySelector);
-  const rewardHistories = useSelector(
+const RewardHistory = ({ page }) => {
+  // const { isFetching } = useDebounceSelector(swapHistorySelector)();
+  const rewardHistories = useDebounceSelector(
     (state) => state.pDexV3.swap.rewardHistories,
   );
+
+  const historyDisplay = React.useMemo(() => {
+    if (!page) return [];
+    return rewardHistories.slice(0, page);
+  }, [page, rewardHistories]);
+
+  const renderItem = React.useCallback((item, index) => (
+    <>
+      <RewardHistoryItem
+        data={item}
+        key={`reward-${index}`}
+        visibleDivider={index !== historyDisplay.length - 1}
+      />
+      {index !== historyDisplay.length - 1 && <Divider />}
+    </>
+  ), []);
+
   return (
     <View style={styled.container}>
-      <FlatList
-        refreshControl={<RefreshControl refreshing={isFetching} />}
-        data={rewardHistories}
-        keyExtractor={(item, index) => index?.toString()}
-        renderItem={({ item, index }) => (
-          <>
-            <RewardHistoryItem
-              data={item}
-              visibleDivider={index !== rewardHistories.length - 1}
-            />
-            {index !== rewardHistories.length - 1 && <Divider />}
-          </>
-        )}
-        contentContainerStyle={styled.flatlist}
-      />
+      {(historyDisplay || []).map(renderItem)}
     </View>
   );
 };
 
-RewardHistory.propTypes = {};
+RewardHistory.propTypes = {
+  page: PropTypes.number.isRequired,
+};
 
 export default React.memo(RewardHistory);

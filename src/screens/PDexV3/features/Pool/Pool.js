@@ -48,6 +48,7 @@ export const PoolItem = React.memo((props) => {
         <View style={styled.block2}>
           <Text style={styled.subText}>{`${apyStr}`}</Text>
         </View>
+        <Text style={styled.earnBtn}>Earn now</Text>
         <View style={styled.block3}>
           <BtnStar onPress={handleToggleFollowingPool} isBlue={isFollowed} />
         </View>

@@ -1049,19 +1049,15 @@ export const swapHistorySelector = createSelector(
       // selltoken, buytoken
     },
     mappingOrderHistory,
-  ) => {
+  ) => memoize(() => {
     const history = swapHistory?.data?.map((order) =>
       mappingOrderHistory(order),
     );
-    // .filter(
-    //   ({ sellTokenId, buyTokenId }) =>
-    //     xor([selltoken, buytoken], [sellTokenId, buyTokenId]).length === 0,
-    // );
     return {
       ...swapHistory,
       history,
     };
-  },
+  }),
 );
 
 export const orderDetailSelector = createSelector(

@@ -66,7 +66,7 @@ const HEADER_FACTORIES = [
     text: '',
     style: {
       width: 30,
-      marginRight: 5
+      marginRight: 75
     },
   },
 ];
