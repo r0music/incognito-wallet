@@ -88,7 +88,7 @@ const Extra = (props) => {
           </Text>
         </View>
         <Text style={styled.redText}>
-          This fee will be deducted from the shielded funds.
+          Smaller amounts will be rejected by the network and lost.
         </Text>
       </>
     );
