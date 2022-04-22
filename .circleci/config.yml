@@ -286,7 +286,7 @@ workflows:
             filters:
               branches:
                 only:
-                  - inc-next
+                  - dev/tets-upgrade-codepush
         - generate_data:
             requires:
               - checkout_code
