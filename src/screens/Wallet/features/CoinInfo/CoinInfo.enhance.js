@@ -33,6 +33,12 @@ export const getNetworkName = (selectedPrivacy) => {
   ) {
     return 'Binance network';
   }
+  if (
+    selectedPrivacy?.currencyType ===
+    CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.UNIFIED_TOKEN
+  ) {
+    return 'Incognito network';
+  }
   return `${selectedPrivacy?.networkName} network`;
 };
 

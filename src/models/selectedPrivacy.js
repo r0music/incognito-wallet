@@ -27,7 +27,7 @@ function getNetworkName() {
     name ='BSC';
   } else if (isBNB) {
     name ='BNB Chain';
-  } else if (this.isIncognitoToken || this.isMainCrypto) {
+  } else if (this.isIncognitoToken || this.isMainCrypto || this.isPUnifiedToken) {
     name = 'Incognito';
   } else if (this.isPrivateCoin) {
     name = `${this.name}`;
