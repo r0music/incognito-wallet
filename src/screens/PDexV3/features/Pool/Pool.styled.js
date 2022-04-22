@@ -51,7 +51,7 @@ export const styled = StyleSheet.create({
     marginTop: 4
   },
   earnBtn: {
-    width: 65,
+    width: 68,
     marginLeft: 5,
     textAlign: 'center',
     fontSize: FONT.SIZE.small,

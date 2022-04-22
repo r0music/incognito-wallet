@@ -4,7 +4,8 @@ const ANALYTIC_DATA_TYPE = {
   UNSHIELD: 2,
   SEND: 3,
   TRADE: 4,
-  OPEN_APP: 5
+  OPEN_APP: 5,
+  ORDER: 6,
 };
 
 export default {

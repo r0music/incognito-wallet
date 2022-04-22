@@ -143,9 +143,19 @@ const History = React.memo(() => {
   const selectedPrivacy = useDebounceSelector(
     selectedPrivacySelector.selectedPrivacy,
   );
+  const [page, setPage] = React.useState(15);
+
+  const onLoadmoreHistory = React.useCallback(() => {
+    setPage(page => page + 15);
+  }, []);
+
   return (
     <View style={[historyStyled.container, { marginTop: 12 }]}>
-      {selectedPrivacy?.isMainCrypto ? <MainCryptoHistory /> : <HistoryToken />}
+      {selectedPrivacy?.isMainCrypto ?
+        <MainCryptoHistory page={page} onLoadmoreHistory={onLoadmoreHistory} />
+        :
+        <HistoryToken page={page} onLoadmoreHistory={onLoadmoreHistory} />
+      }
     </View>
   );
 });
@@ -171,7 +181,7 @@ const CustomRightHeader = () => {
         data: (
           <ModalBottomSheet
             style={{ height: '15%' }}
-            contentView={
+            contentView={(
               <Row style={[groupBtnStyled.groupButton, { paddingVertical: 0 }]}>
                 <BtnSecondary
                   title="Receive"
@@ -185,7 +195,7 @@ const CustomRightHeader = () => {
                   disabled={isSendDisabled}
                 />
               </Row>
-            }
+            )}
           />
         ),
         visible: true,

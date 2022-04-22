@@ -24,6 +24,8 @@ import {
   TAB_SELL_LIMIT_ID,
 } from '@screens/PDexV3/features/Trade/Trade.constant';
 import { differenceBy, orderBy } from 'lodash';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
+import { ANALYTICS } from '@src/constants';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -442,6 +444,9 @@ export const actionBookOrder = () => async (dispatch, getState) => {
       return;
     }
     const { totalAmountToken, totalOriginalAmount } = totalAmountData;
+    setTimeout(() => {
+      dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.ORDER));
+    }, 300);
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const { poolId: poolPairID } = poolSelectedDataSelector(state);
     let extra;

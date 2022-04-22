@@ -90,7 +90,9 @@ const HELPER_CONSTANT = {
     contents: [
       {
         content:
-          'Choose instant access to withdraw your funds at any time for free. Otherwise, pick a fixed term to get our best rates.',
+          'Locked PRV terms are calculated with APR. These rates are guaranteed for the duration of the term. Reward amounts are calculated directly after providing and do not compound. Initial provision and rewards will become available at the end of the term and automatically moved to an unlocked term.' +
+          '\n\n' +
+          'All other terms are calculated with APY. Rewards compound at the initial provision rate. APY rates are not guaranteed and are subject to change without notice.',
       },
     ],
   },

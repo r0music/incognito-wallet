@@ -15,6 +15,8 @@ import { useNavigation } from 'react-navigation-hooks';
 import { RefreshControl } from 'react-native';
 import PropTypes from 'prop-types';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import { selectedPrivacyTokenID } from '@src/redux/selectors/selectedPrivacy';
+import { actionFreeHistory } from '@src/redux/actions/history';
 
 const FollowList = ({ loadBalance }) => {
   const dispatch = useDispatch();
@@ -22,9 +24,13 @@ const FollowList = ({ loadBalance }) => {
   const data = useDebounceSelector(followTokensWalletSelector);
   const isRefreshing = useDebounceSelector(isFetchingSelector);
   const renderKeyExtractor = React.useCallback((item) => item.tokenID, []);
+  const selectPrivacyTokenID = useDebounceSelector(selectedPrivacyTokenID);
 
   const handleSelectToken = async (tokenId, balance) => {
     if (!tokenId) return;
+    if (selectPrivacyTokenID && selectPrivacyTokenID.toLowerCase() !== tokenId.toLowerCase()) {
+      dispatch(actionFreeHistory());
+    }
     await dispatch(setSelectedPrivacy(tokenId));
     navigation.navigate(routeNames.WalletDetail, { tokenId });
     setTimeout(async() => {
@@ -57,7 +63,7 @@ const FollowList = ({ loadBalance }) => {
         handleRemoveToken={() => handleRemoveToken(id)}
       />
     );
-  }, []);
+  }, [selectPrivacyTokenID]);
 
   return (
     <View fullFlex borderTop>

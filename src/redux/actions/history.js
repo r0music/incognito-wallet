@@ -22,6 +22,7 @@ export const ACTION_FREE = '[history] Free data';
 export const ACTION_SET_SELECTED_TX = '[history] Set selected tx';
 export const ACTION_FETCHING_TX = '[history] Fetching tx';
 export const ACTION_FETCHED_TX = '[history] Fetched tx';
+export const ACTION_FREE_HISTORY_DETAIL = '[history] Free history detail';
 
 export const actionSetSelectedTx = (payload) => ({
   type: ACTION_SET_SELECTED_TX,
@@ -156,3 +157,7 @@ export const actionFetchTx = () => async (dispatch, getState) => {
   }
   return tx;
 };
+
+export const actionFreeHistory = () => ({
+  type: ACTION_FREE_HISTORY_DETAIL,
+});
