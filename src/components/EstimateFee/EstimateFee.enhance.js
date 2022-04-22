@@ -7,7 +7,10 @@ import debounce from 'lodash/debounce';
 import { useFocusEffect } from 'react-navigation-hooks';
 import PropTypes from 'prop-types';
 import { ExHandler } from '@src/services/exception';
-import { actionFetchFee } from './EstimateFee.actions';
+import {
+  actionFetchFee,
+  actionGetNetworkSupports,
+} from './EstimateFee.actions';
 import { useKeyboard } from '../UseEffect/useKeyboard';
 
 const enhance = (WrappedComp) => (props) => {
@@ -43,6 +46,11 @@ const enhance = (WrappedComp) => (props) => {
       if (isPortalToken && screen === 'UnShield') {
         return;
       }
+
+      // await dispatch(actionGetNetworkSupports({
+      //   amount,
+      //   childSelectedPrivacy
+      // }));
 
       await dispatch(
         actionFetchFee({

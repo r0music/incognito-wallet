@@ -157,7 +157,7 @@ export const DEV_TEST_UNIFIED_TOKEN_SERVER = {
   name: 'Dev test unified token',
   coinServices: 'http://51.89.21.38:6002',
   pubsubServices: 'http://51.89.21.38:6004',
-  requestServices: 'http://51.161.119.38:6030',
+  requestServices: 'http://51.89.21.38:6002',
   apiServices: 'https://staging-api-service.incognito.org',
   shardNumber: 2,
   IncContractAddress: '0xE0D5e7217c6C4bc475404b26d763fAD3F14D2b86',

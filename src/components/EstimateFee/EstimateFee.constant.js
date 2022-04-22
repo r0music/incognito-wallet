@@ -22,3 +22,4 @@ export const ACTION_REMOVE_FEE_TYPE = '[estimateFee] Remove fee type';
 export const ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN = '[estimateFee] Reset form support send in-chain';
 
 export const ACTION_FETCHED_VAULT = '[estimateFee] fetched vault';
+export const ACTION_FETCHED_NETWORKS_SUPPORT = '[estimateFee] action fetched networks support';

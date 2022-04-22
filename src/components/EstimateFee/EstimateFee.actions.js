@@ -12,6 +12,7 @@ import {
   estimateUserFees,
   genCentralizedWithdrawAddress,
   getVault,
+  checkVault
 } from '@src/services/api/withdraw';
 import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 import {
@@ -34,7 +35,8 @@ import {
   ACTION_REMOVE_FEE_TYPE,
   ACTION_FETCH_FAIL_USER_FEES,
   ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN,
-  ACTION_FETCHED_VAULT
+  ACTION_FETCHED_VAULT,
+  ACTION_FETCHED_NETWORKS_SUPPORT,
 } from './EstimateFee.constant';
 import { apiCheckValidAddress } from './EstimateFee.services';
 import { estimateFeeSelector, feeDataSelector } from './EstimateFee.selector';
@@ -183,6 +185,25 @@ export const actionFetchFee = ({ amount, address, screen, memo, childSelectedPri
     }
   }
 };
+
+export const actionFetchedNetworksSupport = (payload) => ({
+  type: ACTION_FETCHED_NETWORKS_SUPPORT,
+  payload,
+});
+
+export const actionGetNetworkSupports =
+  ({ amount, childSelectedPrivacy = null }) =>
+  async (dispatch, getState) => {
+    const state = getState();
+    const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
+
+    if (!selectedPrivacy || !amount || !childSelectedPrivacy) return;
+    const networkSupports = await checkVault({
+      pUnifiedTokenId: selectedPrivacy.tokenId,
+      amount: amount,
+    });
+    await dispatch(actionFetchedNetworksSupport(networkSupports));
+  };
 
 export const actionHandleMinFeeEst = ({ minFeePTokenEst }) => async (
   dispatch,

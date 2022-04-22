@@ -220,3 +220,9 @@ export const estimateUserFees = (data) => {
 export const getVault = () => {
   return http1.get('bridge/aggregatestate');
 };
+
+export const checkVault = ({ pUnifiedTokenId, amount }) => {
+  return http1.get(
+    `bridge/getsupportedvault?punified=${pUnifiedTokenId}&expectedamount=${amount}`,
+  );
+};
