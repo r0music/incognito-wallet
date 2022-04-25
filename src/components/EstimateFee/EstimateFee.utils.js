@@ -155,10 +155,10 @@ export const getTotalFee = ({
       : userFeesData?.TokenFees;
     userFee = (Number(userFees?.Level1) || 0);
     const extraFee = Number(userFeesData?.EstimateReceivedAmount?.Fee || 0);
-    const fee = userFee + extraFee;
     if (hasMultiLevel && fast2x) {
       userFee = Number(userFees?.Level2);
     }
+    const fee = userFee + extraFee;
     totalFee = isUsedPRVFee ? floor(userFee + Number(feeEst)) : fee;
     totalFeeText = format.toFixed(
       convert.toHumanAmount(totalFee, pDecimals),
