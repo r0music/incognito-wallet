@@ -87,7 +87,7 @@ const ConvertToUnifiedToken: React.FC = () => {
     if (minimumPRVBalanceToCreateTransaction < 1000) {
       minimumPRVBalanceToCreateTransaction = 1000;
     }
-    if (prvBalance > minimumPRVBalanceToCreateTransaction) {
+    if (prvBalance >= minimumPRVBalanceToCreateTransaction) {
       return true;
     }
     return false;

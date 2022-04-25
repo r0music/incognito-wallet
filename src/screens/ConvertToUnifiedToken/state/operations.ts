@@ -241,7 +241,7 @@ const convertToUnifiedToken = () => async (dispatch, getState) => {
     if (minimumPRVBalanceToCreateTransaction < 1000) {
       minimumPRVBalanceToCreateTransaction = 1000;
     }
-    const minimumPRVUnspentToCreateTransaction = 10;
+    const minimumPRVUnspentToCreateTransaction = 9;
     if (prvBalance >= minimumPRVBalanceToCreateTransaction) {
       if (unspentCoinsOfPRV?.length >= minimumPRVUnspentToCreateTransaction) {
         // create transaction
