@@ -1,4 +1,3 @@
-import { wcProviderOptionals } from '@screens/Wallet/features/BridgeConnect';
 import { ExHandler } from '@services/exception';
 import { Button, ScrollViewBorder, Text, View } from '@src/components/core';
 import Header from '@src/components/Header';
@@ -11,7 +10,6 @@ import routeNames from '@src/router/routeNames';
 import { PRV_ID } from '@src/screens/DexV2/constants';
 import withBridgeConnect from '@src/screens/Wallet/features/BridgeConnect/WalletConnect.enhance';
 import { COLORS } from '@src/styles';
-import WalletConnectProvider from '@walletconnect/react-native-dapp';
 import React, { useState } from 'react';
 import { TextStyle, ViewStyle } from 'react-native';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
@@ -105,6 +103,7 @@ const ChooseNetworkForShield: React.FC = (props) => {
             ).showErrorToast();
             return;
           }
+          navigateToShieldGenerateQrCodeScreen();
         } catch (e) {
           new ExHandler(e).showErrorToast();
           return;
@@ -189,29 +188,27 @@ const ChooseNetworkForShield: React.FC = (props) => {
 
   return (
     <>
-      <WalletConnectProvider {...wcProviderOptionals}>
-        <Header title={`Shield ${tokenInfo?.symbol}`} />
-        <ScrollViewBorder
-          style={scrollViewContainerStyle}
-          contentContainerStyle={scrollViewContentContainerStyle}
-        >
-          <Text style={titleStyle}>Choose network type</Text>
-          <Text style={descStyle}>
-            Ensure the network you choose to shield matches your funds networks,
-            or assets maybe lost.
-          </Text>
-          {renderNetworks()}
-          {isShowSubView() && renderSubView()}
-        </ScrollViewBorder>
-        <View style={bottomButtonContainerStyle}>
-          <Button
-            title="Next"
-            disabled={isDisabledNextButton()}
-            onPress={onNext}
-            style={buttonStyle}
-          />
-        </View>
-      </WalletConnectProvider>
+      <Header title={`Shield ${tokenInfo?.symbol}`} />
+      <ScrollViewBorder
+        style={scrollViewContainerStyle}
+        contentContainerStyle={scrollViewContentContainerStyle}
+      >
+        <Text style={titleStyle}>Choose network type</Text>
+        <Text style={descStyle}>
+          Ensure the network you choose to shield matches your funds networks,
+          or assets maybe lost.
+        </Text>
+        {renderNetworks()}
+        {isShowSubView() && renderSubView()}
+      </ScrollViewBorder>
+      <View style={bottomButtonContainerStyle}>
+        <Button
+          title="Next"
+          disabled={isDisabledNextButton()}
+          onPress={onNext}
+          style={buttonStyle}
+        />
+      </View>
     </>
   );
 };

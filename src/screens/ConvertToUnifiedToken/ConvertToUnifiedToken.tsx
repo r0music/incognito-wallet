@@ -123,7 +123,11 @@ const ConvertToUnifiedToken: React.FC = () => {
 
   return (
     <>
-      <Header title="Convert coins" />
+      <Header
+        title="Convert coins"
+        accountSelectable
+        handleSelectedAccount={() => dispatch(setListTokenConvert())}
+      />
       <View borderTop fullFlex>
         <FlatList
           refreshControl={
