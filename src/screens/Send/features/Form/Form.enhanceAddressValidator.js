@@ -2,7 +2,10 @@
 import { validator } from '@src/components/core/reduxForm';
 import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { selectedPrivacySelector } from '@src/redux/selectors';
+import {
+  selectedPrivacySelector,
+  childSelectedPrivacySelector,
+} from '@src/redux/selectors';
 import accountService from '@src/services/wallet/accountService';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -12,6 +15,9 @@ import { formName } from './Form.enhance';
 export const enhanceAddressValidation = (WrappedComp) => (props) => {
   const selector = formValueSelector(formName);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const childSelectedPrivacy = useSelector(
+    childSelectedPrivacySelector.childSelectedPrivacy,
+  );
   const {
     externalSymbol,
     isErc20Token,
@@ -21,7 +27,7 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     isMainCrypto,
     currencyType,
     isPUnifiedToken,
-  } = selectedPrivacy;
+  } = childSelectedPrivacy ? childSelectedPrivacy : selectedPrivacy;
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
   const isIncognitoAddress =
     accountService.checkPaymentAddress(toAddress);
@@ -145,7 +151,10 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   };
 
   const getAddressValidator = () => {
-    if(currencyTypeName !== 'INCOGNITO') {
+    if (
+      currencyTypeName !==
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.INCOGNITO
+    ) {
       return getExternalAddressValidator();
     }
     return validator.combinedIncognitoAddress;

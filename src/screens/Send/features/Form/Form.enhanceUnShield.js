@@ -8,7 +8,11 @@ import { Toast } from '@src/components/core';
 import convert from '@src/utils/convert';
 import { useSelector, useDispatch } from 'react-redux';
 import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
-import { accountSelector, selectedPrivacySelector } from '@src/redux/selectors';
+import {
+  accountSelector,
+  selectedPrivacySelector,
+  childSelectedPrivacySelector,
+} from '@src/redux/selectors';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { floor, toString } from 'lodash';
 import format from '@src/utils/format';
@@ -56,36 +60,10 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   } = useSelector(feeDataSelector);
   const dev = useSelector(devSelector);
   const { isUnshieldPegPRV, isUnshieldPUnifiedToken } = props;
-  const selector = formValueSelector(formName);
-  const currencyTypeName = useSelector((state) =>
-    selector(state, 'currencyType'),
-  );
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const [childSelectedPrivacy, setChildSelectedPrivacy] = useState();
-
-  React.useEffect(() => {
-    if (isUnshieldPegPRV) {
-      const childToken = selectedPrivacy.listChildToken.find(
-        (item) => item.currencyType === currencyTypeName,
-      );
-      const childSelectedPrivacy = new SelectedPrivacy(
-        account,
-        null,
-        childToken,
-        selectedPrivacy.tokenId,
-      );
-      setChildSelectedPrivacy(childSelectedPrivacy);
-    }
-  }, [isUnshieldPegPRV, currencyTypeName]);
-
-  React.useEffect(() => {
-    if (isUnshieldPUnifiedToken) {
-       const childSelectedPrivacy = selectedPrivacy.listUnifiedToken.find(
-         (item) => item?.currencyType === currencyTypeName,
-       );
-       setChildSelectedPrivacy(childSelectedPrivacy);
-    }
-  }, [isUnshieldPUnifiedToken, currencyTypeName]);
+  const childSelectedPrivacy = useSelector(
+    childSelectedPrivacySelector.childSelectedPrivacy,
+  );
 
   const signPublicKeyEncode = useSelector(
     accountSelector.signPublicKeyEncodeSelector,

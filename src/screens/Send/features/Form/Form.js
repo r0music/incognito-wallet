@@ -23,7 +23,11 @@ import {
   feeDataSelector,
   networksSelector,
 } from '@src/components/EstimateFee/EstimateFee.selector';
-import { selectedPrivacySelector } from '@src/redux/selectors';
+import { selectedPrivacySelector, childSelectedPrivacySelector } from '@src/redux/selectors';
+import {
+  setChildSelectedPrivacy,
+  clearChildSelectedPrivacy,
+} from '@src/redux/actions/childSelectedPrivacy';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import LoadingTx from '@src/components/LoadingTx';
@@ -84,13 +88,12 @@ const SendForm = (props) => {
     validateMemo,
     navigation,
     isPortalToken,
-    isUnshieldPegPRV,
-    isUnshieldPUnifiedToken
   } = props;
   const dispatch = useDispatch();
   const { titleBtnSubmit, isUnShield, editableInput } =
     useSelector(feeDataSelector);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const childSelectedPrivacy = useSelector(childSelectedPrivacySelector.childSelectedPrivacy);
   const [onCentralizedPress, isCentralizedDisabled] = useFeatureConfig(
     appConstant.DISABLED.UNSHIELD_CENTRALIZED,
     handleSend,
@@ -112,7 +115,6 @@ const SendForm = (props) => {
       : onDecentralizedPress
     : handleSend;
   const submitHandler = handlePressSend;
-  const [childSelectedPrivacy, setChildSelectedPrivacy] = useState(null);
 
   const getNetworks = () => {
     let networks = useSelector(networksSelector);
@@ -120,7 +122,9 @@ const SendForm = (props) => {
       {
         network: 'Incognito',
         networkId: 'INCOGNITO',
-        currencyType: 'INCOGNITO',
+        currencyType: CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.INCOGNITO,
+        tokenId:
+          '0000000000000000000000000000000000000000000000000000000000000006',
       },
     ];
     return [...incognitoNetwork, ...networks];
@@ -133,10 +137,19 @@ const SendForm = (props) => {
   );
 
   React.useEffect(() => {
+    dispatch(clearChildSelectedPrivacy());
+  }, []);
+
+  React.useEffect(() => {
     if (isIncognitoAddress && !currencyTypeName) {
-      onChangeField('INCOGNITO', 'currencyType');
+      onChangeField(
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.INCOGNITO,
+        'currencyType',
+      );
       let childSelectedPrivacy = networks.find(
-        (item) => item.currencyType === 'INCOGNITO',
+        (item) =>
+          item.currencyType ===
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.INCOGNITO,
       );
       if (selectedPrivacy?.isMainCrypto) {
         childSelectedPrivacy = new SelectedPrivacy(
@@ -216,7 +229,7 @@ const SendForm = (props) => {
                 selectedPrivacy.tokenId,
               );
             }
-            setChildSelectedPrivacy(childSelectedPrivacy);
+            dispatch(setChildSelectedPrivacy(childSelectedPrivacy));
           }}
           component={SelectNetworkField}
           networks={networks}

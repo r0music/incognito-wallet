@@ -110,8 +110,7 @@ const createTransactionConvert = () => async (dispatch, getState) => {
   const account = accountSelector?.defaultAccountSelector(state);
   const wallet = walletSelector(state);
   const accountWallet = getDefaultAccountWalletSelector(state);
-  const listPTokenConvert: PTokenConvert[] =
-    listTokenConvertSelector(state);
+  const listPTokenConvert: PTokenConvert[] = listTokenConvertSelector(state);
   if (!listPTokenConvert?.length) return;
   for (var i = 0; i < listPTokenConvert.length; i++) {
     const pTokenData: PTokenConvert = listPTokenConvert[i];
@@ -171,17 +170,44 @@ const createTransactionConvert = () => async (dispatch, getState) => {
         convertAmount: convertAmount,
         networkId: pTokenData?.networkId,
       };
-      try {
-        const result =
-          await accountService.createBurningRequestForConvertUnifiedToken(data);
-        console.log(
-          'createBurningRequestForConvertUnifiedTokenResult:',
-          result,
-        );
-        transactionStatusArray.push(TRANSACTION_CONVERT_STATUS.SUCCESSFULLY);
-      } catch (error) {
-        transactionStatusArray.push(TRANSACTION_CONVERT_STATUS.FAILED);
-        console.log('error', error);
+
+      let numberOfTimeToWait = 0;
+      while (true) {
+        const prvBalance = await accountService.getBalance({
+          account,
+          wallet,
+          tokenID: COINS.PRV_ID,
+          version: PrivacyVersion.ver2,
+        });
+
+        if (prvBalance >= MAX_FEE_PER_TX) {
+          try {
+            const result =
+              await accountService.createBurningRequestForConvertUnifiedToken(
+                data,
+              );
+            console.log(
+              'createBurningRequestForConvertUnifiedTokenResult:',
+              result,
+            );
+            transactionStatusArray.push(
+              TRANSACTION_CONVERT_STATUS.SUCCESSFULLY,
+            );
+          } catch (error) {
+            transactionStatusArray.push(TRANSACTION_CONVERT_STATUS.FAILED);
+            console.log('error', error);
+          }
+          break;
+        } else {
+          if (numberOfTimeToWait === 3) {
+            transactionStatusArray.push(TRANSACTION_CONVERT_STATUS.FAILED);
+            break;
+          } else {
+            setTimeout(() => {
+              numberOfTimeToWait = numberOfTimeToWait + 1;
+            }, 20000);
+          }
+        }
       }
     }
     // Check if all transactions have been processed (when transactionStatusArray.length === numberOfTransactionToConvert => Done)

@@ -411,11 +411,9 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !shieldingFeeStr,
           },
           {
-            label: 'Received tx',
-            value: `${txReceive}`,
-            disabled: !txReceive,
-            openUrl: !!txReceive,
-            handleOpenUrl: () => LinkingService.openUrlInSide(txReceive),
+            label: 'Reward amount',
+            value: `${rewardAmountStr} ${symbol}`,
+            disabled: !rewardAmountStr,
           },
           {
             label: 'Status',
@@ -431,6 +429,13 @@ export const historyDetailFactoriesSelector = createSelector(
             label: 'Time',
             value: timeStr,
             disabled: !timeStr,
+          },
+          {
+            label: 'Received tx',
+            value: `${txReceive}`,
+            disabled: !txReceive,
+            openUrl: !!txReceive,
+            handleOpenUrl: () => LinkingService.openUrlInSide(txReceive),
           },
           {
             label: 'Expired at',
@@ -472,11 +477,6 @@ export const historyDetailFactoriesSelector = createSelector(
             label: 'Network',
             value: network,
             disabled: !network,
-          },
-          {
-            label: 'Reward amount',
-            value: `${rewardAmountStr} ${symbol}`,
-            disabled: !rewardAmountStr,
           },
         ];
       }

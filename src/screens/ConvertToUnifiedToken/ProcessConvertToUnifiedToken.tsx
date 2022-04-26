@@ -33,6 +33,13 @@ const ProcessConvertToUnifiedToken: React.FC = () => {
         !token?.convertStatus,
     )?.length > 0;
 
+  const isConverted =
+    listTokenConvert?.filter(
+      (token) =>
+        token?.convertStatus === 'SUCCESSFULLY' ||
+        token?.convertStatus === 'FAILED',
+    )?.length === listTokenConvert?.length;
+
   const keyExtractor = useCallback((item) => item?.id?.toString(), []);
 
   const renderItem = useCallback(
@@ -99,7 +106,7 @@ const ProcessConvertToUnifiedToken: React.FC = () => {
           windowSize={10}
         />
       </View>
-      {isConvertSuccess && (
+      {isConverted && (
         <View style={bottomButtonContainerStyle}>
           <Button
             title="Go back to wallet"

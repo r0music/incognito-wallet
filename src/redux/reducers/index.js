@@ -29,6 +29,7 @@ import account from './account';
 import server from './server';
 import token from './token';
 import selectedPrivacy from './selectedPrivacy';
+import childSelectedPrivacy from './childSelectedPrivacy';
 import app from './app';
 import dex from './dex';
 import pin from './pin';
@@ -45,6 +46,7 @@ const rootReducer = reduceReducers(
     server,
     token,
     selectedPrivacy,
+    childSelectedPrivacy,
     app,
     dex,
     pin,
