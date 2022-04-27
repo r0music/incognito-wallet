@@ -24,17 +24,16 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     isBep20Token,
     isPolygonErc20Token,
     isFantomErc20Token,
-    isMainCrypto,
     currencyType,
-    isPUnifiedToken,
+    isDecentralized,
   } = childSelectedPrivacy ? childSelectedPrivacy : selectedPrivacy;
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
   const isIncognitoAddress =
     accountService.checkPaymentAddress(toAddress);
   const isExternalAddress =
     (!!toAddress && !isIncognitoAddress) && selectedPrivacy?.isWithdrawable;
-  const isUnshieldPegPRV = isMainCrypto && isExternalAddress;
-  const isUnshieldPUnifiedToken = isPUnifiedToken && isExternalAddress;
+  const isUnshieldPegPRV = selectedPrivacy?.isMainCrypto && isExternalAddress;
+  const isUnshieldPUnifiedToken = selectedPrivacy.isPUnifiedToken && isExternalAddress;
 
    const currencyTypeName = useSelector((state) =>
      selector(state, 'currencyType'),
@@ -161,7 +160,12 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   };
 
   const getWarningAddress = () => {
-    if (isExternalAddress && (selectedPrivacy.isDecentralized || selectedPrivacy.isMainCrypto)) {
+    if (
+      isExternalAddress &&
+      (isDecentralized ||
+        selectedPrivacy.isMainCrypto ||
+        selectedPrivacy.isPUnifiedToken)
+    ) {
       return 'To avoid loss of funds, please make sure your destination address can receive funds from smart contracts. If you’re not sure, a personal address is always recommended.';
     }
     if (isExternalAddress && isERC20) {
