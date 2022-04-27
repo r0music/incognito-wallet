@@ -32,6 +32,29 @@ platform :ios do
        force: true
      )
    end
+  lane :next do
+    setup_circle_ci
+     setupCodeSigning(ENV["MATCH_PASSWORD"], ENV["MATCH_PASSWORD"],
+     './fastlane/AppStore_com.incognito.wallet.mobileprovision',
+     './fastlane/cert.p12')
+      #match(type: 'appstore', readonly: true ,api_key_path: "fastlane/develop.json"
+      build_app(
+      workspace: './ios/Incognito.xcworkspace',
+      scheme: 'Incognito',
+      export_method: "app-store",
+          export_options: {
+            f: {
+              "com.incognito.wallet.next" => "match AppStore com.incognito.wallet"
+            }
+          },
+      export_xcargs: "-allowProvisioningUpdates"
+    )
+    pilot( api_key_path: "fastlane/develop.json" )
+    upload_to_app_store(
+      submit_for_review: false,
+      force: true
+    )
+  end
 end
 
 platform :android do
