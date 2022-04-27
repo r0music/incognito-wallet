@@ -223,10 +223,16 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           amount: userFee,
         },
       ];
-      let prvPayments = [];
       let tokenPayments = [];
+      let prvPayments = [];
       if (isUseTokenFee) {
         tokenPayments = paymentInfo;
+        prvPayments = [
+          {
+            paymentAddress: masterAddress,
+            amount: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,
+          },
+        ];
       } else {
         prvPayments = paymentInfo;
       }
