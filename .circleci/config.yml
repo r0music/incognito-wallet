@@ -211,22 +211,22 @@ jobs:
       - run: bundle exec fastlane ios release
       - run: chmod +x .circleci/slack-upload.sh
       - run: curl -X POST -H 'Content-type:application/json' --data '{"text":"'"Push iOS $APP_VERSION to the app store successfully!"'"}' $SLACK_HOOK
-    build_ios_next:
-      macos:
-        xcode: 13.2.1
-      steps:
-        - attach_workspace:
-            at: .
-        - get_app_info
-        - run: bundle install
-        - run: |
-            cd ios
-            pod install
-        - run: brew update
-        - run: brew install watchman
-        - run: bundle exec fastlane ios next
-        - run: chmod +x .circleci/slack-upload.sh
-        - run: curl -X POST -H 'Content-type:application/json' --data '{"text":"'"Push iOS $APP_VERSION to the app store successfully!"'"}' $SLACK_HOOK
+  build_ios_next:
+    macos:
+      xcode: 13.2.1
+    steps:
+      - attach_workspace:
+          at: .
+      - get_app_info
+      - run: bundle install
+      - run: |
+          cd ios
+          pod install
+      - run: brew update
+      - run: brew install watchman
+      - run: bundle exec fastlane ios next
+      - run: chmod +x .circleci/slack-upload.sh
+      - run: curl -X POST -H 'Content-type:application/json' --data '{"text":"'"Push iOS $APP_VERSION to the app store successfully!"'"}' $SLACK_HOOK
   publish_github_release:
     docker:
       - image: cibuilds/github:0.13
