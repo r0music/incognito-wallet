@@ -159,7 +159,7 @@ const SendForm = (props) => {
           selectedPrivacy.tokenId,
         );
       }
-      setChildSelectedPrivacy(childSelectedPrivacy);
+      dispatch(setChildSelectedPrivacy(childSelectedPrivacy));
     }
   }, [isIncognitoAddress]);
 
