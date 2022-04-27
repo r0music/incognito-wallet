@@ -23,6 +23,11 @@ export const ConvertItem: React.FC<ConvertItemProps> = ({
   style,
 }: ConvertItemProps) => {
   const uri = `${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${unifiedTokenData.symbol}.png`;
+
+  let unifiedTokenAmount = unifiedTokenData?.listUnifiedToken
+    .map((item) => format.amountVer2(item?.balance, item?.pDecimals))
+    .reduce((prevValue, nextValue) => prevValue + nextValue);
+
   return (
     <TouchableOpacity
       activeOpacity={0.8}
@@ -44,11 +49,7 @@ export const ConvertItem: React.FC<ConvertItemProps> = ({
       <View style={pUnifiedTokenInfoContainerStyle}>
         <Text style={pUnifiedTokenTextStyle}>{unifiedTokenData?.symbol}</Text>
         <Text style={pUnifiedTokenTextStyle}>
-          {format.amountVer2(
-            unifiedTokenData?.balance,
-            unifiedTokenData?.pDecimals,
-          )}{' '}
-          {unifiedTokenData?.symbol}
+          {unifiedTokenAmount} {unifiedTokenData?.symbol}
         </Text>
       </View>
 
