@@ -24,10 +24,15 @@ export const networksSelector = createSelector(
     } else if (selectedPrivacy?.isPUnifiedToken) {
       return getNetworksForUnifiedToken({
         selectedPrivacy,
-        vault: estimateFee?.vaultInfo?.UnifiedTokenInfos,
+        networkSupports: estimateFee?.networkSupports || null,
       });
     } else {
       return [selectedPrivacy];
     }
   },
+);
+
+export const isFetchingNetworksSelector = createSelector(
+  estimateFeeSelector,
+  (estimateFee) => estimateFee?.isFetchingNetworkSupports,
 );

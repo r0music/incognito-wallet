@@ -170,22 +170,16 @@ export const getTotalFee = ({
   return { totalFee, totalFeeText, userFee };
 };
 
-export const getNetworksForUnifiedToken = ({ selectedPrivacy, vault }) => {
+export const getNetworksForUnifiedToken = ({ selectedPrivacy, networkSupports }) => {
   let networksData = [];
   // list pToken of unifiedToken;
   const listPToken = selectedPrivacy.listUnifiedToken;
-  
-  const unifiedTokenId = selectedPrivacy.tokenId;
   try {
     for (var i = 0; i < listPToken.length; i++) {
-      // Only add network when vault > 0
-      if (vault[unifiedTokenId][listPToken[i]?.networkId].State?.Reserve > 0) {
-        const networkInfo = {
-          ...listPToken[i],
-          vault: vault[unifiedTokenId][listPToken[i]?.networkId].State,
-        };
-        networksData.push(networkInfo);
-      }
+      networksData.push({
+        ...listPToken[i],
+        vault: networkSupports ? networkSupports[listPToken[i]?.networkId]?.MaxReceivedAmount : null,
+      });
     }
     return networksData;
   } catch (error) {

@@ -1,12 +1,19 @@
 /* eslint-disable import/no-cycle */
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { reset } from 'redux-form';
 import debounce from 'lodash/debounce';
 import { useFocusEffect } from 'react-navigation-hooks';
 import PropTypes from 'prop-types';
 import { ExHandler } from '@src/services/exception';
+import {
+  isFetchingNetworksSelector,
+} from '@src/components/EstimateFee/EstimateFee.selector';
+import {
+  selectedPrivacySelector,
+  childSelectedPrivacySelector,
+} from '@src/redux/selectors';
 import {
   actionFetchFee,
   actionGetNetworkSupports,
@@ -21,20 +28,33 @@ const enhance = (WrappedComp) => (props) => {
     isExternalAddress,
     isIncognitoAddress,
     isPortalToken,
-    childSelectedPrivacy,
   } = props;
   const dispatch = useDispatch();
   const [isKeyboardVisible] = useKeyboard();
+  const isFetchingNetworks = useSelector(isFetchingNetworksSelector);
+
+  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const childSelectedPrivacy = useSelector(
+    childSelectedPrivacySelector.childSelectedPrivacy,
+  );
+
   const handleChangeForm = async (
     address,
     amount,
     memo,
-    isExternalAddress,
-    isIncognitoAddress,
     childSelectedPrivacy,
   ) => {
     try {
-      if (!amount || !address || !childSelectedPrivacy) {
+      if(selectedPrivacy?.isPUnifiedToken && amount) {
+        await dispatch(
+          actionGetNetworkSupports({
+            amount,
+            childSelectedPrivacy,
+          }),
+        );
+      }
+        
+      if (!amount || !address || !childSelectedPrivacy || isFetchingNetworks) {
         return;
       }
       let screen = 'Send';
@@ -46,11 +66,6 @@ const enhance = (WrappedComp) => (props) => {
       if (isPortalToken && screen === 'UnShield') {
         return;
       }
-
-      // await dispatch(actionGetNetworkSupports({
-      //   amount,
-      //   childSelectedPrivacy
-      // }));
 
       await dispatch(
         actionFetchFee({
@@ -119,7 +134,6 @@ enhance.propTypes = {
   memo: PropTypes.string,
   isExternalAddress: PropTypes.bool.isRequired,
   isIncognitoAddress: PropTypes.bool.isRequired,
-  childSelectedPrivacy: PropTypes.object,
 };
 
 export default enhance;

@@ -5,11 +5,18 @@ import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { COLORS } from '@src/styles';
 import convert from '@src/utils/convert';
 import React, { useState } from 'react';
-import { ScrollView, TextStyle, View, ViewStyle } from 'react-native';
+import {
+  ActivityIndicator,
+  ScrollView,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native';
 import Modal, { ModalProps } from 'react-native-modal';
 import { useSelector } from 'react-redux';
 import { formValueSelector } from 'redux-form';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { isFetchingNetworksSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 
 export interface SelectNetworkForUnshieldInputProps extends ModalProps {
   style?: ViewStyle;
@@ -37,10 +44,15 @@ export const SelectNetworkForUnshieldInput: React.FC<
     selectedNetwork?.pDecimals || selectedPrivacy.pDecimals,
   );
 
+  const isFetchingNetworks = useSelector(isFetchingNetworksSelector);
+
   const checkDisableSelectNetwork = (networkInfo) => {
     if (selectedPrivacy?.isPUnifiedToken) {
+      if (networkInfo?.vault === null || networkInfo?.vault === undefined) {
+        return false;
+      }
       if (
-        originalAmount < networkInfo?.vault?.Reserve ||
+        originalAmount < networkInfo?.vault ||
         networkInfo?.networkId === 'INCOGNITO'
       ) {
         return false;
@@ -59,13 +71,23 @@ export const SelectNetworkForUnshieldInput: React.FC<
           activeOpacity={1}
           onPress={() => setIsVisible(true)}
           style={networkMainContainerStyle}
+          disabled={isFetchingNetworks}
         >
           {selectedNetwork ? (
-            <Text style={networkTextStyle}>{selectedNetwork?.network}</Text>
+            <Text numberOfLines={1} style={networkTextStyle}>
+              {selectedNetwork?.network}
+            </Text>
           ) : (
-            <Text style={selectNetworkTextStyle}>Select network</Text>
+            <Text numberOfLines={1} style={selectNetworkTextStyle}>
+              Select network
+            </Text>
           )}
-          <ConvertIcon2 />
+          <View style={rightItemStyle}>
+            {isFetchingNetworks && (
+              <ActivityIndicator size="small" style={loadingStyle} />
+            )}
+            <ConvertIcon2 />
+          </View>
         </TouchableOpacity>
       </View>
 
@@ -182,7 +204,7 @@ const networkNameStyle: TextStyle = {
   fontSize: 16,
   fontWeight: '500',
   lineHeight: 24,
-  marginRight: 24
+  marginRight: 24,
 };
 
 const networkInputLabelStyle: TextStyle = {
@@ -212,4 +234,14 @@ const selectNetworkTextStyle: TextStyle = {
 const networkNameDisabledStyle: TextStyle = {
   ...networkNameStyle,
   opacity: 0.3,
+};
+
+const rightItemStyle: ViewStyle = {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginLeft: 16,
+};
+
+const loadingStyle: ViewStyle = {
+  marginRight: 16,
 };

@@ -24,6 +24,8 @@ import {
   ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN,
   ACTION_FETCHED_VAULT,
   ACTION_FETCHED_NETWORKS_SUPPORT,
+  ACTION_FETCHING_NETWORKS_SUPPORT,
+  ACTION_FETCH_FAILED_NETWORKS_SUPPORT
 } from './EstimateFee.constant';
 import { MAX_FEE_PER_TX, hasMultiLevelUsersFee } from './EstimateFee.utils';
 
@@ -88,6 +90,7 @@ const initialState = {
   isValidating: false,
   fast2x: false,
   vaultInfo: null,
+  isFetchingNetworkSupports: false,
   networkSupports: []
 };
 
@@ -298,6 +301,20 @@ export default (state = initialState, action) => {
       return {
         ...state,
         networkSupports: action.payload,
+        isFetchingNetworkSupports: false
+      };
+    }
+    case ACTION_FETCH_FAILED_NETWORKS_SUPPORT: {
+      return {
+        ...state,
+        networkSupports: action.payload,
+        isFetchingNetworkSupports: false,
+      };
+    }
+    case ACTION_FETCHING_NETWORKS_SUPPORT: {
+      return {
+        ...state,
+        isFetchingNetworkSupports: true
       };
     }
     default:

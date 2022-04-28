@@ -37,6 +37,8 @@ import {
   ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN,
   ACTION_FETCHED_VAULT,
   ACTION_FETCHED_NETWORKS_SUPPORT,
+  ACTION_FETCH_FAILED_NETWORKS_SUPPORT,
+  ACTION_FETCHING_NETWORKS_SUPPORT
 } from './EstimateFee.constant';
 import { apiCheckValidAddress } from './EstimateFee.services';
 import { estimateFeeSelector, feeDataSelector } from './EstimateFee.selector';
@@ -186,23 +188,39 @@ export const actionFetchFee = ({ amount, address, screen, memo, childSelectedPri
   }
 };
 
+export const actionFetchingNetworksSupport = (payload) => ({
+  type: ACTION_FETCHING_NETWORKS_SUPPORT,
+  payload,
+});
+
+export const actionFetchFailedNetworksSupport = (payload) => ({
+  type: ACTION_FETCH_FAILED_NETWORKS_SUPPORT,
+  payload,
+});
+
+
 export const actionFetchedNetworksSupport = (payload) => ({
   type: ACTION_FETCHED_NETWORKS_SUPPORT,
   payload,
 });
 
 export const actionGetNetworkSupports =
-  ({ amount, childSelectedPrivacy = null }) =>
+  ({ amount }) =>
   async (dispatch, getState) => {
     const state = getState();
     const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
 
-    if (!selectedPrivacy || !amount || !childSelectedPrivacy) return;
-    const networkSupports = await checkVault({
-      pUnifiedTokenId: selectedPrivacy.tokenId,
-      amount: amount,
-    });
-    await dispatch(actionFetchedNetworksSupport(networkSupports));
+    if (!selectedPrivacy || !amount) return;
+    try {
+      await dispatch(actionFetchingNetworksSupport());
+      const networkSupports = await checkVault({
+        pUnifiedTokenId: selectedPrivacy.tokenId,
+        amount: amount,
+      });
+      await dispatch(actionFetchedNetworksSupport(networkSupports));
+    } catch (error) {
+      await dispatch(actionFetchFailedNetworksSupport());
+    }
   };
 
 export const actionHandleMinFeeEst = ({ minFeePTokenEst }) => async (
