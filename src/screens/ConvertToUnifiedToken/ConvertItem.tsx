@@ -25,7 +25,7 @@ export const ConvertItem: React.FC<ConvertItemProps> = ({
   const uri = `${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${unifiedTokenData.symbol}.png`;
 
   let unifiedTokenAmount = unifiedTokenData?.listUnifiedToken
-    .map((item) => format.amountVer2(item?.balance, item?.pDecimals))
+    .map((item) => parseFloat(format.amountVer2(item?.balance, item?.pDecimals)))
     .reduce((prevValue, nextValue) => prevValue + nextValue);
 
   return (

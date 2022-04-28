@@ -298,7 +298,7 @@ const convertToUnifiedToken = () => async (dispatch, getState) => {
         if (res) {
           setTimeout(() => {
             dispatch(createTransactionConvert());
-          }, 3000);
+          }, 30000);
         }
       }
     } else {
