@@ -12792,9 +12792,9 @@ imurmurhash@^0.1.4:
   resolved "https://registry.yarnpkg.com/imurmurhash/-/imurmurhash-0.1.4.tgz#9218b9b2b928a238b13dc4fb6b6d576f231453ea"
   integrity sha1-khi5srkoojixPcT7a21XbyMUU+o=
 
-"incognito-chain-web-js@https://github.com/incognitochain/incognito-chain-web-js#4.4.1.13":
+"incognito-chain-web-js@https://github.com/incognitochain/incognito-chain-web-js#4.4.1.14":
   version "1.0.0"
-  resolved "https://github.com/incognitochain/incognito-chain-web-js#ccde2fc69c213edf08b0622ecc8b5271bad274c1"
+  resolved "https://github.com/incognitochain/incognito-chain-web-js#7f87846bfd05cfc36ce41fce0742a799004281bb"
   dependencies:
     "@babel/runtime" "^7.14.0"
     axios "^0.19.0"
