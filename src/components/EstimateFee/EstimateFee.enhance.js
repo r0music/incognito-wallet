@@ -1,19 +1,12 @@
 /* eslint-disable import/no-cycle */
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { reset } from 'redux-form';
 import debounce from 'lodash/debounce';
 import { useFocusEffect } from 'react-navigation-hooks';
 import PropTypes from 'prop-types';
 import { ExHandler } from '@src/services/exception';
-import {
-  isFetchingNetworksSelector,
-} from '@src/components/EstimateFee/EstimateFee.selector';
-import {
-  selectedPrivacySelector,
-  childSelectedPrivacySelector,
-} from '@src/redux/selectors';
 import {
   actionFetchFee,
   actionGetNetworkSupports,
@@ -28,24 +21,22 @@ const enhance = (WrappedComp) => (props) => {
     isExternalAddress,
     isIncognitoAddress,
     isPortalToken,
+    selectedPrivacy,
+    childSelectedPrivacy,
   } = props;
   const dispatch = useDispatch();
   const [isKeyboardVisible] = useKeyboard();
-  const isFetchingNetworks = useSelector(isFetchingNetworksSelector);
-
-  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const childSelectedPrivacy = useSelector(
-    childSelectedPrivacySelector.childSelectedPrivacy,
-  );
-
   const handleChangeForm = async (
     address,
     amount,
     memo,
+    isExternalAddress,
+    isIncognitoAddress,
+    selectedPrivacy,
     childSelectedPrivacy,
   ) => {
     try {
-      if(selectedPrivacy?.isPUnifiedToken && amount) {
+      if (selectedPrivacy?.isPUnifiedToken && amount) {
         await dispatch(
           actionGetNetworkSupports({
             amount,
@@ -53,8 +44,8 @@ const enhance = (WrappedComp) => (props) => {
           }),
         );
       }
-        
-      if (!amount || !address || !childSelectedPrivacy || isFetchingNetworks) {
+      
+      if (!amount || !address || !childSelectedPrivacy) {
         return;
       }
       let screen = 'Send';
@@ -66,6 +57,11 @@ const enhance = (WrappedComp) => (props) => {
       if (isPortalToken && screen === 'UnShield') {
         return;
       }
+
+      // await dispatch(actionGetNetworkSupports({
+      //   amount,
+      //   childSelectedPrivacy
+      // }));
 
       await dispatch(
         actionFetchFee({
@@ -88,6 +84,7 @@ const enhance = (WrappedComp) => (props) => {
       memo,
       isExternalAddress,
       isIncognitoAddress,
+      selectedPrivacy,
       childSelectedPrivacy,
     );
   }, [
@@ -96,6 +93,7 @@ const enhance = (WrappedComp) => (props) => {
     memo,
     isExternalAddress,
     isIncognitoAddress,
+    selectedPrivacy,
     childSelectedPrivacy,
   ]);
   React.useEffect(() => {
@@ -134,6 +132,8 @@ enhance.propTypes = {
   memo: PropTypes.string,
   isExternalAddress: PropTypes.bool.isRequired,
   isIncognitoAddress: PropTypes.bool.isRequired,
+  selectedPrivacy: PropTypes.object,
+  childSelectedPrivacy: PropTypes.object,
 };
 
 export default enhance;
