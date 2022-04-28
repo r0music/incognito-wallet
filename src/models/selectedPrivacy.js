@@ -143,8 +143,14 @@ class SelectedPrivacy {
       isUnknown ? unknownText : 'Privacy',
     );
     this.shortName = this.name;
-    if (this.name.includes('(')) {
-      this.shortName = this.name.split('(')[0];
+    if (this.name && this.name.includes('(')) {
+      const splitArr_1 = this.name.split('(');
+      const splitArr_2 = this.name.split(')');
+      if (splitArr_1[0] && splitArr_1[0].trim()) {
+        this.shortName = splitArr_1[0];
+      } else if (splitArr_2[1]) {
+        this.shortName = splitArr_2[1];
+      }
     }
     this.displayName = combineData.call(
       this,

@@ -408,6 +408,9 @@ export const actionWithdrawOrder =
             ]);
           },
         };
+        setTimeout(() => {
+          dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CANCEL_ORDER));
+        }, 300);
         if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
           data = {
             ...data,

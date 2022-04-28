@@ -31,7 +31,7 @@ export const updateMetrics = async ({ type, params }) => {
     axios.post(ANALYTICS.ANALYTIC_ENDPOINT, {
       created_at: timenow,
       type_id: type,
-      params,
+      ...params,
     });
   } catch(e) {
     console.log('Ignore: ', e);

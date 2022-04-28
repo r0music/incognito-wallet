@@ -15,6 +15,7 @@ const ANALYTIC_DATA_TYPE = {
   TRADE_PANCAKE: 13,
   TRADE_UNISWAP: 14,
   TRADE_CURVE: 15,
+  CANCEL_ORDER: 16,
 };
 
 export default {
