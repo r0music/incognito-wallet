@@ -1599,7 +1599,27 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       return;
     }
     setTimeout(() => {
-      dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.TRADE));
+      let analytic = '';
+      let params = {
+          sell_token: tokenIDToSell,
+          buy_token: tokenIDToBuy,
+          sell_amount: String(sellAmount),
+      };
+      switch (platform.id) {
+      case KEYS_PLATFORMS_SUPPORTED.incognito:
+        analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE;
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.pancake:
+        analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_PANCAKE;
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.uni:
+        analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_UNISWAP;
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.curve:
+        analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_CURVE;
+        break;
+      }
+      dispatch(requestUpdateMetrics(analytic, params));
     }, 300);
     await dispatch(actionFetchingSwap(true));
     const account = defaultAccountWalletSelector(state);

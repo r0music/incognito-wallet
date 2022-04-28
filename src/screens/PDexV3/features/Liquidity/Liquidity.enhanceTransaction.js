@@ -6,6 +6,8 @@ import {ExHandler} from '@services/exception';
 import {Toast} from '@components/core';
 import {actionFetch} from '@screens/PDexV3/features/Portfolio';
 import Loading from '@screens/DexV2/components/Loading';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
+import { ANALYTICS } from '@src/constants';
 
 const withTransaction = WrappedComp => props => {
   const dispatch = useDispatch();
@@ -22,6 +24,9 @@ const withTransaction = WrappedComp => props => {
     if (loading) return;
     try {
       setLoading(true);
+      setTimeout(() => {
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CONTRIBUTE_LP));
+      }, 300);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       await pDexV3Inst.createContributeTxs({
         fee,
@@ -44,6 +49,9 @@ const withTransaction = WrappedComp => props => {
     if (loading) return;
     try {
       setLoading(true);
+      setTimeout(() => {
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CONTRIBUTE_NEW_LP));
+      }, 300);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       await pDexV3Inst.createContributeTxs({
         fee,

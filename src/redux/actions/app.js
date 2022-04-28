@@ -13,9 +13,9 @@ export const setAppStatus = status => {
   }
 };
 
-export const requestUpdateMetrics = (type) => async () => {
+export const requestUpdateMetrics = (type, params) => async () => {
   try {
-    return updateMetrics({ type });
+    return updateMetrics({ type, params });
   } catch (e) {
     console.log('Ignore: ', e);
   }

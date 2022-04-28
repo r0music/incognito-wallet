@@ -13,6 +13,8 @@ import BackupKeys from '@screens/BackupKeys';
 import ConfirmBackUp from '@screens/GetStarted/ConfirmBackUpKeys';
 import { loadWallet as loadWallet } from '@src/services/wallet/WalletService';
 import { CONSTANT_CONFIGS } from '@src/constants';
+import { useDispatch } from 'react-redux';
+import { setNewUserTutorial } from '@src/redux/actions/settings';
 
 const styles = StyleSheet.create({
   flex: {
@@ -28,7 +30,7 @@ const Welcome = () => {
   const [isBackUp, setIsBackUp] = useState(false);
   const [listAccount, setListAccount] = useState([]);
   const navigation = useNavigation();
-
+  const dispatch = useDispatch();
   const loadWalletData = useCallback(async () => {
     const data = await storage.getItem('Wallet');
 
@@ -63,6 +65,7 @@ const Welcome = () => {
   };
 
   useEffect(() => {
+    dispatch(setNewUserTutorial(true));
     loadWalletData();
   }, []);
 

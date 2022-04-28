@@ -19,6 +19,8 @@ import { PoolsListHeader } from '@screens/PDexV3/features/Pools/Pools.list';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import PortfolioVer2 from '@screens/PDexV3/features/Portfolio/PortfolioVer2';
 import withLazy from '@components/LazyHoc/LazyHoc';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
+import { ANALYTICS } from '@src/constants';
 import withHome from './Home.enhance';
 import { ROOT_TAB_HOME, TAB_POOLS_ID, TAB_PORTFOLIO_ID, TAB_REWARDS_ID } from './Home.constant';
 import { styled } from './Home.styled';
@@ -31,6 +33,7 @@ const TabPools = React.memo(() => {
     batch(() => {
       dispatch(liquidityActions.actionSetContributeID({ poolId, accessID: '' }));
       navigation.navigate(routeNames.OTAContributePool);
+      dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.EARN_NOW));
     });
   };
   return (

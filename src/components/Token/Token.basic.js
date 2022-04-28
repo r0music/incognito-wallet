@@ -7,12 +7,12 @@ import withToken from './Token.enhance';
 import { styled } from './Token.styled';
 
 const TokenBasic = (props) => {
-  const { onPress, style, showBalance, shouldShowFollowed } = props;
+  const { onPress, style, showBalance, shortName, shouldShowFollowed } = props;
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={[styled.container, style]}>
         <View style={[styled.extra, styled.extraTop]}>
-          <Name {...props} />
+          <Name {...props} name={shortName} />
           {showBalance && (
             <Amount {...{ ...props, customStyle: styled.boldText }} />
           )}

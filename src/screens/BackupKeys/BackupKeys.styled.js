@@ -38,7 +38,8 @@ export default StyleSheet.create({
     marginBottom: 20,
   },
   topGroup: {
-    flex: 1,
+    // flex: 1,
+    marginBottom: 20,
   },
   saveAsBtn: {
     flexDirection: 'row',

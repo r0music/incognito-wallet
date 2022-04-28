@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet } from 'react-native';
-import { TouchableOpacity } from '@src/components/core';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { InfoIcon } from '@src/components/Icons';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
@@ -10,14 +9,14 @@ import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 
 const styled = StyleSheet.create({
   btnInfo: {
-    margin: 5,
+    padding: 5,
   },
 });
 
 const BtnInfo = (props) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const {tokenId} = props;
+  const { tokenId } = props;
   const onNavTokenInfo = async() => {
     if(tokenId) {
       await dispatch(setSelectedPrivacy(tokenId));

@@ -103,7 +103,8 @@ const VerifyPassphrase = () => {
         if (data.isInit) {
           await dispatch(initMasterKey(data.name, data.mnemonic));
           await dispatch(actionLoadInitial());
-          navigation.navigate(routeNames.GetStarted);
+          // Todo
+          navigation.navigate(routeNames.Tutorial);
         } else {
           await dispatch(createMasterKey(data));
           navigation.navigate(routeNames.MasterKeys);

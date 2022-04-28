@@ -1,0 +1,89 @@
+diff --git a/node_modules/react-native-youtube-iframe/src/PlayerScripts.js b/node_modules/react-native-youtube-iframe/src/PlayerScripts.js
+index 377d6d2..9f0dd26 100644
+--- a/node_modules/react-native-youtube-iframe/src/PlayerScripts.js
++++ b/node_modules/react-native-youtube-iframe/src/PlayerScripts.js
+@@ -1,5 +1,11 @@
+ import {MUTE_MODE, PAUSE_MODE, PLAY_MODE, UNMUTE_MODE} from './constants';
+ 
++type TLoadAndPlayVideoByIdParams = {
++  videoId: string;
++  startSeconds?: number;
++  endSeconds?: number;
++};
++
+ export const PLAYER_FUNCTIONS = {
+   muteVideo: 'player.mute(); true;',
+   unMuteVideo: 'player.unMute(); true;',
+@@ -65,6 +71,12 @@ true;
+ 
+     return `player.${func}({videoId: ${JSON.stringify(videoId)}}); true;`;
+   },
++
++  loadAndPlayVideoByIdScript: (params: TLoadAndPlayVideoByIdParams) => {
++    return `player.loadVideoById(${JSON.stringify(
++      params,
++    )}); true;`;
++  },
+ };
+ 
+ export const playMode = {
+diff --git a/node_modules/react-native-youtube-iframe/src/YoutubeIframe.js b/node_modules/react-native-youtube-iframe/src/YoutubeIframe.js
+index ca95eae..9a2b607 100644
+--- a/node_modules/react-native-youtube-iframe/src/YoutubeIframe.js
++++ b/node_modules/react-native-youtube-iframe/src/YoutubeIframe.js
+@@ -68,6 +68,8 @@ const YoutubeIframe = (props, ref) => {
+           eventEmitter.current.once('getVideoUrl', resolve);
+         });
+       },
++      injectJs = (jsToInject: string) =>
++        webViewRef.current?.injectJavaScript(jsToInject),
+       getDuration: () => {
+         webViewRef.current.injectJavaScript(PLAYER_FUNCTIONS.durationScript);
+         return new Promise(resolve => {
+@@ -117,6 +119,28 @@ const YoutubeIframe = (props, ref) => {
+     [],
+   );
+ 
++  const reload = async (startTimeInSeconds?: number) => {
++    try {
++      console.log('videoId: ', videoId);
++      if (!videoId) {
++        return;
++      }
++
++      const currentTime = await getCurrentTime();
++      const _startTimeInSeconds = startTimeInSeconds ?? currentTime ?? 0;
++      injectJs(
++        PLAYER_SCRIPTS.loadAndPlayVideoByIdScript({
++          videoId,
++          startSeconds: _startTimeInSeconds,
++        }),
++      );
++
++      onFullScreenChange('hihihi');
++    } catch (e) {
++      console.log('error');
++    }
++  };
++
+   useEffect(() => {
+     if (!playerReady) {
+       // no instance of player is ready
+@@ -171,7 +195,7 @@ const YoutubeIframe = (props, ref) => {
+ 
+         switch (message.eventType) {
+           case 'fullScreenChange':
+-            onFullScreenChange(message.data);
++            reload(2000);
+             break;
+           case 'playerStateChange':
+             onChangeState(PLAYER_STATES[message.data]);
+@@ -201,7 +225,7 @@ const YoutubeIframe = (props, ref) => {
+       onReady,
+       onError,
+       onChangeState,
+-      onFullScreenChange,
++      reload,
+       onPlaybackRateChange,
+       onPlaybackQualityChange,
+     ],

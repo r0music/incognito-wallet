@@ -39,6 +39,7 @@ const Market = React.memo((props) => {
         {...rest}
         renderItem={(item) => (
           <TokenFollow
+            showInfo={false}
             item={item}
             key={item.tokenId}
             hideStar={activeTab !== MarketTabs.FAVORITE || item.tokenId === PRVIDSTR}

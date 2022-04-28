@@ -2,11 +2,13 @@ import type from '@src/redux/types/settings';
 import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
 import { persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';
+import { VIDEOS_LIST } from '@src/redux/constants/configs';
 
 const initialState = {
   data: [],
   error: null,
-  banners: [],
+  videos: VIDEOS_LIST,
+  newUserTutorial: false,
   codepushVersion: ''
 };
 
@@ -17,15 +19,20 @@ const reducer = (state = initialState, action) => {
       ...state,
       data: action.payload
     };
-  case type.SET_BANNERS:
+  case type.SET_VIDEO_TUTORIAL:
     return {
       ...state,
-      banners: action.payload || []
+      videos: action.payload || []
     };
   case type.SET_CODE_PUSH_VERSION:
     return {
       ...state,
       codepushVer: action.payload || ''
+    };
+  case type.SET_NEW_USER_TUTORIAL:
+    return {
+      ...state,
+      newUserTutorial: action.payload
     };
   default:
     return state;
@@ -36,8 +43,9 @@ const persistConfig = {
   key: 'settings',
   storage: AsyncStorage,
   whitelist: [
-    'banners',
-    'codepushVersion'
+    'videos',
+    'codepushVersion',
+    'newUserTutorial'
   ],
   stateReconciler: autoMergeLevel2,
 };

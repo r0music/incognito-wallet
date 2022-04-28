@@ -205,4 +205,5 @@ export default {
   PrivacyAppsCurve: 'PrivacyAppsCurve',
   MarketSearchCoins: 'MarketSearchCoins',
   HomeLP: 'TabHomeLP',
+  Tutorial: 'Tutorial'
 };

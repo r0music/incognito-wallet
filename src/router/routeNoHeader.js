@@ -146,6 +146,7 @@ import {
 } from '@screens/PDexV3/features/PrivacyApps';
 import MarketSearchCoins from '@screens/MainTabBar/features/Market/Market.searchCoins';
 import HomeLP from '@screens/MainTabBar/features/HomeLP';
+import Tutorial from '@screens/Turotial/Tutorial';
 
 import OTAContribute from '@screens/PDexV3/features/Liquidity/features/AccessOTA/OTAContribute';
 import OTACreatePool from '@screens/PDexV3/features/Liquidity/features/AccessOTA/OTACreatePool';
@@ -722,6 +723,10 @@ const routes = [
   {
     screen: SelectOptionModal,
     name: routeNames.SelectOptionModal,
+  },
+  {
+    screen: Tutorial,
+    name: routeNames.Tutorial,
   },
   ...masterKeyRoutes,
   ...devRoutes,

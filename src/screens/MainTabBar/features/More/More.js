@@ -18,7 +18,7 @@ import {
   PowerIcon,
   ProvideIcon,
   ReportIcon,
-  ConsolidateIcon,
+  ConsolidateIcon, UTubeIcon,
 } from '@components/Icons';
 import { Header, Row } from '@src/components';
 import { ScrollViewBorder, Text, View5 } from '@src/components/core';
@@ -90,6 +90,11 @@ const Categories = [
         params: {
           showHeader: true,
         },
+      },
+      {
+        route: routeNames.Tutorial,
+        label: 'Tutorial',
+        icon: UTubeIcon,
       },
       {
         route: routeNames.pApp,

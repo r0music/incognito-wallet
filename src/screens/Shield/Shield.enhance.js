@@ -3,16 +3,19 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@src/components/Layout';
 import withTokenSelect from '@src/components/TokenSelect/TokenSelect.enhance';
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import PropTypes from 'prop-types';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import { withTokenVerified } from '@src/components/Token';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
+import { ANALYTICS } from '@src/constants';
 
 const enhance = (WrappedComp) => (props) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const { allTokens, isTokenSelectable } = props;
   const getPrivacyDataByTokenID = useDebounceSelector(
     selectedPrivacySelector.getPrivacyDataByTokenID,
@@ -28,6 +31,9 @@ const enhance = (WrappedComp) => (props) => {
       if (!isTokenSelectable(item?.tokenId)) {
         return;
       }
+      setTimeout(() => {
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.SHIELD));
+      }, 300);
       navigation.navigate(routeNames.ShieldGenQRCode, {
         tokenShield: item
       });

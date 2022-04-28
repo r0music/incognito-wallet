@@ -6,7 +6,7 @@ import { selectedPrivacySelector } from '@src/redux/selectors';
 import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import formatUtil from '@utils/format';
 import { renderNoClipAmount } from '@src/redux/selectors/history';
-import { COINS } from '@src/constants';
+import { COINS, CONSTANT_CONFIGS } from '@src/constants';
 import flatten from 'lodash/flatten';
 
 const withExportCSVVer1 = (WrappedComp) => (props) => {
@@ -27,7 +27,7 @@ const withExportCSVVer1 = (WrappedComp) => (props) => {
       (items &&
         items.length > 0 &&
         items.reduce((currentResult, item) => {
-          const { amount = 0, time = 0, fee = 0, txTypeStr = '' } = item;
+          const { amount = 0, time = 0, fee = 0, txTypeStr = '', txId } = item;
           if (item.statusStr === 'Success') {
             const data = {
               Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
@@ -43,6 +43,8 @@ const withExportCSVVer1 = (WrappedComp) => (props) => {
                 pDecimals: COINS.PRV.pDecimals || 9,
               })}`,
               'Fee Currency': COINS.PRV.symbol || '',
+              'InChain Tx': `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txId}`,
+              'OutChain Tx': '',
               Tag: 'Send',
               TxType: txTypeStr,
             };
@@ -59,7 +61,7 @@ const withExportCSVVer1 = (WrappedComp) => (props) => {
       (items &&
         items.length > 0 &&
         items.reduce((currentResult, item) => {
-          const { amount = 0, time = 0, txTypeStr = '' } = item;
+          const { amount = 0, time = 0, txTypeStr = '', txId } = item;
           if (item.statusStr === 'Success') {
             const data = {
               Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
@@ -72,6 +74,8 @@ const withExportCSVVer1 = (WrappedComp) => (props) => {
               'Send Currency': '',
               'Fee Amount': '',
               'Fee Currency': '',
+              'InChain Tx': `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txId}`,
+              'OutChain Tx': '',
               Tag: 'Receive',
               TxType: txTypeStr,
             };

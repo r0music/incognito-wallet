@@ -20,16 +20,18 @@ export const getToken = (deviceId, deviceFirebaseToken) => {
     .then(userModel.parseTokenData);
 };
 
-export const updateMetrics = async ({ type }) => {
+export const updateMetrics = async ({ type, params }) => {
   if (!type) {
     console.log('info is invalid');
     return;
   }
+  params = params || {};
   let timenow = Math.round((new Date()).getTime() / 1000);
   try {
     axios.post(ANALYTICS.ANALYTIC_ENDPOINT, {
       created_at: timenow,
       type_id: type,
+      params,
     });
   } catch(e) {
     console.log('Ignore: ', e);

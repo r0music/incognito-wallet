@@ -7,10 +7,13 @@ import replace from 'lodash/replace';
 import {COLORS, FONT} from '@src/styles';
 import {NormalText} from '@components/Token/Token';
 import incognito from '@assets/images/new-icons/incognito.png';
-import {BtnStar} from '@components/Button';
+import { BtnInfo, BtnStar } from '@components/Button';
 import format from '@utils/format';
 import { Text } from '@components/core';
 import styled from 'styled-components/native';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import { colorsSelector } from '@src/theme';
+import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 
 const CustomTouchableOpacity = styled(TouchableOpacity)`
   padding-left: 24px;
@@ -19,8 +22,9 @@ const CustomTouchableOpacity = styled(TouchableOpacity)`
   border-bottom-color: ${({ theme }) => theme.border4};
 `;
 
-const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
-  const { symbol, priceUsd, change, tokenId, isFollowed, name } = item;
+const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress, showInfo = true }) => {
+  const { symbol, priceUsd, change, tokenId, isFollowed, shortName, network } = item;
+  const colors = useDebounceSelector(colorsSelector);
   const balance = React.useMemo(() => {
     const price = priceUsd;
     const isTokenDecrease = change && change[0] === '-';
@@ -40,14 +44,30 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
           <Row centerVertical>
             <ImageCached uri={item.iconUrl} style={styles.icon} defaultImage={incognito} />
             <View>
-              <NormalText
-                style={styles.blackLabel}
-                text={symbol}
-              />
-              <NormalText
-                style={styles.greyText}
-                text={name}
-              />
+              <Row>
+                <NormalText
+                  style={styles.blackLabel}
+                  text={symbol}
+                />
+                {showInfo && (
+                  <BtnInfo
+                    tokenId={tokenId}
+                    style={styles.btnInfo}
+                  />
+                )}
+              </Row>
+              <Row>
+                <NormalText
+                  style={styles.greyText}
+                  text={shortName}
+                />
+                {!!network && tokenId !== PRVIDSTR && (
+                  <NormalText
+                    style={[styles.networkLabel, { backgroundColor: colors.background3, color: colors.grey1 }]}
+                    text={network}
+                  />
+                )}
+              </Row>
             </View>
           </Row>
         </View>
@@ -112,7 +132,6 @@ export const styles = StyleSheet.create({
     height: 32,
   },
   sectionFirst: {
-    flex: 1,
     paddingRight: 5,
     height: '100%',
   },
@@ -150,6 +169,23 @@ export const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'center'
   },
+  networkLabel: {
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.superSmall,
+    textAlign: 'left',
+    marginLeft: 6,
+    paddingHorizontal: 4,
+    borderRadius: 3,
+    overflow: 'hidden',
+    lineHeight: FONT.SIZE.superSmall + 4
+  },
+  btnInfo: {
+    width: 32,
+    height: 22,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    paddingLeft: 7
+  }
 });
 
 TokenFollow.propTypes = {
@@ -160,13 +196,15 @@ TokenFollow.propTypes = {
     change: PropTypes.string,
     tokenId: PropTypes.string.isRequired,
     isFollowed: PropTypes.bool.isRequired,
-    name: PropTypes.string.isRequired,
+    shortName: PropTypes.string.isRequired,
     network: PropTypes.string,
-    hasSameSymbol: PropTypes.bool
+    hasSameSymbol: PropTypes.bool,
+    networkName: PropTypes.string,
   }).isRequired,
   hideStar: PropTypes.bool.isRequired,
   handleToggleFollowToken: PropTypes.func.isRequired,
   onPress: PropTypes.func.isRequired,
+  showInfo: PropTypes.bool.isRequired,
 };
 
 FollowHeader.propTypes = {

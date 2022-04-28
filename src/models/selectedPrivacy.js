@@ -142,6 +142,10 @@ class SelectedPrivacy {
       token?.name,
       isUnknown ? unknownText : 'Privacy',
     );
+    this.shortName = this.name;
+    if (this.name.includes('(')) {
+      this.shortName = this.name.split('(')[0];
+    }
     this.displayName = combineData.call(
       this,
       `Privacy ${pTokenData?.symbol}`,
@@ -215,6 +219,9 @@ class SelectedPrivacy {
     this.defaultPoolPair = pTokenData?.defaultPoolPair;
     this.defaultPairToken = pTokenData?.defaultPairToken;
     this.network = pTokenData.network;
+    if (tokenId === PRV_ID) {
+      this.network = 'Incognito';
+    }
     this.hasSameSymbol = pTokenData.hasSameSymbol;
 
     // Native Token of Network

@@ -24,8 +24,8 @@ export const styled = StyleSheet.create({
   name: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1,
-    maxWidth: '60%',
+    // flex: 1,
+    // maxWidth: '60%',
   },
   leftText: {
     textAlign: 'left',

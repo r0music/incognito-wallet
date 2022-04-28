@@ -86,7 +86,7 @@ const HELPER_CONSTANT = {
     ],
   },
   PROVIDE: {
-    title: 'Length of term',
+    title: 'Provide Terms & Info',
     contents: [
       {
         content:

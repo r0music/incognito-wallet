@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { COLORS, FONT } from '@src/styles';
-import { batch, useDispatch, useSelector } from 'react-redux';
+import { batch, useDispatch } from 'react-redux';
 import { getDataByShareIdSelector } from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
 import { Hook } from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail';
 import { liquidityActions } from '@screens/PDexV3/features/Liquidity';
@@ -15,6 +15,8 @@ import { Text } from '@components/core';
 import { colorsSelector } from '@src/theme';
 import TwoTokenImage from '@screens/PDexV3/features/Portfolio/Portfolio.image';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
+import { ANALYTICS } from '@src/constants';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -95,6 +97,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
         }),
       );
       navigation.navigate(routeNames.OTAContributePool);
+      dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.EARN_NOW));
     });
   };
   const onClaimReward = () => {

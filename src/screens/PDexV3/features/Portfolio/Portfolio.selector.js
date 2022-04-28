@@ -1,11 +1,6 @@
 import { createSelector } from 'reselect';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import BigNumber from 'bignumber.js';
-import {
-  getExchangeRate,
-  getPrincipal,
-  getShareStr,
-} from '@screens/PDexV3';
 import format from '@src/utils/format';
 import convert from '@utils/convert';
 import { getValidRealAmountNFTSelector, isFetchingNFTSelector } from '@src/redux/selectors/account';
@@ -27,29 +22,6 @@ export const isFetchingSelector = createSelector(
   portfolioSelector,
   ({ isFetching }) => isFetching
 );
-
-const mapRewardToUSD = ({ rewards, getPrivacyDataByTokenID }) => {
-  let mapRewards = Object.keys(rewards).map(tokenId => ({
-    tokenId,
-    reward: rewards[tokenId]
-  }));
-  mapRewards = mapRewards.map(item => {
-    const token = getPrivacyDataByTokenID(item.tokenId);
-    const rewardUSD = convert.toHumanAmount(new BigNumber(item.reward).multipliedBy(token.priceUsd).toNumber(), token.pDecimals);
-    const rewardUSDStr = format.toFixed(rewardUSD, token.pDecimals);
-    const rewardUSDSymbolStr = `${rewardUSDStr} ${token.symbol}`;
-    const rewardStr = `${format.amountFull(item.reward, token.pDecimals)} ${token.symbol}`;
-    return {
-      ...item,
-      token,
-      rewardUSD,
-      rewardUSDStr,
-      rewardUSDSymbolStr,
-      rewardStr
-    };
-  });
-  return mapRewards;
-};
 
 const nftShareSelector = createSelector(
   portfolioSelector,
