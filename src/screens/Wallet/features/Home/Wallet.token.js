@@ -29,7 +29,7 @@ const TokenDefault = React.memo((props) => {
     pDecimals,
     decimalDigits,
     pricePrv,
-    change,
+    change = '0',
     onPress,
     shortName,
     isGettingBalance,
