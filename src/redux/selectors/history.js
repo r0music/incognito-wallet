@@ -120,7 +120,7 @@ export const historyReceiverSelector = createSelector(
 export const mappingTxPTokenSelector = createSelector(
   selectedPrivacy,
   decimalDigitsSelector,
-  ({ pDecimals, symbol, tokenId }, decimalDigits) => (txp) => {
+  ({ symbol, tokenId }, decimalDigits) => (txp) => {
     const {
       status,
       currencyType,
@@ -139,6 +139,7 @@ export const mappingTxPTokenSelector = createSelector(
       tokenFee,
       isUnShieldByPToken,
       rewardAmount,
+      pDecimals,
       decimals,
     } = txp;
     const shouldRenderQrShieldingAddress =
