@@ -7,6 +7,7 @@ import debounce from 'lodash/debounce';
 import { useFocusEffect } from 'react-navigation-hooks';
 import PropTypes from 'prop-types';
 import { ExHandler } from '@src/services/exception';
+import convert from '@src/utils/convert';
 import {
   actionFetchFee,
   actionGetNetworkSupports,
@@ -39,8 +40,10 @@ const enhance = (WrappedComp) => (props) => {
       if (selectedPrivacy?.isPUnifiedToken && amount) {
         await dispatch(
           actionGetNetworkSupports({
-            amount,
-            childSelectedPrivacy,
+            amount: convert.toOriginalAmount(
+              amount,
+              selectedPrivacy?.pDecimals,
+            ),
           }),
         );
       }
