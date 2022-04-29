@@ -92,7 +92,7 @@ const ProcessConvertToUnifiedToken: React.FC = () => {
     <>
       <Header title="Convert coins" hideBackButton />
       <View borderTop fullFlex>
-        {isConvertSuccess && renderSuccessBox()}
+        {isConverted && renderSuccessBox()}
         {isConvertProcessing && renderWarningBox()}
         <FlatList
           data={listTokenConvert}

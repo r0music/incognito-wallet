@@ -180,7 +180,7 @@ const createTransactionConvert = () => async (dispatch, getState) => {
           })) || [];
         
         let prvBalance = 0;
-        if (unspentCoinsOfPRV) {
+        if (unspentCoinsOfPRV?.length > 0) {
           prvBalance = unspentCoinsOfPRV
             ?.map((item) => parseFloat(item.Value))
             ?.reduce((prevValue, nextValue) => prevValue + nextValue);
