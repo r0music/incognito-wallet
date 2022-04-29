@@ -152,6 +152,11 @@ const createTransactionConvert = () => async (dispatch, getState) => {
         'PROCESSING',
       ),
     );
+
+    const sleep = (milliseconds) => {
+      return new Promise((resolve) => setTimeout(resolve, milliseconds));
+    };
+
     // create burning request
     let transactionStatusArray: any[] = [];
     for (var j = 0; j < unspentCoinsOfPTokenToConvert?.length; j++) {
@@ -205,16 +210,14 @@ const createTransactionConvert = () => async (dispatch, getState) => {
           }
           break;
         } else {
+          await sleep(20000);
+          numberOfTimeToWait = numberOfTimeToWait + 1;
           if (
             numberOfTimeToWait === 6 &&
             transactionStatusArray.length < numberOfTransactionToConvert
           ) {
             transactionStatusArray.push(TRANSACTION_CONVERT_STATUS.FAILED);
             break;
-          } else {
-            setTimeout(() => {
-              numberOfTimeToWait = numberOfTimeToWait + 1;
-            }, 20000);
           }
         }
       }
