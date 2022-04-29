@@ -214,7 +214,10 @@ export const actionGetNetworkSupports =
     try {
       await dispatch(actionFetchingNetworksSupport());
       const networkSupports = await checkVault({
-        pUnifiedTokenId: selectedPrivacy.tokenId,
+        pUnifiedTokenId: convert.toOriginalAmount(
+          selectedPrivacy.tokenId,
+          selectedPrivacy.pDecimals,
+        ),
         amount: amount,
       });
       await dispatch(actionFetchedNetworksSupport(networkSupports));
