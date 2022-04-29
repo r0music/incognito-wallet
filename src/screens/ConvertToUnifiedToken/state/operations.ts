@@ -205,7 +205,10 @@ const createTransactionConvert = () => async (dispatch, getState) => {
           }
           break;
         } else {
-          if (numberOfTimeToWait === 3) {
+          if (
+            numberOfTimeToWait === 3 &&
+            transactionStatusArray.length < numberOfTransactionToConvert
+          ) {
             transactionStatusArray.push(TRANSACTION_CONVERT_STATUS.FAILED);
             break;
           } else {
