@@ -121,8 +121,7 @@ const enhance = (WrappedComp) => (props) => {
   React.useEffect(() => {
     setTimeout(() => {
       const foundIndex = listTab.findIndex(tab => tab === activeTab);
-      if (foundIndex > -1 && listTab[foundIndex] === activeTab) {
-        console.log({ listTab, activeTab, foundIndex });
+      if (foundIndex > -1 && listTab[foundIndex] === activeTab && refScv.current) {
         refScv.current.scrollTo({
           x: foundIndex * ScreenWidth,
           animation: true
