@@ -5,7 +5,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { compressParamsWithdrawFee } from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
 import PortfolioItem from '@screens/PDexV3/features/Portfolio/Portfolio.item';
-import { ScrollView } from 'react-native';
+import { FlatList } from 'react-native';
 import { compose } from 'recompose';
 import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
 import orderBy from 'lodash/orderBy';
@@ -30,26 +30,32 @@ const PortfolioReward = React.memo(({ createAndSendWithdrawLPFee }) => {
     createAndSendWithdrawLPFee(params, versionTx);
   };
 
-  const renderItem = React.useCallback((shareId) => {
+  const renderItem = React.useCallback(({ item }) => {
     return (
       <PortfolioItem
-        shareId={shareId}
-        key={shareId}
+        shareId={item}
+        key={item}
         showRemove={false}
         onWithdrawFeeLP={handleWithdrawFee}
       />
     );
   }, [createAndSendWithdrawLPFee]);
+
+  const keyExtractor = React.useCallback((item) => item?.id, []);
+
   return (
     <View fullFlex>
-      <ScrollView
+      <FlatList
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={() => dispatch(actionFetch())} />
         }
-        contentContainerStyle={{ paddingHorizontal: 24 }}
-      >
-        {listShareRewardID.length > 0 ? listShareRewardID.map(renderItem) : <EmptyBookIcon message="Join a pool to contribute liquidity and earn rewards." />}
-      </ScrollView>
+        contentContainerStyle={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
+        data={listShareRewardID}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        ListEmptyComponent={<EmptyBookIcon message="Join a pool to contribute liquidity and earn rewards." />}
+      />
     </View>
   );
 });

@@ -35,7 +35,7 @@ export const PoolItem = React.memo((props) => {
   return (
     <TouchableOpacity
       onPress={() => typeof onPressPool === 'function' && onPressPool(poolId)}
-      style={[styled.container, { borderBottomWidth: 1, borderBottomColor: colors.border4 }, isLast && { marginBottom: 70, borderBottomWidth: 0 }, style]}
+      style={[styled.container, { borderBottomWidth: 1, borderBottomColor: colors.border4 }, isLast && { marginBottom: 5, borderBottomWidth: 0 }, style]}
     >
       <Row centerVertical>
         <TwoTokenImage iconUrl1={token1.iconUrl} iconUrl2={token2.iconUrl} />

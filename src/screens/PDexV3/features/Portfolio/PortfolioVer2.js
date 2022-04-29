@@ -66,6 +66,7 @@ export const styles = StyleSheet.create({
   },
   contentContainerStyle: {
     paddingHorizontal: 24,
+    flex: 1
   },
   fullFlex: {
     flex: 1
@@ -99,10 +100,6 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
         onWithdrawFeeLP={handleWithdrawFee}
       />
     );
-  }, []);
-
-  const EmptyList = React.useMemo(() => {
-    return <EmptyBookIcon message="Join a pool to contribute liquidity and earn rewards." />;
   }, []);
 
   const NFTShareSection = React.useMemo(() => {
@@ -154,7 +151,7 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
         titleStyled={styles.titleStyled}
         titleDisabledStyle={styles.titleDisabledStyle}
       >
-        {accessOTAShareIDs.length > 0 ? AccessOTAShareSection : EmptyList}
+        {AccessOTAShareSection}
       </View>
       <View
         tabID="TAB-PORTFOLIO-DETAIL-ACCESS-NFT"
@@ -164,7 +161,7 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
         titleStyled={styles.titleStyled}
         titleDisabledStyle={styles.titleDisabledStyle}
       >
-        {nftShareIDs.length > 0 ? NFTShareSection : EmptyList}
+        {NFTShareSection}
       </View>
     </Tabs>
   );

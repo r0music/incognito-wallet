@@ -125,7 +125,7 @@ const enhance = (WrappedComp) => (props) => {
         console.log({ listTab, activeTab, foundIndex });
         refScv.current.scrollTo({
           x: foundIndex * ScreenWidth,
-          animation: false
+          animation: true
         });
       }
     }, 0);

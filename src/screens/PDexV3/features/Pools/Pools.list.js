@@ -119,7 +119,6 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
         <Pool
           poolId={item.poolId}
           onPressPool={() => {
-            console.log(item.poolId);
             onPressPool(item.poolId, item);
           }}
           isLast={data && (data.length - 1 === index)}

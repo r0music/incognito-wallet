@@ -20,18 +20,18 @@ import { styled } from './MainTabBar.styled';
 
 const TabNavigator = createMaterialBottomTabNavigator(
   {
-    HomeLP: {
-      screen: HomeLP,
-      navigationOptions: {
-        tabBarIcon: ({ focused }) => <LiquidityIcon active={focused} />,
-        tabBarLabel: <Text style={styled.label}>Earn</Text>,
-      },
-    },
     Market: {
       screen: Market,
       navigationOptions: {
         tabBarIcon: ({ focused }) => <MarketIcon active={focused} />,
         tabBarLabel: <Text style={styled.label}>Markets</Text>,
+      },
+    },
+    HomeLP: {
+      screen: HomeLP,
+      navigationOptions: {
+        tabBarIcon: ({ focused }) => <LiquidityIcon active={focused} />,
+        tabBarLabel: <Text style={styled.label}>Earn</Text>,
       },
     },
     Trade: {

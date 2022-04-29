@@ -1,5 +1,4 @@
 import React from 'react';
-import Svg, { Path } from 'react-native-svg';
 import { Image, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { FONT } from '@src/styles';
