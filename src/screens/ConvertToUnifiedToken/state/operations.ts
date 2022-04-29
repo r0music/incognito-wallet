@@ -173,12 +173,14 @@ const createTransactionConvert = () => async (dispatch, getState) => {
 
       let numberOfTimeToWait = 0;
       while (true) {
-        const prvBalance = await accountService.getBalance({
-          account,
-          wallet,
-          tokenID: COINS.PRV_ID,
-          version: PrivacyVersion.ver2,
-        });
+        const unspentCoinsOfPRV =
+          (await accountWallet.getUnspentCoinsExcludeSpendingCoins({
+            tokenID: COINS.PRV_ID,
+            version: PrivacyVersion.ver2,
+          })) || [];
+        const prvBalance = unspentCoinsOfPRV
+          ?.map((item) => parseFloat(item.Value))
+          ?.reduce((prevValue, nextValue) => prevValue + nextValue);
 
         if (prvBalance >= MAX_FEE_PER_TX) {
           try {
