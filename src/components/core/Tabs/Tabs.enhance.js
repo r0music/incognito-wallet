@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useDispatch, useSelector } from 'react-redux';
 import { delay } from '@src/utils/delay';
 import { ExHandler } from '@src/services/exception';
 import { View } from '@src/components/core';
+import { ScrollView } from 'react-native';
+import { ScreenWidth } from '@utils/devices';
 import { actionChangeTab } from './Tabs.actions';
 import { styled } from './Tabs.styled';
 import { activedTabSelector } from './Tabs.selector';
@@ -12,8 +14,11 @@ import Tab1 from './Tabs.tab1';
 
 const enhance = (WrappedComp) => (props) => {
   const { children, rootTabID, useTab1 = false, defaultTabIndex = 0, borderTop = true } = props;
+  const refScv = useRef(null);
   const activeTab = useSelector(activedTabSelector)(rootTabID);
   const dispatch = useDispatch();
+  const listTab = children.map((chil) => chil.props.tabID);
+
   const onClickTabItem = async (tab) => {
     try {
       const foundTab = children.find((chil) => chil.props.tabID === tab);
@@ -82,28 +87,50 @@ const enhance = (WrappedComp) => (props) => {
       console.log('ERROR HERE', error);
     }
   }, [defaultTabIndex]);
-  const renderComponent = () => {
+  const renderComponent = React.useCallback(() => {
     try {
-      let Comp = (
+      return (
         <>
-          <WrappedComp {...{ ...props, onClickTabItem, renderTabs }} />
+          <WrappedComp {...{...props, onClickTabItem, renderTabs}} />
           <View borderTop={borderTop} style={styled.tabContent}>
-            {children?.map((child) => {
-              const actived = child.props.tabID === activeTab;
-              if (!actived) {
-                return null;
-              }
-              return child.props.children;
-            })}
+            <ScrollView
+              snapToInterval={ScreenWidth}
+              horizontal
+              ref={refScv}
+              disableIntervalMomentum
+              scrollEnabled={false}
+              showsHorizontalScrollIndicator={false}
+            >
+              {children?.map((child) => {
+                return (
+                  <View style={{width: ScreenWidth}} key={child.props.tabID}>
+                    {child.props.children}
+                  </View>
+                );
+              })}
+            </ScrollView>
           </View>
         </>
       );
-      return Comp;
     } catch (error) {
       console.log('ERROR', error);
     }
     return null;
-  };
+  }, [activeTab, refScv]);
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      const foundIndex = listTab.findIndex(tab => tab === activeTab);
+      if (foundIndex > -1 && listTab[foundIndex] === activeTab) {
+        console.log({ listTab, activeTab, foundIndex });
+        refScv.current.scrollTo({
+          x: foundIndex * ScreenWidth,
+          animation: false
+        });
+      }
+    }, 0);
+  }, [activeTab, listTab]);
+
   return <ErrorBoundary>{renderComponent()}</ErrorBoundary>;
 };
 
