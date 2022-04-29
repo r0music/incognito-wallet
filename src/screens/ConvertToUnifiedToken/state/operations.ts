@@ -178,9 +178,13 @@ const createTransactionConvert = () => async (dispatch, getState) => {
             tokenID: COINS.PRV_ID,
             version: PrivacyVersion.ver2,
           })) || [];
-        const prvBalance = unspentCoinsOfPRV
-          ?.map((item) => parseFloat(item.Value))
-          ?.reduce((prevValue, nextValue) => prevValue + nextValue);
+        
+        let prvBalance = 0;
+        if (unspentCoinsOfPRV) {
+          prvBalance = unspentCoinsOfPRV
+            ?.map((item) => parseFloat(item.Value))
+            ?.reduce((prevValue, nextValue) => prevValue + nextValue);
+        }
 
         if (prvBalance >= MAX_FEE_PER_TX) {
           try {
