@@ -4,6 +4,8 @@ import withTab from '@screens/MainTabBar/MainTabBar.enhanceTab';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import appConstant from '@src/constants/app';
 import AppMaintain from '@components/AppMaintain';
+import { compose } from 'redux';
+import withLazy from '@components/LazyHoc/LazyHoc';
 
 const TabHomeLP = () => {
   const [_, isDisabled] = useFeatureConfig(appConstant.DISABLED.LIQUIDITY);
@@ -15,4 +17,7 @@ const TabHomeLP = () => {
   );
 };
 
-export default withTab(memo(TabHomeLP));
+export default compose(
+  withTab,
+  withLazy,
+)(memo(TabHomeLP));

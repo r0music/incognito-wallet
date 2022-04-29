@@ -35,13 +35,22 @@ const enhance = (WrappedComp) => (props) => {
       txs &&
         txs.map(async (tx) => {
           if (tx) {
-            dispatch(
-              actionRemoveStorageDataDecentralized({
-                keySave: keyUnshieldDecentralized,
-                burningTxId: tx?.burningTxId,
-              }),
-            );
-            withdraw({ ...tx, signPublicKeyEncode });
+            try {
+              withdraw({ ...tx, signPublicKeyEncode });
+              dispatch(
+                actionRemoveStorageDataDecentralized({
+                  keySave: keyUnshieldDecentralized,
+                  burningTxId: tx?.burningTxId,
+                }),
+              );
+            } catch (e) {
+              dispatch(
+                actionRemoveStorageDataDecentralized({
+                  keySave: keyUnshieldDecentralized,
+                  burningTxId: tx?.burningTxId,
+                }),
+              );
+            }
           }
         });
     } catch (e) {
@@ -55,13 +64,22 @@ const enhance = (WrappedComp) => (props) => {
       txs &&
         txs.map(async (tx) => {
           if (tx) {
-            dispatch(
-              actionRemoveStorageDataCentralized({
-                keySave: keyUnshieldCentralized,
-                txId: tx?.txId,
-              }),
-            );
-            updatePTokenFee({ ...tx, signPublicKeyEncode });
+            try {
+              updatePTokenFee({ ...tx, signPublicKeyEncode });
+              dispatch(
+                actionRemoveStorageDataCentralized({
+                  keySave: keyUnshieldCentralized,
+                  txId: tx?.txId,
+                }),
+              );
+            } catch (e) {
+              dispatch(
+                actionRemoveStorageDataCentralized({
+                  keySave: keyUnshieldCentralized,
+                  txId: tx?.txId,
+                }),
+              );
+            }
           }
         });
     } catch (e) {
@@ -70,24 +88,18 @@ const enhance = (WrappedComp) => (props) => {
   };
   const onRefresh = async () => {
     try {
-      await setIsReloading(true);
       batch(() => {
-        dispatch(getPTokenList());
-        // dispatch(getInternalTokenList());
-        dispatch(actionReloadFollowingToken(true));
         retryLastTxsUnshieldDecentralized();
         retryLastTxsUnshieldCentralized();
       });
     } catch (error) {
       new ExHandler(error).showErrorToast();
-    } finally {
-      await setIsReloading(false);
     }
   };
   useFocusEffect(
     React.useCallback(() => {
-      dispatch(actionFree());
-    }, []),
+      onRefresh();
+    }, [onRefresh, unshieldStorage]),
   );
   return (
     <ErrorBoundary>

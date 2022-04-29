@@ -5,6 +5,7 @@ import { withLayout_2 } from '@components/Layout';
 import { Header } from '@src/components';
 import withLazy from '@components/LazyHoc/LazyHoc';
 import FollowList from '@screens/Wallet/features/FollowList/FollowList';
+import withWallet from '@screens/Wallet/features/Home/Wallet.enhance';
 
 const TabAssets = () => {
   return (
@@ -18,5 +19,6 @@ const TabAssets = () => {
 export default compose(
   withLazy,
   withLayout_2,
-  withTab
+  withTab,
+  withWallet,
 )(memo(TabAssets));
