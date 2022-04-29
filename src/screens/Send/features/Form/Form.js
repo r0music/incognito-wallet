@@ -309,6 +309,7 @@ const SendForm = (props) => {
                   isIncognitoAddress,
                   isExternalAddress,
                   isPortalToken,
+                  selectedPrivacy,
                   childSelectedPrivacy,
                 }}
               />
