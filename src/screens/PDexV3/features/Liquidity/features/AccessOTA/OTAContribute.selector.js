@@ -36,7 +36,7 @@ const accessKeySelector = createSelector(
     if (accessID) {
       _accessID = accessID;
     } else {
-      const foundShare = listOTAShare.find((share) => share.poolId === poolId);
+      const foundShare = listOTAShare.find((share) => Boolean(share) && share.poolId === poolId);
       if (foundShare) {
         _accessID = foundShare.nftId;
       }
