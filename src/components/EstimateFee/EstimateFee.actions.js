@@ -555,7 +555,10 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
   let userFeesData;
   const state = getState();
   const { address: paymentAddress, memo, amount: requestedAmount, childSelectedPrivacy } = payload;
-  const selectedPrivacy = childSelectedPrivacy ? childSelectedPrivacy : selectedPrivacySelector.selectedPrivacy(state);
+  const parentTokenSelectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
+  const selectedPrivacy = childSelectedPrivacy
+    ? childSelectedPrivacy
+    : parentTokenSelectedPrivacy;
   const signPublicKeyEncode = accountSelector.signPublicKeyEncodeSelector(
     state,
   );
@@ -588,7 +591,11 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
         originalAmount,
         paymentAddress,
         walletAddress,
-        tokenContractID: isETH || currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB ? '' : contractId,
+        tokenContractID:
+          isETH ||
+          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB
+            ? ''
+            : contractId,
         tokenId,
         burningTxId: '',
         currencyType: currencyType,
@@ -599,6 +606,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
         externalSymbol: externalSymbol,
         isUsedPRVFee,
         signPublicKeyEncode,
+        IsUnified: parentTokenSelectedPrivacy.isPUnifiedToken,
       };
       userFeesData = await estimateUserFees(data);
     } else {
