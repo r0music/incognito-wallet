@@ -28,6 +28,8 @@ export const ConvertItem: React.FC<ConvertItemProps> = ({
     .map((item) => parseFloat(format.amountVer2(item?.balance, item?.pDecimals)))
     .reduce((prevValue, nextValue) => prevValue + nextValue);
 
+  console.log(unifiedTokenAmount);
+
   return (
     <TouchableOpacity
       activeOpacity={0.8}
