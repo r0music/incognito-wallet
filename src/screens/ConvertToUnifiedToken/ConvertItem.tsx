@@ -7,6 +7,7 @@ import format from '@utils/format';
 import React from 'react';
 import { TextStyle, View, ViewStyle } from 'react-native';
 import { ImageStyle } from 'react-native-fast-image';
+import convert from '@src/utils/convert';
 import { PTokenConvert, TokenConvert } from './state/models';
 
 export type ConvertItemProps = {
@@ -28,7 +29,6 @@ export const ConvertItem: React.FC<ConvertItemProps> = ({
     .map((item) => parseFloat(format.amountVer2(item?.balance, item?.pDecimals)))
     .reduce((prevValue, nextValue) => prevValue + nextValue);
 
-  console.log(unifiedTokenAmount);
 
   return (
     <TouchableOpacity
@@ -51,7 +51,7 @@ export const ConvertItem: React.FC<ConvertItemProps> = ({
       <View style={pUnifiedTokenInfoContainerStyle}>
         <Text style={pUnifiedTokenTextStyle}>{unifiedTokenData?.symbol}</Text>
         <Text style={pUnifiedTokenTextStyle}>
-          {unifiedTokenAmount} {unifiedTokenData?.symbol}
+          {convert.toPlainString(unifiedTokenAmount)} {unifiedTokenData?.symbol}
         </Text>
       </View>
 
