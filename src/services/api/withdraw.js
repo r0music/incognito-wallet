@@ -158,6 +158,7 @@ export const estimateUserFees = (data) => {
     isPolygonErc20Token,
     isFantomErc20Token,
     signPublicKeyEncode,
+    isUnified,
   } = data;
   if (
     (isBep20Token ||
@@ -186,6 +187,7 @@ export const estimateUserFees = (data) => {
     PrivacyTokenAddress: tokenId,
     WalletAddress: walletAddress,
     IncognitoTx: '',
+    IsUnified: isUnified,
   };
 
   if (signPublicKeyEncode) {

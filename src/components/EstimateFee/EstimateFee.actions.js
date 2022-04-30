@@ -606,7 +606,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
         externalSymbol: externalSymbol,
         isUsedPRVFee,
         signPublicKeyEncode,
-        IsUnified: parentTokenSelectedPrivacy.isPUnifiedToken,
+        isUnified: parentTokenSelectedPrivacy.isPUnifiedToken,
       };
       userFeesData = await estimateUserFees(data);
     } else {
