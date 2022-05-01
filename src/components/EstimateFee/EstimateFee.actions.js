@@ -1,6 +1,6 @@
 /* eslint-disable no-unsafe-finally */
 /* eslint-disable import/no-cycle */
-import { selectedPrivacySelector, accountSelector } from '@src/redux/selectors';
+import { selectedPrivacySelector, childSelectedPrivacySelector, accountSelector } from '@src/redux/selectors';
 import convert from '@src/utils/convert';
 import { change, focus } from 'redux-form';
 import format from '@src/utils/format';
@@ -228,7 +228,12 @@ export const actionHandleMinFeeEst = ({ minFeePTokenEst }) => async (
   getState,
 ) => {
   const state = getState();
-  const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
+  const childSelectedPrivacy =
+    childSelectedPrivacySelector.childSelectedPrivacy;
+  const selectedPrivacy =
+    childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
+      ? childSelectedPrivacy
+      : selectedPrivacySelector.selectedPrivacy(state);
   const estimateFee = estimateFeeSelector(state);
   const { rate } = estimateFee;
   const { userFees, isUnShield } = feeDataSelector(state);
@@ -350,7 +355,11 @@ export const actionHandleFeePTokenEst = ({ feePTokenEst }) => async (
     totalFeePTokenText,
     userFeePToken;
   const state = getState();
-  const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
+  const childSelectedPrivacy = childSelectedPrivacySelector.childSelectedPrivacy;
+  const selectedPrivacy =
+    childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
+      ? childSelectedPrivacy
+      : selectedPrivacySelector.selectedPrivacy(state);
   const {
     rate,
     userFees,
@@ -435,10 +444,14 @@ export const actionChangeFee = (payload) => ({
 
 export const actionFetchFeeByMax = () => async (dispatch, getState) => {
   const state = getState();
-  const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
-  const { isUseTokenFee, isFetched, totalFee, isFetching } = feeDataSelector(
-    state,
-  );
+  const childSelectedPrivacy =
+    childSelectedPrivacySelector.childSelectedPrivacy;
+  const selectedPrivacy =
+    childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
+      ? childSelectedPrivacy
+      : selectedPrivacySelector.selectedPrivacy(state);
+  const { isUseTokenFee, isFetched, totalFee, isFetching } =
+    feeDataSelector(state);
   const { amount, isMainCrypto, pDecimals } = selectedPrivacy;
   const feeEst = MAX_FEE_PER_TX;
   let _amount = Math.max(isMainCrypto ? amount - feeEst : amount, 0);
@@ -487,9 +500,10 @@ export const actionValAddr =
     let isAddressValidated = true;
     let isValidETHAddress = true;
     const state = getState();
-    const selectedPrivacy = childSelectedPrivacy
-      ? childSelectedPrivacy
-      : selectedPrivacySelector.selectedPrivacy(state);
+    const selectedPrivacy =
+      childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
+        ? childSelectedPrivacy
+        : selectedPrivacySelector.selectedPrivacy(state);
     const { isUnShield } = feeDataSelector(state);
     if (
       !isUnShield ||
@@ -556,12 +570,12 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
   const state = getState();
   const { address: paymentAddress, memo, amount: requestedAmount, childSelectedPrivacy } = payload;
   const parentTokenSelectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
-  const selectedPrivacy = childSelectedPrivacy
-    ? childSelectedPrivacy
-    : parentTokenSelectedPrivacy;
-  const signPublicKeyEncode = accountSelector.signPublicKeyEncodeSelector(
-    state,
-  );
+  const selectedPrivacy =
+    childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
+      ? childSelectedPrivacy
+      : parentTokenSelectedPrivacy;
+  const signPublicKeyEncode =
+    accountSelector.signPublicKeyEncodeSelector(state);
   const {
     tokenId,
     contractId,

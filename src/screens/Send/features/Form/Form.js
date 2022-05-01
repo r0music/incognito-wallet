@@ -160,6 +160,7 @@ const SendForm = (props) => {
           selectedPrivacy.tokenId,
         );
       }
+      childSelectedPrivacy.amount = selectedPrivacy?.amount || 0;
       dispatch(setChildSelectedPrivacy(childSelectedPrivacy));
     }
   }, [isIncognitoAddress]);
@@ -230,6 +231,7 @@ const SendForm = (props) => {
                 selectedPrivacy.tokenId,
               );
             }
+            childSelectedPrivacy.amount = selectedPrivacy?.amount || 0;
             dispatch(setChildSelectedPrivacy(childSelectedPrivacy));
           }}
           component={SelectNetworkField}

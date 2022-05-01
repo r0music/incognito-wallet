@@ -30,7 +30,7 @@ export const getMaxAmount = ({ selectedPrivacy, isUseTokenFee, totalFee }) => {
   };
 };
 
-export const getFeeData = (estimateFee, selectedPrivacy) => {
+export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivacyData) => {
   const {
     actived,
     minFeePTokenText,
@@ -60,6 +60,11 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     feePrvText,
     feePTokenText,
   } = estimateFee;
+  const selectedPrivacy =
+    childSelectedPrivacyData &&
+    childSelectedPrivacyData?.networkId !== 'INCOGNITO'
+      ? childSelectedPrivacyData
+      : selectedPrivacyData;
   const { amount } = selectedPrivacy;
   const isUseTokenFee = actived !== CONSTANT_COMMONS.PRV.id;
   const feeUnit = isUseTokenFee
