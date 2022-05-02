@@ -26,7 +26,10 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     isFantomErc20Token,
     currencyType,
     isDecentralized,
-  } = childSelectedPrivacy ? childSelectedPrivacy : selectedPrivacy;
+  } =
+    childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
+      ? childSelectedPrivacy
+      : selectedPrivacy;
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
   const isIncognitoAddress =
     accountService.checkPaymentAddress(toAddress);

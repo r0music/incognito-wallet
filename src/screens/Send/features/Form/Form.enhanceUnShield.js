@@ -1,46 +1,33 @@
 /* eslint-disable no-unreachable */
 /* eslint-disable import/no-cycle */
-import React, { useState } from 'react';
-import ErrorBoundary from '@src/components/ErrorBoundary';
-import { MESSAGES, CONSTANT_KEYS, CONSTANT_COMMONS } from '@src/constants';
-import { ExHandler } from '@src/services/exception';
-import { Toast } from '@src/components/core';
-import convert from '@src/utils/convert';
-import { useSelector, useDispatch } from 'react-redux';
-import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import {
-  accountSelector,
-  selectedPrivacySelector,
-  childSelectedPrivacySelector,
+  actionAddStorageDataCentralized, actionAddStorageDataDecentralized, actionRemoveStorageDataCentralized, actionRemoveStorageDataDecentralized
+} from '@screens/UnShield';
+import accountService from '@services/wallet/accountService';
+import { Toast } from '@src/components/core';
+import ErrorBoundary from '@src/components/ErrorBoundary';
+import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
+import { CONSTANT_COMMONS, CONSTANT_KEYS, MESSAGES } from '@src/constants';
+import {
+  accountSelector, childSelectedPrivacySelector, selectedPrivacySelector
 } from '@src/redux/selectors';
-import SelectedPrivacy from '@src/models/selectedPrivacy';
-import { floor, toString } from 'lodash';
-import format from '@src/utils/format';
-import { useNavigation } from 'react-navigation-hooks';
-import routeNames from '@src/router/routeNames';
-import { reset, formValueSelector } from 'redux-form';
-import { withdraw, updatePTokenFee } from '@src/services/api/withdraw';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { walletSelector } from '@src/redux/selectors/wallet';
-import accountService from '@services/wallet/accountService';
-import {
-  actionAddStorageDataDecentralized,
-  actionRemoveStorageDataDecentralized,
-  actionRemoveStorageDataCentralized,
-  actionAddStorageDataCentralized,
-} from '@screens/UnShield';
-import Utils from '@src/utils/Util';
+import routeNames from '@src/router/routeNames';
 import { devSelector } from '@src/screens/Dev';
+import { updatePTokenFee, withdraw } from '@src/services/api/withdraw';
+import { ExHandler } from '@src/services/exception';
+import convert from '@src/utils/convert';
+import format from '@src/utils/format';
+import Utils from '@src/utils/Util';
 import {
-  ACCOUNT_CONSTANT,
-  BurningPBSCRequestMeta,
-  BurningRequestMeta,
-  BurningPLGRequestMeta,
-  BurningFantomRequestMeta,
-  BurningPRVERC20RequestMeta,
-  BurningPRVBEP20RequestMeta,
-  PrivacyVersion,
+  ACCOUNT_CONSTANT, BurningFantomRequestMeta, BurningPBSCRequestMeta, BurningPLGRequestMeta, BurningPRVBEP20RequestMeta, BurningPRVERC20RequestMeta, BurningRequestMeta, PrivacyVersion
 } from 'incognito-chain-web-js/build/wallet';
+import { floor, toString } from 'lodash';
+import React from 'react';
+import { useNavigation } from 'react-navigation-hooks';
+import { useDispatch, useSelector } from 'react-redux';
+import { reset } from 'redux-form';
 import { formName } from './Form.enhance';
 
 export const enhanceUnshield = (WrappedComp) => (props) => {
@@ -80,7 +67,9 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     paymentAddress: walletAddress,
     pDecimals,
     isDecentralized,
-  } = childSelectedPrivacy ? childSelectedPrivacy : selectedPrivacy;
+  } = childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
+    ? childSelectedPrivacy
+    : selectedPrivacy;
   const keySave = isDecentralized
     ? CONSTANT_KEYS.UNSHIELD_DATA_DECENTRALIZED
     : CONSTANT_KEYS.UNSHIELD_DATA_CENTRALIZED;
