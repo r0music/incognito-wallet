@@ -208,4 +208,5 @@ export default {
   ConvertToUnifiedToken: 'ConvertToUnifiedToken',
   ChooseNetworkForShield: 'ChooseNetworkForShield',
   ProcessConvertToUnifiedToken: 'ProcessConvertToUnifiedToken',
+  ConvertToUnifiedTokenInfo: 'ConvertToUnifiedTokenInfo',
 };

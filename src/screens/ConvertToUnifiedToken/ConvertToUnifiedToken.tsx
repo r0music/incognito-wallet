@@ -26,6 +26,7 @@ import {
   listUnifiedTokenSelector,
   loadingGetListUnifiedTokenSelector,
 } from './state/selectors';
+import BtnInfo from './BtnInfo';
 
 const ConvertToUnifiedToken: React.FC = () => {
   const navigation = useNavigation();
@@ -126,6 +127,7 @@ const ConvertToUnifiedToken: React.FC = () => {
       <Header
         title="Convert coins"
         accountSelectable
+        customHeaderTitle={<BtnInfo />}
         handleSelectedAccount={() => dispatch(setListTokenConvert())}
       />
       <View borderTop fullFlex>

@@ -98,6 +98,7 @@ import HomePDexV3 from '@screens/PDexV3/features/Home';
 import ConvertToUnifiedToken from '@screens/ConvertToUnifiedToken';
 import ProcessConvertToUnifiedToken from '@screens/ConvertToUnifiedToken/ProcessConvertToUnifiedToken';
 import ChooseNetworkForShield from '@src/screens/ChooseNetworkForShield';
+import ConvertToUnifiedTokenInfo from '@src/screens/ConvertToUnifiedToken/ConvertToUnifiedTokenInfo';
 
 import { PoolsList, PoolsTab } from '@screens/PDexV3/features/Pools';
 import {
@@ -718,6 +719,10 @@ const routes = [
   {
     screen: ProcessConvertToUnifiedToken,
     name: routeNames.ProcessConvertToUnifiedToken,
+  },
+  {
+    screen: ConvertToUnifiedTokenInfo,
+    name: routeNames.ConvertToUnifiedTokenInfo,
   },
   {
     screen: ChooseNetworkForShield,
