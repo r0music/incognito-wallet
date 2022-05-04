@@ -4,7 +4,10 @@ import { Clipboard } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { formName as formEstimateFee } from '@components/EstimateFee/EstimateFee.input';
-import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
+import {
+  feeDataSelector,
+  isFetchingNetworksSelector,
+} from '@src/components/EstimateFee/EstimateFee.selector';
 import { compose } from 'recompose';
 import { useDispatch, useSelector } from 'react-redux';
 import { isValid, formValueSelector, change, focus } from 'redux-form';
@@ -40,6 +43,7 @@ export const enhance = (WrappedComp) => (props) => {
     isValidETHAddress,
     userFees,
   } = useDebounceSelector(feeDataSelector);
+  const isFetchingNetworks = useDebounceSelector(isFetchingNetworksSelector);
   const dispatch = useDispatch();
   const selector = formValueSelector(formName);
   const isFormValid = useDebounceSelector((state) => isValid(formName)(state));
@@ -90,6 +94,7 @@ export const enhance = (WrappedComp) => (props) => {
       !fee ||
       !isFormEstimateFeeValid ||
       estimatingFee ||
+      isFetchingNetworks ||
       !!isKeyboardVisible ||
       !isAddressValidated ||
       !isValidETHAddress

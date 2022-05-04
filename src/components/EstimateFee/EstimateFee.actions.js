@@ -229,7 +229,7 @@ export const actionHandleMinFeeEst = ({ minFeePTokenEst }) => async (
 ) => {
   const state = getState();
   const childSelectedPrivacy =
-    childSelectedPrivacySelector.childSelectedPrivacy;
+    childSelectedPrivacySelector.childSelectedPrivacy(state);
   const selectedPrivacy =
     childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
       ? childSelectedPrivacy
@@ -355,7 +355,7 @@ export const actionHandleFeePTokenEst = ({ feePTokenEst }) => async (
     totalFeePTokenText,
     userFeePToken;
   const state = getState();
-  const childSelectedPrivacy = childSelectedPrivacySelector.childSelectedPrivacy;
+  const childSelectedPrivacy = childSelectedPrivacySelector.childSelectedPrivacy(state);
   const selectedPrivacy =
     childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
       ? childSelectedPrivacy
@@ -445,7 +445,7 @@ export const actionChangeFee = (payload) => ({
 export const actionFetchFeeByMax = () => async (dispatch, getState) => {
   const state = getState();
   const childSelectedPrivacy =
-    childSelectedPrivacySelector.childSelectedPrivacy;
+    childSelectedPrivacySelector.childSelectedPrivacy(state);
   const selectedPrivacy =
     childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
       ? childSelectedPrivacy

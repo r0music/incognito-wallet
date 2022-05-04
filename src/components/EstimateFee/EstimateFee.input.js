@@ -170,8 +170,9 @@ const SupportFees = React.memo(() => {
     feePTokenText,
     hasMultiLevel,
   } = useSelector(feeDataSelector);
-  const childSelectedPrivacy =
-    childSelectedPrivacySelector.childSelectedPrivacy;
+  const childSelectedPrivacy = useSelector(
+    childSelectedPrivacySelector.childSelectedPrivacy,
+  );
   const selectedPrivacy =
     childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
       ? childSelectedPrivacy
