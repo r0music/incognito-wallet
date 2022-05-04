@@ -173,10 +173,7 @@ const SupportFees = React.memo(() => {
   const childSelectedPrivacy = useSelector(
     childSelectedPrivacySelector.childSelectedPrivacy,
   );
-  const selectedPrivacy =
-    childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
-      ? childSelectedPrivacy
-      : useSelector(selectedPrivacySelector.selectedPrivacy);
+  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const dispatch = useDispatch();
   if (types.length === 0) {
     return;
@@ -200,6 +197,10 @@ const SupportFees = React.memo(() => {
           userFeesData: userFees?.data,
           pDecimals: _isUsedPRVFee
             ? CONSTANT_COMMONS.PRV.pDecimals
+            : childSelectedPrivacy &&
+              childSelectedPrivacy?.networkId !== 'INCOGNITO' &&
+              childSelectedPrivacy?.pDecimals
+            ? childSelectedPrivacy?.pDecimals
             : selectedPrivacy?.pDecimals,
           feeEst: _isUsedPRVFee ? feePrv : feePToken,
           isUsedPRVFee: _isUsedPRVFee,
