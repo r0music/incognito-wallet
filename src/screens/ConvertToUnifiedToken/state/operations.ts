@@ -132,13 +132,11 @@ const createTransactionConvert = () => async (dispatch, getState) => {
       1;
     // convert unspentCoins from One-Dimensional array to Two-Dimensional array
     let unspentCoinsOfPTokenToConvert: any[][] = [];
-    if (numberOfTransactionToConvert < 2) {
-      unspentCoinsOfPTokenToConvert = [unspentCoinsOfPToken];
-    } else {
+    if (numberOfTransactionToConvert > 0) {
       while (unspentCoinsOfPToken.length > 0) {
         const childUnspentCoinsArray = unspentCoinsOfPToken.splice(
           0,
-          numberOfTransactionToConvert,
+          constants.MAX_INPUT_PER_TX,
         );
         unspentCoinsOfPTokenToConvert.push(childUnspentCoinsArray);
       }

@@ -28,3 +28,6 @@ export const ACTION_FETCH_FAILED_NETWORKS_SUPPORT =
   '[estimateFee] action fetch failed networks support';
 export const ACTION_FETCHED_NETWORKS_SUPPORT =
   '[estimateFee] action fetched networks support';
+
+export const ACTION_ =
+  '[estimateFee] action fetched networks support';

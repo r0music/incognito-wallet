@@ -135,16 +135,17 @@ export const actionFetchFee = ({ amount, address, screen, memo, childSelectedPri
   getState,
 ) => {
   const state = getState();
+  const parentSelectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
   const selectedPrivacy =
     childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
       ? childSelectedPrivacy
-      : selectedPrivacySelector.selectedPrivacy(state);
+      : parentSelectedPrivacy;
   let feeEst = MAX_FEE_PER_TX;
   let feePTokenEst = null;
   let minFeePTokenEst = null;
   const originalAmount = convert.toOriginalAmount(
     amount,
-    selectedPrivacy?.pDecimals,
+    parentSelectedPrivacy?.pDecimals,
   );
   const _originalAmount = Number(originalAmount);
   try {
@@ -228,12 +229,13 @@ export const actionHandleMinFeeEst = ({ minFeePTokenEst }) => async (
   getState,
 ) => {
   const state = getState();
+  const parentSelectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
   const childSelectedPrivacy =
     childSelectedPrivacySelector.childSelectedPrivacy(state);
   const selectedPrivacy =
     childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
       ? childSelectedPrivacy
-      : selectedPrivacySelector.selectedPrivacy(state);
+      : parentSelectedPrivacy;
   const estimateFee = estimateFeeSelector(state);
   const { rate } = estimateFee;
   const { userFees, isUnShield } = feeDataSelector(state);
@@ -242,8 +244,8 @@ export const actionHandleMinFeeEst = ({ minFeePTokenEst }) => async (
   const isFreeFee = isFreeFeePToken && isFreeFeePrivacy;
   const minFeePToken = floor(minFeePTokenEst * rate);
   const minFeePTokenText = format.toFixed(
-    convert.toHumanAmount(minFeePToken, selectedPrivacy?.pDecimals),
-    selectedPrivacy?.pDecimals,
+    convert.toHumanAmount(minFeePToken, parentSelectedPrivacy?.pDecimals),
+    parentSelectedPrivacy?.pDecimals,
   );
   let task = [
     dispatch(
@@ -355,11 +357,12 @@ export const actionHandleFeePTokenEst = ({ feePTokenEst }) => async (
     totalFeePTokenText,
     userFeePToken;
   const state = getState();
+  const parentSelectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
   const childSelectedPrivacy = childSelectedPrivacySelector.childSelectedPrivacy(state);
   const selectedPrivacy =
     childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
       ? childSelectedPrivacy
-      : selectedPrivacySelector.selectedPrivacy(state);
+      : parentSelectedPrivacy;
   const {
     rate,
     userFees,
@@ -372,8 +375,8 @@ export const actionHandleFeePTokenEst = ({ feePTokenEst }) => async (
   try {
     feePToken = floor(feePTokenEst * rate);
     feePTokenText = format.toFixed(
-      convert.toHumanAmount(feePToken, selectedPrivacy?.pDecimals),
-      selectedPrivacy?.pDecimals,
+      convert.toHumanAmount(feePToken, parentSelectedPrivacy?.pDecimals),
+      parentSelectedPrivacy?.pDecimals,
     );
     totalFeePToken = feePToken;
     totalFeePTokenText = feePTokenText;
@@ -383,7 +386,7 @@ export const actionHandleFeePTokenEst = ({ feePTokenEst }) => async (
         userFeesData: userFees?.data,
         feeEst: feePToken,
         rate,
-        pDecimals: selectedPrivacy?.pDecimals,
+        pDecimals: parentSelectedPrivacy?.pDecimals,
         isUsedPRVFee: false,
         hasMultiLevel,
       });
@@ -444,21 +447,22 @@ export const actionChangeFee = (payload) => ({
 
 export const actionFetchFeeByMax = () => async (dispatch, getState) => {
   const state = getState();
+  const parentSelectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
   const childSelectedPrivacy =
     childSelectedPrivacySelector.childSelectedPrivacy(state);
   const selectedPrivacy =
     childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
       ? childSelectedPrivacy
-      : selectedPrivacySelector.selectedPrivacy(state);
+      : parentSelectedPrivacy;
   const { isUseTokenFee, isFetched, totalFee, isFetching } =
     feeDataSelector(state);
-  const { amount, isMainCrypto, pDecimals } = selectedPrivacy;
+  const { amount, isMainCrypto } = selectedPrivacy;
   const feeEst = MAX_FEE_PER_TX;
   let _amount = Math.max(isMainCrypto ? amount - feeEst : amount, 0);
-  let maxAmount = floor(_amount, pDecimals);
+  let maxAmount = floor(_amount, parentSelectedPrivacy.pDecimals);
   let maxAmountText = format.toFixed(
-    convert.toHumanAmount(maxAmount, pDecimals),
-    pDecimals,
+    convert.toHumanAmount(maxAmount, parentSelectedPrivacy.pDecimals),
+    parentSelectedPrivacy.pDecimals,
   );
   if (isFetching) {
     return;
@@ -583,7 +587,6 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
     isErc20Token,
     externalSymbol,
     paymentAddress: walletAddress,
-    pDecimals,
     isDecentralized,
     isBep20Token,
     isPolygonErc20Token,
@@ -591,7 +594,10 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
     symbol,
   } = selectedPrivacy;
   const { isETH, isUsedPRVFee, userFees, isUnShield } = feeDataSelector(state);
-  const originalAmount = convert.toOriginalAmount(requestedAmount, pDecimals);
+  const originalAmount = convert.toOriginalAmount(
+    requestedAmount,
+    parentTokenSelectedPrivacy.pDecimals,
+  );
   userFeesData = { ...userFees?.data };
   let _error;
   if (!isUnShield) {
@@ -610,7 +616,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
           currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB
             ? ''
             : contractId,
-        tokenId,
+        tokenId: parentTokenSelectedPrivacy.tokenId,
         burningTxId: '',
         currencyType: currencyType,
         isErc20Token: isErc20Token,
@@ -620,7 +626,6 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
         externalSymbol: externalSymbol,
         isUsedPRVFee,
         signPublicKeyEncode,
-        isUnified: parentTokenSelectedPrivacy.isPUnifiedToken,
       };
       userFeesData = await estimateUserFees(data);
     } else {

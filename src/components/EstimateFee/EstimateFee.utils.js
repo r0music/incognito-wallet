@@ -71,7 +71,7 @@ export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivac
     ? selectedPrivacy?.externalSymbol || selectedPrivacy.symbol
     : CONSTANT_COMMONS.PRV.symbol;
   const feePDecimals = isUseTokenFee
-    ? selectedPrivacy?.pDecimals
+    ? selectedPrivacyData?.pDecimals
     : CONSTANT_COMMONS.PRV.pDecimals;
   const isUnShield = screen === 'UnShield';
   let fee = isUseTokenFee ? feePToken : feePrv;
@@ -119,7 +119,7 @@ export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivac
     maxAmount,
     maxAmountText,
     isUsedPRVFee: !isUseTokenFee,
-    pDecimals: selectedPrivacy?.pDecimals,
+    pDecimals: selectedPrivacyData?.pDecimals,
     titleBtnSubmit,
     isFetching,
     isUnShield,

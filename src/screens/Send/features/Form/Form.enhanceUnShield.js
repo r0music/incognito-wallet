@@ -65,7 +65,6 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     isFantomErc20Token,
     externalSymbol,
     paymentAddress: walletAddress,
-    pDecimals,
     isDecentralized,
   } = childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
     ? childSelectedPrivacy
@@ -253,7 +252,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     try {
       const { amount, originalAmount, paymentAddress } = payload;
       const amountToNumber = convert.toNumber(amount, true);
-      const requestedAmount = format.toFixed(amountToNumber, pDecimals);
+      const requestedAmount = format.toFixed(amountToNumber, selectedPrivacy?.pDecimals);
       let data = {
         requestedAmount,
         originalAmount,
@@ -432,7 +431,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       const amountToNumber = convert.toNumber(amount, true);
       const originalAmount = convert.toOriginalAmount(
         amountToNumber,
-        pDecimals,
+        selectedPrivacy?.pDecimals,
         false,
       );
       const _originalAmount = floor(originalAmount);
@@ -473,7 +472,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           feeUnit,
           title: 'Sent.',
           toAddress,
-          pDecimals: pDecimals,
+          pDecimals: selectedPrivacy?.pDecimals,
           tokenSymbol: externalSymbol || res?.tokenSymbol,
           keySaveAddressBook: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK,
         };
