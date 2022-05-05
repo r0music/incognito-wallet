@@ -24,6 +24,7 @@ import {
   listTokenConvertSelector,
   listUnifiedTokenSelector,
 } from './selectors';
+import { MINIMUM_PRV_UTXO_TO_CREATE_TRANSACTION } from './utils';
 
 const getPTokenBalance = (tokenID: string) => async (dispatch, getState) => {
   let state = getState();
@@ -176,7 +177,6 @@ const createTransactionConvert = () => async (dispatch, getState) => {
             tokenID: COINS.PRV_ID,
             version: PrivacyVersion.ver2,
           })) || [];
-        
         let prvBalance = 0;
         if (unspentCoinsOfPRV?.length > 0) {
           prvBalance = unspentCoinsOfPRV
@@ -272,9 +272,8 @@ const convertToUnifiedToken = () => async (dispatch, getState) => {
     if (minimumPRVBalanceToCreateTransaction < 1000) {
       minimumPRVBalanceToCreateTransaction = 1000;
     }
-    const minimumPRVUnspentToCreateTransaction = 9;
     if (prvBalance >= minimumPRVBalanceToCreateTransaction) {
-      if (unspentCoinsOfPRV?.length >= minimumPRVUnspentToCreateTransaction) {
+      if (unspentCoinsOfPRV?.length >= MINIMUM_PRV_UTXO_TO_CREATE_TRANSACTION) {
         // create transaction
         dispatch(createTransactionConvert());
       } else {
@@ -282,7 +281,8 @@ const convertToUnifiedToken = () => async (dispatch, getState) => {
         let tokenPaymentInfo: any = [];
         for (
           var i = 0;
-          i < minimumPRVUnspentToCreateTransaction - unspentCoinsOfPRV?.length;
+          i <
+          MINIMUM_PRV_UTXO_TO_CREATE_TRANSACTION - unspentCoinsOfPRV?.length;
           i++
         ) {
           tokenPaymentInfo.push({

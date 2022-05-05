@@ -105,7 +105,24 @@ const ConvertToUnifiedToken: React.FC = () => {
     }
   };
 
-  const goToFaucet = () => {
+  const isDisabledFaucetButton = async () => {
+    const prvBalance = await accountService.getBalance({
+      account,
+      wallet,
+      tokenID: COINS.PRV_ID,
+      version: PrivacyVersion?.ver2,
+    });
+    let minimumPRVBalanceToCreateTransaction =
+      MAX_FEE_PER_TX * listPTokenConvert?.length * 2;
+    if (minimumPRVBalanceToCreateTransaction - prvBalance > 1000) {
+      return true;
+    }
+    return false;
+  };
+
+  const goToFaucet = async () => {
+    const isDisabled = await isDisabledFaucetButton();
+    if (isDisabled) return;
     setIsVisibleModalWarning(false);
     const params = {
       url: CONSTANT_CONFIGS.FAUCET_URL + `address=${account?.paymentAddress}`,

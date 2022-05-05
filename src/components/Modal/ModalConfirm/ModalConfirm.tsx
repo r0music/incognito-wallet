@@ -16,6 +16,8 @@ export interface ModalConfirmProps {
   onPressLeftButton?: () => void;
   onPressRightButton?: () => void;
   onBackdropPress?: () => void;
+  disabledLeftButton?: boolean;
+  disabledRightButton?: boolean;
 }
 
 export const ModalConfirm: React.FC<ModalConfirmProps> = ({
@@ -29,6 +31,8 @@ export const ModalConfirm: React.FC<ModalConfirmProps> = ({
   onPressLeftButton,
   onPressRightButton,
   onBackdropPress,
+  disabledLeftButton,
+  disabledRightButton,
   style,
 }) => {
   return (
@@ -50,12 +54,14 @@ export const ModalConfirm: React.FC<ModalConfirmProps> = ({
             title={leftButtonTitle || 'Cancel'}
             onPress={() => onPressLeftButton?.()}
             buttonStyle={[defaultLeftButtonStyle, leftButtonStyle]}
+            disabled={disabledLeftButton}
           />
           <View style={spaceStyle} />
           <Button
             title={rightButtonTitle || 'Confirm'}
             onPress={() => onPressRightButton?.()}
             buttonStyle={[defaultRightButtonStyle, rightButtonStyle]}
+            disabled={disabledRightButton}
           />
         </View>
       </View>
