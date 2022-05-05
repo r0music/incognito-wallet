@@ -58,12 +58,9 @@ export const enhanceAmountValidation = (WrappedComp) => (props) => {
         maxAmountSupportByVaultValidator: validator.maxValue(
           _maxAmountSupportByVault,
           {
-            message:
-              _maxAmountSupportByVault > 0
-                ? `Max amount you can withdraw is ${_maxAmountSupportByVault} ${
-                    selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
-                  } on ${childSelectedPrivacy?.network} network`
-                : 'Insufficient balance.',
+            message: `Max amount you can withdraw is ${_maxAmountSupportByVault} ${
+              selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
+            } on ${childSelectedPrivacy?.network} network`,
           },
         ),
       };

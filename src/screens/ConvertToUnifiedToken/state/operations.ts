@@ -12,6 +12,7 @@ import {
   constants,
   PrivacyVersion,
 } from 'incognito-chain-web-js/build/wallet';
+import { chunk } from 'lodash';
 import { actions } from '.';
 import {
   PTokenConvert,
@@ -131,16 +132,10 @@ const createTransactionConvert = () => async (dispatch, getState) => {
         constants.MAX_INPUT_PER_TX +
       1;
     // convert unspentCoins from One-Dimensional array to Two-Dimensional array
-    let unspentCoinsOfPTokenToConvert: any[][] = [];
-    if (numberOfTransactionToConvert > 0) {
-      while (unspentCoinsOfPToken.length > 0) {
-        const childUnspentCoinsArray = unspentCoinsOfPToken.splice(
-          0,
-          constants.MAX_INPUT_PER_TX,
-        );
-        unspentCoinsOfPTokenToConvert.push(childUnspentCoinsArray);
-      }
-    }
+    let unspentCoinsOfPTokenToConvert: any = chunk(
+      unspentCoinsOfPToken,
+      constants.MAX_INPUT_PER_TX,
+    );
 
     // update convert status for pToken to Processing
     await dispatch(
