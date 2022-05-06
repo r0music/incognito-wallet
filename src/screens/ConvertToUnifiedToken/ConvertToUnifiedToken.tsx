@@ -41,6 +41,8 @@ const ConvertToUnifiedToken: React.FC = () => {
   const [isVisibleModalConfirm, setIsVisibleModalConfirm] =
     useState<boolean>(false);
 
+  const [enableFaucet, setEnableFaucet] = useState<boolean>(false);
+
   useEffect(() => {
     dispatch(setListTokenConvert());
   }, []);
@@ -48,10 +50,6 @@ const ConvertToUnifiedToken: React.FC = () => {
   const listUnifiedTokenConvert = useSelector(listUnifiedTokenSelector);
 
   const isLoading: boolean = useSelector(loadingGetListUnifiedTokenSelector);
-
-  const listUnifiedTokenConvertSelected = useSelector(
-    listUnifiedTokenSelectedSelector,
-  );
 
   const keyExtractor = useCallback((item) => item?.id?.toString(), []);
 
@@ -94,19 +92,8 @@ const ConvertToUnifiedToken: React.FC = () => {
     return false;
   };
 
-  const onPressButtonConvert = async () => {
-    // If enough PRV balance to create transaction => navigate to Convert screen
-    // if not enough PRV balance => show popup swap or faucet
-    const isEnoughPrvBalance: boolean = await checkPRVBalance();
-    if (isEnoughPrvBalance) {
-      setIsVisibleModalConfirm(true);
-    } else {
-      setIsVisibleModalWarning(true);
-    }
-  };
-
-  const isDisabledFaucetButton = async () => {
-    const prvBalance = await accountService.getBalance({
+  const checkEnableFaucet = async () => {
+    const prvBalance: number = await accountService.getBalance({
       account,
       wallet,
       tokenID: COINS.PRV_ID,
@@ -115,14 +102,30 @@ const ConvertToUnifiedToken: React.FC = () => {
     let minimumPRVBalanceToCreateTransaction =
       MAX_FEE_PER_TX * listPTokenConvert?.length * 2;
     if (minimumPRVBalanceToCreateTransaction - prvBalance > 1000) {
-      return true;
+      return false;
     }
-    return false;
+    return true;
+  };
+
+  const onPressButtonConvert = async () => {
+    // If enough PRV balance to create transaction => navigate to Convert screen
+    // if not enough PRV balance => show popup swap or faucet
+    const isEnoughPrvBalance: boolean = await checkPRVBalance();
+    if (isEnoughPrvBalance) {
+      setIsVisibleModalConfirm(true);
+    } else {
+      const isEnableFaucet: boolean = await checkEnableFaucet();
+      if (isEnableFaucet) {
+        setEnableFaucet(true);
+      } else {
+        setEnableFaucet(false);
+      }
+      setIsVisibleModalWarning(true);
+    }
   };
 
   const goToFaucet = async () => {
-    const isDisabled = await isDisabledFaucetButton();
-    if (isDisabled) return;
+    if (!enableFaucet) return;
     setIsVisibleModalWarning(false);
     const params = {
       url: CONSTANT_CONFIGS.FAUCET_URL + `address=${account?.paymentAddress}`,
@@ -171,7 +174,7 @@ const ConvertToUnifiedToken: React.FC = () => {
         <Button
           title="Convert"
           onPress={onPressButtonConvert}
-          disabled={!listUnifiedTokenConvertSelected.length || isLoading}
+          // disabled={!listUnifiedTokenConvertSelected.length || isLoading}
           disabledStyle={disabledButtonStyle}
           titleStyle={buttonTitleStyle}
           buttonStyle={buttonStyle}
@@ -186,7 +189,10 @@ const ConvertToUnifiedToken: React.FC = () => {
         onPressLeftButton={() => goToSwaps()}
         onPressRightButton={() => goToFaucet()}
         leftButtonTitle="Swap"
+        leftButtonStyle={swapButtonStyle}
+        leftButtonTitleStyle={swapButtonTitle}
         rightButtonTitle="Faucet"
+        disabledRightButton={!enableFaucet}
         onBackdropPress={() => setIsVisibleModalWarning(false)}
       />
       {/* Modal confirm */}
@@ -229,6 +235,15 @@ const buttonStyle: ViewStyle = {
   width: '100%',
   height: 50,
   borderRadius: 8,
+};
+
+const swapButtonStyle: ViewStyle = {
+  backgroundColor: COLORS.white,
+  opacity: 1,
+};
+
+const swapButtonTitle: TextStyle = {
+  color: COLORS.blue5,
 };
 
 const disabledButtonStyle: ViewStyle = {

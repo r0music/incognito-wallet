@@ -18,6 +18,12 @@ export interface ModalConfirmProps {
   onBackdropPress?: () => void;
   disabledLeftButton?: boolean;
   disabledRightButton?: boolean;
+  leftButtonDisabledStyle?: ViewStyle;
+  rightButtonDisabledStyle?: ViewStyle;
+  leftButtonTitleStyle?: TextStyle;
+  rightButtonTitleStyle?: TextStyle;
+  leftButtonTitleDisabledStyle?: TextStyle;
+  rightButtonTitleDisabledStyle?: TextStyle;
 }
 
 export const ModalConfirm: React.FC<ModalConfirmProps> = ({
@@ -33,6 +39,12 @@ export const ModalConfirm: React.FC<ModalConfirmProps> = ({
   onBackdropPress,
   disabledLeftButton,
   disabledRightButton,
+  leftButtonDisabledStyle,
+  rightButtonDisabledStyle,
+  leftButtonTitleStyle,
+  rightButtonTitleStyle,
+  leftButtonTitleDisabledStyle,
+  rightButtonTitleDisabledStyle,
   style,
 }) => {
   return (
@@ -55,6 +67,9 @@ export const ModalConfirm: React.FC<ModalConfirmProps> = ({
             onPress={() => onPressLeftButton?.()}
             buttonStyle={[defaultLeftButtonStyle, leftButtonStyle]}
             disabled={disabledLeftButton}
+            titleStyle={leftButtonTitleStyle}
+            disabledStyle={leftButtonDisabledStyle}
+            disabledTitleStyle={leftButtonTitleDisabledStyle}
           />
           <View style={spaceStyle} />
           <Button
@@ -62,6 +77,9 @@ export const ModalConfirm: React.FC<ModalConfirmProps> = ({
             onPress={() => onPressRightButton?.()}
             buttonStyle={[defaultRightButtonStyle, rightButtonStyle]}
             disabled={disabledRightButton}
+            titleStyle={rightButtonTitleStyle}
+            disabledStyle={rightButtonDisabledStyle}
+            disabledTitleStyle={rightButtonTitleDisabledStyle}
           />
         </View>
       </View>
