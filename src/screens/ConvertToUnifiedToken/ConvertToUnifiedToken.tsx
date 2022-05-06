@@ -51,6 +51,10 @@ const ConvertToUnifiedToken: React.FC = () => {
 
   const isLoading: boolean = useSelector(loadingGetListUnifiedTokenSelector);
 
+  const listUnifiedTokenConvertSelected = useSelector(
+    listUnifiedTokenSelectedSelector,
+  );
+
   const keyExtractor = useCallback((item) => item?.id?.toString(), []);
 
   const onSelectTokenConvert = (tokenId: string) => {
@@ -174,7 +178,7 @@ const ConvertToUnifiedToken: React.FC = () => {
         <Button
           title="Convert"
           onPress={onPressButtonConvert}
-          // disabled={!listUnifiedTokenConvertSelected.length || isLoading}
+          disabled={!listUnifiedTokenConvertSelected.length || isLoading}
           disabledStyle={disabledButtonStyle}
           titleStyle={buttonTitleStyle}
           buttonStyle={buttonStyle}
