@@ -1,4 +1,5 @@
 import http from '@src/services/http';
+import orderBy from 'lodash/orderBy';
 
 export const getWalletAccounts = async (masterAccountPublicKey) => {
   let result = [];
@@ -13,6 +14,7 @@ export const getWalletAccounts = async (masterAccountPublicKey) => {
   } catch {
     //
   }
+  result = orderBy(result || [], 'id', 'asc');
   return result;
 };
 
