@@ -54,13 +54,18 @@ export async function loadListAccountWithBLSPubKey(wallet) {
   }
 }
 
-export async function loadWallet(passphrase, name = 'Wallet', rootName = '') {
+export async function loadWallet(
+  passphrase,
+  name = 'Wallet',
+  rootName = '',
+  migratePassCodeToDefault = false //Turn off passcode encrypt wallet by default
+) {
   try {
     let wallet = new Wallet();
     wallet.Name = name;
     wallet.RootName = rootName;
     await configsWallet(wallet);
-    wallet = await wallet.loadWallet(passphrase);
+    wallet = await wallet.loadWallet(passphrase, migratePassCodeToDefault);
     return wallet?.Name ? wallet : false;
   } catch (error) {
     const errors = await getStorageLoadWalletError();

@@ -53,17 +53,15 @@ export default class Account {
     return storage.setItem(CONSTANT_KEYS.DEFAULT_ACCOUNT_NAME, accountName);
   }
 
-  static async importAccount(privakeyStr, accountName, passPhrase, wallet) {
+  static async importAccount(privakeyStr, accountName, wallet) {
     new Validator('privakeyStr', privakeyStr).string().required();
     new Validator('accountName', accountName).string().required();
-    new Validator('passPhrase', passPhrase).string();
     new Validator('wallet', wallet).required();
     let imported = false;
     try {
       const account = await wallet.importAccount(
         privakeyStr,
         accountName,
-        passPhrase,
       );
       imported = !!account.isImport;
       if (imported) {
@@ -75,9 +73,9 @@ export default class Account {
     return imported;
   }
 
-  static async removeAccount(privateKeyStr, passPhrase, wallet) {
+  static async removeAccount(privateKeyStr, wallet) {
     try {
-      const removed = await wallet.removeAccount(privateKeyStr, passPhrase);
+      const removed = await wallet.removeAccount(privateKeyStr);
       if (removed) {
         await saveWallet(wallet);
       }

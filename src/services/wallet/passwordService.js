@@ -10,6 +10,7 @@ import { misc, codec } from 'incognito-chain-web-js/lib/privacy/sjcl';
 import { randomBytes } from 'react-native-randombytes';
 import isEqual from 'lodash/isEqual';
 import { cachePromise } from '@src/services/cache';
+import LocalDatabase from '@utils/LocalDatabase';
 
 const PASSWORD_DURATION_IN_MS = 7 * 24 * 3600 * 1000; // 7 days
 const SUPPORT_EXPORT_SECURE_STORAGE_KEY = 'SUPPORT_EXPORT_SECURE_STORAGE_KEY';
@@ -68,18 +69,27 @@ export const checkSupportExpoSecureStore = async ({ accessKey, password }) => {
 export const getPassphraseNoCache = async () => {
   // TODO : password expiry
   let password = CONSTANT_CONFIGS.PASSPHRASE_WALLET_DEFAULT;
+  let passcode = await LocalDatabase.getPIN();
   const accessKey = CONSTANT_KEYS.SALT_KEY || 'default-wallet-salt';
   try {
     const checkSupport = await checkSupportExpoSecureStore({
       accessKey,
-      password,
+      password: passcode || password,
     });
     if (checkSupport) {
       const salt = await getItemAsync(accessKey);
-      const aesKey = getAesKeyFromSalt({ salt, password });
+      const aesKeyDefault = getAesKeyFromSalt({ salt, password });
+      let aesKeyPassCode;
+      if (passcode) {
+        aesKeyPassCode = getAesKeyFromSalt({ salt, password: passcode });
+      }
+      const aesKey = aesKeyPassCode || aesKeyDefault;
       return {
-        aesKey,
+        aesKeyDefault,
         password,
+        aesKeyPassCode,
+        passcode,
+        aesKey,
       };
     } else {
       let salt = await storage.getItem(accessKey);
@@ -89,10 +99,18 @@ export const getPassphraseNoCache = async () => {
         salt = byteToHexString(raw);
         await storage.setItem(accessKey, salt);
       }
-      const aesKey = getAesKeyFromSalt({ salt, password });
+      const aesKeyDefault = getAesKeyFromSalt({ salt, password });
+      let aesKeyPassCode;
+      if (passcode) {
+        aesKeyPassCode = getAesKeyFromSalt({ salt, password: passcode });
+      }
+      const aesKey = aesKeyPassCode || aesKeyDefault;
       return {
-        aesKey,
+        aesKeyDefault,
         password,
+        passcode,
+        aesKeyPassCode,
+        aesKey,
       };
     }
   } catch (e) {
