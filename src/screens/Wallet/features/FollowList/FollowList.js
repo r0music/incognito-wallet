@@ -1,10 +1,9 @@
 import React, { memo } from 'react';
 import withFollowList from '@screens/Wallet/features/FollowList/FollowList.enhance';
 import { compose } from 'recompose';
-import { useDispatch } from 'react-redux';
+import { batch, useDispatch } from 'react-redux';
 import { followTokensWalletSelector, isFetchingSelector } from '@screens/Wallet/features/FollowList/FollowList.selector';
 import Token from '@screens/Wallet/features/Home/Wallet.token';
-import { styledFollow } from '@screens/Wallet/features/Home/_Wallet.styled';
 import { FlatList } from '@components/core/FlatList';
 import { Toast, View } from '@components/core';
 import Extra from '@screens/Wallet/features/Home/Wallet.extra';
@@ -17,8 +16,9 @@ import PropTypes from 'prop-types';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { selectedPrivacyTokenID } from '@src/redux/selectors/selectedPrivacy';
 import { actionFreeHistory } from '@src/redux/actions/history';
+import withRetry from '@screens/MainTabBar/features/Assets/Assets.withRetry';
 
-const FollowList = ({ loadBalance }) => {
+const FollowList = ({ loadBalance, onRetrySubmitWithdraw }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const data = useDebounceSelector(followTokensWalletSelector);
@@ -56,14 +56,18 @@ const FollowList = ({ loadBalance }) => {
         tokenId={id}
         amount={amount}
         swipable={swipable}
-        style={[
-          styledFollow.token,
-        ]}
         onPress={() => handleSelectToken(id, amount)}
         handleRemoveToken={() => handleRemoveToken(id)}
       />
     );
   }, [selectPrivacyTokenID]);
+
+  const onRefresh = () => {
+    batch(() => {
+      onRetrySubmitWithdraw();
+      loadBalance();
+    });
+  };
 
   return (
     <View fullFlex borderTop>
@@ -74,7 +78,7 @@ const FollowList = ({ loadBalance }) => {
           <RefreshControl
             tintColor="white"
             refreshing={isRefreshing}
-            onRefresh={loadBalance}
+            onRefresh={onRefresh}
           />
         )}
         renderItem={renderItem}
@@ -86,8 +90,10 @@ const FollowList = ({ loadBalance }) => {
 
 FollowList.propTypes = {
   loadBalance: PropTypes.func.isRequired,
+  onRetrySubmitWithdraw: PropTypes.func.isRequired
 };
 
 export default compose(
+  withRetry,
   withFollowList,
 )(memo(FollowList));

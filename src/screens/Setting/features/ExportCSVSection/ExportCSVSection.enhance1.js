@@ -17,12 +17,14 @@ import React from 'react';
 import Share from 'react-native-share';
 import { useSelector } from 'react-redux';
 import { compose } from 'recompose';
-import withExportCSVVer1 from '@screens/Setting/features/ExportCSVSection/ExportCSVSection.withCoinsV1';
+import withExportCSVVer1, {
+  TIME_FORMAT
+} from '@screens/Setting/features/ExportCSVSection/ExportCSVSection.withCoinsV1';
 
 export const formatConsolidateTxs = (tx) => {
   const { time = 0, txTypeStr = '', txId } = tx;
   return {
-    Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+    Date: formatUtil.formatDateTime(time, TIME_FORMAT),
     'Received Quantity': '',
     'Received Currency': '',
     'Send Quantity': '',
@@ -68,7 +70,7 @@ const enhance = (WrappedComp) => (props) => {
               currentResult.push(data);
             } else {
               const data = {
-                Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+                Date: formatUtil.formatDateTime(time, TIME_FORMAT),
                 'Received Quantity': '',
                 'Received Currency': '',
                 'Send Quantity': `${renderNoClipAmount({
@@ -110,7 +112,7 @@ const enhance = (WrappedComp) => (props) => {
               currentResult.push(data);
             } else {
               const data = {
-                Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+                Date: formatUtil.formatDateTime(time, TIME_FORMAT),
                 'Received Quantity': `${renderNoClipAmount({
                   amount: amount || 0,
                   pDecimals: token.pDecimals || 9,
@@ -159,7 +161,7 @@ const enhance = (WrappedComp) => (props) => {
             }
             if (txTypeStr === 'Shield') {
               const data = {
-                Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+                Date: formatUtil.formatDateTime(time, TIME_FORMAT),
                 'Received Quantity': `${renderNoClipAmount({
                   amount: incognitoAmount || 0,
                   pDecimals: token.pDecimals || 9,
@@ -179,7 +181,7 @@ const enhance = (WrappedComp) => (props) => {
 
             if (txTypeStr === 'Unshield') {
               const data = {
-                Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+                Date: formatUtil.formatDateTime(time, TIME_FORMAT),
                 'Received Quantity': '',
                 'Received Currency': '',
                 'Send Quantity': `${renderNoClipAmount({
@@ -231,7 +233,7 @@ const enhance = (WrappedComp) => (props) => {
             }
             if (txTypeStr === 'Shield') {
               const data = {
-                Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+                Date: formatUtil.formatDateTime(time, TIME_FORMAT),
                 'Received Quantity': `${renderNoClipAmount({
                   amount: amount || 0,
                   pDecimals: token.pDecimals || 9,
@@ -251,7 +253,7 @@ const enhance = (WrappedComp) => (props) => {
 
             if (txTypeStr === 'Unshield') {
               const data = {
-                Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+                Date: formatUtil.formatDateTime(time, TIME_FORMAT),
                 'Received Quantity': '',
                 'Received Currency': '',
                 'Send Quantity': `${renderNoClipAmount({
@@ -363,14 +365,14 @@ const enhance = (WrappedComp) => (props) => {
     return [...historyVer1, ...flatten(historyVer2)].sort(
       (a, b) =>
         moment(b.Date, [
-          'MM/DD/YYYY hh:mm:ss',
-          'MM/DD/YYYY HH:mm:SS',
-          'MM/DD/YYYY HH:MM:SS',
+          TIME_FORMAT,
+          TIME_FORMAT,
+          TIME_FORMAT,
         ]).unix() -
         moment(a.Date, [
-          'MM/DD/YYYY hh:mm:ss',
-          'MM/DD/YYYY HH:mm:SS',
-          'MM/DD/YYYY HH:MM:SS',
+          TIME_FORMAT,
+          TIME_FORMAT,
+          TIME_FORMAT,
         ]).unix(),
     );
   };

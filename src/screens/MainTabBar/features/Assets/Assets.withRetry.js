@@ -1,21 +1,19 @@
 import React from 'react';
-import ErrorBoundary from '@src/components/ErrorBoundary';
+import ErrorBoundary from '@components/ErrorBoundary';
 import { useSelector, useDispatch, batch } from 'react-redux';
-import { ExHandler } from '@src/services/exception';
+import { ExHandler } from '@services/exception';
 import { CONSTANT_KEYS } from '@src/constants';
 import { useFocusEffect } from 'react-navigation-hooks';
 import {
   unShieldStorageDataSelector,
   actionRemoveStorageDataDecentralized,
   actionRemoveStorageDataCentralized,
-} from '@src/screens/UnShield';
-import { withdraw, updatePTokenFee } from '@src/services/api/withdraw';
+} from '@screens/UnShield';
+import { withdraw, updatePTokenFee } from '@services/api/withdraw';
 import { accountSelector } from '@src/redux/selectors';
-import { compose } from 'recompose';
-import { withLayout_2 } from '@components/Layout';
 import { debounce } from 'lodash';
 
-const enhance = (WrappedComp) => (props) => {
+const enhanceRetry = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const unshieldStorage = useSelector(unShieldStorageDataSelector);
   const signPublicKeyEncode = useSelector(accountSelector.signPublicKeyEncodeSelector);
@@ -50,26 +48,26 @@ const enhance = (WrappedComp) => (props) => {
         CONSTANT_KEYS.UNSHIELD_DATA_DECENTRALIZED;
       const txs = unshieldStorage[keyUnshieldDecentralized]?.txs || [];
       txs &&
-        txs.map(async (tx) => {
-          if (tx) {
-            withdraw({ ...tx, signPublicKeyEncode })
-              .then(() => {
+      txs.map(async (tx) => {
+        if (tx) {
+          withdraw({ ...tx, signPublicKeyEncode })
+            .then(() => {
+              handleRemoveStorageTxsUnshield({
+                txID: tx?.burningTxId,
+                keySave: keyUnshieldDecentralized
+              });
+            })
+            .catch((error) => {
+              if (error && error?.code && error?.code === 'API_ERROR(-1034)') {
+                // tx submited => no need call to much
                 handleRemoveStorageTxsUnshield({
                   txID: tx?.burningTxId,
                   keySave: keyUnshieldDecentralized
                 });
-              })
-              .catch((error) => {
-                if (error && error?.code && error?.code === 'API_ERROR(-1034)') {
-                  // tx submited => no need call to much
-                  handleRemoveStorageTxsUnshield({
-                    txID: tx?.burningTxId,
-                    keySave: keyUnshieldDecentralized
-                  });
-                }
-              });
-          }
-        });
+              }
+            });
+        }
+      });
     } catch (e) {
       console.log('error', e);
     }
@@ -79,26 +77,26 @@ const enhance = (WrappedComp) => (props) => {
       const keyUnshieldCentralized = CONSTANT_KEYS.UNSHIELD_DATA_CENTRALIZED;
       const txs = unshieldStorage[keyUnshieldCentralized]?.txs || [];
       txs &&
-        txs.map(async (tx) => {
-          if (tx) {
-            updatePTokenFee({ ...tx, signPublicKeyEncode })
-              .then(() => {
+      txs.map(async (tx) => {
+        if (tx) {
+          updatePTokenFee({ ...tx, signPublicKeyEncode })
+            .then(() => {
+              handleRemoveStorageTxsUnshield({
+                txID: tx?.txId,
+                keySave: keyUnshieldCentralized
+              });
+            })
+            .catch(error => {
+              if (error && error?.code && error?.code === 'API_ERROR(-1034)') {
+                // tx submited => no need call to much
                 handleRemoveStorageTxsUnshield({
                   txID: tx?.txId,
                   keySave: keyUnshieldCentralized
                 });
-              })
-              .catch(error => {
-                if (error && error?.code && error?.code === 'API_ERROR(-1034)') {
-                  // tx submited => no need call to much
-                  handleRemoveStorageTxsUnshield({
-                    txID: tx?.txId,
-                    keySave: keyUnshieldCentralized
-                  });
-                }
-              });
-          }
-        });
+              }
+            });
+        }
+      });
     } catch (e) {
       console.log('error', e);
     }
@@ -127,12 +125,11 @@ const enhance = (WrappedComp) => (props) => {
       <WrappedComp
         {...{
           ...props,
+          onRetrySubmitWithdraw: onRefresh
         }}
       />
     </ErrorBoundary>
   );
 };
 
-export default compose(
-  enhance,
-);
+export default enhanceRetry;

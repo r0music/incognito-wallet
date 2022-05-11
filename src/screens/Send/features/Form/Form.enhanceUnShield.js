@@ -259,14 +259,15 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           textLoadingTx: 'Tx burn saved. You have 15 seconds',
         });
         await Utils.delay(15);
+      } else {
+        await withdraw({ ..._tx, signPublicKeyEncode });
+        await dispatch(
+          actionRemoveStorageDataDecentralized({
+            keySave,
+            burningTxId: _tx.burningTxId,
+          }),
+        );
       }
-      await withdraw({ ..._tx, signPublicKeyEncode });
-      await dispatch(
-        actionRemoveStorageDataDecentralized({
-          keySave,
-          burningTxId: _tx.burningTxId,
-        }),
-      );
       return tx;
     } catch (e) {
       throw e;
@@ -305,14 +306,15 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
             textLoadingTx: 'Tx saved. You have 15 seconds',
           });
           await Utils.delay(15);
+        } else {
+          await updatePTokenFee({ ...txUpdatePTokenFee, signPublicKeyEncode });
+          await dispatch(
+            actionRemoveStorageDataCentralized({
+              keySave,
+              txId: txUpdatePTokenFee?.txId,
+            }),
+          );
         }
-        await updatePTokenFee({ ...txUpdatePTokenFee, signPublicKeyEncode });
-        await dispatch(
-          actionRemoveStorageDataCentralized({
-            keySave,
-            txId: txUpdatePTokenFee?.txId,
-          }),
-        );
       }
       return tx;
     } catch (e) {

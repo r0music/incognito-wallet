@@ -2,7 +2,6 @@ import { navigationOptionsHandler } from '@src/utils/router';
 import WhyShield from '@screens/Shield/features/WhyShield';
 import SelectAccount from '@screens/SelectAccount';
 import Home from '@screens/Home';
-import Wallet from '@screens/Wallet/features/Home';
 import Community from '@screens/Community';
 import CreateToken from '@screens/CreateToken';
 import Shield from '@screens/Shield';
@@ -375,10 +374,6 @@ const routes = [
   {
     screen: Home,
     name: routeNames.Home,
-  },
-  {
-    screen: Wallet,
-    name: routeNames.Wallet,
   },
   {
     screen: Community,

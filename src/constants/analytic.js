@@ -16,6 +16,7 @@ const ANALYTIC_DATA_TYPE = {
   TRADE_UNISWAP: 14,
   TRADE_CURVE: 15,
   CANCEL_ORDER: 16,
+  REMOVE_LP: 17,
 };
 
 export default {
