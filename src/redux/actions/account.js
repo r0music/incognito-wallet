@@ -64,7 +64,6 @@ export const removeAccount = (account) => async (dispatch, getState) => {
       //
     }
     const { PrivateKey } = account;
-    const { aesKey } = await getPassphrase();
     const masterKey = currentMasterKeySelector(state);
     const walletAccount = accountService.getAccount(account, wallet);
     const accountInfo = await walletAccount.getDeserializeInformation();
@@ -74,7 +73,7 @@ export const removeAccount = (account) => async (dispatch, getState) => {
     masterKey.deletedAccountIds.push(accountInfo.ID);
     wallet.deletedAccountIds = masterKey.deletedAccountIds;
     console.time('TIME_REMOVE_ACCOUNT');
-    await accountService.removeAccount(PrivateKey, aesKey, wallet);
+    await accountService.removeAccount(PrivateKey, wallet);
     console.timeEnd('TIME_REMOVE_ACCOUNT');
     batch(() => {
       dispatch(updateMasterKey(masterKey));
@@ -398,7 +397,6 @@ export const actionFetchImportAccount =
       }
       try {
         dispatch(actionFetchingImportAccount());
-        const { aesKey } = await getPassphrase();
         for (const masterKey of masterKeys) {
           try {
             const isCreated = await masterKey.wallet.hasCreatedAccount(
@@ -416,7 +414,6 @@ export const actionFetchImportAccount =
         const isImported = await accountService.importAccount(
           privateKey,
           accountName,
-          aesKey,
           wallet,
         );
         if (isImported) {

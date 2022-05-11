@@ -120,7 +120,7 @@ const loadAllMasterKeysSuccess = (data) => ({
   payload: data,
 });
 
-export const loadAllMasterKeys = () => async (dispatch) => {
+export const loadAllMasterKeys = ({ migratePassCodeToDefault = false } = {}) => async (dispatch) => {
   try {
     await updateNetwork();
     let masterKeyList = uniqBy(
@@ -135,6 +135,7 @@ export const loadAllMasterKeys = () => async (dispatch) => {
       try {
         await masterKey.loadWallet({
           callback,
+          migratePassCodeToDefault,
         });
       } catch (error) {
         console.log('LOAD WALLET ERROR', error, masterKey?.name);
