@@ -9,6 +9,7 @@ import { renderNoClipAmount } from '@src/redux/selectors/history';
 import { COINS, CONSTANT_CONFIGS } from '@src/constants';
 import flatten from 'lodash/flatten';
 
+export const TIME_FORMAT = 'DD-MMM-YYYY HH:mm:ss';
 const withExportCSVVer1 = (WrappedComp) => (props) => {
   const [loading, setLoading] = useState(false);
   const [forcePercent, setForcePercent] = useState(0);
@@ -30,7 +31,7 @@ const withExportCSVVer1 = (WrappedComp) => (props) => {
           const { amount = 0, time = 0, fee = 0, txTypeStr = '', txId } = item;
           if (item.statusStr === 'Success') {
             const data = {
-              Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+              Date: formatUtil.formatDateTime(time, TIME_FORMAT),
               'Received Quantity': '',
               'Received Currency': '',
               'Send Quantity': `${renderNoClipAmount({
@@ -64,7 +65,7 @@ const withExportCSVVer1 = (WrappedComp) => (props) => {
           const { amount = 0, time = 0, txTypeStr = '', txId } = item;
           if (item.statusStr === 'Success') {
             const data = {
-              Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+              Date: formatUtil.formatDateTime(time, TIME_FORMAT),
               'Received Quantity': `${renderNoClipAmount({
                 amount: amount || 0,
                 pDecimals: token.pDecimals || 9,

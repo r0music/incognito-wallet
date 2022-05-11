@@ -24,9 +24,6 @@ const withTransaction = WrappedComp => props => {
     if (loading) return;
     try {
       setLoading(true);
-      setTimeout(() => {
-        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CONTRIBUTE_LP));
-      }, 300);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       await pDexV3Inst.createContributeTxs({
         fee,
@@ -38,6 +35,14 @@ const withTransaction = WrappedComp => props => {
         amp,
         nftID,
       });
+      setTimeout(() => {
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CONTRIBUTE_LP, {
+          token_id1: tokenId1,
+          token_id2: tokenId2,
+          token_amount1: amount1,
+          token_amount2: amount2,
+        }));
+      }, 300);
       onShowSuccess();
     } catch (error) {
       setError(new ExHandler(error).getMessage(error?.message));
@@ -49,9 +54,6 @@ const withTransaction = WrappedComp => props => {
     if (loading) return;
     try {
       setLoading(true);
-      setTimeout(() => {
-        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CONTRIBUTE_NEW_LP));
-      }, 300);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       await pDexV3Inst.createContributeTxs({
         fee,
@@ -62,6 +64,14 @@ const withTransaction = WrappedComp => props => {
         poolPairID: '',
         amp
       });
+      setTimeout(() => {
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CONTRIBUTE_NEW_LP, {
+          token_id1: tokenId1,
+          token_id2: tokenId2,
+          token_amount1: amount1,
+          token_amount2: amount2,
+        }));
+      }, 300);
       onShowSuccess();
     } catch (error) {
       setError(new ExHandler(error).getMessage(error?.message));
@@ -77,6 +87,14 @@ const withTransaction = WrappedComp => props => {
       await pDexV3Inst.createAndSendWithdrawContributeRequestTx({
         fee, poolTokenIDs, poolPairID, shareAmount, nftID, amount1, amount2
       });
+      setTimeout(() => {
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.REMOVE_LP, {
+          token_id1: poolTokenIDs[0],
+          token_id2: poolTokenIDs[1],
+          share_amount: shareAmount,
+          pool_pair_id: poolPairID
+        }));
+      }, 300);
       onShowSuccess();
     } catch (error) {
       setError(new ExHandler(error).getMessage(error?.message));

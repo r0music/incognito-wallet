@@ -21,13 +21,9 @@ export const styled = StyleSheet.create({
   subText: {
     fontSize: FONT.SIZE.medium,
     fontFamily: FONT.NAME.medium,
-    marginTop: 4
   },
   block1: {
-    flex: 1,
     marginRight: 5,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
   },
   block2: {
     flexDirection: 'column',
@@ -45,7 +41,6 @@ export const styled = StyleSheet.create({
     lineHeight: 16,
     borderRadius: 4,
     overflow: 'hidden',
-    marginTop: 4
   },
   earnBtn: {
     marginLeft: 5,
@@ -56,7 +51,6 @@ export const styled = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 3,
     overflow: 'hidden',
-    marginTop: 4,
     paddingHorizontal: 12
   }
 });
