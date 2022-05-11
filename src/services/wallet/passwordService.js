@@ -100,7 +100,10 @@ export const getPassphraseNoCache = async () => {
         await storage.setItem(accessKey, salt);
       }
       const aesKeyDefault = getAesKeyFromSalt({ salt, password });
-      const aesKeyPassCode = getAesKeyFromSalt({ salt, password: passcode });
+      let aesKeyPassCode;
+      if (passcode) {
+        aesKeyPassCode = getAesKeyFromSalt({ salt, password: passcode });
+      }
       const aesKey = aesKeyPassCode || aesKeyDefault;
       return {
         aesKeyDefault,
