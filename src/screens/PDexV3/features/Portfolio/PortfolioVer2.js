@@ -111,7 +111,8 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
         data={nftShareIDs}
         renderItem={renderItem}
         keyExtractor={item => item}
-        contentContainerStyle={styles.contentContainerStyle}
+        style={styles.contentContainerStyle}
+        contentContainerStyle={[nftShareIDs.length === 0 && { flex: 1 }]}
         ListEmptyComponent={
           <EmptyBookIcon message="Join a pool to contribute liquidity and earn rewards." />
         }
@@ -128,7 +129,8 @@ const PortfolioVer2 = React.memo(({ createAndSendWithdrawLPFee }) => {
         data={accessOTAShareIDs}
         renderItem={renderItem}
         keyExtractor={item => item}
-        contentContainerStyle={styles.contentContainerStyle}
+        style={styles.contentContainerStyle}
+        contentContainerStyle={[accessOTAShareIDs.length === 0 && { flex: 1 }]}
         ListEmptyComponent={
           <EmptyBookIcon message="Join a pool to contribute liquidity and earn rewards." />
         }
