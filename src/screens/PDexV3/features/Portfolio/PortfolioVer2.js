@@ -10,7 +10,7 @@ import { compose } from 'recompose';
 import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
 import { useDispatch, useSelector } from 'react-redux';
 import { compressParamsWithdrawFee } from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
-import { RefreshControl, ScrollView, Tabs } from '@components/core';
+import { RefreshControl, Tabs } from '@components/core';
 import { FONT } from '@src/styles';
 import { actionFetch } from '@screens/PDexV3/features/Portfolio/Portfolio.actions';
 import { EmptyBookIcon } from '@components/Icons';

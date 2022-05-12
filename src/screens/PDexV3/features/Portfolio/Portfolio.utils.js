@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import format from '@utils/format';
 import convert from '@utils/convert';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
+import isEmpty from 'lodash/isEmpty';
 
 const mapRewardToUSD = ({ rewards, getPrivacyDataByTokenID }) => {
   let mapRewards = Object.keys(rewards).map(tokenId => ({
@@ -140,6 +141,12 @@ const formatPureData = (poolShare, shareDetails, getPrivacyDataByTokenID) => {
     ...hookLPRewards,
     ...hookOrderRewards,
   ];
+
+  let _withdrawable = withdrawable;
+  if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
+    _withdrawable = isEmpty(mapLPRewards);
+  }
+
   return {
     ...poolShare,
     shareId,
@@ -156,7 +163,7 @@ const formatPureData = (poolShare, shareDetails, getPrivacyDataByTokenID) => {
     token2PoolValue,
     hookFactoriesDetail,
     withdrawing,
-    withdrawable,
+    withdrawable: _withdrawable,
     nftId,
     poolId,
     mapLPRewards,
