@@ -131,7 +131,6 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
         onPress={onInvestPress}
         wrapperStyle={{ flex: 1 }}
         background={COLORS.colorBlue}
-        disabled={!validNFT}
       />
     );
   };
@@ -176,7 +175,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
             />
           ))}
         </ScrollView>
-        {!validNFT && (
+        {!validNFT && !withdrawable && (
           <Text style={styles.warning}>
             You don&apos;t have any spare tickets to make this transaction. Wait
             for one to free up.
