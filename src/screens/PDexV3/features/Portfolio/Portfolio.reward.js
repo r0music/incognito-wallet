@@ -12,6 +12,7 @@ import orderBy from 'lodash/orderBy';
 import { RefreshControl, View } from '@components/core';
 import { actionFetch } from '@screens/PDexV3/features/Portfolio/Portfolio.actions';
 import { EmptyBookIcon } from '@components/Icons';
+import { styles } from '@screens/PDexV3/features/Portfolio/PortfolioVer2';
 
 const PortfolioReward = React.memo(({ createAndSendWithdrawLPFee }) => {
   const onCompressParamsWithdrawFee = useSelector(compressParamsWithdrawFee);
@@ -49,7 +50,8 @@ const PortfolioReward = React.memo(({ createAndSendWithdrawLPFee }) => {
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={() => dispatch(actionFetch())} />
         }
-        contentContainerStyle={{ flex: 1 }}
+        style={styles.contentContainerStyle}
+        contentContainerStyle={[listShareRewardID.length === 0 && { flex: 1 }]}
         showsVerticalScrollIndicator={false}
         data={listShareRewardID}
         renderItem={renderItem}
