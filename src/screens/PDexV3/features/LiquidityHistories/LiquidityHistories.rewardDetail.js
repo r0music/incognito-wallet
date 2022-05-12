@@ -18,6 +18,7 @@ const WithdrawFeeLPDetail = () => {
         label: 'PoolID',
         valueText: poolId,
         copyable: true,
+        disabled: !poolId
       },
       {
         label: 'TicketID',
