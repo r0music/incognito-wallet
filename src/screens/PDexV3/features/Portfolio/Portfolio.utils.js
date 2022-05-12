@@ -144,7 +144,7 @@ const formatPureData = (poolShare, shareDetails, getPrivacyDataByTokenID) => {
 
   let _withdrawable = withdrawable;
   if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
-    _withdrawable = isEmpty(mapLPRewards);
+    _withdrawable = !isEmpty(mapLPRewards);
   }
 
   return {
