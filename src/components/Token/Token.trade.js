@@ -62,6 +62,7 @@ const TokenTrade = (props) => {
             <BtnInfo
               tokenId={tokenId}
               style={styles.btnInfo}
+              version={2}
             />
           </Row>
           <Row>

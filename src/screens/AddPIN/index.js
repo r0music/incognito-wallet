@@ -12,6 +12,8 @@ import routeNames from '@src/router/routeNames';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout';
+import { loadAllMasterKeys } from '@src/redux/actions/masterKey';
+import RNRestart from 'react-native-restart';
 import styles from './styles';
 
 export const TAG = 'AddPIN';
@@ -201,14 +203,19 @@ class AddPIN extends React.Component {
     }
   };
 
-  removeSuccess = () => {
+  removeSuccess = async () => {
+    const { loadAllMasterKeys } = this.props;
+    await loadAllMasterKeys({ migratePassCodeToDefault: true });
     this.updatePin('');
+    setTimeout(() => {
+      RNRestart.Restart();
+    }, 500);
   };
 
   handleBioAuth = () => {
     const { navigation } = this.props;
     TouchID.authenticate('', optionalConfigObject)
-      .then(() => {
+      .then(async () => {
         const { action } = this.state;
         if (action === 'login') {
           this.loginSuccess();
@@ -366,7 +373,7 @@ const mapStateToProps = (state) => ({
   prevScreen: state.navigation.prevScreen,
 });
 
-const mapDispatchToProps = { updatePin, actionAuthen };
+const mapDispatchToProps = { updatePin, actionAuthen, loadAllMasterKeys };
 
 export default compose(
   withNavigation,
