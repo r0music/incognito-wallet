@@ -130,9 +130,6 @@ import {
   StakingHistories,
   StakingHistoryDetail,
 } from '@screens/PDexV3/features/Staking';
-import {
-  RemovePool,
-} from '@screens/PDexV3/features/Liquidity';
 import PairList from '@screens/PDexV3/features/PairList';
 import MainTabBar from '@screens/MainTabBar';
 import More from '@screens/MainTabBar/features/More';
@@ -147,8 +144,9 @@ import MarketSearchCoins from '@screens/MainTabBar/features/Market/Market.search
 import HomeLP from '@screens/MainTabBar/features/HomeLP';
 import Tutorial from '@screens/Turotial/Tutorial';
 
-import OTAContribute from '@screens/PDexV3/features/Liquidity/features/AccessOTA/OTAContribute';
-import OTACreatePool from '@screens/PDexV3/features/Liquidity/features/AccessOTA/OTACreatePool';
+import OTAContribute from '@screens/PDexV3/features/Liquidity/AccessOTA/OTAContribute';
+import OTACreatePool from '@screens/PDexV3/features/Liquidity/AccessOTA/OTACreatePool';
+import OTARemovePool from '@screens/PDexV3/features/Liquidity/AccessOTA/OTARemovePool';
 
 const masterKeyRoutes = [
   {
@@ -214,7 +212,7 @@ const pDexV3Routes = [
     name: routeNames.OTAContributePool,
   },
   {
-    screen: RemovePool,
+    screen: OTARemovePool,
     name: routeNames.RemovePool,
   },
   {

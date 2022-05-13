@@ -12,7 +12,7 @@ import orderBy from 'lodash/orderBy';
 import { RefreshControl, View } from '@components/core';
 import { actionFetch } from '@screens/PDexV3/features/Portfolio/Portfolio.actions';
 import { EmptyBookIcon } from '@components/Icons';
-import { styles } from '@screens/PDexV3/features/Portfolio/PortfolioVer2';
+import { styles } from '@screens/PDexV3/features/Portfolio/Portfolio';
 
 const PortfolioReward = React.memo(({ createAndSendWithdrawLPFee }) => {
   const onCompressParamsWithdrawFee = useSelector(compressParamsWithdrawFee);

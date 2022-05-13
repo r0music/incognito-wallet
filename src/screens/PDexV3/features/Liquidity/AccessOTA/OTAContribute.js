@@ -1,5 +1,5 @@
 import React from 'react';
-import withInitAccessOTALP from '@screens/PDexV3/features/Liquidity/features/AccessOTA/AccessOTA.enhance';
+import withInitAccessOTALP from '@screens/PDexV3/features/Liquidity/AccessOTA/AccessOTA.enhance';
 import { compose } from 'recompose';
 import PropTypes from 'prop-types';
 import { Header, RowSpaceText, SuccessModal } from '@src/components';
@@ -18,10 +18,10 @@ import { AddBreakLine, RefreshControl, View } from '@components/core';
 import { Field, focus, getFormSyncErrors } from 'redux-form';
 import { styled as mainStyle } from '@screens/PDexV3/PDexV3.styled';
 import { ButtonTrade } from '@components/Button';
-import useSendSelf from '@screens/PDexV3/features/Liquidity/Liquidity.useSendSelf';
+import useSplitUTXOs from '@screens/PDexV3/features/Liquidity/Liquidity.splitUTXOs';
 import { ScrollView, Text } from 'react-native';
 import NetworkFee from '@components/NetworkFee';
-import { OTAContributeSelector } from '@screens/PDexV3/features/Liquidity/features/AccessOTA';
+import { OTAContributeSelector } from '@screens/PDexV3/features/Liquidity/AccessOTA/index';
 import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
 
 const initialFormValues = {
@@ -157,7 +157,7 @@ const OTAContribute = ({
 }) => {
   const isFetching = useSelector(OTAContributeSelector.statusSelector);
   const { feeAmountStr, showFaucet } = useSelector(OTAContributeSelector.feeAmountSelector);
-  const _error = useSendSelf({ error, setLoading, setError });
+  const _error = useSplitUTXOs({ error, setLoading, setError });
   const onSubmit = (params) => {
     typeof createContributeTxsWithAccessToken === 'function' && createContributeTxsWithAccessToken(params);
   };

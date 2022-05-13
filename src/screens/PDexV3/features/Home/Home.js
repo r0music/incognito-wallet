@@ -17,7 +17,7 @@ import PortfolioReward from '@screens/PDexV3/features/Portfolio/Portfolio.reward
 import { SearchIcon } from '@components/Icons';
 import { PoolsListHeader } from '@screens/PDexV3/features/Pools/Pools.list';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
-import PortfolioVer2 from '@screens/PDexV3/features/Portfolio/PortfolioVer2';
+import PortfolioVer2 from '@screens/PDexV3/features/Portfolio/Portfolio';
 import withLazy from '@components/LazyHoc/LazyHoc';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { ANALYTICS } from '@src/constants';

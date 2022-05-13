@@ -1,8 +1,8 @@
 import React, {memo} from 'react';
 import { ScrollView, Text } from 'react-native';
 import PropTypes from 'prop-types';
-import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header, RowSpaceText, SuccessModal} from '@src/components';
+import { styled as mainStyle } from '@screens/PDexV3/PDexV3.styled';
+import { Header, RowSpaceText, SuccessModal } from '@src/components';
 import {
   LIQUIDITY_MESSAGES,
   formConfigsCreatePool,
@@ -10,22 +10,24 @@ import {
 } from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
 import { AddBreakLine, View, RefreshControl } from '@components/core';
-import {useDispatch, useSelector} from 'react-redux';
-import {change, Field, focus, getFormSyncErrors} from 'redux-form';
-import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
-import {createPoolSelector, liquidityActions} from '@screens/PDexV3/features/Liquidity';
+import { useDispatch } from 'react-redux';
+import { change, Field, focus, getFormSyncErrors } from 'redux-form';
+import { liquidityActions } from '@screens/PDexV3/features/Liquidity';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
-import {ButtonTrade} from '@components/Button';
-import {compose} from 'recompose';
-import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
-import {NFTTokenModal} from '@screens/PDexV3/features/NFTToken';
-import {useNavigation} from 'react-navigation-hooks';
+import { ButtonTrade } from '@components/Button';
+import { compose } from 'recompose';
+import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
-import NetworkFee from '@src/components/NetworkFee';
-import {actionToggleModal} from '@components/Modal';
+import NetworkFee from '@components/NetworkFee';
 import { withLayout_2 } from '@components/Layout';
-import useSendSelf from '@screens/PDexV3/features/Liquidity/Liquidity.useSendSelf';
+import useSplitUTXOs from '@screens/PDexV3/features/Liquidity/Liquidity.splitUTXOs';
 import withLazy from '@components/LazyHoc/LazyHoc';
+import withInitAccessOTALP from '@screens/PDexV3/features/Liquidity/AccessOTA/AccessOTA.enhance';
+import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
+import { allTokensIDsSelector } from '@src/redux/selectors/token';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import { listPoolsPureSelector } from '@screens/PDexV3/features/Pools';
+import { OTACreatePoolSelector } from '@screens/PDexV3/features/Liquidity/AccessOTA/index';
 
 const initialFormValues = {
   inputToken: '',
@@ -40,11 +42,11 @@ const Form = createForm(formConfigsCreatePool.formName, {
 
 const InputsGroup = () => {
   const dispatch = useDispatch();
-  const inputAmount = useSelector(createPoolSelector.inputAmountSelector);
-  const inputTokens = useSelector(createPoolSelector.inputTokensListSelector);
-  const outputTokens = useSelector(createPoolSelector.outputTokensListSelector);
-  const focusField = useSelector(createPoolSelector.focusFieldSelector);
-  const isTyping = useSelector(createPoolSelector.isTypingSelector);
+  const inputAmount = useDebounceSelector(OTACreatePoolSelector.inputAmountSelector);
+  const inputTokens = useDebounceSelector(OTACreatePoolSelector.inputTokensListSelector);
+  const outputTokens = useDebounceSelector(OTACreatePoolSelector.outputTokensListSelector);
+  const focusField = useDebounceSelector(OTACreatePoolSelector.focusFieldSelector);
+  const isTyping = useDebounceSelector(OTACreatePoolSelector.isTypingSelector);
   const inputToken = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
   const outputToken = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
   const navigation = useNavigation();
@@ -113,8 +115,8 @@ const InputsGroup = () => {
           if (loading.input) return;
           onSelectSymbol(((token) => {
             setTimeout(() =>
-              dispatch(liquidityActions.actionUpdateCreatePoolInputToken(token.tokenId)),
-            300);
+                dispatch(liquidityActions.actionUpdateCreatePoolInputToken(token.tokenId)),
+              300);
           }), inputTokens);
         }}
       />
@@ -137,8 +139,8 @@ const InputsGroup = () => {
           if (loading.output) return;
           onSelectSymbol(((token) => {
             setTimeout(() =>
-              dispatch(liquidityActions.actionUpdateCreatePoolOutputToken(token.tokenId)),
-            300);
+                dispatch(liquidityActions.actionUpdateCreatePoolOutputToken(token.tokenId)),
+              300);
           }), outputTokens);
         }}
         onFocus={(e) => onFocusToken(e, formConfigsCreatePool.outputToken)}
@@ -151,7 +153,7 @@ const InputsGroup = () => {
 };
 
 export const Extra = React.memo(() => {
-  const hooks = useSelector(createPoolSelector.hookFactoriesSelector);
+  const hooks = useDebounceSelector(OTACreatePoolSelector.hookFactoriesSelector);
   const renderHooks = () => {
     return hooks.map(item => <RowSpaceText {...item} key={item?.label} />);
   };
@@ -162,15 +164,13 @@ export const Extra = React.memo(() => {
   );
 });
 
-const ButtonCreatePool = React.memo(({ onSubmit }) => {
+const BTNCreatePool = React.memo(({ onSubmit }) => {
   const dispatch = useDispatch();
-  const { disabled, nftTokenAvailable } = useSelector(createPoolSelector.disableCreatePool);
-  const amountSelector = useSelector(createPoolSelector.inputAmountSelector);
-  const inputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
-  const outputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
-  const { feeAmount, feeAmountStr, showFaucet } = useSelector(createPoolSelector.feeAmountSelector);
-  const { amp, estOutputStr } = useSelector(createPoolSelector.ampValueSelector);
-  const formErrors = useSelector((state) =>
+  const compressParams = useDebounceSelector(OTACreatePoolSelector.compressParamsCreatePool);
+  const { disabled } = useDebounceSelector(OTACreatePoolSelector.disableCreatePool);
+  const { feeAmountStr, showFaucet } = useDebounceSelector(OTACreatePoolSelector.feeAmountSelector);
+  const { estOutputStr } = useDebounceSelector(OTACreatePoolSelector.ampValueSelector);
+  const formErrors = useDebounceSelector((state) =>
     getFormSyncErrors(formConfigsCreatePool.formName)(state),
   );
   const handleSubmit = () => {
@@ -184,25 +184,8 @@ const ButtonCreatePool = React.memo(({ onSubmit }) => {
         return dispatch(focus(formConfigsCreatePool.formName, field));
       }
     }
-    if (!nftTokenAvailable) {
-      return dispatch(
-        actionToggleModal({
-          visible: true,
-          shouldCloseModalWhenTapOverlay: true,
-          data: <NFTTokenModal />,
-        }),
-      );
-    }
     if (disabled) return;
-    const params = {
-      fee: feeAmount / 2,
-      tokenId1: inputAmount.tokenId,
-      tokenId2: outputAmount.tokenId,
-      amount1: String(inputAmount.originalInputAmount),
-      amount2: String(outputAmount.originalInputAmount),
-      amp,
-    };
-    onSubmit(params);
+    onSubmit(compressParams);
   };
   const changeEstRate = () =>
     !!estOutputStr && dispatch(change(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken, estOutputStr));
@@ -223,25 +206,31 @@ const ButtonCreatePool = React.memo(({ onSubmit }) => {
   );
 });
 
-const CreatePool = ({
+const OTACreatePool = ({
   onInitCreatePool,
   onFreeCreatePool,
-  onCreateNewPool,
+  createNewPoolTxsWithAccessToken,
   visible,
   onCloseModal,
   setLoading,
   setError,
   error,
 }) => {
-  const isFetching = useSelector(createPoolSelector.isFetchingSelector);
-  const _error = useSendSelf({ error, setLoading, setError });
+  const tokenIDs = useDebounceSelector(allTokensIDsSelector);
+  const listPools = useDebounceSelector(listPoolsPureSelector);
+  const isFetching = useDebounceSelector(OTACreatePoolSelector.isFetchingSelector);
+  const _error = useSplitUTXOs({ error, setLoading, setError });
   const onSubmit = (params) => {
-    typeof onCreateNewPool === 'function' && onCreateNewPool(params);
+    typeof createNewPoolTxsWithAccessToken === 'function' && createNewPoolTxsWithAccessToken(params);
+  };
+
+  const onRefresh = () => {
+    onInitCreatePool({ tokenIDs, listPools });
   };
 
   const onClose = () => {
     onCloseModal();
-    onInitCreatePool();
+    onRefresh();
   };
 
   const renderContent = () => (
@@ -249,13 +238,13 @@ const CreatePool = ({
       <InputsGroup />
       <View style={styled.padding}>
         {!!_error && <Text style={styled.warning}>{_error}</Text>}
-        <ButtonCreatePool onSubmit={onSubmit} />
+        <BTNCreatePool onSubmit={onSubmit} />
         <Extra />
       </View>
     </>
   );
   React.useEffect(() => {
-    onInitCreatePool();
+    onRefresh();
     return () => onFreeCreatePool();
   }, []);
   return (
@@ -263,7 +252,7 @@ const CreatePool = ({
       <Header style={styled.padding} />
       <View borderTop style={styled.container}>
         <ScrollView
-          refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onInitCreatePool} />)}
+          refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onRefresh} />)}
           showsVerticalScrollIndicator={false}
         >
           <Form>
@@ -282,14 +271,18 @@ const CreatePool = ({
   );
 };
 
-CreatePool.defaultProps = {
+BTNCreatePool.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
+
+OTACreatePool.defaultProps = {
   error: ''
 };
 
-CreatePool.propTypes = {
+OTACreatePool.propTypes = {
   onInitCreatePool: PropTypes.func.isRequired,
   onFreeCreatePool: PropTypes.func.isRequired,
-  onCreateNewPool: PropTypes.func.isRequired,
+  createNewPoolTxsWithAccessToken: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   setLoading: PropTypes.func.isRequired,
   setError: PropTypes.func.isRequired,
@@ -297,13 +290,9 @@ CreatePool.propTypes = {
   error: PropTypes.string,
 };
 
-ButtonCreatePool.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
-
 export default compose(
   withLazy,
-  withLiquidity,
   withLayout_2,
-  withTransaction,
-)(memo(CreatePool));
+  withInitAccessOTALP,
+  withLPTransaction,
+)(memo(OTACreatePool));

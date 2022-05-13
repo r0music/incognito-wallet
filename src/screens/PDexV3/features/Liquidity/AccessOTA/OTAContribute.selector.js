@@ -1,13 +1,12 @@
-import {createSelector} from 'reselect';
-import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
-import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/redux/selectors/selectedPrivacy';
-import {listShareSelector} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
-import {sharedSelector} from '@src/redux/selectors';
-import {getPoolSize} from '@screens/PDexV3';
-import {getInputAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
+import { liquiditySelector } from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
+import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
+import { sharedSelector } from '@src/redux/selectors';
+import { getPoolSize } from '@screens/PDexV3';
+import { getInputAmount } from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import format from '@utils/format';
-import {formConfigsContribute} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
-import {nftTokenDataSelector} from '@src/redux/selectors/account';
+import { formConfigsContribute } from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
+import { createSelector } from 'reselect';
+import { accessOTAShareFormatedSelector } from '@screens/PDexV3/features/Portfolio';
 import BigNumber from 'bignumber.js';
 
 const contributeSelector = createSelector(
@@ -28,6 +27,23 @@ const statusSelector = createSelector(
 const poolDataSelector = createSelector(
   contributeSelector,
   ({ data }) => data,
+);
+
+const accessKeySelector = createSelector(
+  contributeSelector,
+  accessOTAShareFormatedSelector,
+  ({ accessID, poolId }, listOTAShare) => {
+    let _accessID = '';
+    if (accessID) {
+      _accessID = accessID;
+    } else {
+      const foundShare = listOTAShare.find((shareItem) => !!shareItem.share && shareItem.poolId === poolId);
+      if (foundShare) {
+        _accessID = foundShare.nftId;
+      }
+    }
+    return _accessID;
+  },
 );
 
 const tokenSelector = createSelector(
@@ -71,7 +87,7 @@ export const mappingDataSelector = createSelector(
   feeAmountSelector,
   inputAmountSelector,
   (
-    { data: poolData, nftId },
+    { data: poolData, accessID },
     getPrivacyDataByTokenID,
     { inputToken, outputToken },
     isGettingBalance,
@@ -79,7 +95,7 @@ export const mappingDataSelector = createSelector(
     inputAmount,
   ) => {
     if (!poolData || !inputToken || !outputToken) return {};
-    const { token1Value: token1PoolValue, token2Value: token2PoolValue, price, virtual1Value, virtual2Value } = poolData;
+    const { token1Value: token1PoolValue, token2Value: token2PoolValue, price, virtual1Value, virtual2Value  } = poolData;
     const poolSize = getPoolSize(inputToken, outputToken, token1PoolValue, token2PoolValue);
     const input = inputAmount(formConfigsContribute.formName, formConfigsContribute.inputToken);
     const output = inputAmount(formConfigsContribute.formName, formConfigsContribute.outputToken);
@@ -134,50 +150,47 @@ export const mappingDataSelector = createSelector(
       token1PoolValue,
       token2PoolValue,
       isLoadingBalance,
-      nftId,
+      accessID,
     };
-  }
-);
-
-export const nftTokenSelector = createSelector(
-  poolIDSelector,
-  nftTokenDataSelector,
-  contributeSelector,
-  listShareSelector,
-  (
-    poolId,
-    nftData,
-    { nftId },
-    listShare,
-  ) => {
-    const { nftToken } = nftData;
-    let res = {
-      nftToken,
-    };
-    if (nftId) {
-      res.nftToken = nftId;
-      return res;
-    }
-    if (listShare && listShare.length > 0) {
-      const pool = listShare.find(share => share.poolId === poolId);
-      if (pool && pool.nftId) {
-        res.nftToken = pool.nftId;
-      }
-    }
-    return res;
   }
 );
 
 export const disableContribute = createSelector(
   statusSelector,
   inputAmountSelector,
-  nftTokenSelector,
-  ( isFetching, inputAmount, nftData ) => {
-    const { nftToken } = nftData;
+  ( isFetching, inputAmount ) => {
     const { error: inputError } = inputAmount(formConfigsContribute.formName, formConfigsContribute.inputToken);
     const { error: outputError } = inputAmount(formConfigsContribute.formName, formConfigsContribute.outputToken);
-    const isDisabled = isFetching || !!inputError || !!outputError || !nftToken;
-    return { isDisabled, nftTokenAvailable: !!nftToken };
+    const isDisabled = isFetching || !!inputError || !!outputError;
+    return { isDisabled };
+  }
+);
+
+const compressParamsContribute = createSelector(
+  inputAmountSelector,
+  feeAmountSelector,
+  poolIDSelector,
+  mappingDataSelector,
+  accessKeySelector,
+  (inputAmount, feeSelector, poolId, { amp }, accessID) => {
+    const {
+      tokenId: tokenId1,
+      originalInputAmount: originalInputAmount1
+    } = inputAmount(formConfigsContribute.formName, formConfigsContribute.inputToken);
+    const {
+      tokenId: tokenId2,
+      originalInputAmount: originalInputAmount2
+    } = inputAmount(formConfigsContribute.formName, formConfigsContribute.outputToken);
+    return {
+      fee: feeSelector.feeAmount / 2,
+      tokenId1,
+      tokenId2,
+      amount1: String(originalInputAmount1),
+      amount2: String(originalInputAmount2),
+      poolPairID: poolId,
+      amp,
+      accessID: accessID,
+    };
   }
 );
 
@@ -190,6 +203,6 @@ export default ({
   feeAmountSelector,
   mappingDataSelector,
   inputAmountSelector,
-  nftTokenSelector,
   disableContribute,
+  compressParamsContribute,
 });

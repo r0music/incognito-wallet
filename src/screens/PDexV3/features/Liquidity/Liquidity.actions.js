@@ -1,17 +1,13 @@
 import {
-  contributeSelector,
   TYPES,
   formConfigsContribute,
   formConfigsCreatePool,
-  removePoolSelector,
   formConfigsRemovePool,
-  createPoolSelector
 } from '@screens/PDexV3/features/Liquidity';
 import { batch } from 'react-redux';
 import { getBalance } from '@src/redux/actions/token';
 import { ExHandler } from '@services/exception';
 import uniq from 'lodash/uniq';
-import { mappingDataSelector } from '@screens/PDexV3/features/Liquidity/Liquidity.contributeSelector';
 import { actionGetPDexV3Inst, calculateContributeValue, getPDexV3Instance, parseInputWithText } from '@screens/PDexV3';
 import { change } from 'redux-form';
 import { allTokensIDsSelector } from '@src/redux/selectors/token';
@@ -24,6 +20,7 @@ import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import { memoizedFilterTokenList } from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import { listPoolsPureSelector } from '@screens/PDexV3/features/Pools';
 import { debounce } from 'lodash';
+import { OTAContributeSelector, OTACreatePoolSelector, OTARemovePoolSelector } from '@screens/PDexV3/features/Liquidity/AccessOTA';
 
 /***
  *================================================================
@@ -59,10 +56,10 @@ const actionGetBalance = (tokenIDs = []) => async (dispatch) => {
 const actionInitContribute = () => async (dispatch, getState) => {
   try {
     const state = getState();
-    const isFetching = contributeSelector.statusSelector(state);
+    const isFetching = OTAContributeSelector.statusSelector(state);
     if (isFetching) return;
     dispatch(actionFetchingContribute({ isFetching: true }));
-    const poolID = contributeSelector.poolIDSelector(state);
+    const poolID = OTAContributeSelector.poolIDSelector(state);
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
     const poolDetails =(await pDexV3Inst.getListPoolsDetail([poolID])) || [];
@@ -89,7 +86,7 @@ const actionInitContribute = () => async (dispatch, getState) => {
 const actionChangeInputContribute = (newInput) => async (dispatch, getState) => {
   try {
     const state = getState();
-    const { inputToken, outputToken, token1PoolValue, token2PoolValue } = mappingDataSelector(state);
+    const { inputToken, outputToken, token1PoolValue, token2PoolValue } = OTAContributeSelector.mappingDataSelector(state);
     const inputValue = parseInputWithText({ text: newInput, token: inputToken });
     const outputText = calculateContributeValue({
       inputValue,
@@ -110,7 +107,7 @@ const actionChangeInputContribute = (newInput) => async (dispatch, getState) => 
 const actionChangeOutputContribute = (newOutput) => async (dispatch, getState) => {
   try {
     const state = getState();
-    const { inputToken, outputToken, token1PoolValue, token2PoolValue } = mappingDataSelector(state);
+    const { inputToken, outputToken, token1PoolValue, token2PoolValue } = OTAContributeSelector.mappingDataSelector(state);
     const outputValue = parseInputWithText({ text: newOutput, token: outputToken });
     const inputText = calculateContributeValue({
       inputValue: outputValue,
@@ -195,7 +192,7 @@ const asyncActionDebounced = (payload, closure) => (dispatch, getState) => (
 const actionSetCreatePoolText = (text) => async (dispatch, getState) => {
   try {
     const state = getState();
-    const field = createPoolSelector.focusFieldSelector(state);
+    const field = OTACreatePoolSelector.focusFieldSelector(state);
     dispatch(change(formConfigsCreatePool.formName, field, text));
   } catch (error) {
     new ExHandler(error).showErrorToast();
@@ -205,11 +202,11 @@ const actionSetCreatePoolText = (text) => async (dispatch, getState) => {
 const actionUpdateCreatePoolInputToken = (tokenId) => async (dispatch, getState) => {
   try {
     const state = getState();
-    const isFetching = createPoolSelector.isFetchingSelector(state);
+    const isFetching = OTACreatePoolSelector.isFetchingSelector(state);
     if (isFetching) return;
     dispatch(actionSetFetchingCreatePool({ isFetching: true }));
     const tokenIds = allTokensIDsSelector(state);
-    const { inputToken, outputToken } = createPoolSelector.tokenSelector(state);
+    const { inputToken, outputToken } = OTACreatePoolSelector.tokenSelector(state);
     const pools = listPoolsPureSelector(state);
     const newInputToken = tokenId;
     let newOutputToken = outputToken.tokenId;
@@ -241,10 +238,10 @@ const actionUpdateCreatePoolInputToken = (tokenId) => async (dispatch, getState)
 const actionUpdateCreatePoolOutputToken = (tokenId) => async (dispatch, getState) => {
   try {
     const state = getState();
-    const isFetching = createPoolSelector.isFetchingSelector(state);
+    const isFetching = OTACreatePoolSelector.isFetchingSelector(state);
     if (isFetching) return;
     dispatch(actionSetFetchingCreatePool({ isFetching: true }));
-    const { inputToken, outputToken } = createPoolSelector.tokenSelector(state);
+    const { inputToken, outputToken } = OTACreatePoolSelector.tokenSelector(state);
     const newOutputToken = tokenId;
     let newInputToken = inputToken.tokenId;
     if (newInputToken === outputToken.tokenId) {
@@ -270,10 +267,10 @@ const actionInitCreatePool = ({
 }) => async (dispatch, getState) => {
   try {
     const state = getState();
-    const isFetching = createPoolSelector.isFetchingSelector(state);
+    const isFetching = OTACreatePoolSelector.isFetchingSelector(state);
     if (isFetching) return;
     dispatch(actionSetFetchingCreatePool({ isFetching: true }));
-    const { inputToken, outputToken } = createPoolSelector.tokenSelector(state);
+    const { inputToken, outputToken } = OTACreatePoolSelector.tokenSelector(state);
     let newInputToken, newOutputToken;
     if (!inputToken && !outputToken) {
       newInputToken = tokenIDs[0];
@@ -318,7 +315,7 @@ const actionInitRemovePool = () => async (dispatch, getState) => {
   try {
     const state = getState();
     dispatch(actionFetchingRemovePool({ isFetching: true }));
-    const { inputToken, outputToken } = removePoolSelector.tokenSelector(state);
+    const { inputToken, outputToken } = OTARemovePoolSelector.tokenSelector(state);
     if (!inputToken || !outputToken) return;
     const tasks = [
       dispatch(actionFetchPortfolio()),
@@ -336,8 +333,8 @@ const actionInitRemovePool = () => async (dispatch, getState) => {
 const actionChangeInputRemovePool = (newText) => async (dispatch, getState) => {
   try {
     const state = getState();
-    const { inputToken, outputToken } = removePoolSelector.tokenSelector(state);
-    const maxShareData = removePoolSelector.maxShareAmountSelector(state);
+    const { inputToken, outputToken } = OTARemovePoolSelector.tokenSelector(state);
+    const maxShareData = OTARemovePoolSelector.maxShareAmountSelector(state);
     const {
       maxInputShare,
       maxOutputShare,
@@ -358,8 +355,8 @@ const actionChangeInputRemovePool = (newText) => async (dispatch, getState) => {
 const actionChangeOutputRemovePool = (newText) => async (dispatch, getState) => {
   try {
     const state = getState();
-    const { inputToken, outputToken } = removePoolSelector.tokenSelector(state);
-    const maxShareData = removePoolSelector.maxShareAmountSelector(state);
+    const { inputToken, outputToken } = OTARemovePoolSelector.tokenSelector(state);
+    const maxShareData = OTARemovePoolSelector.maxShareAmountSelector(state);
     const {
       maxInputShare,
       maxOutputShare,
@@ -380,7 +377,7 @@ const actionChangeOutputRemovePool = (newText) => async (dispatch, getState) => 
 const actionMaxRemovePool = () => async (dispatch, getState) => {
   try {
     const state = getState();
-    const maxShareData = removePoolSelector.maxShareAmountSelector(state);
+    const maxShareData = OTARemovePoolSelector.maxShareAmountSelector(state);
     const {
       maxInputShareStr,
       maxOutputShareStr,
@@ -397,8 +394,8 @@ const actionMaxRemovePool = () => async (dispatch, getState) => {
 const actionChangePercentRemovePool = (percent) => async (dispatch, getState) => {
   try {
     const state = getState();
-    const maxShareData = removePoolSelector.maxShareAmountSelector(state);
-    const { inputToken, outputToken } = removePoolSelector.tokenSelector(state);
+    const maxShareData = OTARemovePoolSelector.maxShareAmountSelector(state);
+    const { inputToken, outputToken } = OTARemovePoolSelector.tokenSelector(state);
     const {
       maxInputHuman,
       maxOutputHuman,

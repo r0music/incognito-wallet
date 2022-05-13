@@ -1,19 +1,15 @@
-import {createSelector} from 'reselect';
-import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
-import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/redux/selectors/selectedPrivacy';
-import {
-  getDataByShareIdSelector,
-} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
-import {sharedSelector} from '@src/redux/selectors';
-import {getInputShareAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
+import { createSelector } from 'reselect';
+import { liquiditySelector } from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
+import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
+import { getDataByShareIdSelector } from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
+import { sharedSelector } from '@src/redux/selectors';
+import { getInputShareAmount } from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import BigNumber from 'bignumber.js';
 import format from '@utils/format';
 import convert from '@utils/convert';
-import {formConfigsRemovePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
-import {getValidRealAmountNFTSelector} from '@src/redux/selectors/account';
-import {
-  ACCOUNT_CONSTANT,
-} from 'incognito-chain-web-js/build/wallet';
+import { formConfigsRemovePool } from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
+import { getValidRealAmountNFTSelector } from '@src/redux/selectors/account';
+import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 
 const removePoolSelector = createSelector(
   liquiditySelector,

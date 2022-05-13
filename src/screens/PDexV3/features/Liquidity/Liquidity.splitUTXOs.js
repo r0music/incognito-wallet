@@ -3,7 +3,6 @@ import accountService from '@services/wallet/accountService';
 import {
   ACCOUNT_CONSTANT,
   PrivacyVersion,
-  PRVIDSTR
 } from 'incognito-chain-web-js/build/wallet';
 import { useSelector } from 'react-redux';
 import { walletSelector } from '@src/redux/selectors/wallet';
@@ -16,8 +15,8 @@ import { useNavigation } from 'react-navigation-hooks';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import { ExHandler } from '@services/exception';
 
-
-const useSendSelf = ({ error, setLoading, setError }) => {
+// User have 1 UTXO PRV, can't create 2 transaction 1 time
+const useSplitUTXOs = ({ error, setLoading, setError }) => {
   const wallet = useSelector(walletSelector);
   const account = useSelector(defaultAccountSelector);
   const navigation = useNavigation();
@@ -84,4 +83,4 @@ const useSendSelf = ({ error, setLoading, setError }) => {
   }, [error]);
 };
 
-export default useSendSelf;
+export default useSplitUTXOs;

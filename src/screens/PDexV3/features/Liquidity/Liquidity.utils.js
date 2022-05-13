@@ -1,4 +1,4 @@
-import {formValueSelector} from 'redux-form';
+import { formValueSelector } from 'redux-form';
 // eslint-disable-next-line import/no-cycle
 import convert from '@utils/convert';
 // eslint-disable-next-line import/no-cycle

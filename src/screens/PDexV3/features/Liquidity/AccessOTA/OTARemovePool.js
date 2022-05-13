@@ -8,7 +8,6 @@ import {
   LIQUIDITY_MESSAGES,
   SUCCESS_MODAL,
 } from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
-import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
 import {
   createForm,
   RFTradeInputAmount as TradeInputAmount,
@@ -18,19 +17,16 @@ import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import { Field } from 'redux-form';
 import { AddBreakLine, View } from '@components/core';
 import { batch, useDispatch, useSelector } from 'react-redux';
-import {
-  liquidityActions,
-  removePoolSelector,
-} from '@screens/PDexV3/features/Liquidity/index';
+import { liquidityActions } from '@screens/PDexV3/features/Liquidity';
 import { ButtonTrade } from '@components/Button';
 import { compose } from 'recompose';
-import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
 import { useNavigation } from 'react-navigation-hooks';
 import NetworkFee from '@src/components/NetworkFee';
 import { withLayout_2 } from '@components/Layout';
 import withLazy from '@components/LazyHoc/LazyHoc';
-import withInitAccessOTALP from '@screens/PDexV3/features/Liquidity/features/AccessOTA/AccessOTA.enhance';
+import withInitAccessOTALP from '@screens/PDexV3/features/Liquidity/AccessOTA/AccessOTA.enhance';
 import withLPTransaction from '@screens/PDexV3/features/Share/Share.transactorLP';
+import { OTARemovePoolSelector } from '@screens/PDexV3/features/Liquidity/AccessOTA';
 
 const initialFormValues = {
   inputToken: '',
@@ -45,7 +41,7 @@ const Form = createForm(formConfigsRemovePool.formName, {
 
 const InputsGroup = () => {
   const dispatch = useDispatch();
-  const inputAmount = useSelector(removePoolSelector.inputAmountSelector);
+  const inputAmount = useSelector(OTARemovePoolSelector.inputAmountSelector);
   const inputToken = inputAmount(
     formConfigsRemovePool.formName,
     formConfigsRemovePool.inputToken,
@@ -98,11 +94,11 @@ const InputsGroup = () => {
 };
 
 const BTNRemovePool = React.memo(({ onSubmit }) => {
-  const { disabled } = useSelector(removePoolSelector.disableRemovePool);
+  const { disabled } = useSelector(OTARemovePoolSelector.disableRemovePool);
   const {
     params,
     versionTx
-  } = useSelector(removePoolSelector.compressRemovePoolParams);
+  } = useSelector(OTARemovePoolSelector.compressRemovePoolParams);
   const handleSubmit = () => {
     if (disabled) return;
     onSubmit(params, versionTx);
@@ -125,8 +121,8 @@ const RemovePool = ({
   error,
 }) => {
   const navigation = useNavigation();
-  const isFetching = useSelector(removePoolSelector.isFetchingSelector);
-  const { feeAmountStr, showFaucet } = useSelector(removePoolSelector.feeAmountSelector);
+  const isFetching = useSelector(OTARemovePoolSelector.isFetchingSelector);
+  const { feeAmountStr, showFaucet } = useSelector(OTARemovePoolSelector.feeAmountSelector);
   const onSubmit = (params, versionTx) => {
     typeof createAndSendWithdrawContributeRequestTx === 'function'
     && createAndSendWithdrawContributeRequestTx(params, versionTx);

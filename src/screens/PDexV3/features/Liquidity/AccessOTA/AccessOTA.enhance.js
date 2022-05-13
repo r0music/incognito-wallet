@@ -1,7 +1,7 @@
 import React from 'react';
-import ErrorBoundary from '@src/components/ErrorBoundary';
+import ErrorBoundary from '@components/ErrorBoundary';
 import { useDispatch } from 'react-redux';
-import { liquidityActions } from '@screens/PDexV3/features/Liquidity/index';
+import { liquidityActions } from '@screens/PDexV3/features/Liquidity';
 import debounce from 'lodash/debounce';
 import { actionRefresh } from '@screens/PDexV3/features/Home';
 import throttle from 'lodash/throttle';
