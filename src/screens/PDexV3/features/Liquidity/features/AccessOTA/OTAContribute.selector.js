@@ -7,6 +7,7 @@ import format from '@utils/format';
 import { formConfigsContribute } from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import { createSelector } from 'reselect';
 import { accessOTAShareFormatedSelector } from '@screens/PDexV3/features/Portfolio';
+import BigNumber from 'bignumber.js';
 
 const contributeSelector = createSelector(
   liquiditySelector,
@@ -94,7 +95,7 @@ export const mappingDataSelector = createSelector(
     inputAmount,
   ) => {
     if (!poolData || !inputToken || !outputToken) return {};
-    const { token1Value: token1PoolValue, token2Value: token2PoolValue } = poolData;
+    const { token1Value: token1PoolValue, token2Value: token2PoolValue, price, virtual1Value, virtual2Value  } = poolData;
     const poolSize = getPoolSize(inputToken, outputToken, token1PoolValue, token2PoolValue);
     const input = inputAmount(formConfigsContribute.formName, formConfigsContribute.inputToken);
     const output = inputAmount(formConfigsContribute.formName, formConfigsContribute.outputToken);
@@ -103,10 +104,34 @@ export const mappingDataSelector = createSelector(
       || isGettingBalance.includes(outputToken?.tokenId)
       || isGettingBalance.includes(feeToken?.tokenId);
 
+    // Calculator current price
+    let currentPrice = format.amountVer2(price, 0);
+    let currentPriceStr = `1 ${input.symbol} = ${currentPrice} ${output.symbol}`;
+
+    // Ratio
+    let token1Ratio = new BigNumber(token1PoolValue)
+      .div(new BigNumber(token1PoolValue)
+        .plus(new BigNumber(token2PoolValue)
+          .div(new BigNumber(virtual2Value)
+            .div(virtual1Value))))
+      .multipliedBy(100).toFixed(2);
+    let token2Ratio = new BigNumber(100).minus(token1Ratio);
+    token1Ratio = format.amountVer2(token1Ratio, 0);
+    token2Ratio = format.amountVer2(token2Ratio.toString(), 0);
+    const poolRatioStr = `${token1Ratio}% ${input.symbol} - ${token2Ratio}% ${output.symbol}`;
+
     const hookFactories = [
       {
         label: 'Pool size',
         value: poolSize,
+      },
+      {
+        label: 'Current price',
+        value: currentPriceStr,
+      },
+      {
+        label: 'Pool ratio',
+        value: poolRatioStr
       },
       {
         label: `${input.symbol} Balance`,

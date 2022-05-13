@@ -18,6 +18,7 @@ import memoize from 'lodash/memoize';
 import { getExchangeRate, getPairRate, getPoolSize } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
 import isEqual from 'lodash/isEqual';
+import { isEmpty } from 'lodash';
 import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
@@ -964,8 +965,12 @@ export const mappingOrderHistorySelector = createSelector(
         amountOut,
         statusCode,
         minAccept,
+        respondAmounts,
       } = order;
       let statusStr = capitalize(status);
+      if (!isEmpty(respondAmounts) && statusCode === ACCOUNT_CONSTANT.PDEX_TX_STATUS_CODE.TXSTATUS_SUCCESS) {
+        amountOut = respondAmounts[0];
+      }
       amountOut = parseInt(amountOut);
       minAccept = parseInt(minAccept);
       if (fromStorage) {
