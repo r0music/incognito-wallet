@@ -1,21 +1,25 @@
-import includes from 'lodash/includes';
-import toLower from 'lodash/toLower';
 import convert from '@utils/convert';
 import format from '@utils/format';
+import Fuse from 'fuse.js';
+import toLower from 'lodash/toLower';
 
 export const handleFilterTokenByKeySearch = ({ tokens, keySearch }) => {
-  let _keySearch = toLower(keySearch);
-  return tokens.filter((token) => {
-    return (
-      includes(toLower(token?.displayName), _keySearch) ||
-      includes(toLower(token?.name), _keySearch) ||
-      includes(toLower(token?.symbol), _keySearch) ||
-      includes(toLower(token?.pSymbol), _keySearch) ||
-      includes(toLower(token?.networkName), _keySearch) ||
-      includes(toLower(token?.contractId), _keySearch) ||
-      includes(toLower(token?.tokenId), _keySearch)
-    );
-  });
+  let _keySearch = toLower(keySearch?.trim());
+  const options = {
+    includeScore: false,
+    keys: [
+      'displayName',
+      'name',
+      'networkName',
+      'symbol',
+      'pSymbol',
+      'contractId',
+      'tokenId',
+    ],
+  };
+  const fuse = new Fuse(tokens, options);
+  const result = fuse.search(_keySearch).map((result) => result.item);
+  return result;
 };
 
 export const formatPrice = (price, toNumber = false) => {

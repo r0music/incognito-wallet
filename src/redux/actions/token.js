@@ -219,9 +219,9 @@ export const actionAddFollowToken = (tokenID) => async (dispatch, getState) => {
     const OTAKey = account.OTAKey;
     const wallet = walletSelector(state);
     dispatch(FollowAction.actionUpdateTokenList({ newTokens: newFollowTokens, OTAKey }));
-    await accountService.addFollowingTokens([{ tokenID }], account, wallet);
+    accountService.addFollowingTokens([{ tokenID }], account, wallet);
     dispatch(setWallet(wallet));
-    await dispatch(FollowAction.actionLoadFollowBalance());
+    dispatch(FollowAction.actionLoadFollowBalance());
   } catch (error) {
     dispatch(actionAddFollowTokenFail(tokenID));
     throw error;
