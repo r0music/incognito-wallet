@@ -22,7 +22,7 @@ const PortfolioReward = React.memo(({ createAndSendWithdrawLPFee }) => {
 
   const listShareRewardID = React.useMemo(() => {
     if (!data) return [];
-    return orderBy(data, 'totalRewardAmount', 'desc').filter(item => item.withdrawable).map(({ shareId }) => shareId);
+    return orderBy(data, 'totalRewardAmount', 'desc').filter(item => item.haveRewards).map(({ shareId }) => shareId);
   }, [data]);
 
   const handleWithdrawFee = ({ poolId, shareId }) => {

@@ -141,7 +141,7 @@ const formatPureData = (poolShare, shareDetails, getPrivacyDataByTokenID) => {
     ...hookLPRewards,
     ...hookOrderRewards,
   ];
-
+  const haveRewards = withdrawable;
   let _withdrawable = withdrawable;
   if (versionTx === ACCOUNT_CONSTANT.PDEX_TRANSACTION_TYPE.ACCESS_ID) {
     _withdrawable = !isEmpty(mapLPRewards);
@@ -164,6 +164,7 @@ const formatPureData = (poolShare, shareDetails, getPrivacyDataByTokenID) => {
     hookFactoriesDetail,
     withdrawing,
     withdrawable: _withdrawable,
+    haveRewards,
     nftId,
     poolId,
     mapLPRewards,
