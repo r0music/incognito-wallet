@@ -16,24 +16,6 @@ import { actionFetch } from '@screens/PDexV3/features/Portfolio/Portfolio.action
 import { EmptyBookIcon } from '@components/Icons';
 
 export const styles = StyleSheet.create({
-  title: {
-    ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 10,
-    marginRight: 4,
-  },
-  group: {
-    marginTop: 8
-  },
-  wrapArrow: {
-    width: 16,
-    height: 16,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  child: {
-    marginTop: 16
-  },
   wrapTap: {
     marginTop: 12,
     backgroundColor: 'transparent',
@@ -68,9 +50,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 24,
     flex: 1
   },
-  fullFlex: {
-    flex: 1
-  }
 });
 
 const Portfolio = React.memo(({ createAndSendWithdrawLPFee }) => {
@@ -100,9 +79,9 @@ const Portfolio = React.memo(({ createAndSendWithdrawLPFee }) => {
         onWithdrawFeeLP={handleWithdrawFee}
       />
     );
-  }, []);
+  }, [handleWithdrawFee, onCompressParamsWithdrawFee]);
 
-  const NFTShareSection = React.useMemo(() => {
+  const renderNFTShare = () => {
     return (
       <FlatList
         refreshControl={
@@ -118,9 +97,9 @@ const Portfolio = React.memo(({ createAndSendWithdrawLPFee }) => {
         }
       />
     );
-  }, [nftShareIDs.length]);
+  };
 
-  const AccessOTAShareSection = React.useMemo(() => {
+  const renderAccessOTAShare = () => {
     return (
       <FlatList
         refreshControl={
@@ -136,7 +115,7 @@ const Portfolio = React.memo(({ createAndSendWithdrawLPFee }) => {
         }
       />
     );
-  }, [accessOTAShareIDs.length]);
+  };
 
   return (
     <Tabs
@@ -153,7 +132,7 @@ const Portfolio = React.memo(({ createAndSendWithdrawLPFee }) => {
         titleStyled={styles.titleStyled}
         titleDisabledStyle={styles.titleDisabledStyle}
       >
-        {AccessOTAShareSection}
+        {renderAccessOTAShare()}
       </View>
       <View
         tabID="TAB-PORTFOLIO-DETAIL-ACCESS-NFT"
@@ -163,7 +142,7 @@ const Portfolio = React.memo(({ createAndSendWithdrawLPFee }) => {
         titleStyled={styles.titleStyled}
         titleDisabledStyle={styles.titleDisabledStyle}
       >
-        {NFTShareSection}
+        {renderNFTShare()}
       </View>
     </Tabs>
   );

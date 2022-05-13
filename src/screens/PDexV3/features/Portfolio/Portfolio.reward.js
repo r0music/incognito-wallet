@@ -31,7 +31,7 @@ const PortfolioReward = React.memo(({ createAndSendWithdrawLPFee }) => {
     createAndSendWithdrawLPFee(params, versionTx);
   };
 
-  const renderItem = React.useCallback(({ item }) => {
+  const renderItem = ({ item }) => {
     return (
       <PortfolioItem
         shareId={item}
@@ -40,7 +40,7 @@ const PortfolioReward = React.memo(({ createAndSendWithdrawLPFee }) => {
         onWithdrawFeeLP={handleWithdrawFee}
       />
     );
-  }, [createAndSendWithdrawLPFee]);
+  };
 
   const keyExtractor = React.useCallback((item) => item?.id, []);
 

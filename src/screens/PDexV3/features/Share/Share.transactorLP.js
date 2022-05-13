@@ -94,6 +94,7 @@ const withLPTransaction = WrappedComp => props => {
 
   const createAndSendWithdrawLPFee = async (params, versionTx) => {
     if (loading) return;
+    console.log('params:::: ', params);
     try {
       setLoading(true);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
