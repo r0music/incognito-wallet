@@ -7,8 +7,7 @@ import {
   TokenBasic as Token,
   ListAllToken2,
   TokenFollow,
-  handleFilterTokenByKeySearch,
-} from '@src/components/Token';
+ handleFilterTokenByKeySearch } from '@src/components/Token';
 
 import PropTypes from 'prop-types';
 import routeNames from '@src/router/routeNames';
@@ -17,7 +16,11 @@ import { FONT } from '@src/styles';
 import AddSolidIcon from '@components/Icons/icon.addSolid';
 import { availableTokensSelector } from '@src/redux/selectors/shared';
 import {isEmpty} from 'lodash';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  actionAddFollowToken,
+  actionRemoveFollowToken,
+} from '@src/redux/actions/token';
 import { styled } from './FollowToken.styled';
 
 const AddManually = () => {
@@ -55,7 +58,20 @@ export const Item = ({ item, handleToggleFollowToken }) =>
 
 const FollowTokenList = React.memo((props) => {
   console.log(props);
-  const { handleToggleFollowToken } = props;
+
+  const dispatch = useDispatch();
+
+  const handleToggleFollowToken = async (token) => {
+    try {
+      if (!token?.isFollowed) {
+        dispatch(actionAddFollowToken(token?.tokenId));
+      } else {
+        dispatch(actionRemoveFollowToken(token?.tokenId));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const availableTokens =
     props?.availableTokens || useSelector(availableTokensSelector);
