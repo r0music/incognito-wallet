@@ -221,7 +221,6 @@ export const actionAddFollowToken = (tokenID) => async (dispatch, getState) => {
     dispatch(FollowAction.actionUpdateTokenList({ newTokens: newFollowTokens, OTAKey }));
     accountService.addFollowingTokens([{ tokenID }], account, wallet);
     dispatch(setWallet(wallet));
-    dispatch(FollowAction.actionLoadFollowBalance());
   } catch (error) {
     dispatch(actionAddFollowTokenFail(tokenID));
     throw error;
@@ -275,9 +274,8 @@ export const actionRemoveFollowToken = (tokenId) => async (
     const OTAKey = account.OTAKey;
     const wallet = walletSelector(state);
     dispatch(FollowAction.actionUpdateTokenList({ newTokens: newFollowTokens, OTAKey }));
-    await accountService.removeFollowingToken(tokenId, account, wallet);
+    accountService.removeFollowingToken(tokenId, account, wallet);
     dispatch(setWallet(wallet));
-    await dispatch(FollowAction.actionLoadFollowBalance());
   } catch (error) {
     dispatch(actionAddFollowTokenFail(tokenId));
     throw error;
