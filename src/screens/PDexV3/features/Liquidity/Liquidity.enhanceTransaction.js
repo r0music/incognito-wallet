@@ -92,6 +92,7 @@ const withTransaction = WrappedComp => props => {
           token_id1: poolTokenIDs[0],
           token_id2: poolTokenIDs[1],
           share_amount: shareAmount,
+          pool_pair_id: poolPairID
         }));
       }, 300);
       onShowSuccess();

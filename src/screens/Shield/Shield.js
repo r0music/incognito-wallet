@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import Header from '@src/components/Header';
 import { BtnQuestionDefault } from '@src/components/Button';
 import PropTypes from 'prop-types';
-import {ListAllToken2, TokenFollow, handleFilterTokenByKeySearch } from '@src/components/Token';
+import {
+  ListAllToken2,
+  TokenFollow,
+  handleFilterTokenByKeySearch,
+} from '@src/components/Token';
 import { View } from '@components/core';
 import globalStyled from '@src/theme/theme.styled';
 import { FONT } from '@src/styles';
@@ -10,46 +14,44 @@ import { compose } from 'recompose';
 import withLazy from '@components/LazyHoc/LazyHoc';
 import { isEmpty } from 'lodash';
 import { useFuse } from '@components/Hoc/useFuse';
-
 import { styled } from './Shield.styled';
 import withShield from './Shield.enhance';
 
 const Shield = (props) => {
-  const { handleShield, handleWhyShield, hideBackButton, availableTokens } = props;
-  
-   // Get list verifiedToken list unVerifiedTokens from list all token
-   const _verifiedTokens = availableTokens?.filter(
-     (token) => token?.isVerified,
-   );
-   const _unVerifiedTokens = availableTokens?.filter(
-     (token) => !token.isVerified,
-   );
+  const { handleShield, handleWhyShield, hideBackButton, availableTokens } =
+    props;
 
-   const [showUnVerifiedTokens, setShowUnVerifiedTokens] = useState(false);
+  // Get list verifiedToken list unVerifiedTokens from list all token
+  const _verifiedTokens = availableTokens?.filter((token) => token?.isVerified);
+  const _unVerifiedTokens = availableTokens?.filter(
+    (token) => !token.isVerified,
+  );
 
-   const onSetShowUnVerifiedTokens = () => {
-     setShowUnVerifiedTokens(!showUnVerifiedTokens);
-   };
+  const [showUnVerifiedTokens, setShowUnVerifiedTokens] = useState(false);
 
-   const [verifiedTokens, onSearchVerifiedTokens] = useFuse(_verifiedTokens, {
-     keys: ['displayName', 'name', 'symbol', 'pSymbol'],
-     includeMatches: true,
-     matchAllOnEmptyQuery: true,
-   });
+  const onSetShowUnVerifiedTokens = () => {
+    setShowUnVerifiedTokens(!showUnVerifiedTokens);
+  };
 
-   const [unVerifiedTokens, onSearchUnVerifiedTokens] = useFuse(
-     _unVerifiedTokens,
-     {
-       keys: ['displayName', 'name', 'symbol', 'pSymbol'],
-       includeMatches: true,
-       matchAllOnEmptyQuery: true,
-     },
-   );
+  const [verifiedTokens, onSearchVerifiedTokens] = useFuse(_verifiedTokens, {
+    keys: ['displayName', 'name', 'symbol', 'pSymbol'],
+    includeMatches: true,
+    matchAllOnEmptyQuery: true,
+  });
 
-   let tokens = [verifiedTokens];
-   if (showUnVerifiedTokens) {
-     tokens = [verifiedTokens, unVerifiedTokens];
-   }
+  const [unVerifiedTokens, onSearchUnVerifiedTokens] = useFuse(
+    _unVerifiedTokens,
+    {
+      keys: ['displayName', 'name', 'symbol', 'pSymbol'],
+      includeMatches: true,
+      matchAllOnEmptyQuery: true,
+    },
+  );
+
+  let tokens = [verifiedTokens];
+  if (showUnVerifiedTokens) {
+    tokens = [verifiedTokens, unVerifiedTokens];
+  }
 
   return (
     <>
@@ -93,17 +95,14 @@ const Shield = (props) => {
 };
 
 Shield.defaultProps = {
-  hideBackButton: false
+  hideBackButton: false,
 };
 
 Shield.propTypes = {
   handleWhyShield: PropTypes.func.isRequired,
   handleShield: PropTypes.func.isRequired,
   tokensFactories: PropTypes.array.isRequired,
-  hideBackButton: PropTypes.bool
+  hideBackButton: PropTypes.bool,
 };
 
-export default compose(
-  withLazy,
-  withShield
-)(Shield);
+export default compose(withLazy, withShield)(Shield);
