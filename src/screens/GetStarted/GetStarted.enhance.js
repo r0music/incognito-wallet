@@ -21,6 +21,7 @@ import {actionFetch as actionFetchHomeConfigs} from '@screens/Home/Home.actions'
 import {actionCheckUnreadNews} from '@screens/News';
 import { actionFetchPairs } from '@screens/PDexV3/features/Swap';
 import { setTokenHeader } from '@services/http';
+import withHCaptcha from '@screens/GetStarted/GetStarted.enhanceCaptcha';
 import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
 import withWizard from './GetStarted.enhanceWizard';
 import withWelcome from './GetStarted.enhanceWelcome';
@@ -132,6 +133,7 @@ export default compose(
   withDetectStatusNetwork,
   withWizard,
   withPin,
+  withHCaptcha,
   withWelcome,
   enhance,
 );
