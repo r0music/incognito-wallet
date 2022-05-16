@@ -17,7 +17,7 @@ import { availableTokensSelector } from '@src/redux/selectors/shared';
 import routeNames from '@src/router/routeNames';
 import { FONT } from '@src/styles';
 import globalStyled from '@src/theme/theme.styled';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { withLayout_2 } from '@src/components/Layout';
@@ -61,19 +61,9 @@ export const Item = ({ item, handleToggleFollowToken }) =>
 const FollowTokenList = React.memo((props) => {
   const dispatch = useDispatch();
 
-  const handleToggleFollowToken = async (token) => {
-    try {
-      if (!token?.isFollowed) {
-        dispatch(actionAddFollowToken(token?.tokenId));
-      } else {
-        dispatch(actionRemoveFollowToken(token?.tokenId));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const _availableTokens = useSelector(availableTokensSelector);
 
-  const availableTokens = useSelector(availableTokensSelector);
+  const [availableTokens, setAvailableTokens] = useState(_availableTokens);
 
   // Get list verifiedToken list unVerifiedTokens from list all token
   const _verifiedTokens = availableTokens?.filter((token) => token?.isVerified);
@@ -86,7 +76,7 @@ const FollowTokenList = React.memo((props) => {
   const onSetShowUnVerifiedTokens = () => {
     setShowUnVerifiedTokens(!showUnVerifiedTokens);
   };
-
+  
   const [verifiedTokens, onSearchVerifiedTokens] = useFuse(_verifiedTokens, {
     keys: ['displayName', 'name', 'symbol', 'pSymbol'],
     includeMatches: true,
@@ -106,6 +96,26 @@ const FollowTokenList = React.memo((props) => {
   if (showUnVerifiedTokens) {
     tokens = [verifiedTokens, unVerifiedTokens];
   }
+
+   const handleToggleFollowToken = async (token) => {
+     const tokenIndex = availableTokens.findIndex(
+       (t) => t?.tokenId === token?.tokenId,
+     );
+     let tokens = [...availableTokens];
+     try {
+       if (!token?.isFollowed) {
+         tokens[tokenIndex].isFollowed = true;
+         setAvailableTokens(tokens);
+         dispatch(actionAddFollowToken(token?.tokenId));
+       } else {
+         tokens[tokenIndex].isFollowed = false;
+         setAvailableTokens(tokens);
+         dispatch(actionRemoveFollowToken(token?.tokenId));
+       }
+     } catch (error) {
+       console.log(error);
+     }
+   };
 
   return (
     <View2 style={styled.container}>
