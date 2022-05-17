@@ -209,18 +209,18 @@ export const actionAddFollowTokenSuccess = (payload) => ({
 export const actionAddFollowToken = (tokenID) => async (dispatch, getState) => {
   try {
     const state = getState();
-    const followTokens = FollowSelector.followTokensWalletSelector(state) || [];
-    const newFollowTokens = followTokens.concat([{
-      id: tokenID,
-      amount: 0,
-      loading: false
-    }]);
+    // const followTokens = FollowSelector.followTokensWalletSelector(state) || [];
+    // const newFollowTokens = followTokens.concat([{
+    //   id: tokenID,
+    //   amount: 0,
+    //   loading: false
+    // }]);
     const account = accountSelector.defaultAccountSelector(state);
-    const OTAKey = account.OTAKey;
+    // const OTAKey = account.OTAKey;
     const wallet = walletSelector(state);
-    dispatch(FollowAction.actionUpdateTokenList({ newTokens: newFollowTokens, OTAKey }));
+    // dispatch(FollowAction.actionUpdateTokenList({ newTokens: newFollowTokens, OTAKey }));
     accountService.addFollowingTokens([{ tokenID }], account, wallet);
-    dispatch(setWallet(wallet));
+    // dispatch(setWallet(wallet));
   } catch (error) {
     dispatch(actionAddFollowTokenFail(tokenID));
     throw error;
@@ -267,15 +267,15 @@ export const actionRemoveFollowToken = (tokenId) => async (
     return;
   }
   try {
-    const followTokens = FollowSelector.followTokensWalletSelector(state) || [];
-    const newFollowTokens = followTokens.filter(
-      ({ id }) => id !== tokenId);
+    // const followTokens = FollowSelector.followTokensWalletSelector(state) || [];
+    // const newFollowTokens = followTokens.filter(
+    //   ({ id }) => id !== tokenId);
     const account = accountSelector.defaultAccountSelector(state);
-    const OTAKey = account.OTAKey;
+    // const OTAKey = account.OTAKey;
     const wallet = walletSelector(state);
-    dispatch(FollowAction.actionUpdateTokenList({ newTokens: newFollowTokens, OTAKey }));
+    // dispatch(FollowAction.actionUpdateTokenList({ newTokens: newFollowTokens, OTAKey }));
     accountService.removeFollowingToken(tokenId, account, wallet);
-    dispatch(setWallet(wallet));
+    // dispatch(setWallet(wallet));
   } catch (error) {
     dispatch(actionAddFollowTokenFail(tokenId));
     throw error;
