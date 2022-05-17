@@ -79,16 +79,32 @@ const FollowTokenList = React.memo((props) => {
   
   const [verifiedTokens, onSearchVerifiedTokens] = useFuse(_verifiedTokens, {
     keys: ['displayName', 'name', 'symbol', 'pSymbol'],
-    includeMatches: true,
     matchAllOnEmptyQuery: true,
+    isCaseSensitive: false,
+    findAllMatches: true,
+    includeMatches: false,
+    includeScore: true,
+    useExtendedSearch: false,
+    threshold: 0.4,
+    location: 0,
+    distance: 2,
+    maxPatternLength: 32,
   });
 
   const [unVerifiedTokens, onSearchUnVerifiedTokens] = useFuse(
     _unVerifiedTokens,
     {
       keys: ['displayName', 'name', 'symbol', 'pSymbol'],
-      includeMatches: true,
       matchAllOnEmptyQuery: true,
+      isCaseSensitive: false,
+      findAllMatches: true,
+      includeMatches: false,
+      includeScore: true,
+      useExtendedSearch: false,
+      threshold: 0.4,
+      location: 0,
+      distance: 2,
+      maxPatternLength: 32,
     },
   );
 

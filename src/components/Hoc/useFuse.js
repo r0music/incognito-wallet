@@ -25,7 +25,7 @@ export const useFuse = (list, options) => {
   );
 
   // debounce updateQuery and rename it `setQuery` so it's transparent
-  const setQuery = useCallback(debounce(updateQuery, 100), []);
+  const setQuery = useCallback(updateQuery, []);
 
   // pass a handling helper to speed up implementation
   const onSearch = useCallback((value) => setQuery(value?.trim()), [setQuery]);
