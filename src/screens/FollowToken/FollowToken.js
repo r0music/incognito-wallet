@@ -97,25 +97,25 @@ const FollowTokenList = React.memo((props) => {
     tokens = [verifiedTokens, unVerifiedTokens];
   }
 
-   const handleToggleFollowToken = async (token) => {
-     const tokenIndex = availableTokens.findIndex(
-       (t) => t?.tokenId === token?.tokenId,
-     );
-     let tokens = [...availableTokens];
-     try {
-       if (!token?.isFollowed) {
-         tokens[tokenIndex].isFollowed = true;
-         setAvailableTokens(tokens);
-         dispatch(actionAddFollowToken(token?.tokenId));
-       } else {
-         tokens[tokenIndex].isFollowed = false;
-         setAvailableTokens(tokens);
-         dispatch(actionRemoveFollowToken(token?.tokenId));
-       }
-     } catch (error) {
-       console.log(error);
-     }
-   };
+  const handleToggleFollowToken = async (token) => {
+    const tokenIndex = availableTokens.findIndex(
+      (t) => t?.tokenId === token?.tokenId,
+    );
+    let tokens = [...availableTokens];
+    try {
+      if (!token?.isFollowed) {
+        tokens[tokenIndex].isFollowed = true;
+        setAvailableTokens(tokens);
+        dispatch(actionAddFollowToken(token?.tokenId));
+      } else {
+        tokens[tokenIndex].isFollowed = false;
+        setAvailableTokens(tokens);
+        dispatch(actionRemoveFollowToken(token?.tokenId));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View2 style={styled.container}>
