@@ -53,6 +53,7 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress, showInf
                   <BtnInfo
                     tokenId={tokenId}
                     style={styles.btnInfo}
+                    version={2}
                   />
                 )}
               </Row>

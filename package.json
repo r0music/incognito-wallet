@@ -35,7 +35,7 @@
     "postinstall": "npx patch-package && ./node_modules/.bin/rn-nodeify --install crypto,stream,vm --hack && npx rn-nodeify --install && npx jetify",
     "devtools": "react-devtools",
     "deployIOS:prod": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.18\" -d Production -x",
-    "deployIOS:staging": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.18\" -d Staging -m",
+    "deployIOS:staging": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.17\" -d Staging -m",
     "deployIOS:next": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.18\" -d NextRelease -m",
     "deployIOS:next2": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.18\" -d NextRelease2",
     "deployIOS:next3": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.17\" -d NextRelease3",
