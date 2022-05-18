@@ -109,7 +109,7 @@ export const detectTokenInNetwork = ({ address, network }) => {
     fn = detectBEP20Token(address);
     break;
   case 'POLYGON':
-    detectPolygonToken(address);
+    fn = detectPolygonToken(address);
     break;
   case 'FANTOM':
     fn = detectFantomToken(address);
