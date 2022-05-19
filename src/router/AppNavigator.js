@@ -38,7 +38,7 @@ const AppNavigator = createStackNavigator(
         headerTitleAlign: 'center',
         headerTitleStyle: { alignSelf: 'center', textAlign: 'center' },
         headerBackground: THEME.header.backgroundColor,
-        gesturesEnabled: false,
+        gesturesEnabled: true,
       };
     },
   },
