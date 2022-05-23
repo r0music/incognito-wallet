@@ -63,7 +63,6 @@ export default StyleSheet.create({
     bottom: 0,
     paddingBottom: BOTTOM_BAR_PADDING_BOTTOM,
     paddingTop: 10,
-    backgroundColor: COLORS.white
   },
   row: {
     flexDirection: 'row'

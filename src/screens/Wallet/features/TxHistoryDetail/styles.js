@@ -28,7 +28,6 @@ export default StyleSheet.create({
   },
   valueText: {
     fontFamily: FONT.NAME.bold,
-    color: COLORS.black,
     fontSize: 15,
     lineHeight: 18,
     textAlign: 'left',

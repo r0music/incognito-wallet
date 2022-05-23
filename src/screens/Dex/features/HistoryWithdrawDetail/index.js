@@ -1,5 +1,4 @@
 import React from 'react';
-import { ScrollView, View } from 'react-native';
 import PropTypes from 'prop-types';
 import withHistory from '@screens/Dex/features/HistoryContributeDetail/enhance';
 import {Header} from '@src/components';
@@ -10,6 +9,9 @@ import { selectedPrivacySelector } from '@src/redux/selectors';
 import formatUtil from '@utils/format';
 import linkingService from '@services/linking';
 import {CONSTANT_CONFIGS} from '@src/constants';
+import { withLayout_2 } from '@components/Layout';
+import { compose } from 'recompose';
+import { ScrollView, View } from '@components/core';
 
 const HistoryWithdrawDetail = React.memo(({ history, historyTab }) => {
   const getPrivacyDataByTokenID = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID);
@@ -111,12 +113,12 @@ const HistoryWithdrawDetail = React.memo(({ history, historyTab }) => {
     return historyFactories.map(data => <Hook key={data?.label} {...data} />);
   };
   return (
-    <View style={{ marginHorizontal: 25, flex: 1 }}>
+    <>
       <Header title="Liquidity" />
-      <ScrollView>
+      <View fullFlex borderTop paddingHorizontal>
         {historyTab === HEADER_TABS.Remove ? renderWithdrawHistories() : renderWithdrawFeeHistories()}
-      </ScrollView>
-    </View>
+      </View>
+    </>
   );
 });
 
@@ -126,4 +128,7 @@ HistoryWithdrawDetail.propTypes = {
 };
 
 
-export default withHistory(HistoryWithdrawDetail);
+export default compose(
+  withHistory,
+  withLayout_2,
+)(HistoryWithdrawDetail);
