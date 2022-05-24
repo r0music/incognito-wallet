@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Text,
   View,
   Clipboard,
   Dimensions,
@@ -13,6 +12,8 @@ import {
   ScrollView,
   Toast,
   RefreshControl,
+  Text,
+  Text3
 } from '@src/components/core';
 import { CONSTANT_COMMONS, CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import formatUtil from '@src/utils/format';
@@ -33,6 +34,7 @@ import includes from 'lodash/includes';
 import { isEmpty } from 'lodash';
 import styled from './styles';
 import { getFeeFromTxHistory } from './TxHistoryDetail.utils';
+
 
 export const Hook = (props) => {
   const {
@@ -78,13 +80,13 @@ export const Hook = (props) => {
   const renderComponent = () => (
     <>
       <View style={[styled.rowText, style, !moreLines && { height: 30 }]}>
-        <Text
+        <Text3
           style={[styled.labelText, labelStyle]}
           numberOfLines={1}
           ellipsizeMode="middle"
         >
           {`${label}:`}
-        </Text>
+        </Text3>
         <View style={[styled.extra, { flex: flexExtra }]}>
           <Text
             style={[

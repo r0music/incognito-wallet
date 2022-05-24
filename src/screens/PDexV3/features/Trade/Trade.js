@@ -24,7 +24,6 @@ import { styled } from './Trade.styled';
 import withTrade from './Trade.enhance';
 
 const Trade = (props) => {
-  const tabIndex = useNavigationParam('tabIndex');
   const { onRefresh } = props;
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -52,6 +51,9 @@ const Trade = (props) => {
           </Row>
         )}
       >
+        <View tabID={TAB_SWAP_ID} label="Swap">
+          <TabSwap />
+        </View>
         <View
           tabID={TAB_BUY_LIMIT_ID}
           label="Buy"
@@ -66,23 +68,16 @@ const Trade = (props) => {
         >
           <OrderLimit />
         </View>
-        <View tabID={TAB_SWAP_ID} label="Swap">
-          <TabSwap />
-        </View>
       </Tabs>
     </View>
   );
 };
 
 Trade.defaultProps = {
-  hideBackButton: false,
 };
 
 Trade.propTypes = {
   onRefresh: PropTypes.func.isRequired,
-  refreshing: PropTypes.bool.isRequired,
-  handlePressPool: PropTypes.func.isRequired,
-  hideBackButton: PropTypes.bool,
 };
 
 export default withTrade(React.memo(Trade));

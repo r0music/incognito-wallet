@@ -1,7 +1,7 @@
 import React from 'react';
-import { FlatList, View, Text, TouchableOpacity } from 'react-native';
+import { FlatList, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
-import { Header } from '@src/components';
+import { Header, Row } from '@src/components';
 import withHistories from '@screens/Dex/features/Histories/enhance';
 import { useSelector } from 'react-redux';
 import {getHistoryById, historyTabNameSelector, titleWithHistoryTab} from '@screens/Dex/Liquidity.selector';
@@ -16,6 +16,14 @@ import routeNames from '@routers/routeNames';
 import styleSheet from '@components/HistoryList/style';
 import LoadingContainer from '@components/LoadingContainer';
 import { LIMIT } from '@screens/DexV2/constants';
+import { Text, View , Text3 } from '@components/core';
+import { compose } from 'recompose';
+import { withLayout_2 } from '@components/Layout';
+import globalStyled from '@src/theme/theme.styled';
+import { BtnCircleBack } from '@components/Button';
+import SelectAccountButton from '@components/SelectAccountButton';
+import debounce from 'lodash/debounce';
+
 
 const Description = React.memo(({ data }) => {
   if (isEmpty(data)) return null;
@@ -42,7 +50,7 @@ const Description = React.memo(({ data }) => {
   }, [contributes]);
   return (
     <View>
-      <Text style={styled.desc}>{desc}</Text>
+      <Text3 style={styled.desc}>{desc}</Text3>
     </View>
   );
 });
@@ -67,7 +75,7 @@ const DescriptionNormal = React.memo(({ history }) => {
 
   return (
     <View>
-      <Text style={styled.desc}>{desc}</Text>
+      <Text3 style={styled.desc}>{desc}</Text3>
     </View>
   );
 });
@@ -107,44 +115,53 @@ const Item = React.memo(({ id }) => {
 
 const Histories = React.memo(({ histories, historyTabName, onRefresh, onLoadMore, refreshing, isLoadMore }) => {
   const detectRef = React.useRef(null);
+  const { goBack } = useNavigation();
+  const handleGoBack = () => goBack();
+  const _handleGoBack = debounce(handleGoBack, 100);
   const renderItem = (data) => {
     const id = data?.item?.pairId || data?.item?.id;
     return (<Item id={id} index={data?.index} />);
   };
 
   return (
-    <View style={{ marginHorizontal: 25, flex: 1 }}>
-      <Header title="Liquidity" />
-      <Tabs disable={false} selected={historyTabName} isHistory />
-      <FlatList
-        data={histories}
-        renderItem={renderItem}
-        style={{ marginTop: 37 }}
-        keyExtractor={({ pairId, id }) => `item-key-${pairId || id}`}
-        refreshing={refreshing}
-        showsVerticalScrollIndicator={false}
-        onRefresh={() => {
-          if (typeof onRefresh === 'function') {
-            onRefresh();
+    <>
+      <Row style={[globalStyled.defaultPaddingHorizontal, { paddingTop: 10, paddingBottom: 15 }]} centerVertical spaceBetween>
+        <Row centerVertical>
+          <BtnCircleBack onPress={_handleGoBack} />
+          <Tabs disable={false} selected={historyTabName} isHistory />
+        </Row>
+        <SelectAccountButton />
+      </Row>
+      <View paddingHorizontal fullFlex borderTop>
+        <FlatList
+          data={histories}
+          renderItem={renderItem}
+          keyExtractor={({ pairId, id }) => `item-key-${pairId || id}`}
+          refreshing={refreshing}
+          showsVerticalScrollIndicator={false}
+          onRefresh={() => {
+            if (typeof onRefresh === 'function') {
+              onRefresh();
+            }
+          }}
+          onEndReachedThreshold={0.7}
+          onEndReached={() => detectRef.current = true}
+          onMomentumScrollEnd={() => {
+            if ((histories || []).length >= LIMIT && detectRef.current && typeof onLoadMore === 'function') {
+              detectRef.current && onLoadMore();
+              detectRef.current = false;
+            }
+          }}
+          ListFooterComponent={
+            isLoadMore ? (
+              <View style={styleSheet.loadingContainer}>
+                <LoadingContainer />
+              </View>
+            ) : null
           }
-        }}
-        onEndReachedThreshold={0.7}
-        onEndReached={() => detectRef.current = true}
-        onMomentumScrollEnd={() => {
-          if ((histories || []).length >= LIMIT && detectRef.current && typeof onLoadMore === 'function') {
-            detectRef.current && onLoadMore();
-            detectRef.current = false;
-          }
-        }}
-        ListFooterComponent={
-          isLoadMore ? (
-            <View style={styleSheet.loadingContainer}>
-              <LoadingContainer />
-            </View>
-          ) : null
-        }
-      />
-    </View>
+        />
+      </View>
+    </>
   );
 });
 
@@ -169,4 +186,4 @@ DescriptionNormal.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default withHistories(Histories);
+export default compose(withHistories, withLayout_2)(Histories);

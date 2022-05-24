@@ -88,7 +88,7 @@ const LockHistory = ({
                               { color: colors.blue1 }
                             ]}
                             >
-                              End Term
+                              Term ended and funds unlocked
                             </Text>
                           </View>
                         )}

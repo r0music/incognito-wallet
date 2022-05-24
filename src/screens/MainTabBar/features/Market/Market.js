@@ -7,12 +7,11 @@ import Header, {
   MarketTabs,
 } from '@screens/MainTabBar/features/Market/Market.header';
 import {
-  actionInit,
   actionSetPoolSelected,
 } from '@screens/PDexV3/features/OrderLimit';
 import {
   ROOT_TAB_TRADE,
-  TAB_BUY_LIMIT_ID,
+  TAB_SWAP_ID
 } from '@screens/PDexV3/features/Trade/Trade.constant';
 import { marketTabSelector } from '@screens/Setting';
 import {
@@ -40,12 +39,9 @@ const Market = React.memo((props) => {
         dispatch(
           actionChangeTab({
             rootTabID: ROOT_TAB_TRADE,
-            tabID: TAB_BUY_LIMIT_ID,
+            tabID: TAB_SWAP_ID,
           }),
         );
-        setTimeout(() => {
-          dispatch(actionInit());
-        }, 200);
       });
     }
   };
