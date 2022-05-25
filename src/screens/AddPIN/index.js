@@ -213,7 +213,6 @@ class AddPIN extends React.Component {
   };
 
   handleBioAuth = () => {
-    const { navigation } = this.props;
     TouchID.authenticate('', optionalConfigObject)
       .then(async () => {
         const { action } = this.state;
@@ -223,11 +222,8 @@ class AddPIN extends React.Component {
           this.removeSuccess();
         }
       })
-      .catch(() => {
-        //handle when type 'Cancel'
-        navigation.navigate(routeNames.AddPin, {
-          action: 'login',
-        });
+      .catch((error) => {
+        console.log('TouchId authentication fail:', error);
       });
   };
 
