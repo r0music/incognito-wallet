@@ -74,7 +74,6 @@ const NFTToken = (props) => {
           <NFTTokenHook {...hook} key={hook.label} />
         ))}
         <ListNFTToken />
-        <FormMint />
       </ScrollViewBorder>
     </>
   );

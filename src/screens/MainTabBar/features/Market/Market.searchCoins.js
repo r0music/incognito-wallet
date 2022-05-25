@@ -5,6 +5,7 @@ import { TokenFollow } from '@components/Token';
 import MarketList from '@components/Token/Token.marketList';
 import routeNames from '@routers/routeNames';
 import { headerStyled } from '@screens/MainTabBar/features/Market/Market.styled';
+import withLazy from '@components/LazyHoc/LazyHoc';
 import {
   actionInit,
   actionSetPoolSelected,
@@ -83,4 +84,4 @@ MarketSearchCoins.propTypes = {
   handleToggleFollowToken: PropTypes.func.isRequired,
 };
 
-export default compose(withLayout_2)(memo(MarketSearchCoins));
+export default compose(withLayout_2, withLazy)(memo(MarketSearchCoins));
