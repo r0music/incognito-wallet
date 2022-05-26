@@ -94,6 +94,10 @@ const MainNavigator = (props) => {
      return <LoadingContainer />;
    }
 
+   if (pin && !authen) {
+     return <AddPIN action="login" />;
+   }
+
   return <AppNavigator navigation={navigation} />;
 };
 
