@@ -167,7 +167,7 @@ const MARGIN = {
 
 const header = {
   headerHeight: DECOR.scaleInApp(55),
-  backgroundColor: COLORS.dark4,
+  backgroundColor: COLORS.dark7,
   headerTintColor: COLORS.dark1,
 };
 const opacityButton = {

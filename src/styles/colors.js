@@ -24,6 +24,7 @@ const COLORS = {
   dark4: '#0A3A3C',
   dark5: '#245153',
   dark6: '#4D7B7A',
+  dark7: '#1A1A1A',
   lightGrey1: '#8C9C9D',
   lightGrey2: '#B9C9CA',
   lightGrey3: '#9AB7B8',
