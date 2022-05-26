@@ -1,13 +1,20 @@
-import { THEME } from '@src/styles';
-import { createStackNavigator } from 'react-navigation-stack';
-import WhySend from '@screens/WhySend';
-import WhyReceive from '@screens/WhyReceive';
+import AppUpdater from '@components/AppUpdater';
+import { LoadingContainer } from '@components/core';
+import { WithdrawHistory } from '@models/dexHistory';
 import pApps from '@screens/Papps';
+import WhyReceive from '@screens/WhyReceive';
+import WhySend from '@screens/WhySend';
 import HeaderBar from '@src/components/HeaderBar';
+import { loadPin } from '@src/redux/actions/pin';
 import AddPIN from '@src/screens/AddPIN';
+import { THEME } from '@src/styles';
 import { navigationOptionsHandler } from '@src/utils/router';
-import { getRoutesNoHeader } from './routeNoHeader';
+import React, { useCallback, useEffect } from 'react';
+import { AppState } from 'react-native';
+import { createStackNavigator } from 'react-navigation-stack';
+import { useDispatch, useSelector } from 'react-redux';
 import ROUTE_NAMES from './routeNames';
+import { getRoutesNoHeader } from './routeNoHeader';
 
 const RouteNoHeader = getRoutesNoHeader();
 
@@ -44,4 +51,55 @@ const AppNavigator = createStackNavigator(
   },
 );
 
-export default AppNavigator;
+
+const MainNavigator = (props) => {
+  const { navigation } = props;
+
+   const pinState = useSelector((state) => state?.pin);
+   const { pin, authen, loading } = pinState;
+   const [mounted, setMounted] = React.useState(false);
+   const dispatch = useDispatch();
+   const handleLoadPin = async () => dispatch(loadPin());
+   
+   const handleAppStateChange = useCallback(
+     (nextAppState) => {
+       if (mounted) {
+         if (nextAppState === 'background') {
+           AppUpdater.update();
+           if (pin && !WithdrawHistory.withdrawing) {
+             navigation?.navigate(ROUTE_NAMES.AddPin, { action: 'login' });
+             AddPIN.waiting = false;
+           }
+           if (WithdrawHistory.withdrawing) {
+             AddPIN.waiting = true;
+           }
+         }
+       }
+     },
+     [pinState, mounted],
+   );
+
+   useEffect(() => {
+     AppState.addEventListener('change', handleAppStateChange);
+     setMounted(true);
+     return () => {
+       setMounted(false);
+       AppState.removeEventListener('change', handleAppStateChange);
+     };
+   }, [pinState]);
+   useEffect(() => {
+     handleLoadPin();
+   }, []);
+   if (loading) {
+     return <LoadingContainer />;
+   }
+   if (pin && !authen) {
+     return <AddPIN action="login" />;
+   }
+
+  return <AppNavigator navigation={navigation} />;
+};
+
+MainNavigator.router = AppNavigator.router;
+
+export default MainNavigator;

@@ -8,7 +8,6 @@ import { ExHandler } from '@src/services/exception';
 import serverService from '@src/services/wallet/Server';
 import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import { actionFetch as actionFetchProfile } from '@screens/Profile';
-import withPin from '@components/pin.enhance';
 import KeepAwake from 'react-native-keep-awake';
 import {
   actionLoadDefaultWallet,
@@ -129,7 +128,6 @@ const enhance = (WrappedComp) => (props) => {
 export default compose(
   withDetectStatusNetwork,
   withWizard,
-  withPin,
   withWelcome,
   enhance,
 );
