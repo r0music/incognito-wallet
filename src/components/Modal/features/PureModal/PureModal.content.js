@@ -39,7 +39,6 @@ const PureModalContent = (props) => {
 };
 
 PureModalContent.propTypes = {
-  bowel: PropTypes.any.isRequired,
   styledContainer: PropTypes.any,
   styledWrapper: PropTypes.any,
 };

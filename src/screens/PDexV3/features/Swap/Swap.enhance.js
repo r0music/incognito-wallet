@@ -12,6 +12,7 @@ import withLazy from '@src/components/LazyHoc/LazyHoc';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
+import {COLORS} from '@src/styles';
 import { formConfigs, KEYS_PLATFORMS_SUPPORTED } from './Swap.constant';
 import {
   actionInitSwapForm,
@@ -54,21 +55,24 @@ const enhance = (WrappedComp) => (props) => {
   const handleCreateSwapOrder = async () => {
     const tx = await dispatch(actionFetchSwap());
     if (tx) {
-      dispatch(
-        actionToggleModal({
-          data: (
-            <TradeSuccessModal
-              title="Swap initiated!"
-              desc={`You placed an order to sell\n${
-                swapInfo?.sellInputAmountStr || ''
-              } for ${swapInfo?.buyInputAmountStr || ''}.`}
-              handleTradeSucesss={() => initSwapForm()}
-              sub="Your balance will update in a couple of minutes after the swap is finalized."
-            />
-          ),
-          visible: true,
-        }),
-      );
+      setTimeout(() => {
+        dispatch(
+          actionToggleModal({
+            data: (
+              <TradeSuccessModal
+                title="Swap initiated!"
+                desc={`You placed an order to sell\n${
+                  swapInfo?.sellInputAmountStr || ''
+                } for ${swapInfo?.buyInputAmountStr || ''}.`}
+                handleTradeSucesss={() => initSwapForm()}
+                sub="Your balance will update in a couple of minutes after the swap is finalized."
+                btnColor={COLORS.colorBlue}
+              />
+            ),
+            visible: true,
+          }),
+        );
+      }, 500);
     }
   };
   const handleConfirm = async () => {
