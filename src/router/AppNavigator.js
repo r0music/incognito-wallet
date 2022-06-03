@@ -13,6 +13,7 @@ import React, { useCallback, useEffect } from 'react';
 import { AppState } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
+import { currentScreenSelector } from '@screens/Navigation';
 import ROUTE_NAMES from './routeNames';
 import { getRoutesNoHeader } from './routeNoHeader';
 
@@ -61,6 +62,14 @@ const MainNavigator = (props) => {
    const dispatch = useDispatch();
    const handleLoadPin = async () => dispatch(loadPin());
    
+   const currentScreen = useSelector(currentScreenSelector);
+
+   useEffect(() => {
+     if (pin && !authen && currentScreen !== ROUTE_NAMES.Setting) {
+       navigation?.navigate(ROUTE_NAMES.AddPin, { action: 'login' });
+     }
+   }, [pin]);
+
    const handleAppStateChange = useCallback(
      (nextAppState) => {
        if (mounted) {
@@ -92,10 +101,6 @@ const MainNavigator = (props) => {
    }, []);
    if (loading) {
      return <LoadingContainer />;
-   }
-
-   if (pin && !authen) {
-     return <AddPIN action="login" />;
    }
 
   return <AppNavigator navigation={navigation} />;
