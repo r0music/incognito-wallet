@@ -112,14 +112,11 @@ class AddPIN extends React.Component {
 
   checkTouchSupported() {
     const { action } = this.state;
-    const { currentScreen, prevScreen } = this.props;
     if (action === 'login' || action === 'remove') {
       TouchID.isSupported(optionalConfigObject)
         .then((biometryType) => {
           this.setState({ bioSupportedType: biometryType });
-          if (currentScreen === '' && prevScreen === '') {
-            this.handleBioAuth();
-          }
+          this.handleBioAuth();
         })
         .catch(() => null);
     }
