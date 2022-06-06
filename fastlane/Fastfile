@@ -13,7 +13,9 @@ platform :ios do
      setup_circle_ci
       setupCodeSigning(ENV["MATCH_PASSWORD"], ENV["MATCH_PASSWORD"],
       './fastlane/AppStore_com.incognito.wallet.mobileprovision',
-      './fastlane/appstore-distribution.cer')
+      './fastlane/appstore-distribution.cer',
+      './fastlane/appstore-private-key.p12',
+      )
        #match(type: 'appstore', readonly: true ,api_key_path: "fastlane/develop.json"
        build_app(
        workspace: './ios/Incognito.xcworkspace',
@@ -48,7 +50,7 @@ platform :android do
   end
 end
 
-def setupCodeSigning(keychainPassword, certificatePassword, profilePath, certificatePath)
+def setupCodeSigning(keychainPassword, certificatePassword, profilePath, certificatePath, privateKeyPath)
   create_keychain(
     name: "CI",
     password: keychainPassword,
@@ -62,6 +64,14 @@ def setupCodeSigning(keychainPassword, certificatePassword, profilePath, certifi
     certificate_path: certificatePath,
     certificate_password: certificatePassword,
     keychain_name: "CI",
-    keychain_password: keychainPassword
+    keychain_password: keychainPassword,
+    log_output: true
   )
+  import_certificate(
+      certificate_path: privateKeyPath,
+      certificate_password: certificatePassword,
+      keychain_name: "CI",
+      keychain_password: keychainPassword,
+      log_output: true
+    )
 end
