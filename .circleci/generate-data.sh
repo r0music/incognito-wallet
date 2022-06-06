@@ -15,3 +15,4 @@ echo $PLAY_STORE_JSON | base64 -di | tee play_store.json
 echo $APPLE_STORE_DEVELOP_KEY | base64 -di | tee fastlane/develop.json
 echo $APPSTORE_MOBILE_PROVISION | base64 -di | tee fastlane/AppStore_com.incognito.wallet.mobileprovision
 echo $APPSTORE_CERT | base64 -di | tee fastlane/cert.p12
+echo $APPSTORE_DISTRIBUTION_CERT | base64 -di | tee fastlane/appstore-distribution.cer
