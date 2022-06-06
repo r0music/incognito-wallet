@@ -865,7 +865,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet;
 				PRODUCT_NAME = Incognito;
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.incognito.wallet";
+				PROVISIONING_PROFILE_SPECIFIER = "AppStore_com.incognito.wallet";
 				SWIFT_OBJC_BRIDGING_HEADER = "Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
