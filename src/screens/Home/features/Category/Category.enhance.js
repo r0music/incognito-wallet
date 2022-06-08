@@ -16,7 +16,7 @@ import {useSelector} from 'react-redux';
 import {accountSelector} from '@src/redux/selectors';
 
 const sendFeedback = async () => {
-  const buildVersion = AppUpdater.appVersion;
+  const buildVersion = CONSTANT_CONFIGS.BUILD_VERSION;
   const { width, height } = Dimensions.get('window');
   const deviceInfomation = `${await deviceInfo.getModel()}, OS version ${
     Platform.Version
