@@ -10,6 +10,7 @@ import { decimalDigitsSelector } from '@src/screens/Setting';
 import LinkingService from '@src/services/linking';
 import {
   checkShieldProcessing,
+  checkShieldPortalProcessing,
   getStatusColorShield,
   getStatusColorUnshield,
   TX_STATUS_COLOR,
@@ -607,9 +608,8 @@ export const historyDetailFactoriesSelector = createSelector(
           incognitoAddress,
           statusDetail,
           status,
-          decentralized,
         } = tx;
-        const isShieldProcessing = checkShieldProcessing(status, decentralized);
+        const isShieldProcessing = checkShieldPortalProcessing(status);
         let data = [
           {
             label: 'Shield',

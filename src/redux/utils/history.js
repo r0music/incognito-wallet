@@ -216,3 +216,10 @@ export const checkShieldProcessing = (status, decentralized) => {
   }
   return false;
 };
+
+export const checkShieldPortalProcessing = (status) => {
+  if (status === STATUS_CODE_SHIELD_PORTAL.PROCESSING) {
+    return true;
+  }
+  return false;
+};
