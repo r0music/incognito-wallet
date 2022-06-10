@@ -338,7 +338,7 @@ workflows:
           filters:
             branches:
               only:
-                - inc-store
+                - dev/test-5.5.0
       - generate_data:
           requires:
             - checkout_code
