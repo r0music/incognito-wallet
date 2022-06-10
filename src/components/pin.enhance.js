@@ -21,7 +21,7 @@ const withPin = (WrappedComp) => (props) => {
     (nextAppState) => {
       if (mounted) {
         if (nextAppState === 'background') {
-          AppUpdater.update();
+          // AppUpdater.update();
           if (pin && !WithdrawHistory.withdrawing) {
             navigation?.navigate(routeNames.AddPin, { action: 'login' });
             AddPin.waiting = false;

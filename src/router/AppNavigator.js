@@ -74,7 +74,7 @@ const MainNavigator = (props) => {
      (nextAppState) => {
        if (mounted) {
          if (nextAppState === 'background') {
-           AppUpdater.update();
+           // AppUpdater.update();
            if (pin && !WithdrawHistory.withdrawing) {
              navigation?.navigate(ROUTE_NAMES.AddPin, { action: 'login' });
              AddPIN.waiting = false;

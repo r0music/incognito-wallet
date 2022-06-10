@@ -119,13 +119,10 @@ const SwapOrderDetail = () => {
       label: 'Exchange',
       value: order?.exchange,
     });
-    if (
-      order?.statusCode !== ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_CANCELED &&
-      order?.statusCode !== ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_FAILED
-    ) {
+    if (order?.status === 'Pending') {
       ft.push({
-        label: 'Estimate time',
-        value: order?.exchange === 'incognito' ? '3 mins' : '10 mins',
+        label: 'Estimation time',
+        value: order?.exchange === 'Incognito' ? '3 mins' : '10 mins',
       });
     }
     return ft.filter(
