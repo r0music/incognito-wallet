@@ -16,7 +16,7 @@ const filterResponseType = (h) => {
   return !CONSTANT_COMMONS.RESPONSE_PRV_TYPES.includes(typeOf);
 };
 
-const MainCryptoHistory = () => {
+const MainCryptoHistory = (props) => {
   const { histories, isEmpty, loading, refreshing, oversize } = useDebounceSelector(
     historyTxsSelector,
   );
@@ -24,6 +24,7 @@ const MainCryptoHistory = () => {
   const tempHistories = histories.filter(filterResponseType);
   return (
     <HistoryList
+      {...props}
       histories={tempHistories}
       onRefreshHistoryList={handleRefresh}
       refreshing={refreshing}
@@ -37,4 +38,4 @@ const MainCryptoHistory = () => {
 
 MainCryptoHistory.propTypes = {};
 
-export default MainCryptoHistory;
+export default React.memo(MainCryptoHistory);

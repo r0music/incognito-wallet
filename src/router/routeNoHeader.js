@@ -2,7 +2,6 @@ import { navigationOptionsHandler } from '@src/utils/router';
 import WhyShield from '@screens/Shield/features/WhyShield';
 import SelectAccount from '@screens/SelectAccount';
 import Home from '@screens/Home';
-import Wallet from '@screens/Wallet/features/Home';
 import Community from '@screens/Community';
 import CreateToken from '@screens/CreateToken';
 import Shield from '@screens/Shield';
@@ -151,6 +150,8 @@ import {
 } from '@screens/PDexV3/features/PrivacyApps';
 import MarketSearchCoins from '@screens/MainTabBar/features/Market/Market.searchCoins';
 import HomeLP from '@screens/MainTabBar/features/HomeLP';
+import Tutorial from '@screens/Turotial/Tutorial';
+import LiquidityVer1 from '@screens/Dex/Liquidity';
 
 const masterKeyRoutes = [
   {
@@ -388,10 +389,6 @@ const routes = [
   {
     screen: Home,
     name: routeNames.Home,
-  },
-  {
-    screen: Wallet,
-    name: routeNames.Wallet,
   },
   {
     screen: Community,
@@ -736,6 +733,14 @@ const routes = [
   {
     screen: SelectOptionModal,
     name: routeNames.SelectOptionModal,
+  },
+  {
+    screen: Tutorial,
+    name: routeNames.Tutorial,
+  },
+  {
+    screen: LiquidityVer1,
+    name: routeNames.LiquidityVer1,
   },
   ...masterKeyRoutes,
   ...devRoutes,

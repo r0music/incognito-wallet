@@ -1,23 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet } from 'react-native';
-import { TouchableOpacity } from '@src/components/core';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { InfoIcon } from '@src/components/Icons';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { useDispatch } from 'react-redux';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
+import InfoVer2Icon from '@components/Icons/icon.i';
 
 const styled = StyleSheet.create({
   btnInfo: {
-    margin: 5,
+    padding: 5,
   },
 });
 
 const BtnInfo = (props) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const {tokenId} = props;
+  const { tokenId, version = 1 } = props;
   const onNavTokenInfo = async() => {
     if(tokenId) {
       await dispatch(setSelectedPrivacy(tokenId));
@@ -35,17 +35,23 @@ const BtnInfo = (props) => {
         style: [styled.btnInfo, props?.style],
       }}
     >
-      <InfoIcon isBlack={props?.isBlack} />
+      {version === 1 ? (
+        <InfoIcon isBlack={props?.isBlack} />
+      ) : (
+        <InfoVer2Icon />
+      )}
     </TouchableOpacity>
   );
 };
 
 BtnInfo.defaultProps = {
-  tokenId: null
+  tokenId: null,
+  version: 1
 };
 
 BtnInfo.propTypes = {
   tokenId: PropTypes.string,
+  version: PropTypes.number
 };
 
 export default React.memo(BtnInfo);

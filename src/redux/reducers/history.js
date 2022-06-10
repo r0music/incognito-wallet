@@ -6,6 +6,7 @@ import {
   ACTION_SET_SELECTED_TX,
   ACTION_FETCHING_TX,
   ACTION_FETCHED_TX,
+  ACTION_FREE_HISTORY_DETAIL,
 } from '@src/redux/actions/history';
 
 const initialState = {
@@ -77,6 +78,15 @@ export default (state = initialState, action) => {
         tx: { ...action.payload },
         fetching: false,
       },
+    };
+  }
+  case ACTION_FREE_HISTORY_DETAIL: {
+    return {
+      ...state,
+      txsTransactor: [],
+      txsReceiver: [],
+      txsPToken: [],
+      txsPortal: [],
     };
   }
   default:

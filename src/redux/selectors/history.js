@@ -9,6 +9,8 @@ import formatUtil from '@src/utils/format';
 import { decimalDigitsSelector } from '@src/screens/Setting';
 import LinkingService from '@src/services/linking';
 import {
+  checkShieldProcessing,
+  checkShieldPortalProcessing,
   getStatusColorShield,
   getStatusColorUnshield,
   TX_STATUS_COLOR,
@@ -17,8 +19,18 @@ import {
 } from '@src/redux/utils/history';
 import { PRV } from '@src/constants/common';
 import { CONSTANT_CONFIGS, CONSTANT_COMMONS } from '@src/constants';
+import BigNumber from 'bignumber.js';
 import { selectedPrivacy } from './selectedPrivacy';
 import { burnerAddressSelector } from './account';
+
+export const renderNoClipAmount = (params) => {
+  const { amount, pDecimals } = params;
+  return (
+    new BigNumber(amount || 0)
+      .dividedBy(Math.pow(10, pDecimals || 9))
+      .toFixed() || ''
+  );
+};
 
 const renderAmount = (params) => {
   const { amount, pDecimals, decimalDigits } = params;
@@ -127,6 +139,7 @@ export const mappingTxPTokenSelector = createSelector(
       outchainFee,
       receivedAmount,
       tokenFee,
+      isUnShieldByPToken,
     } = txp;
     const shouldRenderQrShieldingAddress =
       isShieldTx &&
@@ -181,7 +194,7 @@ export const mappingTxPTokenSelector = createSelector(
       }),
       outchainFeeStr: renderAmount({
         amount: outchainFee,
-        pDecimals: PRV.pDecimals,
+        pDecimals: isUnShieldByPToken ? pDecimals : PRV.pDecimals,
         decimalDigits,
       }),
       receivedFundsStr,
@@ -368,9 +381,20 @@ export const historyDetailFactoriesSelector = createSelector(
           shieldingFeeStr,
           txReceive,
           canRetryInvalidAmountShield,
-          network
+          network,
+          decentralized,
+          status
         } = tx;
-        return [
+        const isShieldProcessing = checkShieldProcessing(status, decentralized);
+        let estimationShieldingTime = '';
+        if (isShieldProcessing) {
+          if (selectedPrivacy?.isETH || selectedPrivacy?.isErc20Token) {
+            estimationShieldingTime = '20 mins';
+          } else {
+            estimationShieldingTime = '10 mins';
+          }
+        }
+        let data = [
           {
             label: 'ID',
             value: `#${id}`,
@@ -456,6 +480,13 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !network,
           },
         ];
+        if (isShieldProcessing) {
+          data.push({
+            label: 'Estimation time',
+            value: estimationShieldingTime,
+          });
+        }
+        return data;
       }
       case ACCOUNT_CONSTANT.TX_TYPE.UNSHIELD: {
         const {
@@ -478,6 +509,7 @@ export const historyDetailFactoriesSelector = createSelector(
           outchainFeeStr,
           memo,
           network,
+          isUnShieldByPToken,
         } = tx;
 
         return [
@@ -499,7 +531,7 @@ export const historyDetailFactoriesSelector = createSelector(
           },
           {
             label: 'Outchain fee',
-            value: `${outchainFeeStr} ${PRV.symbol}`,
+            value: `${outchainFeeStr} ${isUnShieldByPToken ? selectedPrivacy.symbol : PRV.symbol}`,
             disabled: !outchainFee,
           },
           {
@@ -574,9 +606,11 @@ export const historyDetailFactoriesSelector = createSelector(
           inchainTx,
           outchainTx,
           incognitoAddress,
-          statusDetail
+          statusDetail,
+          status,
         } = tx;
-        return [
+        const isShieldProcessing = checkShieldPortalProcessing(status);
+        let data = [
           {
             label: 'Shield',
             value: `${amountStr} ${symbol}`,
@@ -621,6 +655,13 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !symbol,
           },
         ];
+        if(isShieldProcessing) {
+          data.push({
+            label: 'Estimation time',
+            value:  '60 mins'
+          });
+        }
+        return data;
       }
       case ACCOUNT_CONSTANT.TX_TYPE.UNSHIELDPORTAL: {
         const {

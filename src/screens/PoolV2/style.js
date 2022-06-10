@@ -43,6 +43,9 @@ export default StyleSheet.create({
   textRight: {
     textAlign: 'right',
   },
+  textCenter: {
+    textAlign: 'center',
+  },
   justifyRight: {
     justifyContent: 'flex-end',
   },

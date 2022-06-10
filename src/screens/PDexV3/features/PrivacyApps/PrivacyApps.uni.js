@@ -9,6 +9,8 @@ import { withLayout_2 } from '@src/components/Layout';
 import Header from '@src/components/Header';
 import { useDispatch } from 'react-redux';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
+import { ANALYTICS } from '@src/constants';
 import { swapInfoSelector } from '../Swap/Swap.selector';
 
 const PrivacyAppsUni = () => {
@@ -30,6 +32,7 @@ const PrivacyAppsUni = () => {
     );
   };
   React.useEffect(() => {
+    dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.UNISWAP));
     dispatch(actionReset());
   }, []);
   return (

@@ -1,9 +1,9 @@
-import React, {useCallback} from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { Header } from '@src/components';
+import React from 'react';
+import { Text, View } from 'react-native';
+import { Header, Row } from '@src/components';
 import { compose } from 'recompose';
 import Tabs from '@screens/Dex/components/Tabs';
-import { RefreshControl, RoundCornerButton } from '@components/core';
+import { RefreshControl, RoundCornerButton, ScrollView, TouchableOpacity } from '@components/core';
 import witEnhance from '@screens/Dex/Liquidity.enhance';
 import withData from '@screens/Dex/Liquidity.enhanceData';
 import AddPool from '@screens/Dex/components/AddPool';
@@ -15,8 +15,14 @@ import WithdrawTradingFees from '@screens/Dex/components/WithdrawTradingFees';
 import styles from '@screens/DexV2/components/Trade/style';
 import { useSelector } from 'react-redux';
 import { disableButton, hasHistories } from '@screens/Dex/Liquidity.selector';
-import { ArrowRightGreyIcon } from '@components/Icons';
 import { styled } from '@screens/Dex/style';
+import { withLayout_2 } from '@components/Layout';
+import globalStyled from '@src/theme/theme.styled';
+import { BtnCircleBack } from '@components/Button';
+import { useNavigation } from 'react-navigation-hooks';
+import debounce from 'lodash/debounce';
+import SelectAccountButton from '@components/SelectAccountButton';
+import { ArrowRightGreyIcon } from '@components/Icons';
 
 const Liquidity = React.memo((props) => {
   const {
@@ -31,18 +37,12 @@ const Liquidity = React.memo((props) => {
     onHistoriesPress,
     outputToken,
   } = props;
-
+  const { goBack } = useNavigation();
+  const handleGoBack = () => goBack();
+  const _handleGoBack = debounce(handleGoBack, 100);
   const disabled = useSelector(disableButton);
   const showHistories = useSelector(hasHistories);
 
-  const renderHeader = () => {
-    return (
-      <>
-        <Header title="Liquidity" accountSelectable />
-        <Tabs disable={isLoading || isFiltering} selected={tabName} />
-      </>
-    );
-  };
   const renderContent = () => {
     switch (tabName) {
     case HEADER_TABS.Add: {
@@ -77,10 +77,10 @@ const Liquidity = React.memo((props) => {
       : tabName === HEADER_TABS.Remove ? LIQUIDITY_TITLES.REMOVE_POOL : LIQUIDITY_TITLES.WITHDRAW_FEE;
   }, [tabName, pair]);
 
-  const renderBottomView = useCallback(() => {
+  const renderBottomView = React.useCallback(() => {
     if (!showHistories) return null;
     return (
-      <View style={styles.bottomBar}>
+      <View style={[styles.bottomBar, globalStyled.defaultPaddingHorizontal]}>
         <TouchableOpacity
           onPress={onHistoriesPress}
           style={styles.bottomFloatBtn}
@@ -93,9 +93,16 @@ const Liquidity = React.memo((props) => {
   }, [showHistories]);
 
   return (
-    <View style={{ flex: 1, marginHorizontal: 25 }}>
-      {renderHeader()}
+    <>
+      <Row style={[globalStyled.defaultPaddingHorizontal, { paddingTop: 10, paddingBottom: 15 }]} centerVertical spaceBetween>
+        <Row centerVertical>
+          <BtnCircleBack onPress={_handleGoBack} />
+          <Tabs disable={isLoading || isFiltering} selected={tabName} />
+        </Row>
+        <SelectAccountButton />
+      </Row>
       <ScrollView
+        style={globalStyled.defaultBorderSection}
         refreshControl={(<RefreshControl refreshing={isLoading} onRefresh={onLoadData} />)}
         showsVerticalScrollIndicator={false}
       >
@@ -119,7 +126,7 @@ const Liquidity = React.memo((props) => {
         <View style={{ height: 70 }} />
       </ScrollView>
       {renderBottomView()}
-    </View>
+    </>
   );
 });
 
@@ -137,11 +144,11 @@ Liquidity.propTypes = {
 
   onLoadData: PropTypes.func.isRequired,
   onNextPress: PropTypes.func.isRequired,
-  onHistoriesPress: PropTypes.func.isRequired,
   outputToken: PropTypes.object,
 };
 
 export default compose(
   withData,
   witEnhance,
+  withLayout_2,
 )(Liquidity);

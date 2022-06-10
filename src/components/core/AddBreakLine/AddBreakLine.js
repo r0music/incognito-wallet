@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/native';
+import { CirclePlusIcon } from '@components/Icons';
 
 export const styles = StyleSheet.create({
   arrowWrapper: {
@@ -9,8 +10,11 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 24,
-    marginBottom: 8
+    marginBottom: 16
   },
+  addIcon: {
+    position: 'absolute'
+  }
 });
 
 const Divider = styled.View`
@@ -19,20 +23,27 @@ const Divider = styled.View`
   height: 1px;
 `;
 
-const AddBreakLine = ({ style }) => {
+const AddBreakLine = ({ style, visibleAdd }) => {
   return (
     <View style={[styles.arrowWrapper, style]}>
       <Divider style={styles.divider} />
+      {visibleAdd && (
+        <View style={styles.addIcon}>
+          <CirclePlusIcon />
+        </View>
+      )}
     </View>
   );
 };
 
 AddBreakLine.defaultProps = {
-  style: undefined
+  style: undefined,
+  visibleAdd: false
 };
 
 AddBreakLine.propTypes = {
   style: PropTypes.any,
+  visibleAdd: PropTypes.bool
 };
 
 export default memo(AddBreakLine);

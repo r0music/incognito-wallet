@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import {currencySelector, hideWalletBalanceSelector} from '@screens/Setting';
 import Swipeout from 'react-native-swipeout';
 import { tokenStyled } from '@screens/Wallet/features/Home/Wallet.styled';
-import { ImageCached } from '@src/components';
+import { ImageCached, Row } from '@src/components';
 import { formatAmount, formatPrice } from '@components/Token';
 import format from '@utils/format';
 import replace from 'lodash/replace';
@@ -19,6 +19,8 @@ import { DeleteFillIcon } from '@components/Icons/icon.delete';
 import incognito from '@assets/images/new-icons/incognito.png';
 import { colorsSelector } from '@src/theme/theme.selector';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import { styles } from '@components/Token/Token.follow';
+import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 
 const TokenDefault = React.memo((props) => {
   const {
@@ -29,11 +31,14 @@ const TokenDefault = React.memo((props) => {
     pricePrv,
     change,
     onPress,
-    name,
+    shortName,
     isGettingBalance,
     showGettingBalance,
     iconUrl,
-    amount
+    amount,
+    networkName,
+    tokenId,
+    network
   } = props;
   const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
   const isToggleUSD = useDebounceSelector(currencySelector);
@@ -64,10 +69,18 @@ const TokenDefault = React.memo((props) => {
           style={tokenStyled.mainText}
           text={symbol}
         />
-        <NormalText
-          text={name}
-          style={[tokenStyled.grayText, { color: colors.text3 }]}
-        />
+        <Row>
+          <NormalText
+            text={shortName}
+            style={[tokenStyled.grayText, { color: colors.text3 }]}
+          />
+          {!!network && tokenId !== PRVIDSTR && (
+            <NormalText
+              style={[styles.networkLabel, { backgroundColor: colors.background3, color: colors.grey1 }]}
+              text={network}
+            />
+          )}
+        </Row>
       </View>
       <View style={tokenStyled.wrapSecond}>
         {shouldShowGettingBalance ? (

@@ -9,31 +9,15 @@ import { useNavigation } from 'react-navigation-hooks';
 import format from '@src/utils/format';
 import { CONSTANT_CONFIGS, CONSTANT_COMMONS } from '@src/constants';
 import routeNames from '@src/router/routeNames';
-import { PRV_ID } from '@src/screens/DexV2/constants';
+import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 
 export const getNetworkName = (selectedPrivacy) => {
-  if (selectedPrivacy?.isErc20Token) {
-    return 'Ethereum network (ERC20)';
+  const { tokenId, networkName, network } = selectedPrivacy;
+  let _network = network;
+  if (tokenId === PRVIDSTR) {
+    _network = networkName;
   }
-  if (selectedPrivacy?.isBep2Token) {
-    return 'Binance network (BEP2)';
-  }
-  if (selectedPrivacy?.isBep20Token) {
-    return 'BSC network (BEP20)';
-  }
-  if(selectedPrivacy?.isPolygonErc20Token) {
-    return 'Polygon network (ERC20)';
-  }
-  if (selectedPrivacy?.isFantomErc20Token) {
-    return 'Fantom network (ERC20)';
-  }
-  if (
-    selectedPrivacy?.currencyType ===
-    CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB
-  ) {
-    return 'Binance network';
-  }
-  return `${selectedPrivacy?.networkName} network`;
+  return `${_network} network`;
 };
 
 const enhance = (WrappedComp) => (props) => {
@@ -120,7 +104,7 @@ const enhance = (WrappedComp) => (props) => {
     },
   ];
 
-  if (tokenId === PRV_ID) {
+  if (tokenId === PRVIDSTR) {
     const tokenChildETH = selectedPrivacy?.listChildToken.find(
       (x) =>
         x.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20,

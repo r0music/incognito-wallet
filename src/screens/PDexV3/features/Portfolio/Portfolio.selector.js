@@ -137,11 +137,11 @@ export const listShareSelector = createSelector(
       const apyStr = format.amount(apy, 0);
       let token1Network = '';
       let token2Network = '';
-      if (token1.networkName) {
-        token1Network = `(${token1.networkName})`;
+      if (token1.network) {
+        token1Network = `(${token1.network})`;
       }
-      if (token2.networkName) {
-        token2Network = `(${token2.networkName})`;
+      if (token2.network) {
+        token2Network = `(${token2.network})`;
       }
       const hookFactoriesDetail = [
         {

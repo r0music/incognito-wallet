@@ -12,6 +12,8 @@ import routeNames from '@src/router/routeNames';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout';
+import { loadAllMasterKeys } from '@src/redux/actions/masterKey';
+import RNRestart from 'react-native-restart';
 import styles from './styles';
 
 export const TAG = 'AddPIN';
@@ -110,14 +112,11 @@ class AddPIN extends React.Component {
 
   checkTouchSupported() {
     const { action } = this.state;
-    const { currentScreen, prevScreen } = this.props;
     if (action === 'login' || action === 'remove') {
       TouchID.isSupported(optionalConfigObject)
         .then((biometryType) => {
           this.setState({ bioSupportedType: biometryType });
-          if (currentScreen === '' && prevScreen === '') {
-            this.handleBioAuth();
-          }
+          this.handleBioAuth();
         })
         .catch(() => null);
     }
@@ -201,14 +200,18 @@ class AddPIN extends React.Component {
     }
   };
 
-  removeSuccess = () => {
+  removeSuccess = async () => {
+    const { loadAllMasterKeys } = this.props;
+    await loadAllMasterKeys({ migratePassCodeToDefault: true });
     this.updatePin('');
+    setTimeout(() => {
+      RNRestart.Restart();
+    }, 500);
   };
 
   handleBioAuth = () => {
-    const { navigation } = this.props;
     TouchID.authenticate('', optionalConfigObject)
-      .then(() => {
+      .then(async () => {
         const { action } = this.state;
         if (action === 'login') {
           this.loginSuccess();
@@ -216,11 +219,8 @@ class AddPIN extends React.Component {
           this.removeSuccess();
         }
       })
-      .catch(() => {
-        //handle when type 'Cancel'
-        navigation.navigate(routeNames.AddPin, {
-          action: 'login',
-        });
+      .catch((error) => {
+        console.log('TouchId authentication fail:', error);
       });
   };
 
@@ -366,7 +366,7 @@ const mapStateToProps = (state) => ({
   prevScreen: state.navigation.prevScreen,
 });
 
-const mapDispatchToProps = { updatePin, actionAuthen };
+const mapDispatchToProps = { updatePin, actionAuthen, loadAllMasterKeys };
 
 export default compose(
   withNavigation,

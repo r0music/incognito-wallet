@@ -14,6 +14,8 @@ import PropTypes from 'prop-types';
 import { Text } from '@components/core';
 import { colorsSelector } from '@src/theme';
 import TwoTokenImage from '@screens/PDexV3/features/Portfolio/Portfolio.image';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
+import { ANALYTICS } from '@src/constants';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -93,6 +95,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
           nftId: data.nftId || '',
         }),
       );
+      dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.EARN_NOW));
       navigation.navigate(routeNames.ContributePool);
     });
   };

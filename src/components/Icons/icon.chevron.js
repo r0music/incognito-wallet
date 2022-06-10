@@ -6,7 +6,7 @@ const ChevronIcon = (props) => (
   <Icon
     name={`chevron-thin-${props?.toggle ? 'up' : 'down'}`}
     size={props?.size || 16}
-    color={COLORS.colorGreyBold}
+    color={props?.color || COLORS.colorGreyBold}
   />
 );
 

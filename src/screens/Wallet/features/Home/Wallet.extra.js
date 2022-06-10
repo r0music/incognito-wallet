@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -10,7 +10,8 @@ import {
   groupButtonStyled,
 } from '@screens/Wallet/features/Home/Wallet.styled';
 import {
-  isGettingBalance as isGettingTotalBalanceSelector, totalShieldedTokensSelector,
+  isGettingBalance as isGettingTotalBalanceSelector,
+  totalShieldedTokensSelector,
 } from '@src/redux/selectors/shared';
 import isNaN from 'lodash/isNaN';
 import { Amount } from '@components/Token/Token';
@@ -22,7 +23,6 @@ import routeNames from '@routers/routeNames';
 import { actionToggleGuide } from '@screens/Shield/Shield.actions';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import appConstant from '@src/constants/app';
-import Tooltip from '@components/Tooltip/Tooltip';
 import { BtnClose } from '@components/Button';
 import { Text3 } from '@components/core/Text';
 import globalStyled from '@src/theme/theme.styled';
@@ -30,14 +30,21 @@ import { View } from '@components/core';
 import { Row } from '@src/components';
 import AddToken from '@screens/Wallet/features/Home/Wallet.addToken';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import { TouchableOpacity } from 'react-native';
 
 const Balance = React.memo(({ hideBalance }) => {
+  const dispatch = useDispatch();
   let totalShielded = useDebounceSelector(totalShieldedTokensSelector);
   const isGettingTotalBalance =
     useSelector(isGettingTotalBalanceSelector).length > 0;
   if (isNaN(totalShielded)) {
     totalShielded = 0;
   }
+
+  const wrapperAmountOnPressed = useCallback(() =>
+    dispatch(actionUpdateShowWalletBalance()),
+  );
+
   return (
     <View style={[styledBalance.container]}>
       <Row centerVertical spaceBetween>
@@ -45,19 +52,25 @@ const Balance = React.memo(({ hideBalance }) => {
         <AddToken />
       </Row>
       <Row style={styledBalance.wrapBalance} center>
-        <Amount
-          amount={totalShielded}
-          pDecimals={PRV.pDecimals}
-          showSymbol={false}
-          isGettingBalance={isGettingTotalBalance}
-          customStyle={styledBalance.balance}
-          hasPSymbol
-          stylePSymbol={styledBalance.pSymbol}
-          containerStyle={styledBalance.balanceContainer}
-          size="large"
-          hideBalance={hideBalance}
-          fromBalance
-        />
+        <TouchableOpacity
+          style={styledBalance.wrapperAmount}
+          onPress={wrapperAmountOnPressed}
+          activeOpacity={1}
+        >
+          <Amount
+            amount={totalShielded}
+            pDecimals={PRV.pDecimals}
+            showSymbol={false}
+            isGettingBalance={isGettingTotalBalance}
+            customStyle={styledBalance.balance}
+            hasPSymbol
+            stylePSymbol={styledBalance.pSymbol}
+            containerStyle={styledBalance.balanceContainer}
+            size="large"
+            hideBalance={hideBalance}
+            fromBalance
+          />
+        </TouchableOpacity>
       </Row>
     </View>
   );

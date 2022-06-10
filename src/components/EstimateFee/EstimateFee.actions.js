@@ -12,6 +12,7 @@ import {
   estimateUserFees,
   genCentralizedWithdrawAddress,
 } from '@src/services/api/withdraw';
+import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 import {
   ACTION_FETCHING_FEE,
   ACTION_FETCHED_FEE,
@@ -31,6 +32,7 @@ import {
   ACTION_TOGGLE_FAST_FEE,
   ACTION_REMOVE_FEE_TYPE,
   ACTION_FETCH_FAIL_USER_FEES,
+  ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN,
 } from './EstimateFee.constant';
 import { apiCheckValidAddress } from './EstimateFee.services';
 import { estimateFeeSelector, feeDataSelector } from './EstimateFee.selector';
@@ -154,6 +156,8 @@ export const actionFetchFee = ({ amount, address, screen, memo, childSelectedPri
       if (isAddressValidated) {
         await dispatch(actionFetchUserFees({ address, amount, memo, childSelectedPrivacy }));
       }
+    } else {
+      dispatch(actionResetFormSupportSendInChain());
     }
   } catch (error) {
     throw error;
@@ -223,6 +227,7 @@ export const actionHandleFeeEst = ({ feeEst }) => async (
   getState,
 ) => {
   let feePrv, feePrvText, totalFeePrv, totalFeePrvText, userFeePrv;
+  let totalFeePToken, totalFeePTokenText, userFeePToken;
   const state = getState();
   const {
     rate,
@@ -252,9 +257,15 @@ export const actionHandleFeeEst = ({ feeEst }) => async (
         isUsedPRVFee,
         hasMultiLevel,
       });
-      totalFeePrv = totalFee;
-      totalFeePrvText = totalFeeText;
-      userFeePrv = userFee;
+      if (isUsedPRVFee) {
+        totalFeePrv = totalFee;
+        totalFeePrvText = totalFeeText;
+        userFeePrv = userFee;
+      } else {
+        totalFeePToken = totalFee;
+        totalFeePTokenText = totalFeeText;
+        userFeePToken = userFee;
+      }
     }
   } catch (error) {
     throw error;
@@ -268,14 +279,19 @@ export const actionHandleFeeEst = ({ feeEst }) => async (
         totalFeePrv,
         totalFeePrvText,
         userFeePrv,
+        totalFeePToken,
+        totalFeePTokenText,
+        userFeePToken,
       }),
     );
-    if (isUsedPRVFee) {
-      await new Promise.all([
-        await dispatch(change(formName, 'fee', totalFeePrvText)),
-        await dispatch(focus(formName, 'fee')),
-      ]);
-    }
+    await new Promise.all([
+      await dispatch(change(formName, 'fee',
+        isUsedPRVFee
+          ? totalFeePrvText
+          : totalFeePTokenText
+      )),
+      await dispatch(focus(formName, 'fee')),
+    ]);
   }
 };
 
@@ -475,6 +491,10 @@ export const actionFetchFailUserFees = (payload) => ({
   payload,
 });
 
+export const actionResetFormSupportSendInChain = () => ({
+  type: ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN,
+});
+
 export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
   let userFeesData;
   const state = getState();
@@ -495,6 +515,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
     isBep20Token,
     isPolygonErc20Token,
     isFantomErc20Token,
+    symbol,
   } = selectedPrivacy;
   const { isETH, isUsedPRVFee, userFees, isUnShield } = feeDataSelector(state);
   const originalAmount = convert.toOriginalAmount(requestedAmount, pDecimals);
@@ -554,7 +575,17 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
         'Enter a smaller amount to generate a more accurate fee estimation',
       );
     }
-    await dispatch(actionFetchedUserFees(userFeesData));
+    let actived = PRVIDSTR;
+    let feeTypes = [{ tokenId: PRVIDSTR, symbol: 'PRV' }];
+    if (userFeesData.TokenFees) {
+      feeTypes = [{ tokenId, symbol }];
+      actived = tokenId;
+    }
+    await dispatch(actionFetchedUserFees({
+      userFeesData,
+      feeTypes,
+      actived
+    }));
   }
 };
 

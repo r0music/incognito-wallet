@@ -45,11 +45,13 @@ export class AddManualTokenComponent extends Component {
       const { account, wallet, setWallet, getPTokenList } = this.props;
       let newPToken;
       const { name, symbol, address, decimals } = values;
+      const { type } = this.context;
       const data = {
         name,
         symbol,
         contractId: address,
         decimals,
+        network: type
       };
 
       newPToken = await addManuallyToken(data);

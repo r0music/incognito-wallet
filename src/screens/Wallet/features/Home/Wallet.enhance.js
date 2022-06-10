@@ -2,9 +2,6 @@ import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useSelector, useDispatch, batch } from 'react-redux';
 import { ExHandler } from '@src/services/exception';
-import { getPTokenList } from '@src/redux/actions/token';
-import { actionFree } from '@src/redux/actions/history';
-import { actionReloadFollowingToken } from '@src/redux/actions/account';
 import { CONSTANT_KEYS } from '@src/constants';
 import { useFocusEffect } from 'react-navigation-hooks';
 import {
@@ -16,17 +13,37 @@ import { withdraw, updatePTokenFee } from '@src/services/api/withdraw';
 import { accountSelector } from '@src/redux/selectors';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout';
-
-export const WalletContext = React.createContext({});
+import { debounce } from 'lodash';
 
 const enhance = (WrappedComp) => (props) => {
-  const wallet = useSelector((state) => state?.wallet);
-  const unshieldStorage = useSelector(unShieldStorageDataSelector);
-  const signPublicKeyEncode = useSelector(
-    accountSelector.signPublicKeyEncodeSelector,
-  );
   const dispatch = useDispatch();
-  const [isReloading, setIsReloading] = React.useState(false);
+  const unshieldStorage = useSelector(unShieldStorageDataSelector);
+  const signPublicKeyEncode = useSelector(accountSelector.signPublicKeyEncodeSelector);
+
+  const handleRemoveStorageTxsUnshield = ({ txID, keySave } = {}) => {
+    try {
+      let fn, payload;
+      if (keySave === CONSTANT_KEYS.UNSHIELD_DATA_DECENTRALIZED) {
+        payload = {
+          keySave: CONSTANT_KEYS.UNSHIELD_DATA_DECENTRALIZED,
+          burningTxId: txID,
+        };
+        fn = actionRemoveStorageDataDecentralized;
+      } else {
+        fn = actionRemoveStorageDataCentralized;
+        payload = {
+          keySave: CONSTANT_KEYS.UNSHIELD_DATA_CENTRALIZED,
+          txId: txID,
+        };
+      }
+      if (typeof fn === 'function' && payload) {
+        dispatch(fn(payload));
+      }
+    } catch (error) {
+      console.log('handleRemoveStorageTxsUnshield error: ', error);
+    }
+  };
+
   const retryLastTxsUnshieldDecentralized = async () => {
     try {
       const keyUnshieldDecentralized =
@@ -35,13 +52,22 @@ const enhance = (WrappedComp) => (props) => {
       txs &&
         txs.map(async (tx) => {
           if (tx) {
-            dispatch(
-              actionRemoveStorageDataDecentralized({
-                keySave: keyUnshieldDecentralized,
-                burningTxId: tx?.burningTxId,
-              }),
-            );
-            withdraw({ ...tx, signPublicKeyEncode });
+            withdraw({ ...tx, signPublicKeyEncode })
+              .then(() => {
+                handleRemoveStorageTxsUnshield({
+                  txID: tx?.burningTxId,
+                  keySave: keyUnshieldDecentralized
+                });
+              })
+              .catch((error) => {
+                if (error && error?.code && error?.code === 'API_ERROR(-1034)') {
+                  // tx submited => no need call to much
+                  handleRemoveStorageTxsUnshield({
+                    txID: tx?.burningTxId,
+                    keySave: keyUnshieldDecentralized
+                  });
+                }
+              });
           }
         });
     } catch (e) {
@@ -55,13 +81,22 @@ const enhance = (WrappedComp) => (props) => {
       txs &&
         txs.map(async (tx) => {
           if (tx) {
-            dispatch(
-              actionRemoveStorageDataCentralized({
-                keySave: keyUnshieldCentralized,
-                txId: tx?.txId,
-              }),
-            );
-            updatePTokenFee({ ...tx, signPublicKeyEncode });
+            updatePTokenFee({ ...tx, signPublicKeyEncode })
+              .then(() => {
+                handleRemoveStorageTxsUnshield({
+                  txID: tx?.txId,
+                  keySave: keyUnshieldCentralized
+                });
+              })
+              .catch(error => {
+                if (error && error?.code && error?.code === 'API_ERROR(-1034)') {
+                  // tx submited => no need call to much
+                  handleRemoveStorageTxsUnshield({
+                    txID: tx?.txId,
+                    keySave: keyUnshieldCentralized
+                  });
+                }
+              });
           }
         });
     } catch (e) {
@@ -70,51 +105,34 @@ const enhance = (WrappedComp) => (props) => {
   };
   const onRefresh = async () => {
     try {
-      await setIsReloading(true);
       batch(() => {
-        dispatch(getPTokenList());
-        // dispatch(getInternalTokenList());
-        dispatch(actionReloadFollowingToken(true));
         retryLastTxsUnshieldDecentralized();
         retryLastTxsUnshieldCentralized();
       });
     } catch (error) {
       new ExHandler(error).showErrorToast();
-    } finally {
-      await setIsReloading(false);
     }
   };
+
+  const debounceOnRefresh = debounce(onRefresh, 300);
+
   useFocusEffect(
     React.useCallback(() => {
-      dispatch(actionFree());
-    }, []),
+      debounceOnRefresh();
+    }, [signPublicKeyEncode, unshieldStorage, debounceOnRefresh]),
   );
+
   return (
     <ErrorBoundary>
-      <WalletContext.Provider
-        value={{
-          walletProps: {
-            ...props,
-            wallet,
-            isReloading,
-            onRefresh,
-          },
+      <WrappedComp
+        {...{
+          ...props,
         }}
-      >
-        <WrappedComp
-          {...{
-            ...props,
-            wallet,
-            isReloading,
-            onRefresh,
-          }}
-        />
-      </WalletContext.Provider>
+      />
     </ErrorBoundary>
   );
 };
 
 export default compose(
-  withLayout_2,
   enhance,
 );

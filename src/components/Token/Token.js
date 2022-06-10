@@ -324,12 +324,7 @@ Amount.defaultProps = {
 export const Symbol = (props) => {
   const {
     symbol,
-    networkName,
-    isErc20Token,
-    isBep2Token,
-    isBep20Token,
-    isPolygonErc20Token,
-    isFantomErc20Token,
+    network,
     styledSymbol,
     visibleNetworkName = true,
   } = props;
@@ -338,15 +333,9 @@ export const Symbol = (props) => {
       allowFontScaling={false}
       style={[styled.bottomText, styledSymbol]}
       text={`${symbol} ${
-        visibleNetworkName
-          ? isErc20Token ||
-            isBep2Token ||
-            isBep20Token ||
-            isPolygonErc20Token ||
-            isFantomErc20Token
-            ? `(${networkName})`
+        visibleNetworkName && network
+            ? `(${network})`
             : ''
-          : ''
       }`}
     />
   );
@@ -354,18 +343,16 @@ export const Symbol = (props) => {
 
 Symbol.propTypes = {
   symbol: PropTypes.string,
-  networkName: PropTypes.string,
-  isErc20Token: PropTypes.bool,
-  isBep2Token: PropTypes.bool,
+  network: PropTypes.string,
   styledSymbol: PropTypes.any,
+  visibleNetworkName: PropTypes.bool
 };
 
 Symbol.defaultProps = {
   symbol: '',
-  networkName: '',
-  isErc20Token: false,
-  isBep2Token: false,
+  network: '',
   styledSymbol: null,
+  visibleNetworkName: true
 };
 
 const TokenPairPRV = (props) => (

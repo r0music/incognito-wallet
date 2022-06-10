@@ -9,7 +9,6 @@ export const styled = StyleSheet.create({
   },
   rowName: {
     alignItems: 'center',
-    // marginBottom: 8,
   },
   name: {
     marginRight: 5,
@@ -22,32 +21,36 @@ export const styled = StyleSheet.create({
   subText: {
     fontSize: FONT.SIZE.medium,
     fontFamily: FONT.NAME.medium,
-    // marginBottom: 8,
   },
   block1: {
-    flex: 1,
-    marginRight: 10,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    marginRight: 5,
   },
   block2: {
     flexDirection: 'column',
     alignItems: 'flex-end',
-    marginRight: 5,
-    width: 70,
   },
   block3: {
-    width: 30,
+    width: 25,
     justifyContent: 'flex-end',
     flexDirection: 'row',
     alignItems: 'flex-start',
   },
   network: {
-    fontSize: FONT.SIZE.superSmall,
+    fontSize: 11,
     fontFamily: FONT.NAME.medium,
     lineHeight: 16,
     borderRadius: 4,
     overflow: 'hidden',
-    marginTop: 4
+  },
+  earnBtn: {
+    marginLeft: 5,
+    textAlign: 'center',
+    fontSize: FONT.SIZE.small,
+    fontFamily: FONT.NAME.medium,
+    backgroundColor: '#1A73E8',
+    paddingVertical: 6,
+    borderRadius: 3,
+    overflow: 'hidden',
+    paddingHorizontal: 12
   }
 });

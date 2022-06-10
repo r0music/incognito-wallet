@@ -117,6 +117,39 @@ const Extra = (props) => {
     return minComp;
   };
 
+  const renderEstimateShieldingTime = () => {
+    let shieldingTimeText = '';
+    if (isPortal) {
+      shieldingTimeText = '60 mins';
+    }
+    if (selectedPrivacy?.isETH || selectedPrivacy?.isErc20Token) {
+      shieldingTimeText = '20 mins';
+    }
+    if (
+      selectedPrivacy?.isBSC ||
+      selectedPrivacy?.isBep20Token ||
+      selectedPrivacy?.isMATIC ||
+      selectedPrivacy?.isPolygonErc20Token ||
+      selectedPrivacy?.isFTM ||
+      selectedPrivacy?.isFantomErc20Token
+    ) {
+      shieldingTimeText = '10 mins';
+    }
+
+    if (isEmpty(shieldingTimeText)) {
+      return null;
+    }
+
+    return (
+      <NormalText
+        style={[styled.text, { color: colors.text1 }]}
+        text={`Your ${
+          selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
+        } shielding transaction is estimated to complete in ${shieldingTimeText}.`}
+      />
+    );
+  };
+
   const renderEstimateFee = () => {
     const isNativeToken =
       selectedPrivacy?.currencyType ===
@@ -204,15 +237,19 @@ const Extra = (props) => {
       <View style={styled.hook}>{renderEstimateFee()}</View>
       <CopiableText data={address} textStyle={{color: colors.text1}} btnStyle={{backgroundColor: colors.background6}} />
       <View style={{ marginTop: 15 }}>
+        {renderEstimateShieldingTime()}
         <NormalText
-          style={[styled.text, {color: colors.text1}]}
-          text={`Send only ${selectedPrivacy?.externalSymbol ||
-            selectedPrivacy?.symbol} to this shielding address.`}
+          // style={[styled.text, { color: colors.text1 }]}
+          style={{ marginTop: 10, color: colors.text1 }}
+          text={`Send only ${
+            selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
+          } to this shielding address.`}
         />
         <NormalText
-          style={{ marginTop: 10, color: colors.text1}}
-          text={`Sending coins or tokens other than ${selectedPrivacy?.externalSymbol ||
-            selectedPrivacy?.symbol} to this address may result in the loss of your funds.`}
+          style={{ marginTop: 10, color: colors.text1 }}
+          text={`Sending coins or tokens other than ${
+            selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
+          } to this address may result in the loss of your funds.`}
         />
         <NormalText
           text="Use at your own risk."
@@ -224,15 +261,21 @@ const Extra = (props) => {
 
   const renderShieldPortalAddress = () => (
     <>
-      <NormalText style={[styled.title, {color: colors.text1}]}>
-        {`Send only ${selectedPrivacy?.externalSymbol ||
-          selectedPrivacy?.symbol} \nto this shielding address.`}
+      <NormalText style={[styled.title, { color: colors.text1 }]}>
+        {`Send only ${
+          selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
+        } \nto this shielding address.`}
       </NormalText>
       <View style={styled.qrCode}>
         <QrCodeGenerate value={address} size={175} />
       </View>
       <View style={styled.hook}>{renderMinPortalShieldAmount()}</View>
-      <CopiableText data={address} textStyle={{color: colors.text1}} btnStyle={{backgroundColor: colors.background6}} />
+      <CopiableText
+        data={address}
+        textStyle={{ color: colors.text1 }}
+        btnStyle={{ backgroundColor: colors.background6 }}
+      />
+      <View style={{marginTop: 10}}>{renderEstimateShieldingTime()}</View>
     </>
   );
 

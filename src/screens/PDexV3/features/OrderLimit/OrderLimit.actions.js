@@ -24,6 +24,8 @@ import {
   TAB_SELL_LIMIT_ID,
 } from '@screens/PDexV3/features/Trade/Trade.constant';
 import { differenceBy, orderBy } from 'lodash';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
+import { ANALYTICS } from '@src/constants';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -383,7 +385,7 @@ export const actionWithdrawingOrder = (payload) => ({
 });
 
 export const actionWithdrawOrder =
-  ({ requestTx, txType, nftid, poolId: poolid, token1ID, token2ID }) =>
+  ({ requestTx, txType, nftid, poolId: poolid, token1ID, token2ID, type, minAccept }) =>
     async (dispatch, getState) => {
       try {
         const state = getState();
@@ -407,6 +409,14 @@ export const actionWithdrawOrder =
             ]);
           },
         };
+        setTimeout(() => {
+          dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CANCEL_ORDER, {
+            token_id1: token1ID,
+            token_id2: token2ID,
+            type,
+            min_accept: minAccept
+          }));
+        }, 300);
         await pDexV3Inst.createAndSendWithdrawOrderRequestTx({ extra: data });
       } catch (error) {
         new ExHandler(error).showErrorToast();
@@ -430,6 +440,9 @@ export const actionBookOrder = () => async (dispatch, getState) => {
       return;
     }
     const { totalAmountToken, totalOriginalAmount } = totalAmountData;
+    setTimeout(() => {
+      dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.ORDER));
+    }, 300);
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const { poolId: poolPairID } = poolSelectedDataSelector(state);
     let extra;

@@ -5,34 +5,34 @@ module.exports = {
     commonjs: true,
     es6: true,
     'react-native/react-native': true,
-    'jest/globals': true
+    'jest/globals': true,
   },
-  extends: ['airbnb', 'react-native',  'eslint:recommended'],
+  extends: ['airbnb', 'react-native', 'eslint:recommended'],
   parser: 'babel-eslint',
   parserOptions: {
     ecmaFeatures: {
       experimentalObjectRestSpread: true,
-      jsx: true
+      jsx: true,
     },
     ecmaVersion: 2018,
     sourceType: 'module',
     babelOptions: {
-      configFile: './babel.config.js'
+      configFile: './babel.config.js',
     },
   },
   plugins: ['react', 'react-native', 'jest'],
   settings: {
     'import/resolver': {
-      'babel-module': {}
-    }
+      'babel-module': {},
+    },
   },
   globals: {
-    __DEV__: true
+    __DEV__: true,
   },
   rules: {
     'no-console': 0,
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
-    indent: ['error', 2],
+    // indent: [2, 2, { SwitchCase: 1 }],
     'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
@@ -52,7 +52,7 @@ module.exports = {
     'import/prefer-default-export': 0,
     'no-console': 0,
     'no-unused-vars': 1,
-    'react/no-unused-state':1,
+    'react/no-unused-state': 1,
     'react-native/sort-styles': 0,
     'react/forbid-prop-types': 0,
     'react/prefer-stateless-function': 0,
@@ -61,5 +61,5 @@ module.exports = {
     'react/sort-comp': 0,
     'react/jsx-handler-names': 0,
     'react/display-name': 0,
-  }
+  },
 };

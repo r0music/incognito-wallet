@@ -13,23 +13,10 @@ export const setAppStatus = status => {
   }
 };
 
-export const requestUpdateMetrics = (type) => async (dispatch, getState) => {
+export const requestUpdateMetrics = (type, params) => async () => {
   try {
-    const state = getState();
-    const profile = profileSelector(state);
-    if (profile === undefined) {
-      return;
-    }
-    const userId = profile?.data?.id;
-    const account = accountSelector.defaultAccountSelector(state);
-    dispatch(updateMetrics({
-      userId, 
-      type, 
-      paymentAddress: account?.paymentAddress,
-    }));
+    return updateMetrics({ type, params });
   } catch (e) {
     console.log('Ignore: ', e);
   }
-
-  return;
 };

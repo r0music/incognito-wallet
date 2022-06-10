@@ -79,9 +79,7 @@ export default {
       const decision_rate = Number(decimals) ? 10 ** Number(decimals) : 1;
       if (round) {
         return Math.floor(
-          BigNumber(amount)
-            .multipliedBy(BigNumber(decision_rate))
-            .toNumber(),
+          BigNumber(amount).multipliedBy(BigNumber(decision_rate)).toNumber(),
         );
       }
       originalAmount = BigNumber(amount)
@@ -89,7 +87,7 @@ export default {
         .toNumber();
     } catch (error) {
       originalAmount = 0;
-      console.log('toOriginalAmount-error', error);
+      // console.log('toOriginalAmount-error', error);
     }
     return originalAmount;
   },

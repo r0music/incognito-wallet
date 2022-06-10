@@ -4,6 +4,7 @@ import { View2 } from '@src/components/core/View';
 import { withLayout_2 } from '@src/components/Layout';
 import Header from '@components/Header';
 import { ScrollViewBorder, RefreshControl, Text } from '@components/core';
+import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { useDispatch, useSelector } from 'react-redux';
 import { BtnCopy } from '@src/components/Button';
 import { ExHandler } from '@src/services/exception';
@@ -118,6 +119,12 @@ const SwapOrderDetail = () => {
       label: 'Exchange',
       value: order?.exchange,
     });
+    if (order?.status === 'Pending') {
+      ft.push({
+        label: 'Estimation time',
+        value: order?.exchange === 'Incognito' ? '3 mins' : '10 mins',
+      });
+    }
     return ft.filter(
       (ftItem) => !!ftItem && (!!ftItem?.value || !!ftItem?.customValue),
     );

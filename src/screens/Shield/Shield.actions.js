@@ -1,4 +1,3 @@
-import { selectedPrivacySelector } from '@src/redux/selectors';
 import { getMinMaxDepositAmount } from '@src/services/api/misc';
 import {
   genETHDepositAddress,
@@ -8,11 +7,10 @@ import {
   genPolygonDepositAddress,
   genFantomDepositAddress,
 } from '@src/services/api/deposit';
-import { ANALYTICS, CONSTANT_COMMONS } from '@src/constants';
+import { CONSTANT_COMMONS } from '@src/constants';
 import config from '@src/constants/config';
 import { signPublicKeyEncodeSelector } from '@src/redux/selectors/account';
 import formatUtil from '@utils/format';
-import { requestUpdateMetrics } from '@src/redux/actions/app';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -326,7 +324,6 @@ export const actionPortalFetch =
             isPortal: true,
           }),
         );
-        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.SHIELD));
       } catch (error) {
         let isCompatible = true;
         if (error.message?.includes('Shielding address is not compatible')) {

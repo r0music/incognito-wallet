@@ -26,7 +26,8 @@ import difference from 'lodash/difference';
 import { isUsePRVToPayFeeSelector } from '@screens/Setting';
 import flatten from 'lodash/flatten';
 import orderBy from 'lodash/orderBy';
-import {CONSTANT_CONFIGS} from '@src/constants';
+import { ANALYTICS, CONSTANT_CONFIGS } from '@src/constants';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -1597,6 +1598,29 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
     if (disabledBtnSwap) {
       return;
     }
+    setTimeout(() => {
+      let analytic = '';
+      let params = {
+          sell_token: tokenIDToSell,
+          buy_token: tokenIDToBuy,
+          sell_amount: String(sellAmount),
+      };
+      switch (platform.id) {
+      case KEYS_PLATFORMS_SUPPORTED.incognito:
+        analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE;
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.pancake:
+        analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_PANCAKE;
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.uni:
+        analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_UNISWAP;
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.curve:
+        analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_CURVE;
+        break;
+      }
+      dispatch(requestUpdateMetrics(analytic, params));
+    }, 300);
     await dispatch(actionFetchingSwap(true));
     const account = defaultAccountWalletSelector(state);
     const sellInputAmount = inputAmountSelector(state)(formConfigs.selltoken);

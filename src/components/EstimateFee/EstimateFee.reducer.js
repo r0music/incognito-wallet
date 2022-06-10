@@ -21,38 +21,57 @@ import {
   ACTION_TOGGLE_FAST_FEE,
   ACTION_REMOVE_FEE_TYPE,
   ACTION_FETCH_FAIL_USER_FEES,
+  ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN,
 } from './EstimateFee.constant';
 import { MAX_FEE_PER_TX, hasMultiLevelUsersFee } from './EstimateFee.utils';
+
+
+const _initFeeType = [
+  {
+    tokenId: CONSTANT_COMMONS.PRV.id,
+    symbol: CONSTANT_COMMONS.PRV.symbol,
+  }
+];
 
 const initialState = {
   isFetching: false,
   isFetched: false,
+
   minFeePrv: null,
   minFeePrvText: null,
-  feePrv: null,
-  feePrvText: '',
-  maxFeePrv: null,
-  maxFeePrvText: null,
-  feePToken: null,
-  feePTokenText: '',
-  feeBurnPToken: null,
-  feeBurnPTokenText: '',
   minFeePToken: null,
   minFeePTokenText: '',
-  maxFeePToken: null,
+
+  feePrv: null,
+  feePrvText: '',
+  feePToken: null,
+  feePTokenText: '',
+
+  maxFeePrv: null,        /** PRV Account Balance */
+  maxFeePrvText: null,
+  maxFeePToken: null,     /** PToken Account Balance */
   maxFeePTokenText: '',
+
+  feeBurnPToken: null,
+  feeBurnPTokenText: '',
+
   amount: null,
   amountText: '',
-  minAmount: null,
+
+  minAmount: null,          /** Min unshield amount */
   minAmountText: '',
+
+  userFeePrv: null,
+  userFeePToken: null,
+
+  totalFeePrv: null,        /** Min unshield amount */
+  totalFeePrvText: '',
+  totalFeePToken: null,     /** Min unshield amount */
+  totalFeePTokenText: '',
+
   init: false,
   screen: '',
-  types: [
-    {
-      tokenId: CONSTANT_COMMONS.PRV.id,
-      symbol: CONSTANT_COMMONS.PRV.symbol,
-    },
-  ],
+  types: [..._initFeeType],
   actived: CONSTANT_COMMONS.PRV.id,
   rate: 1,
   isAddressValidated: true,
@@ -66,12 +85,6 @@ const initialState = {
   },
   isValidating: false,
   fast2x: false,
-  totalFeePrv: null,
-  totalFeePrvText: '',
-  userFeePrv: null,
-  totalFeePToken: null,
-  totalFeePTokenText: '',
-  userFeePToken: null,
 };
 
 export default (state = initialState, action) => {
@@ -202,8 +215,12 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_FETCHED_USER_FEES: {
-    const data = action.payload;
-    if (isEmpty(data)) {
+    const {
+      userFeesData,
+      feeTypes,
+      actived
+    } = action.payload;
+    if (isEmpty(userFeesData)) {
       return {
         ...state,
         userFees: {
@@ -212,14 +229,16 @@ export default (state = initialState, action) => {
         },
       };
     }
-    const hasMultiLevel = hasMultiLevelUsersFee(data);
+    const hasMultiLevel = hasMultiLevelUsersFee(userFeesData);
     return {
       ...state,
+      actived,
+      types: feeTypes,
       userFees: {
         ...state.userFees,
         isFetched: true,
         isFetching: false,
-        data: { ...data },
+        data: { ...userFeesData },
         hasMultiLevel,
         isMemoRequired: false,
       },
@@ -259,13 +278,19 @@ export default (state = initialState, action) => {
       ? 'totalFeePrvText'
       : 'totalFeePTokenText';
     const userFeeField = isUsedPRVFee ? 'userFeePrv' : 'userFeePToken';
-
     return {
       ...state,
       fast2x,
       [totalFeeField]: totalFee,
       [totalFeeTextField]: totalFeeText,
       [userFeeField]: userFee,
+    };
+  }
+  case ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN: {
+    return {
+      ...state,
+      types: [..._initFeeType],
+      actived: CONSTANT_COMMONS.PRV.id,
     };
   }
   default:

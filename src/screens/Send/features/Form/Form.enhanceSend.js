@@ -42,7 +42,7 @@ export const enhanceSend = (WrappedComp) => (props) => {
         prvPayments: [
           {
             PaymentAddress: toAddress,
-            Amount: originalAmount,
+            Amount: String(originalAmount),
             Message: message,
           },
         ],
@@ -66,7 +66,7 @@ export const enhanceSend = (WrappedComp) => (props) => {
         tokenPayments: [
           {
             PaymentAddress: toAddress,
-            Amount: originalAmount,
+            Amount: String(originalAmount),
             Message: message,
           },
         ],

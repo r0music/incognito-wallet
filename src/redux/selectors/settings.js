@@ -1,4 +1,4 @@
-import {createSelector} from 'reselect';
+import { createSelector } from 'reselect';
 
 const settingsSelector = createSelector(
   (state) => state.settings,
@@ -7,9 +7,9 @@ const settingsSelector = createSelector(
 
 export const settings = state => state?.settings?.data;
 
-export const bannersSelector = createSelector(
+export const videosSelector = createSelector(
   settingsSelector,
-  ({ banners }) => banners
+  ({ videos }) => videos
 );
 
 export const codepushVersionSelector = createSelector(
@@ -17,8 +17,14 @@ export const codepushVersionSelector = createSelector(
   ({ codepushVer }) => codepushVer
 );
 
+export const newUserTutorialSelector = createSelector(
+  settingsSelector,
+  ({ newUserTutorial }) => newUserTutorial
+);
+
 export default {
   settings,
-  bannersSelector,
+  videosSelector,
   codepushVersionSelector,
+  newUserTutorialSelector,
 };

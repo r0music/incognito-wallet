@@ -18,5 +18,5 @@ const TabAssets = () => {
 export default compose(
   withLazy,
   withLayout_2,
-  withTab
+  withTab,
 )(memo(TabAssets));

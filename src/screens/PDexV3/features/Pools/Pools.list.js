@@ -62,13 +62,6 @@ const HEADER_FACTORIES = [
       justifyContent: 'flex-end',
     },
   },
-  {
-    text: '',
-    style: {
-      width: 30,
-      marginRight: 5
-    },
-  },
 ];
 
 export const PoolsListHeader = React.memo(() => {

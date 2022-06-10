@@ -39,7 +39,7 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
   };
 
   const onRetryTx = () => {
-    const { tokenId, poolId, pairHash, nftId, amp, amount } = refundData;
+    const { tokenId, poolId, pairHash, nftId, amp, amount } = retryData;
     const params = {
       fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,
       tokenID: tokenId,

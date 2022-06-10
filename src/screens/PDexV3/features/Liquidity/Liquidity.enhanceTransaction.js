@@ -6,6 +6,8 @@ import {ExHandler} from '@services/exception';
 import {Toast} from '@components/core';
 import {actionFetch} from '@screens/PDexV3/features/Portfolio';
 import Loading from '@screens/DexV2/components/Loading';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
+import { ANALYTICS } from '@src/constants';
 
 const withTransaction = WrappedComp => props => {
   const dispatch = useDispatch();
@@ -33,6 +35,14 @@ const withTransaction = WrappedComp => props => {
         amp,
         nftID,
       });
+      setTimeout(() => {
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CONTRIBUTE_LP, {
+          token_id1: tokenId1,
+          token_id2: tokenId2,
+          token_amount1: amount1,
+          token_amount2: amount2,
+        }));
+      }, 300);
       onShowSuccess();
     } catch (error) {
       setError(new ExHandler(error).getMessage(error?.message));
@@ -54,6 +64,14 @@ const withTransaction = WrappedComp => props => {
         poolPairID: '',
         amp
       });
+      setTimeout(() => {
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CONTRIBUTE_NEW_LP, {
+          token_id1: tokenId1,
+          token_id2: tokenId2,
+          token_amount1: amount1,
+          token_amount2: amount2,
+        }));
+      }, 300);
       onShowSuccess();
     } catch (error) {
       setError(new ExHandler(error).getMessage(error?.message));
@@ -69,6 +87,14 @@ const withTransaction = WrappedComp => props => {
       await pDexV3Inst.createAndSendWithdrawContributeRequestTx({
         fee, poolTokenIDs, poolPairID, shareAmount, nftID, amount1, amount2
       });
+      setTimeout(() => {
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.REMOVE_LP, {
+          token_id1: poolTokenIDs[0],
+          token_id2: poolTokenIDs[1],
+          share_amount: shareAmount,
+          pool_pair_id: poolPairID
+        }));
+      }, 300);
       onShowSuccess();
     } catch (error) {
       setError(new ExHandler(error).getMessage(error?.message));

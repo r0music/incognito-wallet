@@ -92,7 +92,7 @@ const InputsGroup = React.memo(() => {
         loadingBalance={inputAmount.loadingBalance}
         onPressInfinityIcon={onMaxInput}
       />
-      <AddBreakLine />
+      <AddBreakLine visibleAdd />
       <Field
         component={TradeInputAmount}
         name={formConfigsContribute.outputToken}

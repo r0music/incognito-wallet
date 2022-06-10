@@ -68,7 +68,12 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
   const feePDecimals = isUseTokenFee
     ? selectedPrivacy?.pDecimals
     : CONSTANT_COMMONS.PRV.pDecimals;
-  const fee = isUseTokenFee ? feePToken : feePrv;
+  const isUnShield = screen === 'UnShield';
+  let fee = isUseTokenFee ? feePToken : feePrv;
+  // UnShield payment fee by PToken, network fee always PRV
+  if (isUnShield) {
+    fee = feePrv; // Network fee
+  }
   const userFee = isUseTokenFee ? userFeePToken : userFeePrv;
   const totalFeeText = isUseTokenFee ? totalFeePTokenText : totalFeePrvText;
   const totalFee = isUseTokenFee ? totalFeePToken : totalFeePrv;
@@ -113,7 +118,7 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     pDecimals: selectedPrivacy?.pDecimals,
     titleBtnSubmit,
     isFetching,
-    isUnShield: screen === 'UnShield',
+    isUnShield,
     isSend: screen === 'Send',
     isAddressValidated,
     isValidETHAddress,
@@ -150,10 +155,12 @@ export const getTotalFee = ({
       ? userFeesData?.PrivacyFees
       : userFeesData?.TokenFees;
     userFee = Number(userFees?.Level1) || 0;
-    if (hasMultiLevel) {
-      userFee = Number(fast2x ? userFees?.Level2 : userFees?.Level1);
+    if (hasMultiLevel && fast2x) {
+      userFee = Number(userFees?.Level2);
     }
-    totalFee = floor(userFee + Number(feeEst));
+    totalFee = isUsedPRVFee
+      ? floor(userFee + Number(feeEst))
+      : userFee;
     totalFeeText = format.toFixed(
       convert.toHumanAmount(totalFee, pDecimals),
       pDecimals,

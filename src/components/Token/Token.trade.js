@@ -6,7 +6,10 @@ import { Row } from '@src/components';
 import { FONT } from '@src/styles';
 import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme';
-import { Name, Symbol } from './Token';
+import { styles } from '@components/Token/Token.follow';
+import { BtnInfo } from '@components/Button';
+import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
+import { Name, NormalText, Symbol } from './Token';
 import { Icon } from './Token.shared';
 import withToken from './Token.enhance';
 
@@ -23,12 +26,13 @@ const styled = StyleSheet.create({
     flexDirection: 'column',
     flex: 1,
     justifyContent: 'flex-start',
+    marginBottom: 2,
   },
   name: {
     ...FONT.TEXT.incognitoP2,
   },
   symbol: {
-    marginBottom: 2,
+    marginTop: 2,
     ...FONT.TEXT.incognitoH6,
   },
   icon: {
@@ -39,7 +43,7 @@ const styled = StyleSheet.create({
 });
 
 const TokenTrade = (props) => {
-  const { style, onPress, ...rest } = props;
+  const { style, onPress, network, shortName, tokenId, ...rest } = props;
   const colors = useSelector(colorsSelector);
   return (
     <TouchableOpacity
@@ -49,17 +53,33 @@ const TokenTrade = (props) => {
       <Row style={styled.row}>
         <Icon {...rest} style={styled.icon} />
         <Row style={styled.row1}>
-          <Symbol
-            {...rest}
-            styledSymbol={styled.symbol}
-            visibleNetworkName={false}
-          />
-          <Name
-            {...rest}
-            styledName={[styled.name, { color: colors.subText }]}
-            shouldShowInfo={false}
-            isVerified={false}
-          />
+          <Row>
+            <Symbol
+              {...rest}
+              styledSymbol={styled.symbol}
+              visibleNetworkName={false}
+            />
+            <BtnInfo
+              tokenId={tokenId}
+              style={styles.btnInfo}
+              version={2}
+            />
+          </Row>
+          <Row>
+            <Name
+              {...rest}
+              name={shortName}
+              styledName={[styled.name, { color: colors.subText }]}
+              shouldShowInfo={false}
+              isVerified={false}
+            />
+            {!!network && tokenId !== PRVIDSTR && (
+              <NormalText
+                style={[styles.networkLabel, { backgroundColor: colors.background3, color: colors.grey1 }]}
+                text={network}
+              />
+            )}
+          </Row>
         </Row>
       </Row>
     </TouchableOpacity>
@@ -78,6 +98,9 @@ TokenTrade.propTypes = {
   showBalance: PropTypes.bool,
   rightTopExtra: PropTypes.element,
   shouldShowFollowed: PropTypes.bool,
+  network: PropTypes.string.isRequired,
+  shortName: PropTypes.string.isRequired,
+  tokenId: PropTypes.string.isRequired,
 };
 
 export default withToken(React.memo(TokenTrade));

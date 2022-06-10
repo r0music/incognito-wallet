@@ -216,12 +216,13 @@ export const actionAddFollowToken = (tokenID) => async (dispatch, getState) => {
       loading: false
     }]);
     const account = accountSelector.defaultAccountSelector(state);
-    const OTAKey = account.OTAKey;
     const wallet = walletSelector(state);
-    dispatch(FollowAction.actionUpdateTokenList({ newTokens: newFollowTokens, OTAKey }));
-    await accountService.addFollowingTokens([{ tokenID }], account, wallet);
-    dispatch(setWallet(wallet));
-    await dispatch(FollowAction.actionLoadFollowBalance());
+    setTimeout(() => {
+      const OTAKey = account.OTAKey;
+      dispatch(FollowAction.actionUpdateTokenList({ newTokens: newFollowTokens, OTAKey }));
+    }, 200);
+    accountService.addFollowingTokens([{ tokenID }], account, wallet);
+    // dispatch(setWallet(wallet));
   } catch (error) {
     dispatch(actionAddFollowTokenFail(tokenID));
     throw error;
@@ -268,16 +269,19 @@ export const actionRemoveFollowToken = (tokenId) => async (
     return;
   }
   try {
-    const followTokens = FollowSelector.followTokensWalletSelector(state) || [];
-    const newFollowTokens = followTokens.filter(
-      ({ id }) => id !== tokenId);
     const account = accountSelector.defaultAccountSelector(state);
     const OTAKey = account.OTAKey;
     const wallet = walletSelector(state);
-    dispatch(FollowAction.actionUpdateTokenList({ newTokens: newFollowTokens, OTAKey }));
-    await accountService.removeFollowingToken(tokenId, account, wallet);
-    dispatch(setWallet(wallet));
-    await dispatch(FollowAction.actionLoadFollowBalance());
+
+    setTimeout(() => {
+      const followTokens = FollowSelector.followTokensWalletSelector(state) || [];
+      const newFollowTokens = followTokens.filter(
+        ({ id }) => id !== tokenId);
+      dispatch(FollowAction.actionUpdateTokenList({ newTokens: newFollowTokens, OTAKey }));
+    }, 200);
+    
+    accountService.removeFollowingToken(tokenId, account, wallet);
+    // dispatch(setWallet(wallet));
   } catch (error) {
     dispatch(actionAddFollowTokenFail(tokenId));
     throw error;

@@ -2,8 +2,6 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import {
   Divider,
-  FlatList,
-  RefreshControl,
   Text,
   TouchableOpacity,
   View,
@@ -14,6 +12,8 @@ import { Row } from '@src/components';
 import { FONT } from '@src/styles';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import PropTypes from 'prop-types';
 import { actionFetchedOrderDetail } from './Swap.actions';
 import { swapHistorySelector } from './Swap.selector';
 
@@ -21,10 +21,6 @@ const styled = StyleSheet.create({
   container: {
     flex: 1,
     minHeight: 200,
-  },
-  flatlist: {
-    flex: 1,
-    paddingBottom: 24,
   },
   order: {
     flex: 1,
@@ -104,26 +100,35 @@ const Order = React.memo(({ data }) => {
   );
 });
 
-const OrderHistory = () => {
-  const { isFetching, history = [] } = useSelector(swapHistorySelector);
+const OrderHistory = ({ page }) => {
+  const { history = [] } = useDebounceSelector(swapHistorySelector)();
+
+  const historyDisplay = React.useMemo(() => {
+    if (!page) return [];
+    return history.slice(0, page);
+  }, [page, history]);
+
+  const renderItem = React.useCallback((item, index) => {
+    return (
+      <View key={item?.tradeID || item?.requestTx}>
+        <Order data={item} visibleDivider={index !== history.length - 1} />
+        {index !== history.length - 1 && <Divider />}
+      </View>
+    );
+  }, []);
   return (
     <View style={styled.container}>
-      <FlatList
-        refreshControl={<RefreshControl refreshing={isFetching} />}
-        data={history}
-        keyExtractor={(item) => item?.tradeID || item?.requestTx}
-        renderItem={({ item, index, arr }) => (
-          <>
-            <Order data={item} visibleDivider={index !== history.length - 1} />
-            {index !== history.length - 1 && <Divider />}
-          </>
-        )}
-        contentContainerStyle={styled.flatlist}
-      />
+      {historyDisplay.map(renderItem)}
     </View>
   );
 };
 
-OrderHistory.propTypes = {};
+Order.propTypes = {
+  data: PropTypes.any.isRequired,
+};
+
+OrderHistory.propTypes = {
+  page: PropTypes.number.isRequired,
+};
 
 export default React.memo(OrderHistory);

@@ -10,6 +10,8 @@ const styles = StyleSheet.create({
   },
   hook: {
     marginVertical: 50,
+    padding: 20,
+    borderRadius: 13
   },
   title: {
     fontFamily: FONT.NAME.bold,

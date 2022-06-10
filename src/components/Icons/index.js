@@ -1,3 +1,5 @@
+import CirclePlusIcon from '@components/Icons/icon.circlePlus';
+
 export { default as SearchIcon } from './icon.search';
 export { default as ClearIcon } from './icon.clear';
 export { default as DeleteIcon } from './icon.delete';
@@ -102,4 +104,5 @@ export { default as UniIcon } from './icon.uni';
 export { default as UniIcon2 } from './icon.uni2';
 export { default as CurveIcon } from './icon.curve';
 export { default as CurveIcon2 } from './icon.curve2';
-
+export { default as UTubeIcon } from './icon.utube';
+export { default as CirclePlusIcon } from './icon.circlePlus';

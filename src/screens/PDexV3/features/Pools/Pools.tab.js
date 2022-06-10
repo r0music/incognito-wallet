@@ -16,6 +16,8 @@ import { BtnCircleBack } from '@components/Button';
 import { BaseTextInputCustom } from '@components/core/BaseTextInput';
 import { PoolsListHeader, styled } from '@screens/PDexV3/features/Pools/Pools.list';
 import { RefreshControl } from 'react-native';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
+import { ANALYTICS } from '@src/constants';
 import {
   isFetchingSelector,
   listPoolsSelector,
@@ -108,6 +110,7 @@ const PoolsTab = () => {
       return onPressPoolParam(poolId);
     }
     batch(() => {
+      dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.EARN_NOW));
       dispatch(liquidityActions.actionSetContributeID({ poolId, nftId: '' }));
       navigation.navigate(routeNames.ContributePool);
     });

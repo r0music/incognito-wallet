@@ -7,8 +7,8 @@ export const setSettings = (data) => ({
   payload: data
 });
 
-export const setBanners = (data) => ({
-  type: type.SET_BANNERS,
+export const setVideoTutorial = (data) => ({
+  type: type.SET_VIDEO_TUTORIAL,
   payload: data
 });
 
@@ -17,19 +17,23 @@ export const getSettings = () => async dispatch => {
   return dispatch(setSettings(settings));
 };
 
-export const getBanners = () => async dispatch => {
+export const getVideoTutorial = () => async dispatch => {
   try {
     const configs = await getFunctionConfigs() || {};
-    const bannersConfig = configs.find(item => item.name === 'banners');
-    if (bannersConfig) {
-      const banners = JSON.parse(bannersConfig.message) || [];
-      return dispatch(setBanners(banners));
+    const videos = configs.find(item => item.name === 'video_tutorial');
+    if (videos) {
+      const tutorial = JSON.parse(videos.message) || [];
+      return dispatch(setVideoTutorial(tutorial));
     }
   } catch (e) {
-    console.log('getBanners errors: ', e);
+    console.log('getVideoTutorial errors: ', e);
   }
 };
 
+export const setNewUserTutorial = (payload) =>({
+  type: type.SET_NEW_USER_TUTORIAL,
+  payload,
+});
 
 export const setCodePushVersion = (data) => ({
   type: type.SET_CODE_PUSH_VERSION,

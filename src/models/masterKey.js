@@ -48,9 +48,7 @@ class MasterKeyModel {
    * Load wallet from storage
    * @returns {Promise<Wallet>}
    */
-  async loadWallet({
-    callback,
-  } = {}) {
+  async loadWallet({ callback, migratePassCodeToDefault = false } = {}) {
     console.time('TIME_LOAD_WALLET_FROM_STORAGE');
     const rootName = this.name;
     const storageName = this.getStorageName();
@@ -59,13 +57,13 @@ class MasterKeyModel {
     let backupMasterKeys = [];
     let wallet;
     if (rawData) {
-      wallet = await loadWallet(passphrase, storageName, rootName);
+      wallet = await loadWallet(passphrase, storageName, rootName, migratePassCodeToDefault);
     }
     if (!wallet) {
       backupMasterKeys = reverse((await this.getBackupMasterKeys()) || []);
-
-      /** foundMasterKey = { name, mnemonic, isMasterless }
-       * handle cant load wallet
+      /**
+       * foundMasterKey = { name, mnemonic, isMasterless }
+       * handle can't load wallet
        * load list backup in wallet and reimport again
        **/
       const foundMasterKey = backupMasterKeys.find(({ name }) => name === rootName);

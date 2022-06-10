@@ -202,6 +202,7 @@ const CoinList = ({
       >
         {groupedUserData.map((item) => {
           const mapCoin = item.coin;
+          console.log('item: ', item);
           if (!mapCoin) return null;
           const { iconUrl } = getPrivacyDataByTokenID(item.id);
           return (

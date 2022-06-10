@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
   swipeOutButton: {
     paddingHorizontal: 25,
     borderRadius: 4,
+    marginBottom: 16
   },
   active: {
     ...FONT.STYLE.bold,

@@ -5,13 +5,14 @@ import { useHistoryEffect } from '@src/screens/Wallet/features/History/History.u
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import EmptyHistory from './HistoryToken.empty';
 
-const HistoryToken = () => {
+const HistoryToken = (props) => {
   const { histories, isEmpty, loading, refreshing, oversize } = useDebounceSelector(
     historyTxsSelector,
   );
   const { handleRefresh, handleCancelEtaHistory } = useHistoryEffect();
   return (
     <HistoryList
+      {...props}
       histories={histories}
       onCancelEtaHistory={handleCancelEtaHistory}
       onRefreshHistoryList={handleRefresh}
@@ -26,4 +27,4 @@ const HistoryToken = () => {
 
 HistoryToken.propTypes = {};
 
-export default HistoryToken;
+export default React.memo(HistoryToken);

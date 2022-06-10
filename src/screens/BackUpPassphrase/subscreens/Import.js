@@ -83,7 +83,7 @@ const ImportMasterKey = () => {
         } else {
           await dispatch(initMasterKey(trimmedName, trimmedPhrase));
           await dispatch(actionLoadInitial());
-          navigation.navigate(routeNames.GetStarted);
+          navigation.navigate(routeNames.Tutorial);
         }
       } catch (e) {
         setError(e.message);

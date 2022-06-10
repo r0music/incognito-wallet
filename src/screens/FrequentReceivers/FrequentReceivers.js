@@ -18,9 +18,10 @@ const ListReceivers = (props) => {
     }
   };
   return (
-    <>
+    <View>
       {receivers?.map((receiver, index) => (
         <DropdownMenu
+          defaultToggle={index === 0}
           sections={[receiver]}
           renderItem={({ item }) => {
             return (
@@ -41,7 +42,7 @@ const ListReceivers = (props) => {
           ]}
         />
       ))}
-    </>
+    </View>
   );
 };
 

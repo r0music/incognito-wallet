@@ -42,11 +42,7 @@ import { colorsSelector } from '@src/theme';
 import withLazy from '@components/LazyHoc/LazyHoc';
 import { followTokenItemSelector } from '@screens/Wallet/features/FollowList/FollowList.selector';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
-import {
-  groupBtnStyled,
-  balanceStyled,
-  historyStyled,
-} from './Detail.styled';
+import { groupBtnStyled, balanceStyled, historyStyled } from './Detail.styled';
 
 const GroupButton = React.memo(() => {
   const navigation = useNavigation();
@@ -84,7 +80,12 @@ const GroupButton = React.memo(() => {
 
   return (
     <SafeAreaView>
-      <View2 style={[groupBtnStyled.groupButton, {...globalStyled.defaultPaddingHorizontal}]}>
+      <View2
+        style={[
+          groupBtnStyled.groupButton,
+          { ...globalStyled.defaultPaddingHorizontal },
+        ]}
+      >
         <BtnPrimary
           title="Buy"
           wrapperStyle={groupBtnStyled.btnStyle}
@@ -127,7 +128,11 @@ const Balance = React.memo(() => {
     <View style={balanceStyled.container}>
       <Amount {...amountProps} amount={token?.amount} />
       <View style={balanceStyled.hook}>
-        <Price pricePrv={selected.pricePrv} priceUsd={selected.priceUsd} textStyle={{ color: colors.text3 }} />
+        <Price
+          pricePrv={selected.pricePrv}
+          priceUsd={selected.priceUsd}
+          textStyle={{ color: colors.text3 }}
+        />
         <ChangePrice {...changePriceProps} />
       </View>
     </View>
@@ -135,10 +140,22 @@ const Balance = React.memo(() => {
 });
 
 const History = React.memo(() => {
-  const selectedPrivacy = useDebounceSelector(selectedPrivacySelector.selectedPrivacy);
+  const selectedPrivacy = useDebounceSelector(
+    selectedPrivacySelector.selectedPrivacy,
+  );
+  const [page, setPage] = React.useState(15);
+
+  const onLoadmoreHistory = React.useCallback(() => {
+    setPage(page => page + 15);
+  }, []);
+
   return (
     <View style={[historyStyled.container, { marginTop: 12 }]}>
-      {selectedPrivacy?.isMainCrypto ? <MainCryptoHistory /> : <HistoryToken />}
+      {selectedPrivacy?.isMainCrypto ?
+        <MainCryptoHistory page={page} onLoadmoreHistory={onLoadmoreHistory} />
+        :
+        <HistoryToken page={page} onLoadmoreHistory={onLoadmoreHistory} />
+      }
     </View>
   );
 });
@@ -199,15 +216,21 @@ const CustomRightHeader = () => {
 const Detail = (props) => {
   const navigation = useNavigation();
   const selected = useDebounceSelector(selectedPrivacySelector.selectedPrivacy);
-  const { isFetching } = useDebounceSelector(tokenSelector.historyTokenSelector);
+  const { isFetching } = useDebounceSelector(
+    tokenSelector.historyTokenSelector,
+  );
   const token = useDebounceSelector(
     selectedPrivacySelector.selectedPrivacyByFollowedSelector,
   );
-  const isGettingTokenBalance = useDebounceSelector(isGettingTokenBalanceSelector);
+  const isGettingTokenBalance = useDebounceSelector(
+    isGettingTokenBalanceSelector,
+  );
   const isGettingMainCryptoBalance = useDebounceSelector(
     isGettingMainCryptoBalanceSelector,
   );
-  const defaultAccount = useDebounceSelector(accountSelector.defaultAccountSelector);
+  const defaultAccount = useDebounceSelector(
+    accountSelector.defaultAccountSelector,
+  );
   const refreshing =
     !!isFetching || selected?.isMainCrypto
       ? isGettingMainCryptoBalance.length > 0 || !defaultAccount
