@@ -131,7 +131,9 @@ const Extra = (props) => {
       selectedPrivacy?.isMATIC ||
       selectedPrivacy?.isPolygonErc20Token ||
       selectedPrivacy?.isFTM ||
-      selectedPrivacy?.isFantomErc20Token
+      selectedPrivacy?.isFantomErc20Token ||
+      selectedPrivacy?.isNEAR ||
+      selectedPrivacy?.isNearErc20Token
     ) {
       shieldingTimeText = '10 mins';
     }
@@ -160,6 +162,8 @@ const Extra = (props) => {
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
       selectedPrivacy?.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
+    selectedPrivacy?.currencyType ===
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR;
     let humanFee = convert.toNumber(
       (isNativeToken ? defaultFee?.estimateFee : defaultFee?.tokenFee) || 0,
       true,
@@ -173,10 +177,14 @@ const Extra = (props) => {
     const themeMode = useSelector(themeModeSelector);
     return (
       <>
-        <NormalText text="Estimated shielding fee: " style={{color: colors?.text1}}>
+        <NormalText
+          text="Estimated shielding fee: "
+          style={{ color: colors?.text1 }}
+        >
           <Text style={[styled.boldText]}>
-            {`${humanFee} ${selectedPrivacy?.externalSymbol ||
-              selectedPrivacy?.symbol}`}
+            {`${humanFee} ${
+              selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
+            }`}
           </Text>
         </NormalText>
         <View style={styled.centerRaw}>
@@ -286,9 +294,10 @@ const Extra = (props) => {
         : decentralized === 2 ||
           decentralized === 3 ||
           decentralized === 4 ||
-          decentralized === 5
-          ? renderShieldUserAddress()
-          : renderShieldIncAddress()}
+          decentralized === 5 ||
+          decentralized === 6
+        ? renderShieldUserAddress()
+        : renderShieldIncAddress()}
     </View>
   );
 };

@@ -515,6 +515,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
     isBep20Token,
     isPolygonErc20Token,
     isFantomErc20Token,
+    isNearErc20Token,
     symbol,
   } = selectedPrivacy;
   const { isETH, isUsedPRVFee, userFees, isUnShield } = feeDataSelector(state);
@@ -532,7 +533,11 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
         originalAmount,
         paymentAddress,
         walletAddress,
-        tokenContractID: isETH || currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB ? '' : contractId,
+        tokenContractID:
+          isETH ||
+          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB
+            ? ''
+            : contractId,
         tokenId,
         burningTxId: '',
         currencyType: currencyType,
@@ -540,6 +545,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
         isBep20Token: isBep20Token,
         isPolygonErc20Token: isPolygonErc20Token,
         isFantomErc20Token: isFantomErc20Token,
+        isNearErc20Token: isNearErc20Token,
         externalSymbol: externalSymbol,
         isUsedPRVFee,
         signPublicKeyEncode,

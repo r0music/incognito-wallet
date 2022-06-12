@@ -96,6 +96,30 @@ const TEST_NET_SERVER = {
   web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
 };
 
+const TEST_NET_NEAR_SERVER = {
+  id: 'testnetnear',
+  default: false,
+  address: 'http://51.161.117.193:31334',
+  username: '',
+  password: '',
+  name: 'Testnet Near',
+  coinServices: 'http://51.161.117.193:4002',
+  pubsubServices: 'http://51.161.117.193:4004',
+  requestServices: 'http://51.161.117.193:4002',
+  apiServices: 'https://staging-api-service.incognito.org',
+  shardNumber: DEFAULT_SHARD_NUMBER,
+  IncContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
+  IncBSCContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
+  explorer: 'https://testnet.incognito.org',
+  tradeServices: 'http://51.161.117.193:4002',
+  portalServices: 'http://51.161.119.66:8020',
+  webviewChartServices: 'https://chart-webview-staging.incognito.org',
+  bscConfigs: BSC_CONSTANT.BSC_TESTNET_CONFIGS,
+  pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,
+  uniConfigs: UNI_CONSTANTS.UNI_TESTNET_CONFIGS,
+  web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
+};
+
 const LOCAL_SERVER = {
   id: 'local',
   default: false,
@@ -218,6 +242,7 @@ const BETA_2 = {
 const DEFAULT_LIST_SERVER = [
   LOCAL_SERVER,
   TEST_NET_SERVER,
+  TEST_NET_NEAR_SERVER,
   TEST_NODE_SERVER,
   MAIN_NET_SERVER,
   TEST_NET_1_SERVER,

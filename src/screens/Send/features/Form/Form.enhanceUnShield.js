@@ -33,6 +33,7 @@ import {
   BurningRequestMeta,
   BurningPLGRequestMeta,
   BurningFantomRequestMeta,
+  BurningNearRequestMeta,
   BurningPRVERC20RequestMeta,
   BurningPRVBEP20RequestMeta,
   PrivacyVersion,
@@ -89,6 +90,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     isBep20Token,
     isPolygonErc20Token,
     isFantomErc20Token,
+    isNearErc20Token,
     externalSymbol,
     paymentAddress: walletAddress,
     pDecimals,
@@ -126,6 +128,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         isBSC,
         isPolygon,
         isFantom,
+        isNear
       } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
 
@@ -135,7 +138,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       if (isBSC) burningRequestMeta = BurningPBSCRequestMeta;
       if (isPolygon) burningRequestMeta = BurningPLGRequestMeta;
       if (isFantom) burningRequestMeta = BurningFantomRequestMeta;
-
+      if (isNear) burningRequestMeta = BurningNearRequestMeta;
 
       /**--> Get payment info <--*/
       const paymentInfo = [{
@@ -231,6 +234,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         isBep20Token: isBep20Token,
         isPolygonErc20Token: isPolygonErc20Token,
         isFantomErc20Token: isFantomErc20Token,
+        isNearErc20Token: isNearErc20Token,
         externalSymbol: externalSymbol,
         isUsedPRVFee,
         userFeesData,
@@ -419,6 +423,9 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         isFantom:
           isFantomErc20Token ||
           currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM,
+        isNear:
+          isNearErc20Token ||
+          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR,
       };
       let res;
       if (isDecentralized) {

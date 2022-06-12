@@ -10,6 +10,7 @@ import { cachePromise, EXPIRED_TIME, KEYS } from '@services/cache';
 import http1 from '@services/http1';
 import PolygonToken from '@src/models/polygonToken';
 import FantomToken from '@src/models/fantomToken';
+import NearToken from '@src/models/nearToken';
 
 let BEP2Tokens = [];
 
@@ -94,6 +95,32 @@ export const addFantomToken = ({ symbol, name, contractId, decimals }) => {
     .then((res) => new PToken(res));
 };
 
+export const detectNearToken = (nearAddress) => {
+  if (!nearAddress) throw new Error('Missing nearAddress to detect');
+  return http
+    .post('near/detect-near-token', {
+      Address: nearAddress,
+    })
+    .then((res) => new NearToken(res))
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const addNearToken = ({ symbol, name, contractId, decimals }) => {
+  const parseDecimals = Number(decimals);
+
+  if (!symbol) throw new Error('Missing symbol');
+  if (!name) throw new Error('Missing name');
+  if (!contractId) throw new Error('Missing contractId');
+  if (!Number.isInteger(parseDecimals)) throw new Error('Invalid decimals');
+  return http
+    .post('near/near-token/add', {
+      ContractID: contractId,
+    })
+    .then((res) => new PToken(res));
+};
+
 export const detectTokenInNetwork = ({ address, network }) => {
   if (!address) throw new Error(`Missing ${network} address to detect`);
   if (!network) throw new Error('Missing network');
@@ -113,6 +140,9 @@ export const detectTokenInNetwork = ({ address, network }) => {
     break;
   case 'FANTOM':
     fn = detectFantomToken(address);
+    break;
+  case 'NEAR':
+    fn = detectNearToken(address);
     break;
   default:
     break;
@@ -198,6 +228,9 @@ export const addManuallyToken = ({
     break;
   case 'FANTOM':
     fn = addFantomToken({ symbol, name, contractId, decimals });
+    break;
+   case 'NEAR':
+    fn = addNearToken({ symbol, name, contractId, decimals });
     break;
   default:
     break;

@@ -22,11 +22,14 @@ function getNetworkName() {
   // Native token of Fantom network
   const isFTM =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
-  
+  // Native token of Near network
+  const isNEAR =
+    this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR;
+
   if (isBSC) {
-    name ='BSC';
+    name = 'BSC';
   } else if (isBNB) {
-    name ='BNB Chain';
+    name = 'BNB Chain';
   } else if (this.isIncognitoToken || this.isMainCrypto) {
     name = 'Incognito';
   } else if (this.isPrivateCoin) {
@@ -41,6 +44,8 @@ function getNetworkName() {
     name = 'Polygon ERC20';
   } else if (this.isFantomErc20Token) {
     name = 'Fantom ERC20';
+  } else if (this.isNearErc20Token) {
+    name = 'NEAR ERC20';
   } else if (this.isIncognitoToken || this.isMainCrypto) {
     name = 'Incognito';
   }
@@ -56,6 +61,8 @@ function getNetworkName() {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.POLYGON;
   } else if (isFTM || this?.isFantomErc20Token) {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.FANTOM;
+  } else if (isNEAR || this?.isNearErc20Token) {
+    rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.NEAR;
   }
   return {
     networkName: name,
@@ -126,6 +133,10 @@ class SelectedPrivacy {
       this.isPrivateToken &&
       this.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FANTOM_ERC20;
+     this.isNearErc20Token =
+       this.isPrivateToken &&
+       this.currencyType ===
+         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR_ERC20;
     this.isBep20Token =
       this.isPrivateToken &&
       this.currencyType ===
@@ -191,6 +202,10 @@ class SelectedPrivacy {
       this.isFantomErc20Token ||
       (this.isToken &&
         this.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM);
+      this.isNearErc20Token ||
+        (this.isToken &&
+          this.currencyType ===
+            CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR);
     this.isCentralized = this.isToken && !this.isDecentralized;
     this.incognitoTotalSupply =
       (this.isIncognitoToken && Number(token?.totalSupply)) || 0;
@@ -231,11 +246,19 @@ class SelectedPrivacy {
     this.hasSameSymbol = pTokenData.hasSameSymbol;
 
     // Native Token of Network
-    this.isETH = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
-    this.isBSC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
-    this.isBNB = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
-    this.isMATIC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
-    this.isFTM = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
+    this.isETH =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
+    this.isBSC =
+      this?.currencyType ===
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
+    this.isBNB =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
+    this.isMATIC =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
+    this.isFTM =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
+    this.isNEAR =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR;
   }
 }
 

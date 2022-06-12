@@ -44,38 +44,52 @@ const enhance = (WrappedComp) => (props) => {
     navigation.navigate(routeNames.Shield);
   };
   const themeMode = useSelector(themeModeSelector);
-  const renderHeader = React.useCallback(() => (
-    <Header
-      title={`Shield ${tokenSymbol}`}
-      titleStyled={styled.titleStyled}
-      rightHeader={<BtnInfo isBlack={themeMode !== THEME_KEYS.DARK_THEME} onPress={handleToggleTooltip} />}
-      onGoBack={handleGoBack}
-    />
-  ), [tokenSymbol]);
+  const renderHeader = React.useCallback(
+    () => (
+      <Header
+        title={`Shield ${tokenSymbol}`}
+        titleStyled={styled.titleStyled}
+        rightHeader={
+          <BtnInfo
+            isBlack={themeMode !== THEME_KEYS.DARK_THEME}
+            onPress={handleToggleTooltip}
+          />
+        }
+        onGoBack={handleGoBack}
+      />
+    ),
+    [tokenSymbol],
+  );
 
-  const renderLoading = React.useCallback(() => (
-    <>
-      {renderHeader()}
-      <LoadingContainer />
-    </>
-  ), []);
+  const renderLoading = React.useCallback(
+    () => (
+      <>
+        {renderHeader()}
+        <LoadingContainer />
+      </>
+    ),
+    [],
+  );
 
   const renderTermOfUse = () => {
     return (
       <TermOfUseShield
-        {
-        ...{
+        {...{
           ...props,
           selectedTerm,
           onNextPress: () => setShowTerm(false),
-          onSelected: index => setSelectedTerm(index)
+          onSelected: (index) => setSelectedTerm(index),
         }}
       />
     );
   };
 
   React.useEffect(() => {
-    if ((!CONSTANT_COMMONS.CURRENCY_TYPE_BRIDGE.includes(currencyType) && selectedTerm === undefined) && typeof handleShield === 'function') {
+    if (
+      !CONSTANT_COMMONS.CURRENCY_TYPE_BRIDGE.includes(currencyType) &&
+      selectedTerm === undefined &&
+      typeof handleShield === 'function'
+    ) {
       handleShield();
     }
   }, [selectedTerm]);
@@ -95,21 +109,25 @@ const enhance = (WrappedComp) => (props) => {
     selectedPrivacy?.isFantomErc20Token ||
     currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
 
+  // Check token belong to Near network
+  const isNearToken =
+    selectedPrivacy?.isNearErc20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR;
+
   /** render term off user */
   if (
     isDecentralized &&
     showTerm &&
     selectedPrivacy?.tokenId !== PRV_ID &&
     !isPolygonToken &&
-    !isFantomToken
+    !isFantomToken &&
+    !isNearToken
   ) {
     return renderTermOfUse();
   }
 
   if (selectedTerm === 1) {
-    return (
-      <ShieldDecentralized {...{ ...props, setShowTerm}} />
-    );
+    return <ShieldDecentralized {...{ ...props, setShowTerm }} />;
   }
 
   return (
