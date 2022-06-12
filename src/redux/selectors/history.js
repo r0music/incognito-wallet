@@ -9,6 +9,8 @@ import formatUtil from '@src/utils/format';
 import { decimalDigitsSelector } from '@src/screens/Setting';
 import LinkingService from '@src/services/linking';
 import {
+  checkShieldProcessing,
+  checkShieldPortalProcessing,
   getStatusColorShield,
   getStatusColorUnshield,
   TX_STATUS_COLOR,
@@ -379,9 +381,20 @@ export const historyDetailFactoriesSelector = createSelector(
           shieldingFeeStr,
           txReceive,
           canRetryInvalidAmountShield,
-          network
+          network,
+          decentralized,
+          status
         } = tx;
-        return [
+        const isShieldProcessing = checkShieldProcessing(status, decentralized);
+        let estimationShieldingTime = '';
+        if (isShieldProcessing) {
+          if (selectedPrivacy?.isETH || selectedPrivacy?.isErc20Token) {
+            estimationShieldingTime = '20 mins';
+          } else {
+            estimationShieldingTime = '10 mins';
+          }
+        }
+        let data = [
           {
             label: 'ID',
             value: `#${id}`,
@@ -467,6 +480,13 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !network,
           },
         ];
+        if (isShieldProcessing) {
+          data.push({
+            label: 'Estimation time',
+            value: estimationShieldingTime,
+          });
+        }
+        return data;
       }
       case ACCOUNT_CONSTANT.TX_TYPE.UNSHIELD: {
         const {
@@ -586,9 +606,11 @@ export const historyDetailFactoriesSelector = createSelector(
           inchainTx,
           outchainTx,
           incognitoAddress,
-          statusDetail
+          statusDetail,
+          status,
         } = tx;
-        return [
+        const isShieldProcessing = checkShieldPortalProcessing(status);
+        let data = [
           {
             label: 'Shield',
             value: `${amountStr} ${symbol}`,
@@ -633,6 +655,13 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !symbol,
           },
         ];
+        if(isShieldProcessing) {
+          data.push({
+            label: 'Estimation time',
+            value:  '60 mins'
+          });
+        }
+        return data;
       }
       case ACCOUNT_CONSTANT.TX_TYPE.UNSHIELDPORTAL: {
         const {

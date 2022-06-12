@@ -13,6 +13,7 @@ import HideBalance from '@screens/Setting/features/HideBalance';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout';
 import RemoveOldPool from '@screens/Setting/features/RemoveOldPool';
+import { CONSTANT_CONFIGS } from '@src/constants';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
@@ -81,7 +82,7 @@ const Setting = () => {
         </View>
         <View>
           <Text style={[settingStyle.textVersion]}>
-            {`v${AppUpdater.appVersion}${
+            {`v${CONSTANT_CONFIGS.BUILD_VERSION}${
               global.isDebug() ? ` (${DeviceInfo.getBuildNumber()})` : ''
             }`}
           </Text>
