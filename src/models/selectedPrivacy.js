@@ -201,11 +201,12 @@ class SelectedPrivacy {
           CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC) ||
       this.isFantomErc20Token ||
       (this.isToken &&
-        this.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM);
+        this.currencyType ===
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM) ||
       this.isNearErc20Token ||
-        (this.isToken &&
-          this.currencyType ===
-            CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR);
+      (this.isToken &&
+        this.currencyType ===
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR);
     this.isCentralized = this.isToken && !this.isDecentralized;
     this.incognitoTotalSupply =
       (this.isIncognitoToken && Number(token?.totalSupply)) || 0;
