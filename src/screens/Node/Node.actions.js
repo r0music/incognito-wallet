@@ -15,7 +15,7 @@ import {
   ACTION_UPDATE_ACCESS_TOKEN_REFRESH_TOKEN
 } from '@screens/Node/Node.constant';
 import { ExHandler } from '@services/exception';
-import { apiGetNodesInfo } from '@screens/Node/Node.services';
+import { apiGetNodeInfo, apiGetNodeReward } from '@screens/Node/Node.services';
 import Device from '@models/device';
 import LocalDatabase from '@utils/LocalDatabase';
 import { parseNodeRewardsToArray } from '@screens/Node/utils';
@@ -62,7 +62,7 @@ export const actionGetNodesInfoFromApi = (isRefresh) => async (dispatch, getStat
     // Start loading
     await dispatch(actionFetchingNodesInfoFromAPI(isRefresh));
 
-    const nodesInfo = await apiGetNodesInfo();
+    const nodesInfo = await apiGetNodeReward();
     console.debug('Node Info From API: ', nodesInfo);
 
     const {
@@ -236,16 +236,40 @@ export const actionUpdatePNodeItem = (productId) => async (dispatch, getState) =
             device.Host = data?.ip?.lan;
           }
         }
-      } else {
+      }
+
+      const { blsKey, account } = await getNodeBLSKey(device, listAccount);
+      if (!isEmpty(blsKey)) {
+        device.PublicKeyMining = blsKey;
+      }
+
+      if (device.PaymentAddress && account) {
+        device.Account = account;
+        device.ValidatorKey = device.Account.ValidatorKey;
+        device.PublicKey = device.Account.PublicKeyCheckEncode;
+        device.Account = findAccountFromListAccounts({
+          accounts: listAccount,
+          address: device?.PaymentAddress,
+        });
+      }
+
+      if (!device.IsSetupViaLan) {
         const ip = await NodeService.pingGetIP(device, 15);
-        if (ip) {
-          device.Host = ip;
-          device.setIsOnline(MAX_RETRY);
-        } else {
-          device.Host = '';
-          device.setIsOnline(Math.max(device.IsOnline - 1, 0));
+        if (device.Account && device?.Account?.BLSPublicKey) {
+          const { isOnline } = await apiGetNodeInfo({ blsKey: device.Account.BLSPublicKey });
+          if (isOnline) {
+            device?.setIsOnline(MAX_RETRY);
+          } else {
+            device?.setIsOnline(Math.max(device?.IsOnline - 1, 0));
+          }
+          if (ip) {
+            device.Host = ip;
+          } else {
+            device.Host = '';
+          }
         }
       }
+
       if (device.IsOnline && device.Host) {
         try {
           const version = await NodeService.checkVersion(device);
@@ -260,20 +284,6 @@ export const actionUpdatePNodeItem = (productId) => async (dispatch, getState) =
         } catch (e) {
           console.debug('CHECK VERSION ERROR', device.QRCode, e);
         }
-      }
-      const { blsKey, account } = await getNodeBLSKey(device, listAccount);
-      if (!isEmpty(blsKey)) {
-        device.PublicKeyMining = blsKey;
-      }
-
-      if (device.PaymentAddress && account) {
-        device.Account = account;
-        device.ValidatorKey = device.Account.ValidatorKey;
-        device.PublicKey = device.Account.PublicKeyCheckEncode;
-        device.Account = findAccountFromListAccounts({
-          accounts: listAccount,
-          address: device?.PaymentAddress,
-        });
       }
 
       await dispatch(actionUpdateNodeByProductId(productId, device));
@@ -318,16 +328,20 @@ export const actionUpdateVNodeItem = (deviceItem) => async (dispatch, getState) 
         device.PublicKeyMining = newBLSKey;
         device.StakeTx = null;
       }
-      if (newBLSKey) {
-        device?.setIsOnline(MAX_RETRY);
-      } else {
-        device?.setIsOnline(Math.max(device?.IsOnline - 1, 0));
-      }
 
       // Check VNode has Account by BLS Key
       // If has new BLS Key, use new BLSKey, if not use Old BLS Key
       const accountBLSKey = isEmpty(newBLSKey) ? oldBLSKey : newBLSKey;
       device = await combineNode(device, listAccount, accountBLSKey || '');
+
+      if (device.Account && device?.Account?.BLSPublicKey) {
+        const { isOnline } = await apiGetNodeInfo({ blsKey: device.Account.BLSPublicKey });
+        if (isOnline) {
+          device?.setIsOnline(MAX_RETRY);
+        } else {
+          device?.setIsOnline(Math.max(device?.IsOnline - 1, 0));
+        }
+      }
 
       await dispatch(actionUpdateNodeByProductId(productId, device));
 
