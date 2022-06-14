@@ -107,7 +107,7 @@ const TEST_NET_NEAR_SERVER = {
   pubsubServices: 'http://51.161.117.193:4004',
   requestServices: 'http://51.161.117.193:4002',
   apiServices: 'https://staging-api-service.incognito.org',
-  shardNumber: DEFAULT_SHARD_NUMBER,
+  shardNumber: 2,
   IncContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   IncBSCContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   explorer: 'https://testnet.incognito.org',
