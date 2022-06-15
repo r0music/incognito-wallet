@@ -58,6 +58,7 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   }, [isNearErc20Token, currencyType]);
 
   const getExternalAddressValidator = () => {
+    if(isNear) return;
     if (!isAddressValidated) {
       return [validator.invalidAddress(`Invalid ${externalSymbol} address`)];
     }
@@ -153,7 +154,7 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   };
 
   const getWarningAddress = () => {
-    if (isExternalAddress && (selectedPrivacy.isDecentralized || selectedPrivacy.isMainCrypto)) {
+    if (isExternalAddress && !isNear && (selectedPrivacy.isDecentralized || selectedPrivacy.isMainCrypto)) {
       return 'To avoid loss of funds, please make sure your destination address can receive funds from smart contracts. If you’re not sure, a personal address is always recommended.';
     }
     if (isExternalAddress && isERC20) {

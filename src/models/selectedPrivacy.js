@@ -45,7 +45,7 @@ function getNetworkName() {
   } else if (this.isFantomErc20Token) {
     name = 'Fantom ERC20';
   } else if (this.isNearErc20Token) {
-    name = 'NEAR ERC20';
+    name = 'NEAR TOKEN';
   } else if (this.isIncognitoToken || this.isMainCrypto) {
     name = 'Incognito';
   }
