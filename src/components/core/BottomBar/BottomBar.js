@@ -4,6 +4,7 @@ import { TouchableOpacity } from '@src/components/core';
 import { Icon } from 'react-native-elements';
 import { COLORS, FONT } from '@src/styles';
 import PropTypes from 'prop-types';
+import TextMarquee from '@screens/MainTabBar/features/Home/AutoScrollText';
 
 const styled = StyleSheet.create({
   container: {
@@ -13,6 +14,7 @@ const styled = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 10,
     position: 'relative',
+    paddingHorizontal: 10
   },
   text: {
     color: COLORS.white,
@@ -23,11 +25,23 @@ const styled = StyleSheet.create({
 });
 
 const BottomBar = (props) => {
-  const { onPress, text } = props;
+  const { onPress, text, autoscroll = false } = props;
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styled.container}>
-        <Text style={styled.text}>{text}</Text>
+        { autoscroll ? (
+          <TextMarquee
+            duration={7000}
+            loop
+            repeatSpacer={50}
+            marqueeDelay={500}
+            marqueeOnMount
+            animationType="scroll"
+          >
+            <Text style={styled.text}>{text}</Text>
+          </TextMarquee>
+        ) : <Text style={styled.text}>{text}</Text>
+        }
         <Icon name="chevron-right" color={COLORS.white} />
       </View>
     </TouchableOpacity>
@@ -37,6 +51,7 @@ const BottomBar = (props) => {
 BottomBar.propTypes = {
   onPress: PropTypes.func.isRequired,
   text: PropTypes.string.isRequired,
+  autoscroll: PropTypes.bool
 };
 
 export default React.memo(BottomBar);

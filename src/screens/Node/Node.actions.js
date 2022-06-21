@@ -255,12 +255,19 @@ export const actionUpdatePNodeItem = (productId) => async (dispatch, getState) =
 
       if (!device.IsSetupViaLan) {
         const ip = await NodeService.pingGetIP(device, 15);
+        let blsPubKey = '';
         if (device.Account && device?.Account?.BLSPublicKey) {
-          const { isOnline } = await apiGetNodeInfo({ blsKey: device.Account.BLSPublicKey });
+          blsPubKey = device?.Account?.BLSPublicKey;
+        }
+        if (device.PublicKeyMining) {
+          blsPubKey = device?.PublicKeyMining;
+        }
+        if (blsPubKey) {
+          const { isOnline } = await apiGetNodeInfo({ blsKey: blsPubKey });
           if (isOnline) {
             device?.setIsOnline(MAX_RETRY);
           } else {
-            device?.setIsOnline(Math.max(device?.IsOnline - 1, 0));
+            device?.setIsOnline(0);
           }
           if (ip) {
             device.Host = ip;
@@ -334,12 +341,19 @@ export const actionUpdateVNodeItem = (deviceItem) => async (dispatch, getState) 
       const accountBLSKey = isEmpty(newBLSKey) ? oldBLSKey : newBLSKey;
       device = await combineNode(device, listAccount, accountBLSKey || '');
 
+      let blsPubKey = '';
       if (device.Account && device?.Account?.BLSPublicKey) {
-        const { isOnline } = await apiGetNodeInfo({ blsKey: device.Account.BLSPublicKey });
+        blsPubKey = device?.Account?.BLSPublicKey;
+      }
+      if (device.PublicKeyMining) {
+        blsPubKey = device?.PublicKeyMining;
+      }
+      if (blsPubKey) {
+        const { isOnline } = await apiGetNodeInfo({ blsKey: blsPubKey });
         if (isOnline) {
           device?.setIsOnline(MAX_RETRY);
         } else {
-          device?.setIsOnline(Math.max(device?.IsOnline - 1, 0));
+          device?.setIsOnline(0);
         }
       }
 
