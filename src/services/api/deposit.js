@@ -61,19 +61,14 @@ export const genETHDepositAddress = ({
   // }
 
   let body = {
-    CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
-    RequestedAmount: undefined,
-    PaymentAddress: paymentAddress,
     WalletAddress: walletAddress ?? paymentAddress,
-    Erc20TokenAddress: '',
     PrivacyTokenAddress: tokenId,
-    NewShieldDecentralized: 1,
   };
   if (signPublicKeyEncode) {
     body.SignPublicKeyEncode = signPublicKeyEncode;
   }
-  return http.post('eta/generate', body).then(formatResponse);
+  return http.post('eth/generate', body).then(formatResponse);
 };
 
 export const genERC20DepositAddress = ({
@@ -96,21 +91,16 @@ export const genERC20DepositAddress = ({
   // }
 
   let body = {
-    CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
-    RequestedAmount: undefined,
-    PaymentAddress: paymentAddress,
     WalletAddress: walletAddress ?? paymentAddress,
-    Erc20TokenAddress: tokenContractID,
     PrivacyTokenAddress: tokenId,
-    NewShieldDecentralized: 1,
   };
 
   if (signPublicKeyEncode) {
     body.SignPublicKeyEncode = signPublicKeyEncode;
   }
 
-  return http.post('eta/generate', body).then(formatResponse);
+  return http.post('eth/generate', body).then(formatResponse);
 };
 
 export const genBSCDepositAddress = ({

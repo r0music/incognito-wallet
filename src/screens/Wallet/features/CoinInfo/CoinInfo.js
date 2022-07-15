@@ -37,7 +37,11 @@ const InfoItem = ({ label, value, copyable, link, onlyLabel, labelStyle }) => {
           </Text>
         </View>
       )}
-      {copyable && <CopyIcon />}
+      {copyable && (
+        <TouchableOpacity onPress={handleCopyText}>
+          <CopyIcon />
+        </TouchableOpacity>
+      )}
       {!!link && <OpenUrlIcon />}
     </Row>
   );
@@ -50,7 +54,7 @@ const InfoItem = ({ label, value, copyable, link, onlyLabel, labelStyle }) => {
   if (!value && !onlyLabel) {
     return null;
   }
-  if (copyable) {
+  if (copyable && !link) {
     return (
       <TouchableOpacity onPress={handleCopyText}>
         {renderComponent()}

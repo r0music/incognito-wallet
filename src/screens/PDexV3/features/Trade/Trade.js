@@ -37,7 +37,7 @@ const Trade = (props) => {
         useTab1
         defaultTabIndex={0}
         styledTabList={styled.styledTabList}
-        rightCustom={(
+        rightCustom={
           <Row style={styled.rightHeader}>
             {visibleBtnChart && (
               <ButtonChart
@@ -49,7 +49,7 @@ const Trade = (props) => {
               <SelectAccountButton handleSelectedAccount={onRefresh} />
             </View>
           </Row>
-        )}
+        }
       >
         <View tabID={TAB_SWAP_ID} label="Swap">
           <TabSwap />

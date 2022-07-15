@@ -1,4 +1,5 @@
 import http from '@src/services/http';
+import http1 from '@services/http1';
 import { CONSTANT_COMMONS } from '@src/constants';
 import convert from '@src/utils/convert';
 
@@ -79,6 +80,15 @@ export const withdraw = (data) => {
   if (signPublicKeyEncode) {
     payload.SignPublicKeyEncode = signPublicKeyEncode;
   }
+
+  // Ethereum ERC20 Token
+  if (
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH ||
+    isErc20Token
+  ) {
+    return http.post('eth/add-tx-withdraw', payload);
+  }
+
   if (
     currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB ||
     isBep20Token
@@ -157,6 +167,7 @@ export const estimateUserFees = (data) => {
     isPolygonErc20Token,
     isFantomErc20Token,
     signPublicKeyEncode,
+    unifiedTokenId,
   } = data;
   if (
     (isBep20Token ||
@@ -175,21 +186,29 @@ export const estimateUserFees = (data) => {
   }
 
   let payload = {
-    TokenID: tokenId,
     RequestedAmount: String(requestedAmount),
-    CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.WITHDRAW,
     IncognitoAmount: String(originalAmount),
     PaymentAddress: paymentAddress,
-    Erc20TokenAddress: tokenContractID,
     PrivacyTokenAddress: tokenId,
     WalletAddress: walletAddress,
     IncognitoTx: '',
+    UnifiedTokenID: unifiedTokenId,
   };
 
   if (signPublicKeyEncode) {
     payload.SignPublicKeyEncode = signPublicKeyEncode;
   }
+
+  // Ethereum ERC20 Token
+  if (
+    isErc20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH
+  ) {
+    return http.post('eth/estimate-fees', payload);
+  }
+
+  // Binance Smart Chain Token
   if (
     isBep20Token ||
     currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB

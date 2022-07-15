@@ -106,18 +106,20 @@ const maxBytes = (max, { message } = {}) => (value) =>
       `Must be less than or equal ${formatUtils.number(max)} bytes`
     : undefined;
 
-const incognitoAddress = (value, { message } = {}) => (value) => {
-  if (value && value?.length < 15) {
-    return 'Invalid address';
-  }
-  if (value && accountService.checkOldPaymentAddress(value)) {
-    return 'Require an Incognito address V2';
-  }
-  if (value && !accountService.checkPaymentAddress(value)) {
-    return 'Use Unshield to exit Incognito';
-  }
-  return undefined;
-};
+const incognitoAddress =
+  (value, { message } = {}) =>
+  (value) => {
+    if (
+      (value && value?.length < 15) ||
+      (value && !accountService.checkPaymentAddress(value))
+    ) {
+      return 'Invalid address';
+    }
+    if (value && accountService.checkOldPaymentAddress(value)) {
+      return 'Require an Incognito address V2';
+    }
+    return undefined;
+  };
 
 const ethAddress = (value, { message } = {}) => (value) =>
   !walletValidator.validate(value, 'ETH', 'both')

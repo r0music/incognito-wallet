@@ -1,42 +1,33 @@
 /* eslint-disable no-unreachable */
 /* eslint-disable import/no-cycle */
-import React, { useState } from 'react';
-import ErrorBoundary from '@src/components/ErrorBoundary';
-import { MESSAGES, CONSTANT_KEYS, CONSTANT_COMMONS } from '@src/constants';
-import { ExHandler } from '@src/services/exception';
+import {
+  actionAddStorageDataCentralized, actionAddStorageDataDecentralized, actionRemoveStorageDataCentralized, actionRemoveStorageDataDecentralized
+} from '@screens/UnShield';
+import accountService from '@services/wallet/accountService';
 import { Toast } from '@src/components/core';
-import convert from '@src/utils/convert';
-import { useSelector, useDispatch } from 'react-redux';
+import ErrorBoundary from '@src/components/ErrorBoundary';
 import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
-import { accountSelector, selectedPrivacySelector } from '@src/redux/selectors';
-import SelectedPrivacy from '@src/models/selectedPrivacy';
-import { floor, toString } from 'lodash';
-import format from '@src/utils/format';
-import { useNavigation } from 'react-navigation-hooks';
-import routeNames from '@src/router/routeNames';
-import { reset, formValueSelector } from 'redux-form';
-import { withdraw, updatePTokenFee } from '@src/services/api/withdraw';
+import { CONSTANT_COMMONS, CONSTANT_KEYS, MESSAGES } from '@src/constants';
+import {
+  accountSelector, childSelectedPrivacySelector, selectedPrivacySelector
+} from '@src/redux/selectors';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { walletSelector } from '@src/redux/selectors/wallet';
-import accountService from '@services/wallet/accountService';
-import {
-  actionAddStorageDataDecentralized,
-  actionRemoveStorageDataDecentralized,
-  actionRemoveStorageDataCentralized,
-  actionAddStorageDataCentralized,
-} from '@screens/UnShield';
-import Utils from '@src/utils/Util';
+import routeNames from '@src/router/routeNames';
 import { devSelector } from '@src/screens/Dev';
+import { updatePTokenFee, withdraw } from '@src/services/api/withdraw';
+import { ExHandler } from '@src/services/exception';
+import convert from '@src/utils/convert';
+import format from '@src/utils/format';
+import Utils from '@src/utils/Util';
 import {
-  ACCOUNT_CONSTANT,
-  BurningPBSCRequestMeta,
-  BurningRequestMeta,
-  BurningPLGRequestMeta,
-  BurningFantomRequestMeta,
-  BurningPRVERC20RequestMeta,
-  BurningPRVBEP20RequestMeta,
-  PrivacyVersion,
+  ACCOUNT_CONSTANT, BurningFantomRequestMeta, BurningPBSCRequestMeta, BurningPLGRequestMeta, BurningPRVBEP20RequestMeta, BurningPRVERC20RequestMeta, BurningRequestMeta, PrivacyVersion
 } from 'incognito-chain-web-js/build/wallet';
+import { floor, toString } from 'lodash';
+import React from 'react';
+import { useNavigation } from 'react-navigation-hooks';
+import { useDispatch, useSelector } from 'react-redux';
+import { reset } from 'redux-form';
 import { formName } from './Form.enhance';
 
 export const enhanceUnshield = (WrappedComp) => (props) => {
@@ -55,28 +46,11 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     isUseTokenFee,
   } = useSelector(feeDataSelector);
   const dev = useSelector(devSelector);
-  const { isUnshieldPegPRV } = props;
-  const selector = formValueSelector(formName);
-  const currencyTypeName = useSelector((state) =>
-    selector(state, 'currencyType'),
-  );
+  const { isUnshieldPegPRV, isUnshieldPUnifiedToken } = props;
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const [childSelectedPrivacy, setChildSelectedPrivacy] = useState();
-
-  React.useEffect(() => {
-    if (isUnshieldPegPRV) {
-      const childToken = selectedPrivacy.listChildToken.find(
-        (item) => item.currencyType === currencyTypeName,
-      );
-      const childSelectedPrivacy = new SelectedPrivacy(
-        account,
-        null,
-        childToken,
-        selectedPrivacy.tokenId,
-      );
-      setChildSelectedPrivacy(childSelectedPrivacy);
-    }
-  }, [isUnshieldPegPRV, currencyTypeName]);
+  const childSelectedPrivacy = useSelector(
+    childSelectedPrivacySelector.childSelectedPrivacy,
+  );
 
   const signPublicKeyEncode = useSelector(
     accountSelector.signPublicKeyEncodeSelector,
@@ -91,9 +65,10 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     isFantomErc20Token,
     externalSymbol,
     paymentAddress: walletAddress,
-    pDecimals,
     isDecentralized,
-  } = childSelectedPrivacy ? childSelectedPrivacy : selectedPrivacy;
+  } = childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
+    ? childSelectedPrivacy
+    : selectedPrivacy;
   const keySave = isDecentralized
     ? CONSTANT_KEYS.UNSHIELD_DATA_DECENTRALIZED
     : CONSTANT_KEYS.UNSHIELD_DATA_CENTRALIZED;
@@ -209,11 +184,71 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     }
   };
 
+  const handleBurningUnifiedToken = async (payload = {}, txHashHandler) => {
+    try {
+      const { feeForBurn, paymentAddress } = payload;
+      const { FeeAddress: masterAddress } = userFeesData;
+
+      const burningAmount = userFeesData?.EstimateReceivedAmount?.BurntAmount;
+      const expectedAmount =
+        userFeesData?.EstimateReceivedAmount?.ExpectedAmount;
+
+      if (!userFeesData?.EstimateReceivedAmount || !burningAmount) {
+        throw new Error('Please try again');
+      }
+
+      const burningInfos = [
+        {
+          incTokenID: childSelectedPrivacy?.tokenId,
+          burningAmount: burningAmount,
+          expectedAmount: expectedAmount,
+          remoteAddress: paymentAddress,
+        },
+      ];
+
+      /**--> Get payment info <--*/
+      const paymentInfo = [
+        {
+          paymentAddress: masterAddress,
+          amount: userFee,
+        },
+      ];
+      let tokenPayments = [];
+      let prvPayments = [];
+      if (isUseTokenFee) {
+        tokenPayments = paymentInfo;
+      } else {
+        prvPayments = paymentInfo;
+      }
+      /**---------------------------*/
+
+      const res = await accountService.createBurningRequestForUnifiedToken({
+        wallet,
+        account,
+        fee: feeForBurn,
+        tokenId: selectedPrivacy?.tokenId,
+        prvPayments,
+        tokenPayments,
+        info,
+        txHashHandler,
+        burningInfos,
+        version: PrivacyVersion.ver2,
+      });
+      if (res.txId) {
+        return { ...res, burningTxId: res?.txId };
+      } else {
+        throw new Error('Burned token, but doesnt have txID, please check it');
+      }
+    } catch (e) {
+      throw e;
+    }
+  };
+
   const handleDecentralizedWithdraw = async (payload) => {
     try {
       const { amount, originalAmount, paymentAddress } = payload;
       const amountToNumber = convert.toNumber(amount, true);
-      const requestedAmount = format.toFixed(amountToNumber, pDecimals);
+      const requestedAmount = format.toFixed(amountToNumber, selectedPrivacy?.pDecimals);
       let data = {
         requestedAmount,
         originalAmount,
@@ -250,6 +285,8 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       let tx;
       if (isUnshieldPegPRV) {
         tx = await handleBurningPegPRV(payload, txHashHandler);
+      } else if (isUnshieldPUnifiedToken) {
+        tx = await handleBurningUnifiedToken(payload, txHashHandler);
       } else {
         tx = await handleBurningToken(payload, txHashHandler);
       }
@@ -364,7 +401,6 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         ];
       }
       /**---------------------------*/
-
       const res = await accountService.createAndSendPrivacyToken({
         wallet,
         account,
@@ -393,7 +429,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       const amountToNumber = convert.toNumber(amount, true);
       const originalAmount = convert.toOriginalAmount(
         amountToNumber,
-        pDecimals,
+        selectedPrivacy?.pDecimals,
         false,
       );
       const _originalAmount = floor(originalAmount);
@@ -434,7 +470,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           feeUnit,
           title: 'Sent.',
           toAddress,
-          pDecimals: pDecimals,
+          pDecimals: selectedPrivacy?.pDecimals,
           tokenSymbol: externalSymbol || res?.tokenSymbol,
           keySaveAddressBook: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK,
         };

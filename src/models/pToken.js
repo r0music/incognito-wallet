@@ -28,7 +28,11 @@ class PToken {
     this.defaultPoolPair = data?.DefaultPoolPair;
     this.defaultPairToken = data?.DefaultPairToken;
     this.network = data?.Network;
+    this.networkId = data?.NetworkID;
     this.image = data?.Image;
+    this.movedUnifiedToken = data?.MovedUnifiedToken;
+    this.listUnifiedToken = data?.ListUnifiedToken;
+    this.parentUnifiedID = data?.ParentUnifiedID;
     const tokens =
       pTokens &&
       pTokens.filter(
@@ -43,6 +47,15 @@ class PToken {
       });
     } else {
       this.listChildToken = [];
+    }
+    if (data && data.ListUnifiedToken instanceof Array) {
+      this.listUnifiedToken = data.ListUnifiedToken.map((item) => {
+        let newItem = new PToken(item);
+        newItem.parentID = item.ParentID;
+        return newItem;
+      });
+    } else {
+      this.listUnifiedToken = [];
     }
   }
 

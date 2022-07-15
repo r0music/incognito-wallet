@@ -53,6 +53,39 @@ export const getPrivacyDataByTokenID = createSelector(
           pTokenData,
           tokenID,
         );
+        
+        // convert childToken data to selected privacy token data of list unified token
+        let listUnifiedToken = token?.listUnifiedToken;
+        let unifiedTokens = [];
+        for(let i = 0; i < listUnifiedToken?.length; i++) {
+          const childTokenId = listUnifiedToken[i]?.tokenId;
+          const childTokenData = listUnifiedToken[i];
+          const childTokenSelectedPrivacyData = new SelectedPrivacy(
+            account,
+            null,
+            childTokenData,
+            childTokenId,
+          );
+          unifiedTokens.push(childTokenSelectedPrivacyData);
+        } 
+        token.listUnifiedToken = unifiedTokens || [];
+
+        // convert childToken data to selected privacy token data of list child token
+        let listChildTokenOfPRV = token?.listChildToken;
+        let newListChildTokenOfPRV = [];
+        for (let i = 0; i < listChildTokenOfPRV?.length; i++) {
+          const childTokenId = listChildTokenOfPRV[i]?.tokenId;
+          const childTokenData = listChildTokenOfPRV[i];
+          const childTokenSelectedPrivacyData = new SelectedPrivacy(
+            account,
+            null,
+            childTokenData,
+            childTokenId,
+          );
+          newListChildTokenOfPRV.push(childTokenSelectedPrivacyData);
+        } 
+        token.listChildToken = newListChildTokenOfPRV || [];
+
         const tokenUSDT = pTokens.find(
           (token) => token?.tokenId === BIG_COINS.USDT,
         );

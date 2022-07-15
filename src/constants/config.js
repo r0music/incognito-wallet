@@ -31,7 +31,10 @@ const BSCSCAN_URL = isMainnet
   : 'https://testnet.bscscan.com';
 const POLYGONSCAN_URL = isMainnet
   ? 'https://polygonscan.com'
-  : 'https://mumbai.polygonscan.com/';
+  : 'https://mumbai.polygonscan.com';
+const FANTOMSCAN_URL = isMainnet
+  ? 'https://ftmscan.com'
+  : 'https://testnet.ftmscan.com';
 const BTC_EXPLORER_URL = isMainnet
   ? 'https://live.blockcypher.com/btc'
   : 'https://live.blockcypher.com/btc-testnet';
@@ -120,6 +123,7 @@ export default {
   ETHERSCAN_URL,
   BSCSCAN_URL,
   POLYGONSCAN_URL,
+  FANTOMSCAN_URL,
   BTC_EXPLORER_URL,
   BINANCE_EXPLORER_URL,
   USDT_TOKEN_ID,

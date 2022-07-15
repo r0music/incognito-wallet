@@ -55,22 +55,25 @@ const initialState = {
     [KEYS_PLATFORMS_SUPPORTED.pancake]: {
       // pancake
       feePrv: {},
+      feeToken: {},
       error: null,
     },
     [KEYS_PLATFORMS_SUPPORTED.uni]: {
       // uni
       feePrv: {},
+      feeToken: {},
       error: null,
     },
     [KEYS_PLATFORMS_SUPPORTED.curve]: {
       // curve
       feePrv: {},
+      feeToken: {},
       error: null,
     },
   },
   buytoken: '',
   selltoken: '',
-  feetoken: '',
+  feetoken: PRV_ID,
   estimateTrade: null,
   focustoken: '',
   networkfee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,
@@ -102,6 +105,7 @@ const initialState = {
   error: null,
   slippage: '1',
   rewardHistories: [],
+  isUsePRVToPayFee: true,
 };
 
 const reducer = (state = initialState, action) => {
@@ -190,7 +194,7 @@ const reducer = (state = initialState, action) => {
         ...platform,
         isSelected: platformID === platform.id,
       })),
-      feetoken,
+      // feetoken,
     };
     return newState;
   }

@@ -9,41 +9,40 @@ import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme';
 import { AppIcon, PancakeIcon, UniIcon, CurveIcon } from '@src/components/Icons';
 import { KEYS_PLATFORMS_SUPPORTED } from '@src/screens/PDexV3/features/Swap';
+import { isEmpty } from 'lodash';
 
 const styled = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+  },
   touchWrapper: {
-    flex: 1,
+    width: '100%',
     padding: 16,
     borderRadius: 8,
   },
   item: {
+    width: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
-    flex: 1,
   },
   title: {
     ...FONT.TEXT.incognitoP1,
     marginLeft: 10,
-    flex: 1,
   },
   titleSelectItem: {
     ...FONT.TEXT.incognitoH6,
     marginLeft: 14,
-    flex: 1,
   },
   desc: {
     fontSize: FONT.SIZE.regular,
     fontFamily: FONT.NAME.regular,
     width: '100%',
-    textAlign: 'right',
   },
   left: {
-    maxWidth: 120,
-    display: 'flex',
-    alignItems: 'center',
+    flex: 1,
   },
   right: {
-    flex: 1,
+    maxWidth: 120,
     marginLeft: 15,
   },
   scrollview: {
@@ -53,15 +52,9 @@ const styled = StyleSheet.create({
     borderTopRightRadius: 24,
   },
   icon: {
-    width: 24,
-    height: 24,
-    borderRadius: 24,
-    resizeMode: 'contain',
-  },
-  selectedIcon: {
-    width: 15,
-    height: 15,
-    borderRadius: 15,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     resizeMode: 'contain',
   },
 });
@@ -82,24 +75,24 @@ export const SelectItem = React.memo(
     switch (id) {
     case KEYS_PLATFORMS_SUPPORTED.incognito:
       icon = (
-        <AppIcon style={!isSelectItem ? styled.selectedIcon : styled.icon} />
+        <AppIcon style={styled.icon} />
       );
       break;
     case KEYS_PLATFORMS_SUPPORTED.pancake:
       icon = (
         <PancakeIcon
-          style={!isSelectItem ? styled.selectedIcon : styled.icon}
+          style={styled.icon}
         />
       );
       break;
     case KEYS_PLATFORMS_SUPPORTED.uni:
       icon = (
-        <UniIcon style={!isSelectItem ? styled.selectedIcon : styled.icon} />
+        <UniIcon style={styled.icon} />
       );
       break;
     case KEYS_PLATFORMS_SUPPORTED.curve:
       icon = (
-        <CurveIcon style={!isSelectItem ? styled.selectedIcon : styled.icon} />
+        <CurveIcon style={styled.icon} />
       );
       break;
     default:
@@ -117,27 +110,27 @@ export const SelectItem = React.memo(
           styled.touchWrapper,
           isSelectItem
             ? {
-              padding: 0,
-              borderRadius: 0,
-              paddingHorizontal: 24,
-              paddingVertical: 16,
-              borderBottomWidth: 2,
-              borderBottomColor: lastChild ? 'transparent' : colors.grey8,
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'row',
-              borderTopLeftRadius: firstChild ? 24 : 0,
-              borderTopRightRadius: firstChild ? 24 : 0,
-            }
+                padding: 0,
+                borderRadius: 0,
+                paddingHorizontal: 24,
+                paddingVertical: 16,
+                borderBottomWidth: 2,
+                borderBottomColor: lastChild ? 'transparent' : colors.grey8,
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'row',
+                borderTopLeftRadius: firstChild ? 24 : 0,
+                borderTopRightRadius: firstChild ? 24 : 0,
+              }
             : {
-              backgroundColor: colors.grey9,
-              borderColor: colors.against,
-              borderWidth: 1
-            },
+                backgroundColor: colors.grey9,
+                borderColor: colors.against,
+                borderWidth: 1,
+              },
         ]}
       >
-        <Row style={[styled.item, itemStyled]}>
-          <Row style={styled.left}>
+        <View style={[styled.row, styled.item, itemStyled]}>
+          <View style={[styled.row, styled.left]}>
             {icon && icon}
             <Text
               style={isSelectItem ? styled.titleSelectItem : styled.title}
@@ -146,13 +139,15 @@ export const SelectItem = React.memo(
             >
               {title}
             </Text>
-          </Row>
-          <View style={styled.right}>
-            <Text style={styled.desc} numberOfLines={1} ellipsizeMode="tail">
-              {desc}
-            </Text>
           </View>
-        </Row>
+          {!isEmpty(desc) && (
+            <View style={styled.right}>
+              <Text style={styled.desc} numberOfLines={1} ellipsizeMode="tail">
+                {desc}
+              </Text>
+            </View>
+          )}
+        </View>
       </TouchableOpacity>
     );
   },
@@ -175,7 +170,7 @@ const SelectOptionModal = ({ options }) => {
   return (
     <ModalBottomSheet
       style={{
-        height: 130,
+        height: 150,
         paddingHorizontal: 0,
         paddingVertical: 0,
       }}

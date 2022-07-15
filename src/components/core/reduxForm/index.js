@@ -14,3 +14,4 @@ export { default as RFTradeInputAmount } from './fields/RFTradeInputAmount';
 export { default as RFSelectFeeInput } from './fields/RFSelectFeeInput';
 export { default as RFBaseInput } from './fields/RFBaseInput';
 export { default as rfStyled } from './fields/style';
+export { default as SelectNetworkField } from './fields/selectNetwork';

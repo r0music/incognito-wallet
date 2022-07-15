@@ -6,6 +6,7 @@ import routeNames from '@src/router/routeNames';
 import { useSelector } from 'react-redux';
 import RemoveStorage from '@screens/Setting/features/RemoveStorage/RemoveStorage';
 import ConvertCoinsSection from '@screens/Setting/features/ConvertCoinsSection';
+import ConvertToUnifiedTokenSection from '@screens/Setting/features/ConvertToUnifiedTokenSection';
 import DeviceInfo from 'react-native-device-info';
 import { NetworkIcon, SecurityIcon } from '@components/Icons';
 import { Header } from '@src/components';
@@ -71,6 +72,7 @@ const Setting = () => {
           <DecimalDigitsSection />
           {/*<CurrencySection />*/}
           <AddressBookSection />
+          <ConvertToUnifiedTokenSection />
           {/* <ExportCSVSection handlePress={handlePressExportCSV} /> */}
           {/* <UTXOSection /> */}
           <ConvertCoinsSection />

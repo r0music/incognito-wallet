@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {ActivityIndicator, View, StyleSheet} from 'react-native';
+import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import BottomBar from '@components/core/BottomBar';
 import ROUTE_NAMES from '@routers/routeNames';
@@ -29,7 +29,7 @@ const NodeBottomBar = ({ groupedCoins, loading }) => {
     </View>
   );
   return (
-    <BottomBar text="Need help running your node? Use a staking service" onPress={onPress} loading={loading} />
+    <BottomBar text="Need help running your node? Use a staking service" autoscroll onPress={onPress} loading={loading} />
   );
 };
 

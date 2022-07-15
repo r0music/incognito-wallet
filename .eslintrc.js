@@ -31,7 +31,10 @@ module.exports = {
   },
   rules: {
     'no-console': 0,
-    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
+    'react/jsx-filename-extension': [
+      2,
+      { extensions: ['.js', '.jsx', '.ts', '.tsx'] },
+    ],
     // indent: [2, 2, { SwitchCase: 1 }],
     'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single'],
@@ -39,7 +42,7 @@ module.exports = {
     'no-invalid-this': 0,
     'import/no-commonjs': 0,
     'react/jsx-no-bind': 0,
-    'react/prop-types': 1,
+    'react/prop-types': 0,
     'react-native/no-inline-styles': 'off',
     'react-native/no-color-literals': 'off',
     'react/jsx-uses-react': 'error',
@@ -61,5 +64,6 @@ module.exports = {
     'react/sort-comp': 0,
     'react/jsx-handler-names': 0,
     'react/display-name': 0,
+    '@typescript-eslint/no-explicit-any': 0,
   },
 };

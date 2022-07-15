@@ -62,7 +62,8 @@ const SwapInputsGroup = React.memo(() => {
   const onSelectBuyToken = () => {
     navigation.navigate(routeNames.SelectTokenModal, {
       data: pairsToken.filter(
-        (token: SelectedPrivacy) => token?.tokenId !== buytoken?.tokenId,
+        (token: SelectedPrivacy) =>
+          token?.tokenId !== buytoken?.tokenId && !token?.movedUnifiedToken,
       ),
       onPress: (token) => onSelectToken(token, formConfigs.buytoken),
     });
@@ -70,6 +71,9 @@ const SwapInputsGroup = React.memo(() => {
   const onFocusToken = (e, field) => dispatch(actionSetFocusToken(swap[field]));
   const onEndEditing = (field) => dispatch(actionEstimateTrade({ field }));
   const onSwapButtons = () => {
+    if(selltoken?.movedUnifiedToken) {
+      return;
+    }
     dispatch(actionSwapToken());
     dispatch(actionResetData());
     dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));

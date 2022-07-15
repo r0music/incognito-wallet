@@ -3,8 +3,9 @@ import { Text, View } from '@src/components/core';
 import { FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import BigList from 'react-native-big-list';
+import Empty from '@src/components/Empty';
 
 const styles = StyleSheet.create({
   header: { height: 40, justifyContent: 'center' },
@@ -15,13 +16,8 @@ const styles = StyleSheet.create({
     lineHeight: FONT.SIZE.small + 5,
     marginLeft: 8,
   },
-  emptyText: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.small + 5,
-    margin: 24,
-  },
   listContentContainer: {
+    flexGrow: 1,
     paddingTop: 16,
     paddingBottom: 40,
   },
@@ -82,12 +78,13 @@ const ListAllToken2 = (props) => {
     return (
       <View
         style={{
+          width: Dimensions.get('window').width,
+          height: '100%',
           alignItems: 'center',
           justifyContent: 'center',
-          flex: 1,
         }}
       >
-        <Text style={styles.emptyText}>No result</Text>
+        <Empty />
       </View>
     );
   };

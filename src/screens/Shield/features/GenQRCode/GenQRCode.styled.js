@@ -7,10 +7,26 @@ export const styled = StyleSheet.create({
     flex: 1,
   },
   extra: {
-    alignItems: 'center',
+    // alignItems: 'center',
   },
   titleStyled: {
     textTransform: 'none',
+  },
+  shieldDescription: {
+    fontSize: 14,
+    color: COLORS.lightGrey36,
+    fontWeight: '400',
+    lineHeight: 21,
+    textAlign: 'center',
+    marginTop: 16,
+  },
+  shieldExpiration: {
+    fontSize: 14,
+    color: COLORS.lightGrey36,
+    fontWeight: '400',
+    lineHeight: 21,
+    textAlign: 'center',
+    marginTop: 5,
   },
   text: {
     fontFamily: FONT.NAME.regular,
@@ -20,7 +36,8 @@ export const styled = StyleSheet.create({
     textAlign: 'center',
   },
   boldText: {
-    fontFamily: FONT.NAME.bold,
+    fontFamily: FONT.NAME.medium,
+    fontSize: 14,
   },
   smallText: {
     fontSize: 13,
@@ -37,6 +54,17 @@ export const styled = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 30,
   },
+  networkTypeLabel: {
+    fontSize: 12,
+    lineHeight: 18,
+    marginBottom: 8,
+  },
+  addressLabel: {
+    fontSize: 12,
+    lineHeight: 18,
+    marginBottom: 8,
+    marginTop: 16,
+  },
   questionIcon: {
     marginBottom: 10,
   },
@@ -51,8 +79,13 @@ export const styled = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 7,
   },
+  scrollViewContainer: {
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+  },
   scrollview: {
     flexGrow: 1,
+    padding: 24,
   },
   countdown: {
     paddingHorizontal: 10,
@@ -61,6 +94,7 @@ export const styled = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     marginTop: 42,
+    padding: 16,
   },
   errorText: {
     fontFamily: FONT.NAME.medium,
@@ -181,5 +215,65 @@ export const styled = StyleSheet.create({
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.medium + 4,
     marginLeft: 10,
+  },
+  warningBoxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 24,
+  },
+  networkBoxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    backgroundColor: COLORS.gray1,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+  },
+  noteBoxContainer: {
+    width: '100%',
+    borderRadius: 8,
+    backgroundColor: COLORS.gray1,
+    paddingVertical: 20,
+    marginTop: 24,
+  },
+  noteItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.gray1,
+    paddingHorizontal: 16,
+  },
+  dot: {
+    width: 5,
+    height: 5,
+    borderRadius: 5 / 2,
+    backgroundColor: COLORS.gray2,
+  },
+  noteText: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginLeft: 12,
+  },
+  space: {
+    height: 8,
+    backgroundColor: COLORS.gray1,
+  },
+  grayText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: COLORS.lightGrey36,
+  },
+  redText: {
+    fontSize: 12,
+    color: COLORS.red,
+    fontWeight: '400',
+    lineHeight: 18,
+  },
+  orangeText: {
+    fontSize: 12,
+    color: COLORS.lightOrange,
+    fontWeight: '400',
+    lineHeight: 18,
   },
 });
