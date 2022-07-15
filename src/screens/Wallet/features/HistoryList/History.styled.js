@@ -85,6 +85,24 @@ const style = StyleSheet.create({
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
   },
+  amountContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rewardAmountContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    backgroundColor: COLORS.gray1,
+    borderRadius: 100,
+    marginRight: 12,
+  },
+  rewardAmountText: {
+    fontSize: 12,
+    lineHeight: 18,
+    fontWeight: 'bold',
+    marginRight: 3
+  },
 });
 
 export default style;

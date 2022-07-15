@@ -4,7 +4,7 @@ import { View2 } from '@src/components/core/View';
 import { withLayout_2 } from '@src/components/Layout';
 import Header from '@components/Header';
 import { ScrollViewBorder, RefreshControl, Text } from '@components/core';
-import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
+import { EXCHANGE_SUPPORTED } from 'incognito-chain-web-js/build/wallet';
 import { useDispatch, useSelector } from 'react-redux';
 import { BtnCopy } from '@src/components/Button';
 import { ExHandler } from '@src/services/exception';
@@ -30,6 +30,24 @@ const SwapOrderDetail = () => {
   const onRefresh = async () => {
     dispatch(actionFetchDataOrderDetail());
   };
+
+  const getTradingTimeEstimation = () => {
+    let tradingTimeEstimation;
+    if (order?.exchange === EXCHANGE_SUPPORTED.incognito) {
+      tradingTimeEstimation = '3 mins';
+    }
+    if (order?.exchange === EXCHANGE_SUPPORTED.pancake) {
+      tradingTimeEstimation = '5 mins';
+    }
+    if (
+      order?.exchange === EXCHANGE_SUPPORTED.uni ||
+      order?.exchange === EXCHANGE_SUPPORTED.curve
+    ) {
+      tradingTimeEstimation = '10 mins';
+    }
+    return tradingTimeEstimation;
+  };
+
   const factories = React.useMemo(() => {
     if (!order) {
       return [];
@@ -59,11 +77,11 @@ const SwapOrderDetail = () => {
       },
       {
         label: 'Sell',
-        value: order?.sellStr,
+        value: `${order?.sellStr} (${order?.sellTokenNetwork})`,
       },
       {
         label: 'Buy',
-        value: order?.buyStr,
+        value: `${order?.buyStr} (${order?.buyTokenNetwork})`,
       },
       {
         label: 'Status',
@@ -71,7 +89,7 @@ const SwapOrderDetail = () => {
       },
       {
         label: 'Rate',
-        value: order?.rateStr
+        value: order?.rateStr,
       },
       {
         label: 'Fee',
@@ -122,7 +140,7 @@ const SwapOrderDetail = () => {
     if (order?.status === 'Pending') {
       ft.push({
         label: 'Estimation time',
-        value: order?.exchange === 'Incognito' ? '3 mins' : '10 mins',
+        value: getTradingTimeEstimation(),
       });
     }
     return ft.filter(

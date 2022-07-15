@@ -1,7 +1,6 @@
 import React from 'react';
-import { Text } from 'react-native';
 import PropTypes from 'prop-types';
-import { FlexView, Image } from '@src/components/core';
+import { FlexView, Image, Text } from '@src/components/core';
 import appMaintainImg from '@src/assets/images/app-maintain.png';
 import styles from './styles';
 

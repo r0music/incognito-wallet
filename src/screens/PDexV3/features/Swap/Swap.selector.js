@@ -253,6 +253,19 @@ export const listPairsIDVerifiedSelector = createSelector(
   },
 );
 
+export const listPairsIDBuyTokenVerifiedSelector = createSelector(
+  listPairsSelector,
+  (pairs) => {
+    const result = pairs
+      .filter(
+        (token: SelectedPrivacy) =>
+          !!token?.isVerified && !token?.movedUnifiedToken,
+      )
+      .map((token) => token?.tokenId);
+    return result;
+  },
+);
+
 // group inputs
 
 export const inpuTokenSelector = createSelector(
@@ -796,8 +809,16 @@ export const feeTypesSelector = createSelector(
   feeSelectedSelector,
   platformIdSelectedSelector,
   feetokenDataSelector,
-  (selltoken: SelectedPrivacy, feetoken, platformId, feeTokenData) => {
+  getPrivacyDataByTokenIDSelector,
+  (
+    selltoken: SelectedPrivacy,
+    feetoken,
+    platformId,
+    feeTokenData,
+    getPrivacyDataByTokenID,
+  ) => {
     const { canNotPayFeeByPRV } = feeTokenData;
+    const feeToken = getPrivacyDataByTokenID(feetoken);
     let types = [
       {
         tokenId: PRV.id,
@@ -806,29 +827,50 @@ export const feeTypesSelector = createSelector(
       },
     ];
     switch (platformId) {
-    case KEYS_PLATFORMS_SUPPORTED.incognito:
-      if (selltoken?.tokenId && !selltoken.isMainCrypto) {
-        types.push({
-          tokenId: selltoken.tokenId,
-          symbol: selltoken.symbol,
-          actived: feetoken === selltoken.tokenId,
-        });
+      case KEYS_PLATFORMS_SUPPORTED.incognito:
+        if (selltoken?.tokenId && !selltoken.isMainCrypto) {
+          types.push({
+            tokenId: selltoken.tokenId,
+            symbol: selltoken.symbol,
+            actived: feetoken === selltoken.tokenId,
+          });
+        }
+        if (canNotPayFeeByPRV) {
+          types = types.filter((type) => type.tokenId !== PRV.id);
+        }
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.pancake: {
+        types = [
+          {
+            tokenId: feeToken.tokenId,
+            symbol: feeToken.symbol,
+            actived: feetoken === feetoken,
+          },
+        ];
+        break;
       }
-      if (canNotPayFeeByPRV) {
-        types = types.filter((type) => type.tokenId !== PRV.id);
+      case KEYS_PLATFORMS_SUPPORTED.uni: {
+        types = [
+          {
+            tokenId: feeToken.tokenId,
+            symbol: feeToken.symbol,
+            actived: feetoken === feetoken,
+          },
+        ];
+        break;
       }
-      break;
-    case KEYS_PLATFORMS_SUPPORTED.pancake: {
-      break;
-    }
-    case KEYS_PLATFORMS_SUPPORTED.uni: {
-      break;
-    }
-    case KEYS_PLATFORMS_SUPPORTED.curve: {
-      break;
-    }
-    default:
-      break;
+      case KEYS_PLATFORMS_SUPPORTED.curve: {
+        types = [
+          {
+            tokenId: feeToken.tokenId,
+            symbol: feeToken.symbol,
+            actived: feetoken === feetoken,
+          },
+        ];
+        break;
+      }
+      default:
+        break;
     }
 
     return types;
@@ -1022,6 +1064,8 @@ export const mappingOrderHistorySelector = createSelector(
         ...order,
         sellStr,
         buyStr,
+        sellTokenNetwork: sellToken?.network,
+        buyTokenNetwork: buyToken?.network,
         rateStr,
         timeStr,
         rate,

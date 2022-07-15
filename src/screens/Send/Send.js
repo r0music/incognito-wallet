@@ -18,8 +18,9 @@ const Send = () => {
     <View style={styled.container}>
       <Header
         titleStyled={styled.headerTitle}
-        title={`Send ${selectedPrivacy?.externalSymbol ||
-          selectedPrivacy?.symbol} ${selectedPrivacy?.networkName && selectedPrivacy?.networkName !== 'Unknown' ? '(' + selectedPrivacy?.networkName + ')' : ''}`}
+        title={`Send ${
+          selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
+        }`}
         onGoBack={onGoBack}
       />
       <SendForm navigation={navigation} />

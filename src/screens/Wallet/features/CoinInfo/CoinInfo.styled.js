@@ -13,8 +13,8 @@ export const styled = StyleSheet.create({
   },
   label: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 4,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 4,
     width: 130,
     marginRight: 15,
   },
@@ -25,8 +25,8 @@ export const styled = StyleSheet.create({
   },
   value: {
     fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 4,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 4,
     flex: 5,
     textAlign: 'left',
   },
@@ -41,7 +41,7 @@ export const styled = StyleSheet.create({
   },
   wrapper: {
     marginTop: 27,
-    flex: 1
+    flex: 1,
   },
   btnInfo: {
     flex: 1,

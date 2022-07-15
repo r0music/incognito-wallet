@@ -22,9 +22,11 @@ const Shield = (props) => {
     props;
 
   // Get list verifiedToken list unVerifiedTokens from list all token
-  const _verifiedTokens = availableTokens?.filter((token) => token?.isVerified);
+  const _verifiedTokens = availableTokens?.filter(
+    (token) => token?.isVerified && !token?.movedUnifiedToken,
+  );
   const _unVerifiedTokens = availableTokens?.filter(
-    (token) => !token.isVerified,
+    (token) => !token.isVerified && !token?.movedUnifiedToken,
   );
 
   const [showUnVerifiedTokens, setShowUnVerifiedTokens] = useState(false);

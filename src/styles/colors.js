@@ -1,6 +1,7 @@
 const COLORS = {
   transparent: 'transparent',
   orange: '#FF9500',
+  lightOrange: '#FFC043',
   white: 'white',
   black: '#000000',
   black1: '#515151',
@@ -86,6 +87,8 @@ const COLORS = {
   green5: '#34C759',
 
   colorTradeBlue: '#1A73E8',
+  gray1: '#404040',
+  gray2: '#757575',
 };
 
 export default {

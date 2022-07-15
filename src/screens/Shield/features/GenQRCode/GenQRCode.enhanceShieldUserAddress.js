@@ -1,22 +1,25 @@
-import React, {useState} from 'react';
-import ErrorBoundary from '@src/components/ErrorBoundary';
-import { useSelector } from 'react-redux';
-import {shieldDataSelector, shieldSelector} from '@screens/Shield/Shield.selector';
-import LoadingContainer from '@components/LoadingContainer';
+import { BtnInfo } from '@components/Button';
 import Header from '@components/Header';
-import {styled} from '@screens/Shield/features/GenQRCode/GenQRCode.styled';
-import {BtnInfo} from '@components/Button';
+import LoadingContainer from '@components/LoadingContainer';
 import routeNames from '@routers/routeNames';
-import { selectedPrivacySelector } from '@src/redux/selectors';
+import { styled } from '@screens/Shield/features/GenQRCode/GenQRCode.styled';
+import {
+  shieldDataSelector,
+  shieldSelector
+} from '@screens/Shield/Shield.selector';
+import ErrorBoundary from '@src/components/ErrorBoundary';
+import { childSelectedPrivacySelector } from '@src/redux/selectors';
+import React from 'react';
 import { useNavigation } from 'react-navigation-hooks';
-import TermOfUseShield from '@screens/Shield/features/TermOfUseShield';
+import { useSelector } from 'react-redux';
 
 const enhance = (WrappedComp) => (props) => {
   const { isFetching, isFetched } = useSelector(shieldSelector);
   const { isShieldAddressDecentralized } = useSelector(shieldDataSelector);
-  const [showTerm, setShowTerm] = useState(true);
   const navigation = useNavigation();
-  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const selectedPrivacy = useSelector(
+    childSelectedPrivacySelector.childSelectedPrivacy,
+  );
   const handleToggleTooltip = () => {
     navigation.navigate(routeNames.CoinInfo, { isShieldAddressDecentralized });
   };
@@ -26,25 +29,27 @@ const enhance = (WrappedComp) => (props) => {
     navigation.navigate(routeNames.Shield);
   };
 
-  const renderHeader = React.useCallback(() => (
-    <Header
-      title={`Shield ${selectedPrivacy?.externalSymbol}`}
-      titleStyled={styled.titleStyled}
-      rightHeader={<BtnInfo isBlack onPress={handleToggleTooltip} />}
-      onGoBack={handleGoBack}
-    />
-  ), [selectedPrivacy]);
+  const renderHeader = React.useCallback(
+    () => (
+      <Header
+        title={`Shield ${selectedPrivacy?.externalSymbol}`}
+        titleStyled={styled.titleStyled}
+        rightHeader={<BtnInfo isBlack onPress={handleToggleTooltip} />}
+        onGoBack={handleGoBack}
+      />
+    ),
+    [selectedPrivacy],
+  );
 
-  const renderLoading = React.useCallback(() => (
-    <>
-      {renderHeader()}
-      <LoadingContainer />
-    </>
-  ), []);
-
-  const renderTermOfUse = () => {
-    return <TermOfUseShield onNextPress={() => setShowTerm(false)} />;
-  };
+  const renderLoading = React.useCallback(
+    () => (
+      <>
+        {renderHeader()}
+        <LoadingContainer />
+      </>
+    ),
+    [],
+  );
 
   /** render loading */
   if (isFetching) {
@@ -52,16 +57,16 @@ const enhance = (WrappedComp) => (props) => {
   }
 
   /** render term off user */
-  if (
-    isShieldAddressDecentralized === false
-    && (selectedPrivacy?.currencyType === 1 || selectedPrivacy?.currencyType === 3)
-    && !selectedPrivacy?.isVerified
-    && selectedPrivacy?.priceUsd <= 0
-    && !hasError
-    && showTerm
-  ) {
-    return renderTermOfUse();
-  }
+  // if (
+  //   isShieldAddressDecentralized === false
+  //   && (selectedPrivacy?.currencyType === 1 || selectedPrivacy?.currencyType === 3)
+  //   && !selectedPrivacy?.isVerified
+  //   && selectedPrivacy?.priceUsd <= 0
+  //   && !hasError
+  //   && showTerm
+  // ) {
+  //   return renderTermOfUse();
+  // }
 
   return (
     <ErrorBoundary>
@@ -70,6 +75,5 @@ const enhance = (WrappedComp) => (props) => {
     </ErrorBoundary>
   );
 };
-
 
 export default enhance;

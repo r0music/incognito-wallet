@@ -207,6 +207,10 @@ export default {
   PrivacyAppsCurve: 'PrivacyAppsCurve',
   MarketSearchCoins: 'MarketSearchCoins',
   HomeLP: 'TabHomeLP',
+  ConvertToUnifiedToken: 'ConvertToUnifiedToken',
+  ChooseNetworkForShield: 'ChooseNetworkForShield',
+  ProcessConvertToUnifiedToken: 'ProcessConvertToUnifiedToken',
+  ConvertToUnifiedTokenInfo: 'ConvertToUnifiedTokenInfo',
   Tutorial: 'Tutorial',
   LiquidityVer1: 'LiquidityVer1'
 };

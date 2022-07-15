@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import withTab from '@screens/MainTabBar/MainTabBar.enhanceTab';
+import withDetectConvert from '@screens/ConvertToUnifiedToken/Convert.enhanceDetect';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout';
 import { Header } from '@src/components';
@@ -19,4 +20,5 @@ export default compose(
   withLazy,
   withLayout_2,
   withTab,
+  withDetectConvert,
 )(memo(TabAssets));

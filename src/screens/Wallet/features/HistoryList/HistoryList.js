@@ -18,7 +18,8 @@ import { actionSetSelectedTx } from '@src/redux/actions/history';
 import routeNames from '@src/router/routeNames';
 import { colorsSelector } from '@src/theme';
 import globalStyled from '@src/theme/theme.styled';
-import { debounce } from 'lodash';
+import { isEmpty, debounce } from 'lodash';
+import { IconReward } from '@src/components/Icons';
 import styleSheet from './History.styled';
 
 const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) =>
@@ -60,7 +61,7 @@ const NormalText = React.memo(({ style, text, testId, ...rest }) => (
 ));
 
 const HistoryItem = React.memo(({ history }) => {
-  const { amountStr, txTypeStr, timeStr, statusStr, statusColor } = history;
+  const { amountStr, txTypeStr, timeStr, statusStr, statusColor, rewardAmountStr } = history;
   const colors = useSelector(colorsSelector);
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -77,7 +78,8 @@ const HistoryItem = React.memo(({ history }) => {
       style={[
         styleSheet.itemContainer,
         globalStyled.defaultPaddingHorizontal,
-        { borderBottomColor: colors.border4, borderBottomWidth: 1 }]}
+        { borderBottomColor: colors.border4, borderBottomWidth: 1 },
+      ]}
     >
       <View style={[styleSheet.row]}>
         <NormalText
@@ -85,11 +87,19 @@ const HistoryItem = React.memo(({ history }) => {
           style={[styleSheet.title, { maxWidth: 250 }]}
           testId={TOKEN.TRANSACTION_TYPE}
         />
-        <NormalText
-          text={amountStr}
-          style={styleSheet.title}
-          testId={TOKEN.TRANSACTION_CONTENT}
-        />
+        <View style={styleSheet.amountContainer}>
+          {!isEmpty(rewardAmountStr) && (
+            <View style={styleSheet.rewardAmountContainer}>
+              <Text style={styleSheet.rewardAmountText}>+</Text>
+              <IconReward />
+            </View>
+          )}
+          <NormalText
+            text={amountStr}
+            style={styleSheet.title}
+            testId={TOKEN.TRANSACTION_CONTENT}
+          />
+        </View>
       </View>
       <View style={styleSheet.row}>
         <NormalText

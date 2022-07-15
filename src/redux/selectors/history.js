@@ -97,6 +97,7 @@ export const mappingTxReceiverSelector = createSelector(
   selectedPrivacy,
   decimalDigitsSelector,
   ({ pDecimals }, decimalDigits) => (txr) => {
+    const metaDataObj = JSON.parse(txr?.metaData || null);
     const result = {
       ...txr,
       timeStr: formatUtil.formatDateTime(txr?.time),
@@ -105,7 +106,12 @@ export const mappingTxReceiverSelector = createSelector(
         pDecimals,
         decimalDigits,
       }),
-      statusColor: TX_STATUS_COLOR[(txr?.status)],
+      rewardAmountStr: renderAmount({
+        amount: metaDataObj?.Reward || 0,
+        pDecimals: selectedPrivacy?.pDecimals,
+        decimalDigits,
+      }),
+      statusColor: TX_STATUS_COLOR[txr?.status],
     };
     return result;
   },
@@ -122,7 +128,7 @@ export const historyReceiverSelector = createSelector(
 export const mappingTxPTokenSelector = createSelector(
   selectedPrivacy,
   decimalDigitsSelector,
-  ({ pDecimals, symbol, decimals, tokenId }, decimalDigits) => (txp) => {
+  ({ symbol, tokenId }, decimalDigits) => (txp) => {
     const {
       status,
       currencyType,
@@ -140,6 +146,10 @@ export const mappingTxPTokenSelector = createSelector(
       receivedAmount,
       tokenFee,
       isUnShieldByPToken,
+      pDecimals,
+      decimals,
+      unifiedReward,
+      network
     } = txp;
     const shouldRenderQrShieldingAddress =
       isShieldTx &&
@@ -169,9 +179,9 @@ export const mappingTxPTokenSelector = createSelector(
           decimalDigits,
         })
         : '';
-    const network = tokenId === PRVIDSTR && currencyType && currencyType !== 0
-      ? CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_NAME[currencyType]
-      : '';
+    // const network = tokenId === PRVIDSTR && currencyType && currencyType !== 0
+    //   ? CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_NAME[currencyType]
+    //   : '';
     const result = {
       ...txp,
       timeStr: formatUtil.formatDateTime(time),
@@ -200,6 +210,11 @@ export const mappingTxPTokenSelector = createSelector(
       receivedFundsStr,
       shieldingFeeStr,
       network,
+      rewardAmountStr: renderAmount({
+        amount: unifiedReward?.reward || 0,
+        pDecimals,
+        decimalDigits,
+      }),
     };
     return result;
   },
@@ -302,7 +317,8 @@ export const historyDetailFactoriesSelector = createSelector(
   historyDetailSelector,
   selectedPrivacy,
   burnerAddressSelector,
-  ({ tx }, selectedPrivacy, burnerAddress) => {
+  decimalDigitsSelector,
+  ({ tx }, selectedPrivacy, burnerAddress, decimalDigits) => {
     const { txType } = tx;
     try {
       switch (txType) {
@@ -317,7 +333,14 @@ export const historyDetailFactoriesSelector = createSelector(
           statusStr,
           txTypeStr,
           memo,
+          metaData,
         } = tx;
+        const metaDataObj = JSON.parse(metaData || null);
+        const rewardAmountStr = renderAmount({
+          amount: metaDataObj?.Reward || 0,
+          pDecimals: selectedPrivacy?.pDecimals,
+          decimalDigits,
+        });
         return [
           {
             label: 'TxID',
@@ -334,6 +357,11 @@ export const historyDetailFactoriesSelector = createSelector(
             label: 'Receive',
             value: `${tx?.amountStr} ${selectedPrivacy.symbol}`,
             disabled: !amount,
+          },
+          {
+            label: 'Reward amount',
+            value: `${rewardAmountStr} ${selectedPrivacy.symbol}`,
+            disabled: !rewardAmountStr,
           },
           {
             label: 'Status',
@@ -383,17 +411,59 @@ export const historyDetailFactoriesSelector = createSelector(
           canRetryInvalidAmountShield,
           network,
           decentralized,
-          status
+          status,
+          unifiedReward,
+          pDecimals,
+          currencyType
         } = tx;
         const isShieldProcessing = checkShieldProcessing(status, decentralized);
         let estimationShieldingTime = '';
         if (isShieldProcessing) {
-          if (selectedPrivacy?.isETH || selectedPrivacy?.isErc20Token) {
-            estimationShieldingTime = '20 mins';
-          } else {
+          if (
+            selectedPrivacy?.isETH ||
+            selectedPrivacy?.isErc20Token ||
+            currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20 ||
+            network === 'Ethereum'
+          ) {
             estimationShieldingTime = '10 mins';
           }
+          if (
+            selectedPrivacy?.isBSC ||
+            selectedPrivacy?.isBep20Token ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20
+          ) {
+            estimationShieldingTime = '5 mins';
+          }
+          if (
+            selectedPrivacy?.isMATIC ||
+            selectedPrivacy?.isPolygonErc20Token ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20
+          ) {
+            estimationShieldingTime = '9 mins';
+          }
+          if (
+            selectedPrivacy?.isFTM ||
+            selectedPrivacy?.isFantomErc20Token ||
+            currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FANTOM_ERC20
+          ) {
+            estimationShieldingTime = '3 mins';
+          }
         }
+        const rewardAmountStr = renderAmount({
+          amount: unifiedReward?.reward || 0,
+          pDecimals,
+          decimalDigits,
+        });
         let data = [
           {
             label: 'ID',
@@ -417,11 +487,9 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !shieldingFeeStr,
           },
           {
-            label: 'Received tx',
-            value: `${txReceive}`,
-            disabled: !txReceive,
-            openUrl: !!txReceive,
-            handleOpenUrl: () => LinkingService.openUrlInSide(txReceive),
+            label: 'Reward amount',
+            value: `${rewardAmountStr} ${symbol}`,
+            disabled: !rewardAmountStr,
           },
           {
             label: 'Status',
@@ -437,6 +505,13 @@ export const historyDetailFactoriesSelector = createSelector(
             label: 'Time',
             value: timeStr,
             disabled: !timeStr,
+          },
+          {
+            label: 'Received tx',
+            value: `${txReceive}`,
+            disabled: !txReceive,
+            openUrl: !!txReceive,
+            handleOpenUrl: () => LinkingService.openUrlInSide(txReceive),
           },
           {
             label: 'Expired at',
@@ -480,7 +555,7 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !network,
           },
         ];
-        if (isShieldProcessing) {
+        if (isShieldProcessing && estimationShieldingTime) {
           data.push({
             label: 'Estimation time',
             value: estimationShieldingTime,

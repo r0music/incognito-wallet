@@ -1,14 +1,14 @@
 /* eslint-disable import/no-cycle */
-import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
+import { ExHandler } from '@src/services/exception';
+import debounce from 'lodash/debounce';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { useFocusEffect } from 'react-navigation-hooks';
 import { useDispatch } from 'react-redux';
 import { reset } from 'redux-form';
-import debounce from 'lodash/debounce';
-import { useFocusEffect } from 'react-navigation-hooks';
-import PropTypes from 'prop-types';
-import { ExHandler } from '@src/services/exception';
-import { actionFetchFee } from './EstimateFee.actions';
 import { useKeyboard } from '../UseEffect/useKeyboard';
+import { actionFetchFee } from './EstimateFee.actions';
 
 const enhance = (WrappedComp) => (props) => {
   const {
@@ -18,6 +18,7 @@ const enhance = (WrappedComp) => (props) => {
     isExternalAddress,
     isIncognitoAddress,
     isPortalToken,
+    selectedPrivacy,
     childSelectedPrivacy,
   } = props;
   const dispatch = useDispatch();
@@ -28,16 +29,20 @@ const enhance = (WrappedComp) => (props) => {
     memo,
     isExternalAddress,
     isIncognitoAddress,
+    selectedPrivacy,
     childSelectedPrivacy,
   ) => {
     try {
-      if (!amount || !address) {
+      if (!amount || !address || !childSelectedPrivacy) {
         return;
       }
       let screen = 'Send';
-      if (isExternalAddress) {
+      if (
+        childSelectedPrivacy?.networkId !== 'INCOGNITO' ||
+        isExternalAddress
+      ) {
         screen = 'UnShield';
-      } else if (isIncognitoAddress) {
+      } else {
         screen = 'Send';
       }
       if (isPortalToken && screen === 'UnShield') {
@@ -50,7 +55,6 @@ const enhance = (WrappedComp) => (props) => {
           address,
           screen,
           memo,
-          childSelectedPrivacy,
         }),
       );
     } catch (error) {
@@ -65,6 +69,7 @@ const enhance = (WrappedComp) => (props) => {
       memo,
       isExternalAddress,
       isIncognitoAddress,
+      selectedPrivacy,
       childSelectedPrivacy,
     );
   }, [
@@ -73,6 +78,7 @@ const enhance = (WrappedComp) => (props) => {
     memo,
     isExternalAddress,
     isIncognitoAddress,
+    selectedPrivacy,
     childSelectedPrivacy,
   ]);
   React.useEffect(() => {
@@ -83,6 +89,7 @@ const enhance = (WrappedComp) => (props) => {
         memo,
         isExternalAddress,
         isIncognitoAddress,
+        selectedPrivacy,
         childSelectedPrivacy,
       );
     }
@@ -111,6 +118,7 @@ enhance.propTypes = {
   memo: PropTypes.string,
   isExternalAddress: PropTypes.bool.isRequired,
   isIncognitoAddress: PropTypes.bool.isRequired,
+  selectedPrivacy: PropTypes.object,
   childSelectedPrivacy: PropTypes.object,
 };
 

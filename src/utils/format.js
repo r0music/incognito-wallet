@@ -112,6 +112,9 @@ const amountVer2 = (amount, decimals) => {
       groupSize: 3,
     };
     let _amount = convertUtil.toHumanAmount(amount, decimals);
+    if(!decimals) {
+      _amount = amount;
+    }
     const _decimals = getDecimalsFromHumanAmount(_amount, decimals);
     return _amount
       ? removeTrailingZeroes(
@@ -133,6 +136,9 @@ const amountSuffix = (amount, decimals) => {
 
     let _maxDigits = 2;
     let _amount = convertUtil.toHumanAmount(amount, decimals);
+    if (!decimals) {
+      _amount = amount;
+    }
     let _suffix = '';
 
     if (!Number.isFinite(_amount))

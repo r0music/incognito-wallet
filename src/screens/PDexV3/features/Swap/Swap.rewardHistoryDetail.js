@@ -13,6 +13,7 @@ import TradeOrderDetail, {
   styled as orderDetailStyled,
   OrderDetailValue,
 } from '@screens/PDexV3/features/Trade/Trade.orderDetail';
+import convert from '@utils/convert';
 import { Row } from '@src/components';
 import LinkingService from '@src/services/linking';
 import { CONSTANT_CONFIGS } from '@src/constants';
@@ -36,15 +37,23 @@ const SwapRewardHistoryDetail = () => {
     },
     {
       label: 'Total trading volume',
-      value: (rewardHistoryDetail?.sumTotalVolume)?.toFixed(4),
+      value: convert.toPlainString(
+        Math.round(rewardHistoryDetail?.sumTotalVolume * 1000000000) /
+          1000000000,
+      ),
     },
     {
       label: 'Your trading volume',
-      value: (rewardHistoryDetail?.totalVolume)?.toFixed(4),
+      value: convert.toPlainString(
+        Math.round(rewardHistoryDetail?.totalVolume * 1000000000) / 1000000000,
+      ),
     },
     {
       label: 'Reward amount',
-      value: `${formatUtil.amountVer2(rewardHistoryDetail?.rewardAmount, PRV.pDecimals)} PRV`,
+      value: `${formatUtil.amountVer2(
+        rewardHistoryDetail?.rewardAmount,
+        PRV.pDecimals,
+      )} PRV`,
     },
     {
       label: 'Calculated from',

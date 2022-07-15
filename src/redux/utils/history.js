@@ -96,7 +96,7 @@ export const getStatusColorUnshield = (history) => {
     const { decentralized, status } = history;
     // Check centralized
     if (CENTRALIZED_ARRAY.includes(decentralized)) {
-      if (STATUS_CODE_UNSHIELD_CENTRALIZED.COMPLETE.includes(status)) {
+      if (STATUS_CODE_UNSHIELD_CENTRALIZED.COMPLETE === status) {
         statusColor = COLORS.green;
       } else {
         statusColor = COLORS.lightGrey36;
@@ -196,7 +196,8 @@ export const checkShieldProcessing = (status, decentralized) => {
     if (
       status === STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE ||
       status === STATUS_CODE_SHIELD_DECENTRALIZED.TIMED_OUT ||
-      status === STATUS_CODE_SHIELD_DECENTRALIZED.RETRYING
+      status === STATUS_CODE_SHIELD_DECENTRALIZED.RETRYING ||
+      status === STATUS_CODE_SHIELD_DECENTRALIZED.REPLACED
     ) {
       return false;
     }

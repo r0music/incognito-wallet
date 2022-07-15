@@ -4,3 +4,4 @@ export { default as tokenSelector } from './token';
 export { default as selectedPrivacySelector } from './selectedPrivacy';
 export { default as sharedSelector } from './shared';
 export { default as settingsSelector } from './settings';
+export { default as childSelectedPrivacySelector } from './childSelectedPrivacy';

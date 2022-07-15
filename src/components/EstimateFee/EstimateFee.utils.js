@@ -1,4 +1,3 @@
-import { MAX_PDEX_TRADE_STEPS } from '@screens/DexV2/constants';
 import convert from '@src/utils/convert';
 import { CONSTANT_COMMONS } from '@src/constants';
 import format from '@src/utils/format';
@@ -30,7 +29,7 @@ export const getMaxAmount = ({ selectedPrivacy, isUseTokenFee, totalFee }) => {
   };
 };
 
-export const getFeeData = (estimateFee, selectedPrivacy) => {
+export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivacyData) => {
   const {
     actived,
     minFeePTokenText,
@@ -60,15 +59,20 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     feePrvText,
     feePTokenText,
   } = estimateFee;
+  const selectedPrivacy =
+    childSelectedPrivacyData &&
+    childSelectedPrivacyData?.networkId !== 'INCOGNITO'
+      ? childSelectedPrivacyData
+      : selectedPrivacyData;
   const { amount } = selectedPrivacy;
   const isUseTokenFee = actived !== CONSTANT_COMMONS.PRV.id;
   const feeUnit = isUseTokenFee
     ? selectedPrivacy?.externalSymbol || selectedPrivacy.symbol
     : CONSTANT_COMMONS.PRV.symbol;
   const feePDecimals = isUseTokenFee
-    ? selectedPrivacy?.pDecimals
+    ? selectedPrivacyData?.pDecimals
     : CONSTANT_COMMONS.PRV.pDecimals;
-  const isUnShield = screen === 'UnShield';
+  const isUnShield = childSelectedPrivacyData?.networkId !== 'INCOGNITO';
   let fee = isUseTokenFee ? feePToken : feePrv;
   // UnShield payment fee by PToken, network fee always PRV
   if (isUnShield) {
@@ -82,8 +86,7 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     isUseTokenFee,
     totalFee,
   });
-  let titleBtnSubmit =
-    screen === 'Send' ? 'Send anonymously' : 'Unshield my crypto';
+  let titleBtnSubmit = 'Send';
   if (isFetching) {
     titleBtnSubmit = 'Calculating fee...';
   }
@@ -115,11 +118,11 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     maxAmount,
     maxAmountText,
     isUsedPRVFee: !isUseTokenFee,
-    pDecimals: selectedPrivacy?.pDecimals,
+    pDecimals: selectedPrivacyData?.pDecimals,
     titleBtnSubmit,
     isFetching,
     isUnShield,
-    isSend: screen === 'Send',
+    isSend: childSelectedPrivacyData?.networkId === 'INCOGNITO',
     isAddressValidated,
     isValidETHAddress,
     isETH,
@@ -154,13 +157,13 @@ export const getTotalFee = ({
     const userFees = isUsedPRVFee
       ? userFeesData?.PrivacyFees
       : userFeesData?.TokenFees;
-    userFee = Number(userFees?.Level1) || 0;
+    userFee = (Number(userFees?.Level1) || 0);
+    const extraFee = Number(userFeesData?.EstimateReceivedAmount?.Fee || 0);
     if (hasMultiLevel && fast2x) {
       userFee = Number(userFees?.Level2);
     }
-    totalFee = isUsedPRVFee
-      ? floor(userFee + Number(feeEst))
-      : userFee;
+    const fee = userFee + extraFee;
+    totalFee = isUsedPRVFee ? floor(userFee + Number(feeEst)) : fee;
     totalFeeText = format.toFixed(
       convert.toHumanAmount(totalFee, pDecimals),
       pDecimals,
