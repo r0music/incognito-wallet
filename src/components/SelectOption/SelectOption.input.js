@@ -1,22 +1,11 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet } from 'react-native';
+import React from 'react';
 import { SelectItem } from './SelectOption.modalSelectItem';
-
-const styled = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 const SelectOptionInput = (props) => {
   const { options, actived, ...rest } = props;
 
-  return (
-    <View style={[styled.container]}>
-      <SelectItem {...actived} itemStyled={{ marginBottom: 0 }} {...rest} />
-    </View>
-  );
+  return <SelectItem {...actived} itemStyled={{ marginBottom: 0 }} {...rest} />;
 };
 
 SelectOptionInput.propTypes = {

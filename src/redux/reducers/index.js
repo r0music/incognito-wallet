@@ -22,12 +22,14 @@ import convert from '@screens/Home/features/Convert/Convert.reducer';
 import { tabReducer as tabs } from '@src/components/core/Tabs';
 import { pDexV3Reducer as pDexV3 } from '@screens/PDexV3';
 import followList from '@screens/Wallet/features/FollowList/FollowList.reducer';
+import convertToUnifiedToken from '@src/screens/ConvertToUnifiedToken/state';
 import theme from '../../theme/theme.reducer';
 import wallet from './wallet';
 import account from './account';
 import server from './server';
 import token from './token';
 import selectedPrivacy from './selectedPrivacy';
+import childSelectedPrivacy from './childSelectedPrivacy';
 import app from './app';
 import dex from './dex';
 import pin from './pin';
@@ -44,6 +46,7 @@ const rootReducer = reduceReducers(
     server,
     token,
     selectedPrivacy,
+    childSelectedPrivacy,
     app,
     dex,
     pin,
@@ -74,6 +77,7 @@ const rootReducer = reduceReducers(
     pDexV3,
     theme,
     followWallet: followList,
+    convertToUnifiedToken,
   }),
   globalReducer,
 );

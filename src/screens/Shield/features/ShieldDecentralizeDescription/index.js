@@ -5,7 +5,7 @@ import { styled } from '@screens/Shield/features/ShieldDecentralizeDescription/s
 import Header from '@components/Header/Header';
 import { withLayout_2 } from '@components/Layout';
 import { useSelector } from 'react-redux';
-import { selectedPrivacySelector } from '@src/redux/selectors';
+import { childSelectedPrivacySelector } from '@src/redux/selectors';
 
 const CONTENTS = (network) => {
   return [
@@ -23,7 +23,9 @@ const CONTENTS = (network) => {
 };
 
 const ShieldDecentralizeDescription = () => {
-  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const selectedPrivacy = useSelector(
+    childSelectedPrivacySelector.childSelectedPrivacy,
+  );
   return (
     <View2 style={styled.container}>
       <Header

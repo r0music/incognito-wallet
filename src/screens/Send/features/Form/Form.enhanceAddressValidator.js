@@ -1,32 +1,47 @@
 /* eslint-disable import/no-cycle */
+import { validator } from '@src/components/core/reduxForm';
+import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
+import { CONSTANT_COMMONS } from '@src/constants';
+import {
+  selectedPrivacySelector,
+  childSelectedPrivacySelector,
+} from '@src/redux/selectors';
+import accountService from '@src/services/wallet/accountService';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { formValueSelector } from 'redux-form';
-import { validator } from '@src/components/core/reduxForm';
-import { CONSTANT_COMMONS } from '@src/constants';
-import accountService from '@src/services/wallet/accountService';
-import { selectedPrivacySelector } from '@src/redux/selectors';
-import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import { formName } from './Form.enhance';
 
 export const enhanceAddressValidation = (WrappedComp) => (props) => {
   const selector = formValueSelector(formName);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const childSelectedPrivacy = useSelector(
+    childSelectedPrivacySelector.childSelectedPrivacy,
+  );
   const {
     externalSymbol,
     isErc20Token,
     isBep20Token,
     isPolygonErc20Token,
     isFantomErc20Token,
-    isMainCrypto,
     currencyType,
-  } = selectedPrivacy;
+    isDecentralized,
+  } =
+    childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
+      ? childSelectedPrivacy
+      : selectedPrivacy;
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
   const isIncognitoAddress =
     accountService.checkPaymentAddress(toAddress);
   const isExternalAddress =
     (!!toAddress && !isIncognitoAddress) && selectedPrivacy?.isWithdrawable;
-  const isUnshieldPegPRV = isMainCrypto && isExternalAddress;
+  const isUnshieldPegPRV = selectedPrivacy?.isMainCrypto && isExternalAddress;
+  const isUnshieldPUnifiedToken = selectedPrivacy.isPUnifiedToken && isExternalAddress;
+
+   const currencyTypeName = useSelector((state) =>
+     selector(state, 'currencyType'),
+   );
+
   const { isAddressValidated } = useSelector(feeDataSelector);
 
   const isERC20 = React.useMemo(() => {
@@ -138,14 +153,21 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   };
 
   const getAddressValidator = () => {
-    if (isExternalAddress) {
-      return getExternalAddressValidator();
+    if (
+      currencyTypeName == CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.INCOGNITO
+    ) {
+      return validator.combinedIncognitoAddress;
     }
-    return validator.combinedIncognitoAddress;
+    return getExternalAddressValidator();
   };
 
   const getWarningAddress = () => {
-    if (isExternalAddress && (selectedPrivacy.isDecentralized || selectedPrivacy.isMainCrypto)) {
+    if (
+      isExternalAddress &&
+      (isDecentralized ||
+        selectedPrivacy.isMainCrypto ||
+        selectedPrivacy.isPUnifiedToken)
+    ) {
       return 'To avoid loss of funds, please make sure your destination address can receive funds from smart contracts. If you’re not sure, a personal address is always recommended.';
     }
     if (isExternalAddress && isERC20) {
@@ -179,6 +201,7 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
         isIncognitoAddress,
         isExternalAddress,
         isUnshieldPegPRV,
+        isUnshieldPUnifiedToken,
       }}
     />
   );

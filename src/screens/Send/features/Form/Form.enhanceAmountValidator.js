@@ -4,12 +4,14 @@ import debounce from 'lodash/debounce';
 import { validator } from '@src/components/core/reduxForm';
 import convert from '@src/utils/convert';
 import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
-import { selectedPrivacySelector } from '@src/redux/selectors';
+import { childSelectedPrivacySelector, selectedPrivacySelector } from '@src/redux/selectors';
 import { detectToken } from '@src/utils/misc';
 
 export const enhanceAmountValidation = (WrappedComp) => (props) => {
   const feeData = useSelector(feeDataSelector);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const childSelectedPrivacy = useSelector(childSelectedPrivacySelector.childSelectedPrivacy);
+
   const { fee, feeUnitByTokenId, minAmount, maxAmount } = feeData;
   const initialState = {
     maxAmountValidator: undefined,
@@ -17,6 +19,7 @@ export const enhanceAmountValidation = (WrappedComp) => (props) => {
   };
   const [state, setState] = React.useState({ ...initialState });
   const { maxAmountValidator, minAmountValidator } = state;
+
   const setFormValidator = debounce(async () => {
     const { maxAmountText, minAmountText } = feeData;
     const _maxAmount = convert.toNumber(maxAmountText, true);
@@ -28,8 +31,9 @@ export const enhanceAmountValidation = (WrappedComp) => (props) => {
         maxAmountValidator: validator.maxValue(_maxAmount, {
           message:
             _maxAmount > 0
-              ? `Max amount you can withdraw is ${maxAmountText} ${selectedPrivacy?.externalSymbol ||
-                  selectedPrivacy?.symbol}`
+              ? `Max amount you can withdraw is ${maxAmountText} ${
+                  selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
+                }`
               : 'Insufficient balance.',
         }),
       };
@@ -39,8 +43,9 @@ export const enhanceAmountValidation = (WrappedComp) => (props) => {
       await setState({
         ...currentState,
         minAmountValidator: validator.minValue(_minAmount, {
-          message: `Amount must be greater than ${minAmountText} ${selectedPrivacy?.externalSymbol ||
-            selectedPrivacy?.symbol}`,
+          message: `Amount must be greater than ${minAmountText} ${
+            selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
+          }`,
         }),
       });
     }
@@ -63,7 +68,7 @@ export const enhanceAmountValidation = (WrappedComp) => (props) => {
 
   React.useEffect(() => {
     setFormValidator();
-  }, [selectedPrivacy?.tokenId, fee, feeUnitByTokenId, maxAmount, minAmount]);
+  }, [selectedPrivacy?.tokenId, childSelectedPrivacy?.tokenId, fee, feeUnitByTokenId, maxAmount, minAmount]);
 
   const validateAmount = getAmountValidator();
 

@@ -62,7 +62,10 @@ export const styledForm = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
     color: COLORS.black2,
-    fontWeight: 'normal'
+    fontWeight: 'normal',
+  },
+  selectNetwork: {
+    marginTop: 24
   }
 });
 

@@ -9,20 +9,28 @@ import {marketTabSelector} from '@screens/Setting';
 import {MarketTabs} from '@screens/MainTabBar/features/Market/Market.header';
 import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import { useNavigation } from 'react-navigation-hooks';
+import routeNames from '@src/router/routeNames';
 import { useTokenList } from './Token.useEffect';
 
 const enhance = (WrappedComp) => (props) => {
   const { filterField, orderField } = props;
-  const availableTokens =
+  let availableTokens =
     props?.availableTokens || useDebounceSelector(availableTokensSelector);
   const activeTab = useDebounceSelector(marketTabSelector);
-
+  const navigation = useNavigation();
   const {
     verifiedTokens,
     unVerifiedTokens
   } = React.useMemo(() => {
     let verifiedTokens = [];
     let unVerifiedTokens = [];
+    // remove tokens has convert to unified token when current screen is Shield
+    if (navigation?.state?.routeName === routeNames?.Shield) {
+      availableTokens = availableTokens?.filter(
+        (token) => token?.movedUnifiedToken === false,
+      );
+    }
     availableTokens.map((token) =>
       token?.isVerified || token?.verified
         ? verifiedTokens.push(token)

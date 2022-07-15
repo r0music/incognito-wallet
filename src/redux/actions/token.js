@@ -210,6 +210,13 @@ export const actionAddFollowToken = (tokenID) => async (dispatch, getState) => {
   try {
     const state = getState();
     const followTokens = FollowSelector.followTokensWalletSelector(state) || [];
+
+    // Check if token already exists in the list followed
+    const tokenFollowed = followTokens.some((token) => token.id === tokenID);
+    if (tokenFollowed) {
+      return;
+    }
+
     const newFollowTokens = followTokens.concat([{
       id: tokenID,
       amount: 0,

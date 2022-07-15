@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import {
-  Divider,
   Text,
   TouchableOpacity,
   View,
@@ -20,7 +19,11 @@ import PropTypes from 'prop-types';
 const styled = StyleSheet.create({
   container: {
     flex: 1,
-    minHeight: 200,
+  },
+  line: {
+    width: '100%',
+    height: 1,
+    backgroundColor: '#363636',
   },
   itemContainer: {
     flex: 1,
@@ -105,16 +108,19 @@ const RewardHistory = ({ page }) => {
     return rewardHistories.slice(0, page);
   }, [page, rewardHistories]);
 
-  const renderItem = React.useCallback((item, index) => (
-    <>
-      <RewardHistoryItem
-        data={item}
-        key={`reward-${index}`}
-        visibleDivider={index !== historyDisplay.length - 1}
-      />
-      {index !== historyDisplay.length - 1 && <Divider />}
-    </>
-  ), []);
+  const renderItem = React.useCallback(
+    (item, index) => (
+      <>
+        <RewardHistoryItem
+          data={item}
+          key={`reward-${index}`}
+          visibleDivider={index !== historyDisplay.length - 1}
+        />
+        {index !== historyDisplay.length - 1 && <View style={styled.line} />}
+      </>
+    ),
+    [],
+  );
 
   return (
     <View style={styled.container}>

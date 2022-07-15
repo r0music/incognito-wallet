@@ -54,21 +54,23 @@ const enhance = (WrappedComp) => (props) => {
   const handleCreateSwapOrder = async () => {
     const tx = await dispatch(actionFetchSwap());
     if (tx) {
-      dispatch(
-        actionToggleModal({
-          data: (
-            <TradeSuccessModal
-              title="Swap initiated!"
-              desc={`You placed an order to sell\n${
-                swapInfo?.sellInputAmountStr || ''
-              } for ${swapInfo?.buyInputAmountStr || ''}.`}
-              handleTradeSucesss={() => initSwapForm()}
-              sub="Your balance will update in a couple of minutes after the swap is finalized."
-            />
-          ),
-          visible: true,
-        }),
-      );
+      setTimeout(() => {
+        dispatch(
+          actionToggleModal({
+            data: (
+              <TradeSuccessModal
+                title="Swap initiated!"
+                desc={`You placed an order to sell\n${
+                  swapInfo?.sellInputAmountStr || ''
+                } for ${swapInfo?.buyInputAmountStr || ''}.`}
+                handleTradeSucesss={() => initSwapForm()}
+                sub="Your balance will update in a couple of minutes after the swap is finalized."
+              />
+            ),
+            visible: true,
+          }),
+        );
+      }, 500);
     }
   };
   const handleConfirm = async () => {

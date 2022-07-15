@@ -3,7 +3,7 @@ import { COLORS, FONT } from '@src/styles';
 
 export default StyleSheet.create({
   container: {
-    backgroundColor: COLORS.white
+    flex: 1
   },
   center: {
     justifyContent: 'center',
@@ -14,14 +14,12 @@ export default StyleSheet.create({
   },
   title: {
     ...FONT.STYLE.bold,
-    color: COLORS.black,
     fontSize: 22,
     marginBottom: 20,
     textAlign: 'center',
   },
   message: {
     ...FONT.STYLE.medium,
-    color: COLORS.newGrey,
     fontSize: 16,
     textAlign: 'center',
   },

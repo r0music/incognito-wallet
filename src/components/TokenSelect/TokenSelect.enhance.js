@@ -55,41 +55,41 @@ const enhance = WrappedComp => props => {
   const dispatch = useDispatch();
 
   const allTokens = React.useMemo(() => {
-    let allTokens;
+    let allTokens = [];
+    if (!pTokens || pTokens.length === 0) return [];
     if (onlyPToken) {
-      allTokens = _(pTokens).map(item => ({
+      allTokens = _(pTokens)?.map((item) => ({
         ...item,
         id: item.tokenId,
         displaySymbol: showOriginalSymbol ? item.symbol : item.pSymbol,
       }));
     } else {
       allTokens = _(internalTokens)
-        .filter(token => token.name && token.symbol)
-        .filter(item => !pTokens.find(i => i.tokenId === item.id))
+        ?.filter((token) => token.name && token.symbol)
+        .filter((item) => !pTokens?.find((i) => i?.tokenId === item?.id))
         .concat(
-          pTokens.map(item => ({
+          pTokens?.map((item) => ({
             ...item,
-            id: item.tokenId,
+            id: item?.tokenId,
           })),
         )
-        .map(item => ({
+        .map((item) => ({
           ...item,
           displaySymbol: showOriginalSymbol
-            ? item.symbol
-            : item.pSymbol || item.symbol,
+            ? item?.symbol
+            : item?.pSymbol || item?.symbol,
         }));
     }
 
     allTokens = allTokens
-      .orderBy(item => COINS.POPULAR_COIN_IDS.indexOf(item.id), 'desc')
-      .uniqBy(item => item?.id)
+      .orderBy((item) => COINS.POPULAR_COIN_IDS.indexOf(item.id), 'desc')
+      .uniqBy((item) => item?.id)
       .value();
 
     if (!onlyPToken) {
       allTokens = [
         {
-          id:
-            '0000000000000000000000000000000000000000000000000000000000000004',
+          id: '0000000000000000000000000000000000000000000000000000000000000004',
           name: 'Incognito',
           displayName: 'Privacy',
           symbol: 'PRV',
@@ -103,18 +103,18 @@ const enhance = WrappedComp => props => {
     }
 
     if (onlyPToken && !selectedPrivacy.isPToken) {
-      const firstPToken = allTokens.find(item =>
-        pTokens.find(token => token.tokenId === item.id),
+      const firstPToken = allTokens?.find((item) =>
+        pTokens.find((token) => token?.tokenId === item?.id),
       );
 
       if (firstPToken) {
-        dispatch(setSelectedPrivacy(firstPToken.id));
+        dispatch(setSelectedPrivacy(firstPToken?.id));
       } else {
-        dispatch(setSelectedPrivacy(pTokens[0].tokenId));
+        dispatch(setSelectedPrivacy(pTokens[0]?.tokenId));
       }
     }
     return allTokens;
-  }, []);
+  }, [pTokens, internalTokens]);
 
   const isTokenSelectable = tokenId => {
     if (!tokenId) {

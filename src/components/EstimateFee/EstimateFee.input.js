@@ -11,7 +11,7 @@ import { BtnFast } from '@src/components/Button';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { selectedPrivacySelector } from '@src/redux/selectors';
+import { selectedPrivacySelector, childSelectedPrivacySelector } from '@src/redux/selectors';
 import { Text } from '@components/core';
 import { styled } from './EstimateFee.styled';
 import withEstimateFee from './EstimateFee.enhance';
@@ -48,6 +48,7 @@ const EstimateFeeInput = (props) => {
     isUseTokenFee,
     feePDecimals,
     totalFee,
+    isUnShield,
   } = useSelector(feeDataSelector);
   const [state, setState] = React.useState({
     minFeeValidator: null,
@@ -115,7 +116,7 @@ const EstimateFeeInput = (props) => {
               // color: COLORS.black,
             },
           }}
-          label="Fee"
+          label={isUnShield ? 'Fee (est)' : 'Fee'}
           {...props}
         />
       )}

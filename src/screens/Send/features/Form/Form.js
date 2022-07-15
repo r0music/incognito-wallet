@@ -1,31 +1,44 @@
-import React, { useState } from 'react';
-import { KeyboardAwareScrollView, View, Text, Button  } from '@src/components/core';
-import { change, Field } from 'redux-form';
 import {
   createForm,
-  InputQRField,
   InputField,
   InputMaxValueField,
-  SelectOptionField,
+  InputQRField,
+  SelectNetworkField,
 } from '@components/core/reduxForm';
-import { SEND } from '@src/constants/elements';
-import { generateTestId } from '@src/utils/misc';
 import EstimateFee from '@components/EstimateFee/EstimateFee.input';
-import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
-import { selectedPrivacySelector } from '@src/redux/selectors';
-import SelectedPrivacy from '@src/models/selectedPrivacy';
-import { defaultAccountSelector } from '@src/redux/selectors/account';
+import {
+  Button,
+  KeyboardAwareScrollView,
+  Text,
+  View,
+} from '@src/components/core';
+import { actionResetFormSupportSendInChain } from '@src/components/EstimateFee/EstimateFee.actions';
+import {
+  feeDataSelector,
+  networksSelector,
+} from '@src/components/EstimateFee/EstimateFee.selector';
 import LoadingTx from '@src/components/LoadingTx';
-import format from '@src/utils/format';
-import useFeatureConfig from '@src/shared/hooks/featureConfig';
-import appConstant from '@src/constants/app';
 import { CONSTANT_COMMONS } from '@src/constants';
+import appConstant from '@src/constants/app';
+import { SEND } from '@src/constants/elements';
+import {
+  clearChildSelectedPrivacy,
+  setChildSelectedPrivacy,
+} from '@src/redux/actions/childSelectedPrivacy';
+import {
+  childSelectedPrivacySelector,
+  selectedPrivacySelector,
+} from '@src/redux/selectors';
+import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { colorsSelector } from '@src/theme/theme.selector';
-import { FONT } from '@src/styles';
-import { styledForm as styled } from './Form.styled';
+import format from '@src/utils/format';
+import { generateTestId } from '@src/utils/misc';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Field, formValueSelector } from 'redux-form';
 import withSendForm, { formName } from './Form.enhance';
+import { styledForm as styled } from './Form.styled';
 
 const initialFormValues = {
   amount: '',
@@ -74,13 +87,14 @@ const SendForm = (props) => {
     validateMemo,
     navigation,
     isPortalToken,
-    isUnshieldPegPRV,
   } = props;
   const dispatch = useDispatch();
-  const { titleBtnSubmit, isUnShield, editableInput } = useSelector(
-    feeDataSelector,
-  );
+  const { titleBtnSubmit, isUnShield, editableInput } =
+    useSelector(feeDataSelector);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const childSelectedPrivacy = useSelector(
+    childSelectedPrivacySelector.childSelectedPrivacy,
+  );
   const [onCentralizedPress, isCentralizedDisabled] = useFeatureConfig(
     appConstant.DISABLED.UNSHIELD_CENTRALIZED,
     handleSend,
@@ -89,13 +103,7 @@ const SendForm = (props) => {
     appConstant.DISABLED.UNSHIELD_DECENTRALIZED,
     handleSend,
   );
-  let placeholderAddress = selectedPrivacy?.isMainCrypto
-    ? 'Incognito or ETH/BSC address'
-    : `Incognito${
-      selectedPrivacy?.isIncognitoToken
-        ? ' '
-        : ` or ${selectedPrivacy?.rootNetworkName} `
-    }address`;
+  let placeholderAddress = 'Recipient address';
 
   const amountValidator = validateAmount;
   const isDisabled =
@@ -108,8 +116,48 @@ const SendForm = (props) => {
       : onDecentralizedPress
     : handleSend;
   const submitHandler = handlePressSend;
-  const [ childSelectedPrivacy, setChildSelectedPrivacy] = useState(null);
-  const account = useSelector(defaultAccountSelector);
+
+  const getNetworks = () => {
+    let networks = useSelector(networksSelector);
+    let incognitoNetwork = [
+      {
+        network: 'Incognito',
+        networkId: 'INCOGNITO',
+        currencyType: CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.INCOGNITO,
+      },
+    ];
+    return [...incognitoNetwork, ...networks];
+  };
+  const networks = getNetworks();
+
+  const selector = formValueSelector(formName);
+  const currencyTypeName = useSelector((state) =>
+    selector(state, 'currencyType'),
+  );
+  const amountValue = useSelector((state) =>
+    selector(state, 'amount'),
+  );
+
+  React.useEffect(() => {
+    dispatch(clearChildSelectedPrivacy());
+  }, []);
+
+  React.useEffect(() => {
+    if (isIncognitoAddress && !currencyTypeName) {
+      onChangeField(
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.INCOGNITO,
+        'currencyType',
+      );
+      let childSelectedPrivacy = networks.find(
+        (item) =>
+          item.currencyType ===
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.INCOGNITO,
+      );
+      childSelectedPrivacy.amount = selectedPrivacy?.amount || 0;
+      dispatch(setChildSelectedPrivacy(childSelectedPrivacy));
+    }
+  }, [isIncognitoAddress]);
+
   const colors = useSelector(colorsSelector);
 
   const renderMemo = () => {
@@ -141,60 +189,48 @@ const SendForm = (props) => {
       }
       return null;
     }
-    return (
-      <Field
-        component={InputField}
-        name="message"
-        placeholder="Add a note (optional)"
-        label="Memo"
-        maxLength={500}
-        componentProps={{
-          editable: editableInput,
-          inputStyle: {
-            color: colors.text1,
-          },
-        }}
-        {...generateTestId(SEND.MEMO_INPUT)}
-      />
-    );
-  };
-
-  const renderNetworkType = () => {
-    if (isUnshieldPegPRV) {
-      const platforms = [
-        {
-          label: 'ETH',
-          value: CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20
-        },
-        {
-          label: 'BSC',
-          value: CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20
-        },
-      ];
-
+    if (childSelectedPrivacy?.networkId === 'INCOGNITO') {
       return (
         <Field
-          onChange={(value) => {
-            onChangeField(value, 'currencyType');
-            const childToken = selectedPrivacy.listChildToken.find(item => item.currencyType === value);
-            const childSelectedPrivacy = new SelectedPrivacy(
-              account,
-              null,
-              childToken,
-              selectedPrivacy.tokenId,
-            );
-            setChildSelectedPrivacy(childSelectedPrivacy);
+          component={InputField}
+          name="message"
+          placeholder="Add a note (optional)"
+          label="Memo"
+          maxLength={500}
+          componentProps={{
+            editable: editableInput,
+            inputStyle: {
+              color: colors.text1,
+            },
           }}
-          component={SelectOptionField}
-          items={platforms}
-          name="currencyType"
-          label="Network type"
-          labelStyle={[{color: colors.text1}, {...FONT.TEXT.formLabel}]}
-          // labelStyle={{color: colors.text1}}
+          {...generateTestId(SEND.MEMO_INPUT)}
         />
       );
     }
     return null;
+  };
+
+  const renderNetworkType = () => {
+    return (
+      <Field
+        onChange={(value) => {
+          onChangeField(value, 'currencyType');
+          let childSelectedPrivacy = networks.find(
+            (item) => item.currencyType === value,
+          );
+          childSelectedPrivacy.amount = selectedPrivacy?.amount || 0;
+          if (childSelectedPrivacy?.networkId === 'INCOGNITO') {
+            dispatch(actionResetFormSupportSendInChain());
+          }
+          dispatch(setChildSelectedPrivacy(childSelectedPrivacy));
+        }}
+        component={SelectNetworkField}
+        networks={networks}
+        selectedNetwork={childSelectedPrivacy}
+        name="currencyType"
+        style={styled.selectNetwork}
+      />
+    );
   };
 
   React.useEffect(() => {
@@ -234,6 +270,11 @@ const SendForm = (props) => {
                   },
                 }}
                 validate={amountValidator}
+                warning={
+                  amountValidator &&
+                  selectedPrivacy?.isPUnifiedToken &&
+                  `The receiving amount will be at least ${amountValue} ${selectedPrivacy?.symbol}`
+                }
                 {...generateTestId(SEND.AMOUNT_INPUT)}
               />
               <Field
@@ -265,6 +306,7 @@ const SendForm = (props) => {
                   isIncognitoAddress,
                   isExternalAddress,
                   isPortalToken,
+                  selectedPrivacy,
                   childSelectedPrivacy,
                 }}
               />
@@ -275,11 +317,9 @@ const SendForm = (props) => {
                   styled.submitBtn,
                   isUnShield ? styled.submitBtnUnShield : null,
                 ]}
-                style={{marginTop: 24}}
-                disabled={disabledForm || isDisabled}
-                onPress={handleSubmit(
-                  submitHandler
-                )}
+                style={{ marginTop: 24 }}
+                disabled={disabledForm || isDisabled || !childSelectedPrivacy}
+                onPress={handleSubmit(submitHandler)}
                 {...generateTestId(SEND.SUBMIT_BUTTON)}
               />
             </>
@@ -287,7 +327,6 @@ const SendForm = (props) => {
         </Form>
       </KeyboardAwareScrollView>
       {isSending && <LoadingTx text={textLoadingTx} />}
-
     </View>
   );
 };
@@ -317,6 +356,7 @@ SendForm.propTypes = {
   validateMemo: PropTypes.any.isRequired,
   navigation: PropTypes.object.isRequired,
   isUnshieldPegPRV: PropTypes.bool.isRequired,
+  isUnshieldPUnifiedToken: PropTypes.bool.isRequired,
 };
 
 export default withSendForm(SendForm);

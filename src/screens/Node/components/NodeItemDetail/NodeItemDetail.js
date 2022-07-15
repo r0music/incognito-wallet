@@ -225,6 +225,7 @@ const NodeItemDetail = memo(({
         </View>
         {renderStakeInfo()}
         {renderUpdateNode()}
+        <View style={{ height: 60 }} />
       </ScrollViewBorder>
       <BottomBar />
     </View2>

@@ -20,7 +20,6 @@ import { swapHistorySelector } from './Swap.selector';
 const styled = StyleSheet.create({
   container: {
     flex: 1,
-    minHeight: 200,
   },
   order: {
     flex: 1,
