@@ -23,7 +23,6 @@ export default StyleSheet.create({
   },
   coinInterest: {
     ...FONT.TEXT.incognitoP1,
-    marginBottom: 8,
   },
   coinExtra: {
     ...FONT.TEXT.incognitoP1,

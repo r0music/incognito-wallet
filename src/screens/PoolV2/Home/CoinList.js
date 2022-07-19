@@ -43,7 +43,6 @@ export const SumIconComp = React.memo(() => {
       style={{
         width: 16,
         height: 16,
-        marginBottom: 8,
         marginRight: 8,
       }}
     />
