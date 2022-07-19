@@ -16,6 +16,7 @@ import { LIMIT } from '@screens/PoolV2/constants';
 import globalStyled from '@src/theme/theme.styled';
 import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme';
+import { selectedPrivacySelector } from '@src/redux/selectors';
 import styles from './style';
 
 const History = ({
@@ -27,31 +28,49 @@ const History = ({
 }) => {
   const navigation = useNavigation();
   const colors = useSelector(colorsSelector);
+  const getPrivacyDataByTokenID = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID);
   const viewDetail = (item) => {
     navigation.navigate(ROUTE_NAMES.PoolV2HistoryDetail, { history: item });
   };
 
   // eslint-disable-next-line react/prop-types
-  const renderHistoryItem = ({ item, index }) => (
-    <TouchableOpacity
-      key={item.id}
-      style={[
-        styles.historyItem,
-        { borderBottomColor: colors.border4, borderBottomWidth: 1 }, index === 0 && {paddingTop: 0},
-        globalStyled.defaultPaddingHorizontal
-      ]}
-      onPress={() => viewDetail(item)}
-    >
-      <Text style={styles.buttonTitle}>{item.type}</Text>
-      <View style={styles.row}>
-        <Text style={[styles.content, styles.ellipsis]} numberOfLines={1}>{item.description}</Text>
-        <View style={[styles.row, styles.center]}>
-          <Text style={[styles.content, { color: item.statusColor }]} numberOfLines={1}>{item.status}</Text>
-          <ArrowRightGreyIcon style={{ marginLeft: 10 }} />
+  const renderHistoryItem = ({ item, index }) => {
+    const { network } = getPrivacyDataByTokenID(item.coinId);
+
+    return (
+      <TouchableOpacity
+        key={item.id}
+        style={[
+          styles.historyItem,
+          { borderBottomColor: colors.border4, borderBottomWidth: 1 },
+          index === 0 && { paddingTop: 0 },
+          globalStyled.defaultPaddingHorizontal,
+        ]}
+        onPress={() => viewDetail(item)}
+      >
+        <Text style={styles.buttonTitle}>{item.type}</Text>
+        <View style={styles.row}>
+          <View style={{flexDirection: 'row'}}>
+            <Text numberOfLines={1}>
+              {item.description}
+            </Text>
+            <View style={styles.networkBoxContainer}>
+              <Text style={styles.networkName}>{network}</Text>
+            </View>
+          </View>
+          <View style={[styles.row, styles.center]}>
+            <Text
+              style={[styles.content, { color: item.statusColor }]}
+              numberOfLines={1}
+            >
+              {item.status}
+            </Text>
+            <ArrowRightGreyIcon style={{ marginLeft: 10 }} />
+          </View>
         </View>
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  };
 
   const renderFooter = () => isLoadingMoreHistories ?
     <ActivityIndicator /> : null;

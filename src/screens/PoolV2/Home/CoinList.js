@@ -148,34 +148,47 @@ const CoinList = ({
   };
 
   const renderBtnMirage = (item) => {
-    return (
-      <TouchableOpacity style={[mainStyles.btnMirage, { backgroundColor: colors.background3 }]} onPress={() => handleOpenMigrate(item)}>
-        <Text style={mainStyles.mirageText}>Migrate</Text>
-      </TouchableOpacity>
-    );
+    if (!item?.locked && item?.coin?.id === PRV_ID && item?.balance) {
+      return (
+        <TouchableOpacity
+          style={[
+            mainStyles.btnViewDetail,
+            { backgroundColor: colors.background3 },
+          ]}
+          onPress={() => handleOpenMigrate(item)}
+        >
+          <Text style={mainStyles.mirageText}>Migrate</Text>
+        </TouchableOpacity>
+      );
+    }
+    return null;
   };
 
   const renderBtnViewDetails = (item) => {
-    return (
-      <TouchableOpacity style={[mainStyles.btnViewDetail, {borderColor: colors.contrast}]} onPress={() => handleShowLockHistory(item)}>
-        <Text style={mainStyles.viewDetailText}>View details</Text>
-      </TouchableOpacity>
-    );
+    if (item.locked) {
+      return (
+        <TouchableOpacity
+          style={[mainStyles.btnViewDetail, { borderColor: colors.contrast }]}
+          onPress={() => handleShowLockHistory(item?.coin)}
+        >
+          <Text style={mainStyles.viewDetailText}>View details</Text>
+        </TouchableOpacity>
+      );
+    }
+    return null;
   };
 
   const renderMainCoin = (item) => {
-    const mapCoin = item.coin;
-    const provideBalance = item.balance;
+    const { network } = getPrivacyDataByTokenID(item.id);
     return (
       <View style={mainStyles.wrapTitle}>
-        <Text style={[mainStyles.coinName, { marginBottom: 0 }]}>{item.symbol}</Text>
-        {item.locked && (
-          <>
-            <LockTimeComp />
-            {renderBtnViewDetails(mapCoin)}
-          </>
-        )}
-        {(!item.locked && mapCoin.id === PRV_ID && !!provideBalance) && renderBtnMirage(item)}
+        <Text style={[mainStyles.coinName, { marginBottom: 0 }]}>
+          {item.symbol}
+        </Text>
+        <View style={mainStyles.networkBox}>
+          <Text style={mainStyles.networkText}>{network}</Text>
+        </View>
+        {item.locked && <LockTimeComp />}
       </View>
     );
   };
@@ -200,48 +213,97 @@ const CoinList = ({
         )}
         style={[styles.scrollView, { paddingHorizontal: 0 }]}
       >
-        {groupedUserData.map((item) => {
+        {groupedUserData.map((item, i) => {
           const mapCoin = item.coin;
           console.log('item: ', item);
           if (!mapCoin) return null;
           const { iconUrl } = getPrivacyDataByTokenID(item.id);
           return (
-            <View style={[globalStyled.defaultPaddingHorizontal, { flexDirection: 'row', borderBottomColor: colors.border4, borderBottomWidth: 1, marginBottom: 15 }]}>
-              <ImageCached uri={iconUrl} style={{ width: 32, height: 32, marginTop: 10, marginRight: 14 }} />
-              <View key={`${item.id} ${item.locked}`} style={[mainStyles.coin, { flex: 1, marginBottom: 10 }]}>
+            <View
+              key={i}
+              style={[
+                globalStyled.defaultPaddingHorizontal,
+                {
+                  flexDirection: 'row',
+                  borderBottomColor: colors.border4,
+                  borderBottomWidth: 1,
+                  marginBottom: 15,
+                },
+              ]}
+            >
+              <ImageCached
+                uri={iconUrl}
+                style={{
+                  width: 32,
+                  height: 32,
+                  marginTop: 10,
+                  marginRight: 14,
+                }}
+              />
+              <View
+                key={`${item.id} ${item.locked}`}
+                style={[mainStyles.coin, { flex: 1, marginBottom: 10 }]}
+              >
                 <View key={`${item.id} ${item.locked}`}>
                   <View>
                     <Row>
                       <View>
                         {renderMainCoin(item)}
                         {renderUpToAPY(item)}
+                        {renderBtnViewDetails(item)}
+                        {renderBtnMirage(item)}
                       </View>
                       <View style={[mainStyles.flex]}>
-                        <Text style={[mainStyles.coinName, mainStyles.textRight, { marginBottom: 10 }]}>
+                        <Text
+                          style={[
+                            mainStyles.coinName,
+                            mainStyles.textRight,
+                            { marginBottom: 10 },
+                          ]}
+                        >
                           {item.displayBalance}
                         </Text>
                         {!!item.displayPendingBalance && (
-                          <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
+                          <Text
+                            style={[mainStyles.coinExtra, mainStyles.textRight]}
+                          >
                             + {item.displayPendingBalance}
                           </Text>
                         )}
                         {!!item.displayUnstakeBalance && (
-                          <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
+                          <Text
+                            style={[mainStyles.coinExtra, mainStyles.textRight]}
+                          >
                             - {item.displayUnstakeBalance}
                           </Text>
                         )}
                         <Row
-                          style={[mainStyles.textRight, mainStyles.justifyRight]}
+                          style={[
+                            mainStyles.textRight,
+                            mainStyles.justifyRight,
+                          ]}
                           center
                         >
                           {item.locked && <SumIconComp />}
-                          <PRVSymbol style={[mainStyles.coinInterest, {color: colors.text6}]} />
-                          <Text style={[mainStyles.coinInterest, {color: colors.text6}]}>
+                          <PRVSymbol
+                            style={[
+                              mainStyles.coinInterest,
+                              { color: colors.text6 },
+                            ]}
+                          />
+                          <Text
+                            style={[
+                              mainStyles.coinInterest,
+                              { color: colors.text6 },
+                            ]}
+                          >
                             {item.displayReward}
                           </Text>
                         </Row>
                         {!!item.displayWithdrawReward && (
-                          <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
+                          <Text
+                            style={[mainStyles.coinExtra, mainStyles.textRight]}
+                          >
                             - {item.displayWithdrawReward}
                           </Text>
                         )}

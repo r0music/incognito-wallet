@@ -71,7 +71,7 @@ const SelectCoin = ({ coins }) => {
       <Header title="Select coin" />
       <ScrollViewBorder style={mainStyle.coinContainerNoMargin}>
         {coins.map((coin) => {
-          const { iconUrl } = getPrivacyDataByTokenID(coin.id);
+          const { iconUrl, network } = getPrivacyDataByTokenID(coin.id);
           return (
             <TouchableOpacity
               key={coin.id}
@@ -79,8 +79,18 @@ const SelectCoin = ({ coins }) => {
               onPress={() => handleSelect(coin)}
               disabled={!coin.balance}
             >
-              <ImageCached uri={iconUrl} style={{ width: 32, height: 32, marginTop: 10, marginRight: 14 }} />
-              <View style={[coin.balance === 0 && mainStyle.disabled, { flex: 1 }]}>
+              <ImageCached
+                uri={iconUrl}
+                style={{
+                  width: 32,
+                  height: 32,
+                  marginTop: 10,
+                  marginRight: 14,
+                }}
+              />
+              <View
+                style={[coin.balance === 0 && mainStyle.disabled, { flex: 1 }]}
+              >
                 <Row spaceBetween style={{ marginBottom: 8 }}>
                   <Row style={{ alignItems: 'center' }}>
                     <Text style={[mainStyle.coinName, { marginBottom: 0 }]}>
@@ -96,7 +106,12 @@ const SelectCoin = ({ coins }) => {
                     <ActivityIndicator />
                   )}
                 </Row>
-                {renderUpToAPY(coin)}
+                <Row spaceBetween>
+                  <View style={[mainStyle.networkBox, { marginLeft: 0 }]}>
+                    <Text style={mainStyle.networkText}>{network}</Text>
+                  </View>
+                  {renderUpToAPY(coin)}
+                </Row>
               </View>
             </TouchableOpacity>
           );
