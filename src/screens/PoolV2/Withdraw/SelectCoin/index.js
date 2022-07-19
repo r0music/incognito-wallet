@@ -61,10 +61,10 @@ const SelectCoin = ({
               {displayFullTotalRewardsNonLock}
             </Text>
           </Row>
-          <Text style={mainStyle.coinExtra}>Rewards</Text>
+          <Text style={[mainStyle.coinExtra, { marginTop: 8 }]}>Rewards</Text>
         </TouchableOpacity>
         {coins.map((coin) => {
-          const {network} = getPrivacyDataByTokenID(coin?.id);
+          const { network } = getPrivacyDataByTokenID(coin?.id);
           return (
             <TouchableOpacity
               key={coin.id}
@@ -83,7 +83,9 @@ const SelectCoin = ({
                 </Row>
                 <Text style={mainStyle.coinName}>{coin.displayBalance}</Text>
               </Row>
-              <Text style={mainStyle.coinExtra}>Provision</Text>
+              <Text style={[mainStyle.coinExtra, { marginTop: 8 }]}>
+                Provision
+              </Text>
             </TouchableOpacity>
           );
         })}

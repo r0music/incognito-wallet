@@ -118,7 +118,7 @@ const CoinList = ({
                   <Row
                     centerVertical
                   >
-                    <Text style={[mainStyles.coinName, { marginBottom: 0 }]}>
+                    <Text numberOfLines={1} style={[mainStyles.coinName, {maxWidth: '50%', marginBottom: 0 }]}>
                       {item.name}
                     </Text>
                     <Row centerVertical style={[mainStyles.flex, mainStyles.emptyRight]}>
@@ -146,7 +146,7 @@ const CoinList = ({
                       { marginTop: 8 },
                     ]}
                   >
-                    <Text style={mainStyles.tokenName}>{item?.name}</Text>
+                    <Text numberOfLines={1} style={mainStyles.tokenName}>{item?.name}</Text>
                     <View style={mainStyles.networkBox}>
                       <Text style={mainStyles.networkText}>{network}</Text>
                     </View>
@@ -312,24 +312,28 @@ const CoinList = ({
                       </View>
                       <View style={[mainStyles.flex]}>
                         <Text
-                          style={[
-                            mainStyles.coinName,
-                            mainStyles.textRight,
-                            { marginBottom: 10 },
-                          ]}
+                          style={[mainStyles.coinName, mainStyles.textRight]}
                         >
                           {item.displayBalance}
                         </Text>
                         {!!item.displayPendingBalance && (
                           <Text
-                            style={[mainStyles.coinExtra, mainStyles.textRight]}
+                            style={[
+                              mainStyles.coinExtra,
+                              mainStyles.textRight,
+                              { marginTop: 8 },
+                            ]}
                           >
                             + {item.displayPendingBalance}
                           </Text>
                         )}
                         {!!item.displayUnstakeBalance && (
                           <Text
-                            style={[mainStyles.coinExtra, mainStyles.textRight]}
+                            style={[
+                              mainStyles.coinExtra,
+                              mainStyles.textRight,
+                              { marginTop: 8 },
+                            ]}
                           >
                             - {item.displayUnstakeBalance}
                           </Text>
@@ -338,6 +342,7 @@ const CoinList = ({
                           style={[
                             mainStyles.textRight,
                             mainStyles.justifyRight,
+                            { marginTop: 8 },
                           ]}
                           center
                         >
@@ -359,7 +364,11 @@ const CoinList = ({
                         </Row>
                         {!!item.displayWithdrawReward && (
                           <Text
-                            style={[mainStyles.coinExtra, mainStyles.textRight]}
+                            style={[
+                              mainStyles.coinExtra,
+                              mainStyles.textRight,
+                              { marginTop: 8 },
+                            ]}
                           >
                             - {item.displayWithdrawReward}
                           </Text>
