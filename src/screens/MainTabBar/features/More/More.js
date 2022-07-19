@@ -35,7 +35,7 @@ const Categories = [
         route: routeNames.PoolV2,
         label: 'Provide',
         icon: ProvideIcon,
-        key: appConstant.DISABLED.PROVIDE,
+        // key: appConstant.DISABLED.PROVIDE,
       },
       {
         route: routeNames.Node,

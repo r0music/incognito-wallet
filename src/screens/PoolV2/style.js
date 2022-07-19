@@ -27,7 +27,6 @@ export default StyleSheet.create({
   },
   coinExtra: {
     ...FONT.TEXT.incognitoP1,
-    marginVertical: 8,
   },
   coinExtraSmall: {
     fontFamily: FONT.NAME.medium,
@@ -113,7 +112,7 @@ export default StyleSheet.create({
     height: 24,
     paddingHorizontal: 8,
     borderRadius: 4,
-    marginTop: 8,
+    marginLeft: 8,
   },
   viewDetailText: {
     ...FONT.STYLE.medium,
@@ -126,7 +125,6 @@ export default StyleSheet.create({
   iconUp: {
     width: 14,
     height: 16,
-    marginBottom: 8,
     marginLeft: 4,
   },
   label: {
@@ -141,12 +139,16 @@ export default StyleSheet.create({
     borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 0,
   },
   networkText: {
     color: COLORS.lightGrey36,
     fontSize: 12,
     fontWeight: '500',
     lineHeight: 18,
+  },
+  tokenName: {
+    fontSize: 14,
+    color: COLORS.lightGrey36,
+    maxWidth: 100,
   },
 });

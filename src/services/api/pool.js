@@ -110,7 +110,7 @@ export async function withdrawProvision(paymentAddress, signEncode, amount, toke
 }
 
 export async function getHistories(account, page, limit, coins) {
-  const url = `/pool/staker/history?p_stake_address=${account.PaymentAddress}&page=${page}&limit=${limit}&type=1,2,6,8,10&${CANCEL_KEY}`;
+  const url = `/pool/staker/history?p_stake_address=${account.PaymentAddress}&page=${page}&limit=${limit}&type=1,2,6,8,10,11&${CANCEL_KEY}`;
   return http.get(url)
     .then(data => ({
       items: data.Items.map(item => new PoolHistory(item, account, coins)),

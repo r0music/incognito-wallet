@@ -8,11 +8,13 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  Image, RefreshControl,
+  Image,
+  RefreshControl,
 } from '@components/core';
 import mainStyles from '@screens/PoolV2/style';
+import { COLORS } from '@src/styles';
 import { Row, PRVSymbol, ImageCached } from '@src/components';
-import {ArrowRightGreyIcon, LockIcon} from '@components/Icons';
+import { ArrowRightGreyIcon, LockIcon } from '@components/Icons';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { PRV_ID } from '@src/screens/DexV2/constants';
@@ -23,11 +25,12 @@ import { selectedPrivacySelector } from '@src/redux/selectors';
 import globalStyled from '@src/theme/theme.styled';
 import styles from './style';
 
-
 export const LockTimeComp = React.memo(() => {
   const colors = useSelector(colorsSelector);
   return (
-    <Row style={[mainStyles.wrapperLock, { backgroundColor: colors.background3 }]}>
+    <Row
+      style={[mainStyles.wrapperLock, { backgroundColor: colors.background3 }]}
+    >
       <LockIcon />
     </Row>
   );
@@ -41,18 +44,17 @@ export const SumIconComp = React.memo(() => {
         width: 16,
         height: 16,
         marginBottom: 8,
-        marginRight: 8
+        marginRight: 8,
       }}
     />
   );
 });
 
 export const UpToIconComp = ({ style }) => {
-  const colors = useSelector(colorsSelector);
   return (
     <Image
       source={upToIcon}
-      style={[mainStyles.iconUp, { tintColor: colors.blue1 }, style]}
+      style={[mainStyles.iconUp, { tintColor: COLORS.green1 }, style]}
     />
   );
 };
@@ -69,7 +71,9 @@ const CoinList = ({
   account,
   isLoadingHistories,
 }) => {
-  const getPrivacyDataByTokenID = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID);
+  const getPrivacyDataByTokenID = useSelector(
+    selectedPrivacySelector.getPrivacyDataByTokenID,
+  );
   const navigation = useNavigation();
   const colors = useSelector(colorsSelector);
   const handleHistory = () => {
@@ -82,36 +86,82 @@ const CoinList = ({
     return (
       <>
         <ScrollView
-          refreshControl={(
+          refreshControl={
             <RefreshControl
               refreshing={loading}
               onRefresh={() => onLoad(account)}
             />
-          )}
+          }
           style={[styles.scrollView, { paddingHorizontal: 0 }]}
         >
-          {groupedCoins.map((item) => {
-            const { iconUrl } = getPrivacyDataByTokenID(item.id);
+          {groupedCoins.map((item, i) => {
+            const { iconUrl, network } = getPrivacyDataByTokenID(item.id);
             return (
               <Row
-                centerVertical
+                key={i}
                 style={[
                   mainStyles.coin,
-                  { borderBottomWidth: 1, borderBottomColor: colors.border4, paddingVertical: 16, marginBottom: 0 },
+                  {
+                    borderBottomWidth: 1,
+                    borderBottomColor: colors.border4,
+                    paddingVertical: 16,
+                    marginBottom: 0,
+                    alignItems: 'center'
+                  },
                   globalStyled.defaultPaddingHorizontal,
                 ]}
-                key={`${item.id} ${item.locked}`}
               >
-                <ImageCached uri={iconUrl} style={{ width: 32, height: 32, marginRight: 14 }} />
-                <Text style={[mainStyles.coinName, { marginBottom: 0 }]}>{item.name}</Text>
-                <Row style={[mainStyles.flex, mainStyles.emptyRight]}>
-                  {item.locked && <UpToIconComp style={{ marginBottom: 0 }} />}
-                  <Text style={[mainStyles.coinExtra, mainStyles.textRight, { color: colors.blue1, marginLeft: 4, marginBottom: 0 }]}>{item.displayInterest}</Text>
-                </Row>
+                <ImageCached
+                  uri={iconUrl}
+                  style={{ width: 32, height: 32, marginRight: 14 }}
+                />
+                <View style={{ flex: 1 }}>
+                  <Row
+                    centerVertical
+                  >
+                    <Text style={[mainStyles.coinName, { marginBottom: 0 }]}>
+                      {item.name}
+                    </Text>
+                    <Row centerVertical style={[mainStyles.flex, mainStyles.emptyRight]}>
+                      {item.locked && (
+                        <UpToIconComp style={{ marginBottom: 0 }} />
+                      )}
+                      <Text
+                        style={[
+                          mainStyles.coinExtra,
+                          mainStyles.textRight,
+                          {
+                            color: COLORS.green1,
+                            marginLeft: 4,
+                            marginBottom: 0,
+                          },
+                        ]}
+                      >
+                        {item.displayInterest}
+                      </Text>
+                    </Row>
+                  </Row>
+                  <Row
+                    centerVertical
+                    style={[
+                      { marginTop: 8 },
+                    ]}
+                  >
+                    <Text style={mainStyles.tokenName}>{item?.name}</Text>
+                    <View style={mainStyles.networkBox}>
+                      <Text style={mainStyles.networkText}>{network}</Text>
+                    </View>
+                  </Row>
+                </View>
               </Row>
             );
           })}
-          <View style={[globalStyled.defaultPaddingHorizontal, { marginVertical: 15 }]}>
+          <View
+            style={[
+              globalStyled.defaultPaddingHorizontal,
+              { marginVertical: 15 },
+            ]}
+          >
             {renderRate()}
           </View>
         </ScrollView>
@@ -148,55 +198,65 @@ const CoinList = ({
   };
 
   const renderBtnMirage = (item) => {
-    if (!item?.locked && item?.coin?.id === PRV_ID && item?.balance) {
-      return (
-        <TouchableOpacity
-          style={[
-            mainStyles.btnViewDetail,
-            { backgroundColor: colors.background3 },
-          ]}
-          onPress={() => handleOpenMigrate(item)}
-        >
-          <Text style={mainStyles.mirageText}>Migrate</Text>
-        </TouchableOpacity>
-      );
-    }
-    return null;
+    return (
+      <TouchableOpacity
+        style={[mainStyles.btnMirage, { backgroundColor: colors.background3 }]}
+        onPress={() => handleOpenMigrate(item)}
+      >
+        <Text style={mainStyles.mirageText}>Migrate</Text>
+      </TouchableOpacity>
+    );
   };
 
   const renderBtnViewDetails = (item) => {
-    if (item.locked) {
-      return (
-        <TouchableOpacity
-          style={[mainStyles.btnViewDetail, { borderColor: colors.contrast }]}
-          onPress={() => handleShowLockHistory(item?.coin)}
-        >
-          <Text style={mainStyles.viewDetailText}>View details</Text>
-        </TouchableOpacity>
-      );
-    }
-    return null;
+    return (
+      <TouchableOpacity
+        style={[mainStyles.btnViewDetail, { borderColor: colors.contrast }]}
+        onPress={() => handleShowLockHistory(item)}
+      >
+        <Text style={mainStyles.viewDetailText}>View details</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderNetwork = (item) => {
+    const { network } = getPrivacyDataByTokenID(item?.id);
+    return (
+      <View style={mainStyles.networkBox}>
+        <Text style={mainStyles.networkText}>{network}</Text>
+      </View>
+    );
   };
 
   const renderMainCoin = (item) => {
-    const { network } = getPrivacyDataByTokenID(item.id);
+    const mapCoin = item.coin;
+    const provideBalance = item.balance;
     return (
       <View style={mainStyles.wrapTitle}>
         <Text style={[mainStyles.coinName, { marginBottom: 0 }]}>
           {item.symbol}
         </Text>
-        <View style={mainStyles.networkBox}>
-          <Text style={mainStyles.networkText}>{network}</Text>
-        </View>
-        {item.locked && <LockTimeComp />}
+        {item.locked && (
+          <>
+            <LockTimeComp />
+            {renderBtnViewDetails(mapCoin)}
+          </>
+        )}
+        {!item.locked &&
+          mapCoin.id === PRV_ID &&
+          !!provideBalance &&
+          renderBtnMirage(item)}
+        {mapCoin.id !== PRV_ID && renderNetwork(item)}
       </View>
     );
   };
 
   const renderUpToAPY = (item) => {
     return (
-      <Row style={{alignItems: 'center'}}>
-        <Text style={[mainStyles.coinExtra, { color: colors.blue1 }]}>{item.coin.displayInterest}</Text>
+      <Row style={{ alignItems: 'center' }}>
+        <Text style={[mainStyles.coinExtra, { color: COLORS.green1 }]}>
+          {item.coin.displayInterest}
+        </Text>
         {item.locked && <UpToIconComp />}
       </Row>
     );
@@ -205,12 +265,12 @@ const CoinList = ({
   const renderUserData = () => {
     return (
       <ScrollView
-        refreshControl={(
+        refreshControl={
           <RefreshControl
             refreshing={loading}
             onRefresh={() => onLoad(account)}
           />
-        )}
+        }
         style={[styles.scrollView, { paddingHorizontal: 0 }]}
       >
         {groupedUserData.map((item, i) => {
@@ -250,8 +310,6 @@ const CoinList = ({
                       <View>
                         {renderMainCoin(item)}
                         {renderUpToAPY(item)}
-                        {renderBtnViewDetails(item)}
-                        {renderBtnMirage(item)}
                       </View>
                       <View style={[mainStyles.flex]}>
                         <Text
@@ -334,7 +392,9 @@ const CoinList = ({
         <View style={[styles.rateChange]}>
           <TouchableOpacity onPress={handleHistory}>
             <Row center spaceBetween style={mainStyles.flex}>
-              <Text style={[styles.rateStyle, { marginLeft: 20 }]}>Provider history</Text>
+              <Text style={[styles.rateStyle, { marginLeft: 20 }]}>
+                Provider history
+              </Text>
               <ArrowRightGreyIcon style={[{ marginRight: 10 }]} />
             </Row>
           </TouchableOpacity>
