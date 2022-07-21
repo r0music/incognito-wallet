@@ -15,6 +15,7 @@ import withDefaultAccount from '@components/Hoc/withDefaultAccount';
 import { LIMIT } from '@screens/PoolV2/constants';
 import globalStyled from '@src/theme/theme.styled';
 import { useSelector } from 'react-redux';
+import { PRV_ID } from '@screens/Dex/constants';
 import { colorsSelector } from '@src/theme';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import styles from './style';
@@ -50,13 +51,13 @@ const History = ({
       >
         <Text style={styles.buttonTitle}>{item.type}</Text>
         <View style={styles.row}>
-          <View style={{flexDirection: 'row'}}>
-            <Text numberOfLines={1}>
-              {item.description}
-            </Text>
-            <View style={styles.networkBoxContainer}>
-              <Text style={styles.networkName}>{network}</Text>
-            </View>
+          <View style={{ flexDirection: 'row' }}>
+            <Text numberOfLines={1}>{item.description}</Text>
+            {item?.coinId !== PRV_ID && (
+              <View style={styles.networkBoxContainer}>
+                <Text style={styles.networkName}>{network}</Text>
+              </View>
+            )}
           </View>
           <View style={[styles.row, styles.center]}>
             <Text

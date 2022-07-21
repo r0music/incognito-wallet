@@ -119,7 +119,7 @@ const CoinList = ({
                     centerVertical
                   >
                     <Text numberOfLines={1} style={[mainStyles.coinName, {maxWidth: '50%', marginBottom: 0 }]}>
-                      {item.name}
+                      {item.symbol}
                     </Text>
                     <Row centerVertical style={[mainStyles.flex, mainStyles.emptyRight]}>
                       {item.locked && (
