@@ -75,11 +75,13 @@ const SelectCoin = ({
               <Row spaceBetween>
                 <Row>
                   <Text style={mainStyle.coinName}>
-                    {coin.id === prv.id ? coin.symbol + anytime : coin.symbol}
+                    {coin?.id === prv.id ? coin.symbol + anytime : coin.symbol}
                   </Text>
-                  <View style={mainStyle.networkBox}>
-                    <Text style={mainStyle.networkText}>{network}</Text>
-                  </View>
+                  {coin.id !== prv.id && (
+                    <View style={mainStyle.networkBox}>
+                      <Text style={mainStyle.networkText}>{network}</Text>
+                    </View>
+                  )}
                 </Row>
                 <Text style={mainStyle.coinName}>{coin.displayBalance}</Text>
               </Row>

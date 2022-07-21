@@ -105,7 +105,7 @@ const CoinList = ({
                     borderBottomColor: colors.border4,
                     paddingVertical: 16,
                     marginBottom: 0,
-                    alignItems: 'center'
+                    alignItems: 'center',
                   },
                   globalStyled.defaultPaddingHorizontal,
                 ]}
@@ -115,13 +115,20 @@ const CoinList = ({
                   style={{ width: 32, height: 32, marginRight: 14 }}
                 />
                 <View style={{ flex: 1 }}>
-                  <Row
-                    centerVertical
-                  >
-                    <Text numberOfLines={1} style={[mainStyles.coinName, {maxWidth: '50%', marginBottom: 0 }]}>
+                  <Row centerVertical>
+                    <Text
+                      numberOfLines={1}
+                      style={[
+                        mainStyles.coinName,
+                        { maxWidth: '50%', marginBottom: 0 },
+                      ]}
+                    >
                       {item.symbol}
                     </Text>
-                    <Row centerVertical style={[mainStyles.flex, mainStyles.emptyRight]}>
+                    <Row
+                      centerVertical
+                      style={[mainStyles.flex, mainStyles.emptyRight]}
+                    >
                       {item.locked && (
                         <UpToIconComp style={{ marginBottom: 0 }} />
                       )}
@@ -140,16 +147,15 @@ const CoinList = ({
                       </Text>
                     </Row>
                   </Row>
-                  <Row
-                    centerVertical
-                    style={[
-                      { marginTop: 8 },
-                    ]}
-                  >
-                    <Text numberOfLines={1} style={mainStyles.tokenName}>{item?.name}</Text>
-                    <View style={mainStyles.networkBox}>
-                      <Text style={mainStyles.networkText}>{network}</Text>
-                    </View>
+                  <Row centerVertical style={[{ marginTop: 8 }]}>
+                    <Text numberOfLines={1} style={mainStyles.tokenName}>
+                      {item?.name}
+                    </Text>
+                    {item?.id !== PRV_ID && (
+                      <View style={mainStyles.networkBox}>
+                        <Text style={mainStyles.networkText}>{network}</Text>
+                      </View>
+                    )}
                   </Row>
                 </View>
               </Row>
