@@ -1,6 +1,6 @@
 {
   "name": "incognito-wallet",
-  "version": "5.6.0",
+  "version": "5.7.1",
   "private": true,
   "rnpm": {
     "assets": [
@@ -34,13 +34,13 @@
     "ios:clean": "yarn cache clean && rm -rf ~/Library/Developer/Xcode/DerivedData",
     "postinstall": "npx patch-package && ./node_modules/.bin/rn-nodeify --install crypto,stream,vm --hack && npx rn-nodeify --install && npx jetify",
     "devtools": "react-devtools",
-    "deployIOS:prod": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.22\" -d Production -x",
+    "deployIOS:prod": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.23\" -d Production -x",
     "deployIOS:staging": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.21\" -d Staging -m",
     "deployIOS:next": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.18\" -d NextRelease -m",
     "deployIOS:next2": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.21\" -d NextRelease2",
     "deployIOS:next3": "appcenter codepush release-react -a Incognito.org/Incognito -t \"50.17\" -d NextRelease3",
     "deployAndroid:staging": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"5.5.0\" -d Staging -m",
-    "deployAndroid:prod": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"5.6.0\" -d Production -x",
+    "deployAndroid:prod": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"5.7.0\" -d Production -x",
     "deployAndroid:next": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"5.3.0\" -d NextRelease -m",
     "deployAndroid:next2": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"50.21\" -d NextRelease2",
     "deployAndroid:next3": "appcenter codepush release-react -a Incognito.org/Incognito-Android -t \"5.2.0\" -d NextRelease3",
