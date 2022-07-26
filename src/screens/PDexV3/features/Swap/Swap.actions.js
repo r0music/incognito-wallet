@@ -97,6 +97,7 @@ import {
   getBestRateFromPancake,
   findBestRateOfMaxBuyAmount,
   findBestRateOfMinSellAmount,
+  getMaxAmount,
 } from './Swap.utils';
 
 export const actionChangeSlippage = (payload) => ({
@@ -1347,9 +1348,13 @@ export const actionEstimateTrade =
           pDecimals: sellPDecimals,
           availableOriginalAmount: availableSellOriginalAmount,
         } = sellInputToken;
-        let sellAmount = useMax
-          ? availableSellOriginalAmount
-          : sellOriginalAmount;
+
+        let maxAmount = availableSellOriginalAmount;
+        if(useMax) {
+          maxAmount = await dispatch(actionGetMaxAmount());
+        }
+
+        let sellAmount = useMax ? maxAmount : sellOriginalAmount;
         if (new BigNumber(availableSellOriginalAmount).eq(sellOriginalAmount)) {
           sellAmount = availableSellOriginalAmount;
           useMax = true;
@@ -2236,3 +2241,54 @@ export const actionSwitchPlatform =
       throw error;
     }
   };
+
+export const actionGetMaxAmount = () => async (dispatch, getState) => {
+  const state = getState();
+  let feeData = feetokenDataSelector(state);
+  let isUseTokenFee = false;
+  let platform = platformSelectedSelector(state);
+
+  let tokenSell = null;
+  const inputAmount = inputAmountSelector(state);
+  const sellInputToken = inputAmount(formConfigs.selltoken);
+
+  if (platform.id === KEYS_PLATFORMS_SUPPORTED.pancake) {
+    isUseTokenFee = feeData?.pancake?.isUseTokenFee;
+    let getTokenParamReq = findTokenPancakeByIdSelector(state);
+    tokenSell = getTokenParamReq(sellInputToken?.tokenId);
+  } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.uni) {
+    isUseTokenFee = feeData?.uni?.isUseTokenFee;
+    let getTokenParamReq = findTokenUniByIdSelector(state);
+    tokenSell = getTokenParamReq(sellInputToken?.tokenId);
+  } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.curve) {
+    isUseTokenFee = feeData?.uni?.isUseTokenFee;
+    let getTokenParamReq = findTokenCurveByIdSelector(state);
+    tokenSell = getTokenParamReq(sellInputToken?.tokenId);
+  }
+
+  const availableOriginalAmount = sellInputToken?.availableOriginalAmount;
+
+  if (!isUseTokenFee) return availableOriginalAmount;
+
+  const feetokenData = feetokenDataSelector(state);
+  const fee = feetokenData?.minFeeOriginal;
+
+  const isMainCrypto = sellInputToken?.tokenId === PRV.id;
+
+  let _amount = availableOriginalAmount;
+  let maxAmount = floor(_amount, tokenSell.pDecimals);
+
+  try {
+    const { maxAmount: _maxAmount } = getMaxAmount({
+      amount: availableOriginalAmount,
+      isMainCrypto,
+      pDecimals: tokenSell?.pDecimals,
+      isUseTokenFee,
+      totalFee: fee,
+    });
+    maxAmount = _maxAmount;
+  } catch (error) {
+    console.log(error);
+  }
+  return maxAmount;
+};
