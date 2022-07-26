@@ -1336,7 +1336,7 @@ export const actionEstimateTrade =
 
         // Show loading estimate trade and reset fee data
         dispatch(actionFetching(true));
-        dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
+        // dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
 
         const inputAmount = inputAmountSelector(state);
         let sellInputToken, buyInputToken, inputToken, inputPDecimals;
@@ -2248,42 +2248,24 @@ export const actionGetMaxAmount = () => async (dispatch, getState) => {
   let isUseTokenFee = false;
   let platform = platformSelectedSelector(state);
 
-  let tokenSell = null;
   const inputAmount = inputAmountSelector(state);
   const sellInputToken = inputAmount(formConfigs.selltoken);
 
   if (platform.id === KEYS_PLATFORMS_SUPPORTED.pancake) {
     isUseTokenFee = feeData?.pancake?.isUseTokenFee;
-    let getTokenParamReq = findTokenPancakeByIdSelector(state);
-    tokenSell = getTokenParamReq(sellInputToken?.tokenId);
   } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.uni) {
     isUseTokenFee = feeData?.uni?.isUseTokenFee;
-    let getTokenParamReq = findTokenUniByIdSelector(state);
-    tokenSell = getTokenParamReq(sellInputToken?.tokenId);
   } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.curve) {
     isUseTokenFee = feeData?.uni?.isUseTokenFee;
-    let getTokenParamReq = findTokenCurveByIdSelector(state);
-    tokenSell = getTokenParamReq(sellInputToken?.tokenId);
   }
 
   const availableOriginalAmount = sellInputToken?.availableOriginalAmount;
-
   if (!isUseTokenFee) return availableOriginalAmount;
+  const fee = feeData?.minFeeOriginal;
+  let maxAmount = availableOriginalAmount - fee;
+  if (maxAmount < 0) {
+    maxAmount = availableOriginalAmount;
+  }
 
-  const feetokenData = feetokenDataSelector(state);
-  const fee = feetokenData?.minFeeOriginal;
-
-  const isMainCrypto = sellInputToken?.tokenId === PRV.id;
-
-  let _amount = availableOriginalAmount;
-  let maxAmount = floor(_amount, tokenSell.pDecimals);
-  const { maxAmount: _maxAmount } = getMaxAmount({
-    amount: availableOriginalAmount,
-    isMainCrypto,
-    pDecimals: tokenSell?.pDecimals,
-    isUseTokenFee,
-    totalFee: fee,
-  });
-  maxAmount = _maxAmount;
   return maxAmount;
 };
