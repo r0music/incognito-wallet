@@ -1355,10 +1355,10 @@ export const actionEstimateTrade =
         }
 
         let sellAmount = useMax ? maxAmount : sellOriginalAmount;
-        if (new BigNumber(availableSellOriginalAmount).eq(sellOriginalAmount)) {
-          sellAmount = availableSellOriginalAmount;
-          useMax = true;
-        }
+        // if (new BigNumber(availableSellOriginalAmount).eq(sellOriginalAmount)) {
+        //   sellAmount = availableSellOriginalAmount;
+        //   useMax = true;
+        // }
 
         // change sell token input when press max
         if(useMax && sellAmount) {
@@ -2277,18 +2277,13 @@ export const actionGetMaxAmount = () => async (dispatch, getState) => {
 
   let _amount = availableOriginalAmount;
   let maxAmount = floor(_amount, tokenSell.pDecimals);
-
-  try {
-    const { maxAmount: _maxAmount } = getMaxAmount({
-      amount: availableOriginalAmount,
-      isMainCrypto,
-      pDecimals: tokenSell?.pDecimals,
-      isUseTokenFee,
-      totalFee: fee,
-    });
-    maxAmount = _maxAmount;
-  } catch (error) {
-    console.log(error);
-  }
+  const { maxAmount: _maxAmount } = getMaxAmount({
+    amount: availableOriginalAmount,
+    isMainCrypto,
+    pDecimals: tokenSell?.pDecimals,
+    isUseTokenFee,
+    totalFee: fee,
+  });
+  maxAmount = _maxAmount;
   return maxAmount;
 };
