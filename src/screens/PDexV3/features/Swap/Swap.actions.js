@@ -97,7 +97,6 @@ import {
   getBestRateFromPancake,
   findBestRateOfMaxBuyAmount,
   findBestRateOfMinSellAmount,
-  getMaxAmount,
 } from './Swap.utils';
 
 export const actionChangeSlippage = (payload) => ({
@@ -506,13 +505,14 @@ export const actionHandleInjectEstDataForCurve =
 
       batch(() => {
         if (useMax) {
-          dispatch(
-            change(
-              formConfigs.formName,
-              formConfigs.selltoken,
-              availableFixedSellAmountPRV,
-            ),
-          );
+          dispatch(actionEstimateTradeForMax({}));
+          // dispatch(
+          //   change(
+          //     formConfigs.formName,
+          //     formConfigs.selltoken,
+          //     availableFixedSellAmountPRV,
+          //   ),
+          // );
         }
         dispatch(
           change(formConfigs.formName, inputToken, minAmountExpectedToFixed),
@@ -593,13 +593,14 @@ export const actionHandleInjectEstDataForUni =
       );
       batch(() => {
         if (useMax) {
-          dispatch(
-            change(
-              formConfigs.formName,
-              formConfigs.selltoken,
-              availableFixedSellAmountPRV,
-            ),
-          );
+          dispatch(actionEstimateTradeForMax({}));
+          // dispatch(
+          //   change(
+          //     formConfigs.formName,
+          //     formConfigs.selltoken,
+          //     availableFixedSellAmountPRV,
+          //   ),
+          // );
         }
         dispatch(
           change(formConfigs.formName, inputToken, minAmountExpectedToFixed),
@@ -676,13 +677,14 @@ export const actionHandleInjectEstDataForPancake =
       );
       batch(() => {
         if (useMax) {
-          dispatch(
-            change(
-              formConfigs.formName,
-              formConfigs.selltoken,
-              availableFixedSellAmountPRV,
-            ),
-          );
+          dispatch(actionEstimateTradeForMax({}));
+          // dispatch(
+          //   change(
+          //     formConfigs.formName,
+          //     formConfigs.selltoken,
+          //     availableFixedSellAmountPRV,
+          //   ),
+          // );
         }
         dispatch(
           change(formConfigs.formName, inputToken, minAmountExpectedToFixed),
@@ -744,6 +746,7 @@ export const actionEstimateTradeForCurve =
         ),
       };
 
+      const { field, useMax } = feetokenDataSelector(state);
       const { sourceToken, destToken, amount } = payloadCurve;
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       const quote = await pDexV3Inst.getQuoteCurve({
@@ -788,6 +791,13 @@ export const actionEstimateTradeForCurve =
       minSellOriginalAmount = sellamount;
       maxBuyOriginalAmount = maxGet;
 
+      let sellAmount = sellamount;
+      if (isUseTokenFee && useMax) {
+        sellAmount = await dispatch(
+          actionGetMaxAmount({ isUseTokenFee, feeToken: originalTradeFee }),
+        );
+      }
+
       await dispatch(
         actionChangeEstimateData({
           [KEYS_PLATFORMS_SUPPORTED.curve]: {
@@ -796,12 +806,12 @@ export const actionEstimateTradeForCurve =
               isSignificant: false,
               maxGet,
               route: paths,
-              sellAmount: sellamount,
+              sellAmount,
               buyAmount: maxGet,
               tokenRoute: paths,
             },
             feeToken: {
-              sellAmount: sellamount,
+              sellAmount,
               buyAmount: maxGet,
               fee: isUseTokenFee ? originalTradeFee : 0,
               isSignificant: false,
@@ -849,7 +859,7 @@ export const actionEstimateTradeForUni =
     try {
       const { selltoken, buytoken, sellamount, buyamount } = payload;
       const isPairSup = isPairSupportedTradeOnUniSelector(state);
-      const { field } = feetokenDataSelector(state);
+      const { field, useMax} = feetokenDataSelector(state);
       const getUniTokenParamReq = findTokenUniByIdSelector(state);
       const tokenSellUni = getUniTokenParamReq(selltoken);
       const tokenBuyUni = getUniTokenParamReq(buytoken);
@@ -948,7 +958,13 @@ export const actionEstimateTradeForUni =
       case formConfigs.selltoken: {
         minSellOriginalAmount = sellamount;
         maxBuyOriginalAmount = maxGet;
-        sellAmount = sellamount;
+        if (isUseTokenFee && useMax) {
+          sellAmount = await dispatch(
+            actionGetMaxAmount({ isUseTokenFee, feeToken: originalTradeFee }),
+          );
+        } else {
+          sellAmount = sellamount;
+        }
         buyAmount = maxGet;
         break;
       }
@@ -1023,7 +1039,7 @@ export const actionEstimateTradeForPancake =
     try {
       const { selltoken, buytoken, sellamount, buyamount } = payload;
       const isPairSup = isPairSupportedTradeOnPancakeSelector(state);
-      const { field } = feetokenDataSelector(state);
+      const { field, useMax } = feetokenDataSelector(state);
       const getPancakeTokenParamReq = findTokenPancakeByIdSelector(state);
       const tokenSellPancake = getPancakeTokenParamReq(selltoken);
       const tokenBuyPancake = getPancakeTokenParamReq(buytoken);
@@ -1126,7 +1142,13 @@ export const actionEstimateTradeForPancake =
         case formConfigs.selltoken: {
           minSellOriginalAmount = sellamount;
           maxBuyOriginalAmount = maxGet;
-          sellAmount = sellamount;
+          if (isUseTokenFee && useMax) {
+            sellAmount = await dispatch(
+              actionGetMaxAmount({ isUseTokenFee, feeToken: originalTradeFee }),
+            );
+          } else {
+            sellAmount = sellamount;
+          }
           buyAmount = maxGet;
           break;
         }
@@ -1336,7 +1358,7 @@ export const actionEstimateTrade =
 
         // Show loading estimate trade and reset fee data
         dispatch(actionFetching(true));
-        // dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
+        dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
 
         const inputAmount = inputAmountSelector(state);
         let sellInputToken, buyInputToken, inputToken, inputPDecimals;
@@ -1348,17 +1370,11 @@ export const actionEstimateTrade =
           pDecimals: sellPDecimals,
           availableOriginalAmount: availableSellOriginalAmount,
         } = sellInputToken;
-
-        let maxAmount = availableSellOriginalAmount;
-        if(useMax) {
-          maxAmount = await dispatch(actionGetMaxAmount());
+        let sellAmount = useMax ? availableSellOriginalAmount : sellOriginalAmount;
+        if (new BigNumber(availableSellOriginalAmount).eq(sellOriginalAmount)) {
+          sellAmount = availableSellOriginalAmount;
+          useMax = true;
         }
-
-        let sellAmount = useMax ? maxAmount : sellOriginalAmount;
-        // if (new BigNumber(availableSellOriginalAmount).eq(sellOriginalAmount)) {
-        //   sellAmount = availableSellOriginalAmount;
-        //   useMax = true;
-        // }
 
         // change sell token input when press max
         if(useMax && sellAmount) {
@@ -2242,30 +2258,20 @@ export const actionSwitchPlatform =
     }
   };
 
-export const actionGetMaxAmount = () => async (dispatch, getState) => {
-  const state = getState();
-  let feeData = feetokenDataSelector(state);
-  let isUseTokenFee = false;
-  let platform = platformSelectedSelector(state);
+export const actionGetMaxAmount =
+  ({ isUseTokenFee, feeToken }) =>
+  async (dispatch, getState) => {
+    const state = getState();
 
-  const inputAmount = inputAmountSelector(state);
-  const sellInputToken = inputAmount(formConfigs.selltoken);
+    const inputAmount = inputAmountSelector(state);
+    const sellInputToken = inputAmount(formConfigs.selltoken);
 
-  if (platform.id === KEYS_PLATFORMS_SUPPORTED.pancake) {
-    isUseTokenFee = feeData?.pancake?.isUseTokenFee;
-  } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.uni) {
-    isUseTokenFee = feeData?.uni?.isUseTokenFee;
-  } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.curve) {
-    isUseTokenFee = feeData?.uni?.isUseTokenFee;
-  }
+    const availableOriginalAmount = sellInputToken?.availableOriginalAmount;
+    if (!isUseTokenFee) return availableOriginalAmount;
+    let maxAmount = availableOriginalAmount - feeToken;
+    if (maxAmount < 0) {
+      maxAmount = availableOriginalAmount;
+    }
 
-  const availableOriginalAmount = sellInputToken?.availableOriginalAmount;
-  if (!isUseTokenFee) return availableOriginalAmount;
-  const fee = feeData?.minFeeOriginal;
-  let maxAmount = availableOriginalAmount - fee;
-  if (maxAmount < 0) {
-    maxAmount = availableOriginalAmount;
-  }
-
-  return maxAmount;
-};
+    return maxAmount;
+  };
