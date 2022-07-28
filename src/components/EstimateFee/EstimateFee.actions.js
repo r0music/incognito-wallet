@@ -389,15 +389,9 @@ export const actionChangeFee = (payload) => ({
 export const actionFetchFeeByMax = () => async (dispatch, getState) => {
   const state = getState();
   const parentSelectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
-  const childSelectedPrivacy =
-    childSelectedPrivacySelector.childSelectedPrivacy(state);
-  const selectedPrivacy =
-    childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
-      ? childSelectedPrivacy
-      : parentSelectedPrivacy;
   const { isUseTokenFee, isFetched, totalFee, isFetching } =
     feeDataSelector(state);
-  const { amount, isMainCrypto } = selectedPrivacy;
+  const { amount, isMainCrypto } = parentSelectedPrivacy;
   const feeEst = MAX_FEE_PER_TX;
   let _amount = Math.max(isMainCrypto ? amount - feeEst : amount, 0);
   let maxAmount = floor(_amount, parentSelectedPrivacy.pDecimals);
@@ -611,6 +605,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
       feeTypes,
       actived
     }));
+    await dispatch(actionFetchFeeByMax());
   }
 };
 
