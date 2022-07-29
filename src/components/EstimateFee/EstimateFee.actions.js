@@ -55,7 +55,7 @@ export const actionInitEstimateFee = (config = {}) => async (
   try {
     switch (screen) {
     case 'UnShield': {
-      rate = 2;
+      rate = 1;
       break;
     }
     default: {
@@ -605,7 +605,6 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
       feeTypes,
       actived
     }));
-    await dispatch(actionFetchFeeByMax());
   }
 };
 
