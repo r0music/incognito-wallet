@@ -38,34 +38,22 @@ import { estimateFeeSelector, feeDataSelector } from './EstimateFee.selector';
 import { formName } from './EstimateFee.input';
 import { MAX_FEE_PER_TX, getMaxAmount, getTotalFee } from './EstimateFee.utils';
 
-export const actionInitEstimateFee = (config = {}) => async (
-  dispatch,
-  getState,
-) => {
-  const state = getState();
-  const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
-  const account = accountSelector.defaultAccountSelector(state);
-  const wallet = state?.wallet;
+export const actionInitEstimateFee =
+  (config = {}) =>
+  async (dispatch, getState) => {
+    const state = getState();
+    const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
+    const account = accountSelector.defaultAccountSelector(state);
+    const wallet = state?.wallet;
 
-  if (!wallet || !account || !selectedPrivacy) {
-    return;
-  }
-  const { screen = 'Send' } = config;
-  let rate;
-  try {
-    switch (screen) {
-    case 'UnShield': {
-      rate = 1;
-      break;
+    if (!wallet || !account || !selectedPrivacy) {
+      return;
     }
-    default: {
-      rate = 1;
-      break;
+    const { screen = 'Send' } = config;
+    let rate = 1;
+    if (screen === 'UnShield' && selectedPrivacy?.isCentralized) {
+      rate = 2;
     }
-    }
-  } catch (error) {
-    throw error;
-  } finally {
     await dispatch(
       actionInitFetched({
         screen,
@@ -74,8 +62,7 @@ export const actionInitEstimateFee = (config = {}) => async (
         isValidETHAddress: true,
       }),
     );
-  }
-};
+  };
 
 export const actionFetchedMaxFeePrv = (payload) => ({
   type: ACTION_FETCHED_MAX_FEE_PRV,
