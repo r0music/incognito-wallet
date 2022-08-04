@@ -444,6 +444,8 @@ export const actionHandleInjectEstDataForCurve =
     try {
       // await dispatch(actionSetFeeToken(PRV.id));
       const state = getState();
+      let feeData = feetokenDataSelector(state);
+      const isUseTokenFee = feeData?.curve?.isUseTokenFee;
       const inputAmount = inputAmountSelector(state);
       let sellInputToken, buyInputToken, inputToken, inputPDecimals;
       sellInputToken = inputAmount(formConfigs.selltoken);
@@ -457,6 +459,13 @@ export const actionHandleInjectEstDataForCurve =
       if (tokenSellCurve == null || tokenBuyCurve == null) {
         throw 'This pair is not existed on curve';
       }
+
+      if (isUseTokenFee) {
+        await dispatch(actionSetFeeToken(selltoken));
+      } else {
+        await dispatch(actionSetFeeToken(PRV.id));
+      }
+
       switch (field) {
       case formConfigs.selltoken: {
         inputPDecimals = tokenBuyCurve.pDecimals;
@@ -471,8 +480,12 @@ export const actionHandleInjectEstDataForCurve =
       default:
         break;
       }
-      const { maxGet, minFeePRVFixed, availableFixedSellAmountPRV } =
-        feetokenDataSelector(state);
+      const {
+        maxGet,
+        minFeePRVFixed,
+        availableFixedSellAmountPRV,
+        minFeeTokenFixed,
+      } = feetokenDataSelector(state);
       const slippagetolerance = slippagetoleranceSelector(state);
       const originalMinAmountExpected =
         field === formConfigs.buytoken
@@ -489,6 +502,7 @@ export const actionHandleInjectEstDataForCurve =
         minAmountExpectedToHumanAmount,
         inputPDecimals,
       );
+
       batch(() => {
         if (useMax) {
           dispatch(
@@ -503,7 +517,11 @@ export const actionHandleInjectEstDataForCurve =
           change(formConfigs.formName, inputToken, minAmountExpectedToFixed),
         );
         dispatch(
-          change(formConfigs.formName, formConfigs.feetoken, minFeePRVFixed),
+          change(
+            formConfigs.formName,
+            formConfigs.feetoken,
+            isUseTokenFee ? minFeeTokenFixed : minFeePRVFixed,
+          ),
         );
       });
     } catch (error) {

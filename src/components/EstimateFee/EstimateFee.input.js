@@ -116,7 +116,7 @@ const EstimateFeeInput = (props) => {
               // color: COLORS.black,
             },
           }}
-          label={isUnShield ? 'Fee (est)' : 'Fee'}
+          label={isUnShield ? 'Fee (est.)' : 'Fee'}
           {...props}
         />
       )}

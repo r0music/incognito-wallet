@@ -121,9 +121,8 @@ export const maxAmountValidatorForSellInput = (sellInputAmount, navigation) => {
       tokenData
     } = sellInputAmount || {};
     const onMessagePress = () => {
-      navigation.navigate(routeNames.ShieldGenQRCode, {
-        tokenShield: tokenData,
-        disableBackToShield: true
+      navigation.navigate(routeNames.ChooseNetworkForShield, {
+        tokenSelected: tokenData,
       });
     };
     if (navigation && !availableOriginalAmount) {

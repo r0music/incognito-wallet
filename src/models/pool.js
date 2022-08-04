@@ -154,7 +154,8 @@ export class PoolHistory {
       'None',
       'Migrate',
       '',
-      'Provide'
+      'Provide',
+      'Convert unify',
     ][data.Type];
 
     if (this.locked) {

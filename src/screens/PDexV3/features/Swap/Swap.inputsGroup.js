@@ -61,10 +61,15 @@ const SwapInputsGroup = React.memo(() => {
   };
   const onSelectBuyToken = () => {
     navigation.navigate(routeNames.SelectTokenModal, {
-      data: pairsToken.filter(
-        (token: SelectedPrivacy) =>
-          token?.tokenId !== buytoken?.tokenId && !token?.movedUnifiedToken,
-      ),
+      data: pairsToken.filter((token: SelectedPrivacy) => {
+        if (navigation?.state?.routeName === routeNames.Trade) {
+          return token?.tokenId !== buytoken?.tokenId;
+        } else {
+          return (
+            token?.tokenId !== buytoken?.tokenId && !token?.movedUnifiedToken
+          );
+        }
+      }),
       onPress: (token) => onSelectToken(token, formConfigs.buytoken),
     });
   };
