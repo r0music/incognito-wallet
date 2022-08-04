@@ -195,7 +195,7 @@ export const moreStyled = StyleSheet.create({
   },
   title: {
     ...FONT.TEXT.incognitoH4,
-    fontWeight: '600'
+    fontWeight: '600',
   },
   wrapBar: {
     width: ScreenWidth / 5,
@@ -206,13 +206,13 @@ export const moreStyled = StyleSheet.create({
     ...FONT.STYLE.normal,
     fontSize: FONT.SIZE.superSmall,
     lineHeight: FONT.SIZE.superSmall + 6,
-    marginTop: 2
+    marginTop: 2,
   },
   category: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: (ScreenWidth - (DEFAULT_PADDING * 2)) / 4,
-    marginBottom: 24
+    width: (ScreenWidth - DEFAULT_PADDING * 2) / 4,
+    marginBottom: 24,
   },
   regularBlack: {
     ...FONT.STYLE.medium,
@@ -228,7 +228,8 @@ export const moreStyled = StyleSheet.create({
     height: 60,
     borderRadius: 30,
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+    backgroundColor: COLORS.black3,
+  },
 });
 
