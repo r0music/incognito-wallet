@@ -8,6 +8,7 @@ import withCoinData from '@screens/PoolV2/Provide/InputMigration/coin.enhance';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import withChangeInput from '@screens/DexV2/components/Trade/input.enhance';
 import withValidate from '@screens/PoolV2/validate.enhance';
+import { COLORS } from '@src/styles';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { Header, Row } from '@src/components/';
@@ -35,7 +36,6 @@ const InputMigration = ({
   const navigation = useNavigation();
   const [i, setI] = React.useState(initIndex);
   const [selectedTerm, setSelectedTerm] = React.useState({apy: coin.terms[i].apy, lockTime: coin.terms[i].lockTime, termID: coin.terms[i].termID});
-  const colors = useSelector(colorsSelector);
 
   const handleProvide = () => {
     navigation.navigate(ROUTE_NAMES.PoolV2ProvideMigrateConfirm, {
@@ -88,10 +88,11 @@ const InputMigration = ({
               <Row style={styles.contentView}>
                 <Text style={[styles.textLeft, { marginRight: 20}]}>{item.lockTime} Months</Text>               
                 <Row centerVertical style={styles.contentView}>
-                  <Text style={[styles.textRight, { color: colors.blue1 }]}>{item.apy}% APR</Text>
+                  <Text style={[styles.textRight, { color: COLORS.green1 }]}>{item.apy}% APR</Text>
                   <RatioIcon
                     style={styles.textRight}
                     selected={index === i}
+                    selectedColor={COLORS.green1}
                   />
                 </Row>
               </Row>

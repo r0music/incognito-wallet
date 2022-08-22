@@ -28,6 +28,7 @@ const enhance = (WrappedComp) => (props) => {
         <BottomBar
           onPress={navigateConvert}
           text="Unify your coins to enhance your cross-chain trading experience"
+          autoscroll
         />
       )}
     </ErrorBoundary>

@@ -11,15 +11,15 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
   },
   selectedButton: {
-    padding: 7,
+    paddingVertical: 7,
     borderRadius: 16,
     borderWidth: 0,
     marginBottom: 5,
   },
   unSelectedButon: {
-    padding: 7,
+    paddingVertical: 7,
     borderRadius: 16,
-    marginBottom: 5
+    marginBottom: 5,
   },
   textLeft: {
     fontFamily: FONT.NAME.specialMedium,
@@ -28,7 +28,7 @@ export default StyleSheet.create({
   },
   textRight: {
     marginLeft: 10,
-    tintColor: COLORS.green2,
-    color: COLORS.green2,
+    tintColor: COLORS.green,
+    color: COLORS.green,
   },
 });

@@ -15,14 +15,15 @@ const Wrapper = styled.View`
 const Content = styled.View`
   width: 10px;
   height: 10px;
-  background-color: ${({ theme, selected }) => selected ? theme.icon1 : 'transparent'};
+  background-color: ${({ theme, selected, selectedColor }) =>
+    selected ? selectedColor || theme.icon1 : 'transparent'};
   border-radius: 8px;
 `;
 
-const RatioIcon = ({ selected, ...rest }) => {
+const RatioIcon = ({ selected, selectedColor, ...rest }) => {
   return (
     <Wrapper key="wrapper-icon" {...rest}>
-      <Content key="icon" selected={selected} />
+      <Content key="icon" selected={selected} selectedColor={selectedColor} />
     </Wrapper>
   );
 };

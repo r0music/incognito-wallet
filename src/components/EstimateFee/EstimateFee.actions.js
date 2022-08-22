@@ -411,7 +411,7 @@ export const actionFetchFeeByMax = () => async (dispatch, getState) => {
   try {
     if (isFetched) {
       const { maxAmountText: _maxAmountText } = getMaxAmount({
-        selectedPrivacy,
+        selectedPrivacy: parentSelectedPrivacy,
         isUseTokenFee,
         totalFee,
       });

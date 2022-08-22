@@ -272,6 +272,7 @@ const SendForm = (props) => {
                 validate={amountValidator}
                 warning={
                   amountValidator &&
+                  isUnShield &&
                   selectedPrivacy?.isPUnifiedToken &&
                   `The receiving amount will be at least ${amountValue} ${selectedPrivacy?.symbol}`
                 }

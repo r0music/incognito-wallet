@@ -51,7 +51,7 @@ const LockHistory = ({
             {lockHistories.map((item, index) => {
               const isEndTerm = item.active === LockStatus.Finished;
               return (
-                <View>
+                <View key={index}>
                   <View key={item.symbol} style={globalStyled.defaultPaddingHorizontal}>
                     <Row>
                       <View>
@@ -62,11 +62,11 @@ const LockHistory = ({
                       <View style={[mainStyles.flex]}>
                         <Row
                           style={[mainStyles.textRight, mainStyles.justifyRight]}
-                          center
+                          centerVertical
                         >
                           {item.locked && <SumIconComp />}
-                          <PRVSymbol style={[mainStyles.coinInterest, { color: colors.blue1 }]} />
-                          <Text style={[mainStyles.coinInterest, { color: colors.blue1 }]}>
+                          <PRVSymbol style={[mainStyles.coinInterest, { color: COLORS.green }]} />
+                          <Text style={[mainStyles.coinInterest, { color: COLORS.green }]}>
                             &nbsp;{item.displayReward}
                           </Text>
                         </Row>
@@ -79,13 +79,14 @@ const LockHistory = ({
                         {isEndTerm && (
                           <View style={{
                             backgroundColor: colors.btnBG3, alignSelf: 'flex-end', borderRadius: 12,
-                            paddingHorizontal: 8
+                            paddingHorizontal: 8,
+                            marginTop: 8
                           }}
                           >
                             <Text style={[
                               mainStyles.textCenter,
                               styles.endTerm,
-                              { color: colors.blue1 }
+                              { color: COLORS.green }
                             ]}
                             >
                               Term ended and funds unlocked

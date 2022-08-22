@@ -12,6 +12,9 @@ import mainStyles from '@screens/PoolV2/style';
 import { RefreshControl } from 'react-native';
 import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme';
+import { selectedPrivacySelector } from '@src/redux/selectors';
+import { PRV_ID } from '@src/screens/DexV2/constants';
+import { Row } from '@src/components';
 import withSuccess from './success.enhance';
 import withConfirm from './confirm.enhance';
 import withData from './data.enhance';
@@ -32,34 +35,47 @@ const Confirm = ({
   unlockTimeFormat,
 }) => {
   const colors = useSelector(colorsSelector);
+  const getPrivacyDataByTokenID = useSelector(
+    selectedPrivacySelector.getPrivacyDataByTokenID,
+  );
   const renderRefreshControl = () => (
     <RefreshControl
       refreshing={refreshing}
       onRefresh={onRefresh}
     />
   );
+
+  const { network } = getPrivacyDataByTokenID(coin?.id);
   return (
     <>
       <Header title="Confirmation" />
       <ScrollViewBorder refreshControl={renderRefreshControl()}>
         <View style={styles.mainInfo}>
           <Text style={styles.label}>Provide</Text>
-          <Text style={[styles.bigText, { color: colors.blue1 }]} numberOfLines={3}>{provide} {coin.symbol}</Text>
+          <Row centerVertical>
+            <Text
+              style={[styles.bigText, { color: colors.white }]}
+              numberOfLines={3}
+            >
+              {provide} {coin.symbol}
+            </Text>
+            {coin?.id !== PRV_ID && (
+              <View style={styles.networkBox}>
+                <Text style={styles.networkText}>{network}</Text>
+              </View>
+            )}
+          </Row>
         </View>
-        {
-          unlockTimeFormat
-            ? (
-              <>
-                <ExtraInfo
-                  left="Term ends"
-                  right={`${unlockTimeFormat}`}
-                  style={styles.extra}
-                  rightStyle={styles.extraRight}
-                />
-              </>
-            )
-            : null
-        }
+        {unlockTimeFormat ? (
+          <>
+            <ExtraInfo
+              left="Term ends"
+              right={`${unlockTimeFormat}`}
+              style={styles.extra}
+              rightStyle={styles.extraRight}
+            />
+          </>
+        ) : null}
         <ExtraInfo
           left="Deposit"
           right={`${deposit} ${coin.symbol}`}
