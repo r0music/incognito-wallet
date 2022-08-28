@@ -49,6 +49,8 @@ const ShieldRefund: React.FC = () => {
   const [modalConfirmVisible, setModalConfirmVisible] =
     useState<boolean>(false);
 
+  const [isSubmittingRefund, setIsSubmittingRefund] = useState<boolean>(false);
+
   const getRefundInfo = async () => {
     try {
       setIsFetchingShieldRefundData(true);
@@ -84,14 +86,17 @@ const ShieldRefund: React.FC = () => {
 
   const onSubmitRefund = async () => {
     try {
+      setIsSubmittingRefund(true);
       const result = await submitShieldRefund({
         decentralized: tx?.decentralized,
         shieldID: tx?.id,
       });
+      setIsSubmittingRefund(false);
       if (result) {
         setModalConfirmVisible(true);
       }
     } catch (error) {
+      setIsSubmittingRefund(false);
       new ExHandler(
         error?.message || 'Request submit refund failed',
       ).showErrorToast();
@@ -179,7 +184,7 @@ const ShieldRefund: React.FC = () => {
               title="Request"
               onPress={onSubmitRefund}
               style={confirmButtonStyle}
-              disabled={!shieldRefundData?.allowedRefund}
+              disabled={!shieldRefundData?.allowedRefund || isSubmittingRefund}
             />
           </View>
           <ModalConfirm
