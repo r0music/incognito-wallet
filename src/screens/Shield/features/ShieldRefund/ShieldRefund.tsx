@@ -153,7 +153,7 @@ const ShieldRefund: React.FC = () => {
               <Text style={rowItemValueStyle}>{shieldRefundData?.network}</Text>
             </View>
             <View style={rowItemContainerStyle}>
-              <Text style={rowItemLabelStyle}>Current amount</Text>
+              <Text style={rowItemLabelStyle}>Current balance</Text>
               <Text style={rowItemValueStyle}>
                 {shieldRefundData?.currentBalance} {shieldRefundData?.symbol}
               </Text>
