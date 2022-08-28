@@ -26,6 +26,8 @@ import LinkingService from '@src/services/linking';
 import { ExHandler } from '@src/services/exception';
 import { useNavigation } from 'react-navigation-hooks';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { COLORS } from '@src/styles';
 import { styled } from './History.styled';
 
 const Hook = React.memo((props) => {
@@ -35,6 +37,8 @@ const Hook = React.memo((props) => {
     valueTextStyle,
     handleOpenUrl,
     openUrl,
+    onPressDetail,
+    showRightIconDetail,
     copyable,
     disabled,
     fullText = false,
@@ -98,6 +102,7 @@ const Hook = React.memo((props) => {
   if (disabled) {
     return null;
   }
+  
   return (
     <>
       <View style={[styled.rowText, fullText && styled.rowFullText]}>
@@ -163,18 +168,34 @@ const Hook = React.memo((props) => {
         </View>
       </View>
       {toggle && (
-        <HTML
-          html={`<p>${detail}</p>`}
-          imagesMaxWidth={Dimensions.get('window').width}
-          onLinkPress={(e, href) => {
-            LinkingService
-              .openUrl(href);
+        <TouchableOpacity
+          style={styled.detailContainer}
+          activeOpacity={1}
+          onPress={() => {
+            if (typeof onPressDetail === 'function') {
+              onPressDetail();
+            }
           }}
-          tagsStyles={{
-            a: { ...styled?.p, ...styled?.a },
-            p: styled?.p,
-          }}
-        />
+        >
+          <HTML
+            html={`<p>${detail}</p>`}
+            imagesMaxWidth={Dimensions.get('window').width}
+            onLinkPress={(e, href) => {
+              LinkingService.openUrl(href);
+            }}
+            tagsStyles={{
+              a: { ...styled?.p, ...styled?.a },
+              p: { ...styled?.p, ...valueTextStyle },
+            }}
+          />
+          {showRightIconDetail && (
+            <MaterialIcons
+              name="chevron-right"
+              size={24}
+              color={valueTextStyle?.color || COLORS.lightGrey36}
+            />
+          )}
+        </TouchableOpacity>
       )}
     </>
   );
@@ -193,6 +214,7 @@ const History = () => {
     Clipboard.setString(JSON.stringify(tx));
     Toast.showSuccess('Copied');
   };
+  const navigation = useNavigation();
   return (
     <View2 style={styled.container}>
       <Header

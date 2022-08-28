@@ -2,12 +2,13 @@ import orderBy from 'lodash/orderBy';
 import {
   Validator,
   ACCOUNT_CONSTANT,
-  PRVIDSTR
 } from 'incognito-chain-web-js/build/wallet';
 import { createSelector } from 'reselect';
 import formatUtil from '@src/utils/format';
 import { decimalDigitsSelector } from '@src/screens/Setting';
 import LinkingService from '@src/services/linking';
+import NavigationService from '@services/NavigationService';
+import routeNames from '@src/router/routeNames';
 import {
   checkShieldProcessing,
   checkShieldPortalProcessing,
@@ -464,6 +465,13 @@ export const historyDetailFactoriesSelector = createSelector(
           pDecimals,
           decimalDigits,
         });
+
+        const onPressDetail = () => {
+          if (status === ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING) {
+            NavigationService.navigate(routeNames.ShieldRefund);
+          }
+        };
+
         let data = [
           {
             label: 'ID',
@@ -497,7 +505,10 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !statusStr,
             valueTextStyle: { color: statusColor },
             detail: statusDetail,
+            onPressDetail: onPressDetail,
             showDetail,
+            showRightIconDetail:
+              status === ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING,
             canResumeExpiredShield,
             canRetryInvalidAmountShield,
           },
@@ -685,6 +696,12 @@ export const historyDetailFactoriesSelector = createSelector(
           status,
         } = tx;
         const isShieldProcessing = checkShieldPortalProcessing(status);
+        const onPressDetail = () => {
+          if (status === ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING) {
+            NavigationService.navigate(routeNames.ShieldRefund);
+          }
+        };
+
         let data = [
           {
             label: 'Shield',
@@ -698,6 +715,9 @@ export const historyDetailFactoriesSelector = createSelector(
             valueTextStyle: { color: statusColor },
             detail: statusDetail,
             showDetail: !!statusDetail,
+            onPressDetail: onPressDetail,
+            showRightIconDetail:
+              status === ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING,
           },
           {
             label: 'Time',
