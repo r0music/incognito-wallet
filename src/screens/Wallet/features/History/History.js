@@ -46,10 +46,11 @@ const Hook = React.memo((props) => {
     detail = '',
     canResumeExpiredShield = false,
     canRetryInvalidAmountShield = false,
+    isToggleDetail = false,
   } = props || {};
   const accountWallet = useSelector(getDefaultAccountWalletSelector);
   const { tx } = useSelector(historyDetailSelector);
-  const [toggle, setToggle] = React.useState(false);
+  const [toggle, setToggle] = React.useState(isToggleDetail || false);
   const [resume, setResume] = React.useState(false);
   const [retry, setRetry] = React.useState(false);
   const navigation = useNavigation();

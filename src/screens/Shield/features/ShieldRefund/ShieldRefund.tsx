@@ -129,7 +129,7 @@ const ShieldRefund: React.FC = () => {
               </Text>
               <Text style={topBoxTextStyle}>
                 This address is blocked on Incognito because it is associated
-                with one or more blocked activities.{'\n\n'} Please send the
+                with one or more blocked activities.{'\n\n'}Please send the
                 network fee to the address below to create a refund transaction.
               </Text>
             </View>
@@ -182,6 +182,8 @@ const ShieldRefund: React.FC = () => {
           <View style={confirmButtonContainerStyle}>
             <Button
               title="Request"
+              isAsync
+              isLoading={isSubmittingRefund}
               onPress={onSubmitRefund}
               style={confirmButtonStyle}
               disabled={!shieldRefundData?.allowedRefund || isSubmittingRefund}

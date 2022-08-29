@@ -507,6 +507,8 @@ export const historyDetailFactoriesSelector = createSelector(
             detail: statusDetail,
             onPressDetail: onPressDetail,
             showDetail,
+            isToggleDetail:
+              status === ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING,
             showRightIconDetail:
               status === ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING,
             canResumeExpiredShield,
@@ -716,6 +718,8 @@ export const historyDetailFactoriesSelector = createSelector(
             detail: statusDetail,
             showDetail: !!statusDetail,
             onPressDetail: onPressDetail,
+            isToggleDetail:
+              status === ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING,
             showRightIconDetail:
               status === ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING,
           },
