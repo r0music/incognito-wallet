@@ -105,7 +105,7 @@ const ShieldRefund: React.FC = () => {
 
   return (
     <>
-      <Header title="Shield refund" />
+      <Header title="Refund request" />
       {isFetchingShieldRefundData ? (
         <View fullFlex borderTop style={loadingContainerStyle}>
           <ActivityIndicator />
@@ -191,10 +191,10 @@ const ShieldRefund: React.FC = () => {
           </View>
           <ModalConfirm
             isVisible={modalConfirmVisible}
-            title="Confirm"
+            title="Confirmed"
             titleStyle={modalTitleStyle}
             descStyle={modalDescStyle}
-            description="Your funds will be landed in your wallet shortly."
+            description="Your funds will be landed in your wallet soon."
             renderModalIcon={() => <CheckedBlueIcon />}
             hideLeftButton
             rightButtonTitle="Go back to wallet"
