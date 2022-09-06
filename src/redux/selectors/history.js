@@ -417,7 +417,8 @@ export const historyDetailFactoriesSelector = createSelector(
           status,
           unifiedReward,
           pDecimals,
-          currencyType
+          currencyType,
+          txRefundBlacklist,
         } = tx;
         const isShieldProcessing = checkShieldProcessing(status, decentralized);
         let estimationShieldingTime = '';
@@ -527,6 +528,14 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !txReceive,
             openUrl: !!txReceive,
             handleOpenUrl: () => LinkingService.openUrlInSide(txReceive),
+          },
+          {
+            label: 'Refunded tx',
+            value: `${txRefundBlacklist}`,
+            disabled: !txRefundBlacklist,
+            openUrl: !!txRefundBlacklist,
+            handleOpenUrl: () =>
+              LinkingService.openUrlInSide(txRefundBlacklist),
           },
           {
             label: 'Expired at',
