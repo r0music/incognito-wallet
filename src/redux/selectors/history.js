@@ -150,7 +150,8 @@ export const mappingTxPTokenSelector = createSelector(
       pDecimals,
       decimals,
       unifiedReward,
-      network
+      network,
+      unifiedStatus,
     } = txp;
     const shouldRenderQrShieldingAddress =
       isShieldTx &&
@@ -204,7 +205,8 @@ export const mappingTxPTokenSelector = createSelector(
         decimalDigits,
       }),
       outchainFeeStr: renderAmount({
-        amount: outchainFee,
+        amount:
+          parseInt(outchainFee || '0') + parseInt(unifiedStatus?.fee || '0'),
         pDecimals: isUnShieldByPToken ? pDecimals : PRV.pDecimals,
         decimalDigits,
       }),
