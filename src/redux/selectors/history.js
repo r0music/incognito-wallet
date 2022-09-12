@@ -164,7 +164,9 @@ export const mappingTxPTokenSelector = createSelector(
     const statusColor = isShieldTx
       ? getStatusColorShield(txp)
       : getStatusColorUnshield(txp);
-    const showDetail = !!statusDetail;
+    const showDetail =
+      !!statusDetail &&
+      status !== ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING;
     let receivedFundsStr =
       isShieldTx && receivedAmount
         ? renderAmount({
