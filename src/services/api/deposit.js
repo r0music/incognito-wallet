@@ -169,6 +169,28 @@ export const genFantomDepositAddress = ({
   return http.post('ftm/generate', body).then(formatResponse);
 };
 
+export const genAvaxDepositAddress = ({
+  paymentAddress,
+  walletAddress,
+  tokenId,
+  currencyType,
+  signPublicKeyEncode,
+}) => {
+  if (!paymentAddress) return throw new Error('Missing paymentAddress');
+  if (!walletAddress) return throw new Error('Missing walletAddress');
+  if (!tokenId) return throw new Error('Missing tokenId');
+
+  let body = {
+    AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
+    WalletAddress: walletAddress ?? paymentAddress,
+    PrivacyTokenAddress: tokenId,
+  };
+  if (signPublicKeyEncode) {
+    body.SignPublicKeyEncode = signPublicKeyEncode;
+  }
+  return http.post('avax/generate', body).then(formatResponse);
+};
+
 export const checkShieldRefundInfo = ({ decentralized, shieldID }) => {
   if (!decentralized || !shieldID) return;
   let body = {

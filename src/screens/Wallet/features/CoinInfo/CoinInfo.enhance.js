@@ -65,6 +65,9 @@ const enhance = (WrappedComp) => (props) => {
     if (tokenInfo?.isFantomErc20Token || tokenInfo?.isFTM) {
       return `${CONSTANT_CONFIGS.FANTOMSCAN_URL}/token/${tokenInfo?.contractId}`;
     }
+    if (tokenInfo?.isAvaxErc20Token || tokenInfo?.isAVAX) {
+      return `${CONSTANT_CONFIGS.AVAXSCAN_URL}/token/${tokenInfo?.contractId}`;
+    }
     return '';
   };
 

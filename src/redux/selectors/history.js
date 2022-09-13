@@ -462,6 +462,16 @@ export const historyDetailFactoriesSelector = createSelector(
           ) {
             estimationShieldingTime = '3 mins';
           }
+          if (
+            selectedPrivacy?.isAVAX ||
+            selectedPrivacy?.isAvaxErc20Token ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX_ERC20
+          ) {
+            estimationShieldingTime = '3 mins';
+          }
         }
         const rewardAmountStr = renderAmount({
           amount: unifiedReward?.reward || 0,

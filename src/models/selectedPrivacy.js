@@ -22,6 +22,9 @@ function getNetworkName() {
   // Native token of Fantom network
   const isFTM =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
+
+  const isAVAX =
+    this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX;
   
   if (isBSC) {
     name ='BSC';
@@ -41,6 +44,8 @@ function getNetworkName() {
     name = 'Polygon ERC20';
   } else if (this.isFantomErc20Token) {
     name = 'Fantom ERC20';
+  } else if (this.isAvaxErc20Token) {
+    name = 'Avax ERC20';
   } else if (this.isIncognitoToken || this.isMainCrypto) {
     name = 'Incognito';
   }
@@ -56,6 +61,8 @@ function getNetworkName() {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.POLYGON;
   } else if (isFTM || this?.isFantomErc20Token) {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.FANTOM;
+  } else if (isAVAX || this?.isAvaxErc20Token) {
+    rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.AVAX;
   }
   return {
     networkName: name,
@@ -129,6 +136,10 @@ class SelectedPrivacy {
       this.isPrivateToken &&
       this.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FANTOM_ERC20;
+    this.isAvaxErc20Token =
+      this.isPrivateToken &&
+      this.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX_ERC20;
     this.isBep20Token =
       this.isPrivateToken &&
       this.currencyType ===
@@ -165,8 +176,8 @@ class SelectedPrivacy {
     this.tokenId = _tokenID
       ? _tokenID
       : this.isMainCrypto
-        ? CONSTANT_COMMONS.PRV_TOKEN_ID
-        : tokenId;
+      ? CONSTANT_COMMONS.PRV_TOKEN_ID
+      : tokenId;
     this.contractId = pTokenData.contractId;
     this.decimals = this.isMainCrypto
       ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
@@ -194,7 +205,12 @@ class SelectedPrivacy {
           CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC) ||
       this.isFantomErc20Token ||
       (this.isToken &&
-        this.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM);
+        this.currencyType ===
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM) ||
+      this.isAvaxErc20Token ||
+      (this.isToken &&
+        this.currencyType ===
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX);
     this.isCentralized = this.isToken && !this.isDecentralized;
     this.incognitoTotalSupply =
       (this.isIncognitoToken && Number(token?.totalSupply)) || 0;
@@ -241,11 +257,19 @@ class SelectedPrivacy {
     this.parentUnifiedID = pTokenData?.parentUnifiedID;
 
     // Native Token of Network
-    this.isETH = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
-    this.isBSC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
-    this.isBNB = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
-    this.isMATIC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
-    this.isFTM = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
+    this.isETH =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
+    this.isBSC =
+      this?.currencyType ===
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
+    this.isBNB =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
+    this.isMATIC =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
+    this.isFTM =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
+    this.isAVAX =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX;
   }
 }
 

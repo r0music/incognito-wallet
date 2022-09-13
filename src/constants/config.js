@@ -35,6 +35,9 @@ const POLYGONSCAN_URL = isMainnet
 const FANTOMSCAN_URL = isMainnet
   ? 'https://ftmscan.com'
   : 'https://testnet.ftmscan.com';
+const AVAXSCAN_URL = isMainnet
+  ? 'https://avascan.info'
+  : 'https://testnet.avascan.info';
 const BTC_EXPLORER_URL = isMainnet
   ? 'https://live.blockcypher.com/btc'
   : 'https://live.blockcypher.com/btc-testnet';
@@ -124,6 +127,7 @@ export default {
   BSCSCAN_URL,
   POLYGONSCAN_URL,
   FANTOMSCAN_URL,
+  AVAXSCAN_URL,
   BTC_EXPLORER_URL,
   BINANCE_EXPLORER_URL,
   USDT_TOKEN_ID,

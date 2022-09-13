@@ -10,6 +10,8 @@ import { cachePromise, EXPIRED_TIME, KEYS } from '@services/cache';
 import http1 from '@services/http1';
 import PolygonToken from '@src/models/polygonToken';
 import FantomToken from '@src/models/fantomToken';
+import AvaxToken from '@src/models/avaxToken';
+
 
 let BEP2Tokens = [];
 
@@ -94,6 +96,32 @@ export const addFantomToken = ({ symbol, name, contractId, decimals }) => {
     .then((res) => new PToken(res));
 };
 
+export const detectAvaxToken = (avaxToken) => {
+  if (!avaxToken) throw new Error('Missing avaxAddress to detect');
+  return http
+    .post('avax/detect-erc20', {
+      Address: avaxToken,
+    })
+    .then((res) => new AvaxToken(res))
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const addAvaxToken = ({ symbol, name, contractId, decimals }) => {
+  const parseDecimals = Number(decimals);
+
+  if (!symbol) throw new Error('Missing symbol');
+  if (!name) throw new Error('Missing name');
+  if (!contractId) throw new Error('Missing contractId');
+  if (!Number.isInteger(parseDecimals)) throw new Error('Invalid decimals');
+  return http
+    .post('avax/erc20/add', {
+      ContractID: contractId,
+    })
+    .then((res) => new PToken(res));
+};
+
 export const detectTokenInNetwork = ({ address, network }) => {
   if (!address) throw new Error(`Missing ${network} address to detect`);
   if (!network) throw new Error('Missing network');
@@ -113,6 +141,9 @@ export const detectTokenInNetwork = ({ address, network }) => {
     break;
   case 'FANTOM':
     fn = detectFantomToken(address);
+    break;
+  case 'AVAX':
+    fn = detectAvaxToken(address);
     break;
   default:
     break;
@@ -198,6 +229,9 @@ export const addManuallyToken = ({
     break;
   case 'FANTOM':
     fn = addFantomToken({ symbol, name, contractId, decimals });
+    break;
+  case 'AVAX':
+    fn = addAvaxToken({ symbol, name, contractId, decimals });
     break;
   default:
     break;
