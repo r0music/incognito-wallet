@@ -5,6 +5,7 @@ import Home from '@screens/Home';
 import Community from '@screens/Community';
 import CreateToken from '@screens/CreateToken';
 import Shield from '@screens/Shield';
+import ShieldRefund from '@screens/Shield/features/ShieldRefund';
 import ShieldGenQRCode from '@screens/Shield/features/GenQRCode';
 import FollowToken from '@screens/FollowToken';
 import AddManually from '@screens/AddManually';
@@ -386,6 +387,10 @@ const routes = [
   {
     screen: WhyShield,
     name: routeNames.WhyShield,
+  },
+  {
+    screen: ShieldRefund,
+    name: routeNames.ShieldRefund,
   },
   {
     screen: SelectAccount,

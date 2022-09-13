@@ -38,43 +38,43 @@ const ChooseNetworkForShield: React.FC = (props) => {
   );
   const [selectedSubView, setSelectedSubView] = useState<
     'GENERATE_ADDRESS' | 'CONNECT_WALLET'
-  >(null);
+  >('GENERATE_ADDRESS');
 
   const navigation = useNavigation();
 
   // Only show Sub View when selected network is Ethereum of Binance Smart Chain
-  const checkShowConnectWallet = (): boolean => {
-    const isPRV = selectedNetwork?.tokenId === PRV_ID;
-    if (
-      selectedNetwork?.isDecentralized &&
-      !isPRV &&
-      !isPolygonToken &&
-      !isFantomToken
-    ) {
-      return true;
-    }
-    return false;
-  };
+  // const checkShowConnectWallet = (): boolean => {
+  //   const isPRV = selectedNetwork?.tokenId === PRV_ID;
+  //   if (
+  //     selectedNetwork?.isDecentralized &&
+  //     !isPRV &&
+  //     !isPolygonToken &&
+  //     !isFantomToken
+  //   ) {
+  //     return true;
+  //   }
+  //   return false;
+  // };
 
-  useEffect(() => {
-    const isShowWalletConnect = checkShowConnectWallet();
-    if ((networks?.length === 1 || selectedNetwork) && !isShowWalletConnect) {
-      setSelectedSubView('GENERATE_ADDRESS');
-    }
-    setShowWalletConnect(isShowWalletConnect);
-  }, [selectedNetwork]);
+  // useEffect(() => {
+  //   const isShowWalletConnect = checkShowConnectWallet();
+  //   if ((networks?.length === 1 || selectedNetwork) && !isShowWalletConnect) {
+  //     setSelectedSubView('GENERATE_ADDRESS');
+  //   }
+  //   setShowWalletConnect(isShowWalletConnect);
+  // }, [selectedNetwork]);
 
   // Check token belong to Polygon network
-  const isPolygonToken =
-    selectedNetwork?.isPolygonErc20Token ||
-    selectedNetwork?.currencyType ===
-      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
+  // const isPolygonToken =
+  //   selectedNetwork?.isPolygonErc20Token ||
+  //   selectedNetwork?.currencyType ===
+  //     CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
 
-  // Check token belong to Fantom network
-  const isFantomToken =
-    selectedNetwork?.isFantomErc20Token ||
-    selectedNetwork?.currencyType ===
-      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
+  // // Check token belong to Fantom network
+  // const isFantomToken =
+  //   selectedNetwork?.isFantomErc20Token ||
+  //   selectedNetwork?.currencyType ===
+  //     CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
 
   const isDisabledNextButton = () => {
     if (!selectedNetwork || !selectedSubView) return true;
@@ -137,9 +137,6 @@ const ChooseNetworkForShield: React.FC = (props) => {
         label: `Connect your ${selectedNetwork?.network} wallet`,
       });
     }
-    if (!selectedNetwork) {
-      return null;
-    }
     return (
       <View style={subViewContainerStyle}>
         <Text style={descStyle}>
@@ -152,8 +149,8 @@ const ChooseNetworkForShield: React.FC = (props) => {
             <ListItem
               key={i}
               content={item?.label}
-              disabled={!showWalletConnect || selectedSubView === item?.key}
-              onPress={() => setSelectedSubView(item?.key)}
+              // disabled={!showWalletConnect || selectedSubView === item?.key}
+              // onPress={() => setSelectedSubView(item?.key)}
               selected={selectedSubView === item?.key}
             />
           );
@@ -172,7 +169,6 @@ const ChooseNetworkForShield: React.FC = (props) => {
               content={item?.network}
               onPress={() => {
                 setSelectedNetwork(item);
-                setSelectedSubView(null);
               }}
               selected={selectedNetwork?.currencyType === item?.currencyType}
               disabled={

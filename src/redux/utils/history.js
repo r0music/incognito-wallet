@@ -8,6 +8,7 @@ export const {
   TX_STATUS,
   STATUS_CODE_SHIELD_DECENTRALIZED,
   STATUS_CODE_SHIELD_CENTRALIZED,
+  STATUS_CODE_SHIELD_REFUND,
   STATUS_CODE_UNSHIELD_DECENTRALIZED,
   STATUS_CODE_UNSHIELD_CENTRALIZED,
   TX_TYPE,
@@ -54,11 +55,13 @@ export const getStatusColorShield = (history) => {
     // Case1: Check centralized
     if (CENTRALIZED_ARRAY.includes(decentralized)) {
       if (
-        STATUS_CODE_SHIELD_CENTRALIZED.COMPLETE.includes(status)
+        STATUS_CODE_SHIELD_CENTRALIZED.COMPLETE.includes(status) ||
+        STATUS_CODE_SHIELD_REFUND.COMPLETE === status
       ) {
         statusColor = COLORS.green;
       } else if (
-        STATUS_CODE_SHIELD_CENTRALIZED.TIMED_OUT.includes(status)
+        STATUS_CODE_SHIELD_CENTRALIZED.TIMED_OUT.includes(status) ||
+        STATUS_CODE_SHIELD_REFUND.PENDING === status
       ) {
         statusColor = COLORS.orange;
       } else {
@@ -68,11 +71,13 @@ export const getStatusColorShield = (history) => {
     // Case 2: Check decentralized
     else if (DECENTRALIZE_ARRAY.includes(decentralized)) {
       if (
-        STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE === status
+        STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE === status ||
+        STATUS_CODE_SHIELD_REFUND.COMPLETE === status
       ) {
         statusColor = COLORS.green;
       } else if (
-        STATUS_CODE_SHIELD_DECENTRALIZED.TIMED_OUT === status
+        STATUS_CODE_SHIELD_DECENTRALIZED.TIMED_OUT === status ||
+        STATUS_CODE_SHIELD_REFUND.PENDING === status
       ) {
         statusColor = COLORS.orange;
       } else {
@@ -197,7 +202,12 @@ export const checkShieldProcessing = (status, decentralized) => {
       status === STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE ||
       status === STATUS_CODE_SHIELD_DECENTRALIZED.TIMED_OUT ||
       status === STATUS_CODE_SHIELD_DECENTRALIZED.RETRYING ||
-      status === STATUS_CODE_SHIELD_DECENTRALIZED.REPLACED
+      status === STATUS_CODE_SHIELD_DECENTRALIZED.REPLACED ||
+      status === STATUS_CODE_SHIELD_REFUND.PENDING ||
+      status === STATUS_CODE_SHIELD_REFUND.PROCESSING ||
+      status === STATUS_CODE_SHIELD_REFUND.COMPLETE ||
+      status === STATUS_CODE_SHIELD_REFUND.FAILED ||
+      status === STATUS_CODE_SHIELD_REFUND.MERGE
     ) {
       return false;
     }
@@ -209,7 +219,12 @@ export const checkShieldProcessing = (status, decentralized) => {
     if (
       STATUS_CODE_SHIELD_CENTRALIZED.COMPLETE.includes(status) ||
       STATUS_CODE_SHIELD_CENTRALIZED.TIMED_OUT.includes(status) ||
-      STATUS_CODE_SHIELD_CENTRALIZED.INVALID_AMOUNT.includes(status)
+      STATUS_CODE_SHIELD_CENTRALIZED.INVALID_AMOUNT.includes(status) ||
+      status === STATUS_CODE_SHIELD_REFUND.PENDING ||
+      status === STATUS_CODE_SHIELD_REFUND.PROCESSING ||
+      status === STATUS_CODE_SHIELD_REFUND.COMPLETE ||
+      status === STATUS_CODE_SHIELD_REFUND.FAILED ||
+      status === STATUS_CODE_SHIELD_REFUND.MERGE
     ) {
       return false;
     }

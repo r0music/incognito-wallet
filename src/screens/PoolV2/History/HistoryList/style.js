@@ -55,6 +55,12 @@ export default StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     color: COLORS.lightGrey36,
-    lineHeight: 18
+    lineHeight: 18,
   },
+  loadMore: {
+    width: '100%',
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 });

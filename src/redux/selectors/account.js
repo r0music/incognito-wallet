@@ -16,13 +16,15 @@ export const defaultAccountName = (state) => state?.account?.defaultAccountName;
 export const listAccountSelector = createSelector(
   (state) => state?.account?.list || [],
   (list) =>
-    list.map((item) => ({
-      ...item,
-      accountName: item?.name || item?.AccountName,
-      privateKey: item?.PrivateKey,
-      paymentAddress: item?.PaymentAddress,
-      readonlyKey: item?.ReadonlyKey,
-    })),
+    list
+      .map((item) => ({
+        ...item,
+        accountName: item?.name || item?.AccountName,
+        privateKey: item?.PrivateKey,
+        paymentAddress: item?.PaymentAddress,
+        readonlyKey: item?.ReadonlyKey,
+      }))
+      ?.sort((a, b) => (a.accountName > b.accountName ? 1 : -1)),
 );
 
 export const defaultAccountNameSelector = createSelector(

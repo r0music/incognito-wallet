@@ -178,42 +178,47 @@ const Extra = (props) => {
     );
   };
 
-  const renderShieldAddress = () => (
-    <>
-      <View style={styled.qrCode}>
-        <QrCodeGenerate value={address} size={175} />
-        <Text style={styled.shieldDescription}>
-          {selectedPrivacy?.isCentralized
-            ? 'Send to this shielding address once only.'
-            : `Send only ${
-                selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
-              } to this shielding address.`}
+  const renderShieldAddress = (props) => {
+    const { isPortal } = useDebounceSelector(shieldDataSelector);
+    return (
+      <>
+        <View style={styled.qrCode}>
+          <QrCodeGenerate value={address} size={175} />
+          <Text style={styled.shieldDescription}>
+            {isPortal
+              ? `Send only ${selectedPrivacy?.symbol} to this shielding address.`
+              : selectedPrivacy?.isCentralized
+              ? 'Send to this shielding address once only.'
+              : `Send only ${
+                  selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
+                } to this shielding address.`}
+          </Text>
+          {selectedPrivacy?.isCentralized && !isEmpty(expiredAt) && (
+            <Text style={styled.shieldExpiration}>Expires at: {expiredAt}</Text>
+          )}
+        </View>
+        <View>
+          <Text style={styled.networkTypeLabel}>Network type</Text>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => navigation.goBack()}
+            style={styled.networkBoxContainer}
+          >
+            <Text>{selectedPrivacy?.network}</Text>
+            <ConvertIcon2 />
+          </TouchableOpacity>
+        </View>
+        <Text style={styled.addressLabel}>
+          {selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol} Shielding
+          address
         </Text>
-        {selectedPrivacy?.isCentralized && !isEmpty(expiredAt) && (
-          <Text style={styled.shieldExpiration}>Expires at: {expiredAt}</Text>
-        )}
-      </View>
-      <View>
-        <Text style={styled.networkTypeLabel}>Network type</Text>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => navigation.goBack()}
-          style={styled.networkBoxContainer}
-        >
-          <Text>{selectedPrivacy?.network}</Text>
-          <ConvertIcon2 />
-        </TouchableOpacity>
-      </View>
-      <Text style={styled.addressLabel}>
-        {selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol} Shielding
-        address
-      </Text>
-      <CopiableText data={address} textStyle={{ color: colors.text1 }} />
-      {renderMinShieldAmount()}
-      {renderEstimateFee()}
-      {renderNoteBox()}
-    </>
-  );
+        <CopiableText data={address} textStyle={{ color: colors.text1 }} />
+        {renderMinShieldAmount()}
+        {renderEstimateFee()}
+        {renderNoteBox()}
+      </>
+    );
+  };
 
   return <View style={styled.extra}>{renderShieldAddress()}</View>;
 };
