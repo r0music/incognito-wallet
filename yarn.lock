@@ -19716,10 +19716,10 @@ react-native-webview@^9.0.1:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
 
-react-native-wifi-reborn@^2.2.1:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/react-native-wifi-reborn/-/react-native-wifi-reborn-2.4.0.tgz#d5b9d8f3a6deba1cc4e2c0bcd17907f962599731"
-  integrity sha512-jp6BoXUBiGl+aR3QlEBHKbkEAy6eLv7rFPl4f1zUkcVXsWaGfTCw0JF2HcT+c6NLw5UkXmZNDB0WuxnvgU5FJg==
+react-native-wifi-reborn@^4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/react-native-wifi-reborn/-/react-native-wifi-reborn-4.7.0.tgz#de32bf893ecf90188a273b744c5c867bcd2ae257"
+  integrity sha512-16TtGpXrM6GtGjJXJdoQ7FDPUDm7LpvYy9S/ZeS3eRh2RPLwYHk1VaJQR/cDoE6BzAyH/rVb5+WWg/jQ49ncaQ==
 
 react-native-youtube-iframe@^2.2.2:
   version "2.2.2"

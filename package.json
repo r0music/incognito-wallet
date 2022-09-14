@@ -176,7 +176,7 @@
     "react-native-unimodules": "^0.13.3",
     "react-native-vector-icons": "^6.5.0",
     "react-native-webview": "^9.0.1",
-    "react-native-wifi-reborn": "^2.2.1",
+    "react-native-wifi-reborn": "^4.7.0",
     "react-native-youtube-iframe": "^2.2.2",
     "react-native-zmq-service": "https://github.com/incognitochain/RNZmqService",
     "react-navigation": "^4.0.10",

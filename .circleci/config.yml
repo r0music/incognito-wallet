@@ -276,7 +276,7 @@ workflows:
             filters:
               branches:
                 only:
-                  - develop
+                  - fix/node-android-wifi
         - generate_data:
             requires:
               - checkout_code
