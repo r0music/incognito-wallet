@@ -257,11 +257,9 @@ class WifiSetup extends PureComponent {
   async getCurrentWifi() {
     try {
       const ssid = await WifiManager.getCurrentWifiSSID();
-      alert(ssid);
       this.setState({ ssid });
       return ssid;
     } catch (error) {
-      alert(JSON.stringify(error));
       this.setState({ ssid: '' });
       return '';
     }

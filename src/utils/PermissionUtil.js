@@ -132,35 +132,27 @@ const checkPermission = () => {
   else {
     return new Promise((resolve, reject) => check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
       .then((result) => {
-        // TODO: REMOVE
-        let text = '';
         switch (result) {
         case RESULTS.UNAVAILABLE:
           console.log(
             'This feature is not available (on this device / in this context)',
           );
-          text = 'This feature is not available (on this device / in this context)';
           break;
         case RESULTS.DENIED:
           console.log(
             'The permission has not been requested / is denied but requestable',
           );
-          text = 'The permission has not been requested / is denied but requestable';
           break;
         case RESULTS.GRANTED:
           console.log('The permission is granted');
-          text = 'The permission is granted';
           break;
         case RESULTS.BLOCKED:
           console.log('The permission is denied and not requestable anymore');
-          text = 'The permission is denied and not requestable anymore';
           break;
         }
-        alert(text);
         resolve(result);
       })
       .catch((error) => {
-        alert(JSON.stringify(error));
         reject(error);
       })
     );

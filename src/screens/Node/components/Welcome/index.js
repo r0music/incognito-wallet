@@ -15,7 +15,7 @@ const WelcomeNodes = ({ onAddPNode, onAddVNode }) => {
       <RoundCornerButton
         style={[styles.pNodeButton, theme.BUTTON.NODE_BUTTON]}
         onPress={onAddPNode}
-        title='Add Node Device TESTTTTT'
+        title='Add Node Device'
       />
       <Text style={[styles.buyText, theme.MARGIN.marginTop30]}>Experienced Node operator?</Text>
       <TouchableOpacity style={[theme.FLEX.rowSpaceBetweenCenter]} onPress={onAddVNode}>
