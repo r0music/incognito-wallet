@@ -19,6 +19,7 @@ import {
   ProvideIcon,
   ReportIcon,
   ConsolidateIcon, UTubeIcon,
+  MailIcon
 } from '@components/Icons';
 import { Header, Row } from '@src/components';
 import { ScrollViewBorder, Text, View5 } from '@src/components/core';
@@ -111,6 +112,12 @@ const Categories = [
         icon: FaucetIcon,
         key: appConstant.DISABLED.FAUCET,
       },
+      {
+        route: routeNames.WebView,
+        label: 'Support',
+        icon: MailIcon,
+        key: appConstant.DISABLED.SUPPORT,
+      },
     ],
   },
 ];
@@ -130,6 +137,11 @@ const CategoryItem = ({ item }) => {
         break;
       case appConstant.DISABLED.CONSOLIDATE:
         dispatch(actionConditionConsolidate());
+        break;
+      case appConstant.DISABLED.SUPPORT:
+        params = {
+          url: 'https://we.incognito.org/g/support',
+        };
         break;
       default:
         params = item.params;

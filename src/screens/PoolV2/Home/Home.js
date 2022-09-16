@@ -69,7 +69,7 @@ const Home = ({
           total={displayClipTotalRewards}
           nativeToken={nativeToken}
           style={globalStyled.defaultPaddingHorizontal}
-          showRight={histories.length > 0}
+          showRight
           isLoading={isLoadingHistories}
           onRightPress={handleHistory}
         />
@@ -138,7 +138,6 @@ Home.defaultProps = {
 
 export default compose(
   withDefaultAccount,
-  withHistories,
   withPoolData,
   withRetry,
   withLayout_2,

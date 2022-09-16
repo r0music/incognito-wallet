@@ -474,3 +474,20 @@ export const findBestRateOfMinSellAmount = (arr) =>
     arr.filter((platform) => new BigNumber(platform?.amount).isGreaterThan(0)),
     (platform) => platform?.amount,
   );
+
+export const getMaxAmount = ({ amount,isMainCrypto, pDecimals, isUseTokenFee, totalFee }) => {
+  let amountNumber = amount;
+  if (isUseTokenFee || isMainCrypto) {
+    const newAmount = amountNumber - totalFee;
+    amountNumber = Math.max(newAmount, 0);
+  }
+  const maxAmount = Math.max(floor(amountNumber), 0);
+  const maxAmountText = format.toFixed(
+    convert.toHumanAmount(maxAmount, pDecimals),
+    pDecimals,
+  );
+  return {
+    maxAmount,
+    maxAmountText,
+  };
+};

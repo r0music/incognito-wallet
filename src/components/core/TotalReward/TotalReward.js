@@ -31,14 +31,6 @@ const TotalReward = ({ total, nativeToken, subTitle, style, balanceStyle, helper
   }, [total, nativeToken]);
 
   const renderRight = () => {
-    if (isLoading) {
-      return (
-        <View style={styles.rightIcon}>
-          <ActivityIndicator />
-        </View>
-      );
-    }
-
     if (showRight) {
       return (
         <TouchableOpacity style={styles.rightIcon} onPress={onRightPress}>
@@ -46,6 +38,7 @@ const TotalReward = ({ total, nativeToken, subTitle, style, balanceStyle, helper
         </TouchableOpacity>
       );
     }
+    return null;
   };
 
   return (
