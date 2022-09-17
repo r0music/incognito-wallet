@@ -148,13 +148,13 @@ export const DEV_TEST_SERVER = {
   web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
 };
 
-export const DEV_TEST_UNIFIED_TOKEN_SERVER = {
-  id: 'devTestUnifiedToken',
+export const DEV_TEST_AVAX_AURORA = {
+  id: 'devTestAvaxAurora',
   default: false,
-  address: 'http://51.161.117.193:11334',
+  address: 'http://51.161.117.193:31334',
   username: '',
   password: '',
-  name: 'Dev test unified token',
+  name: 'Dev test avax aurora',
   coinServices: 'http://51.161.117.193:6002',
   pubsubServices: 'http://51.161.117.193:6004',
   requestServices: 'http://51.161.117.193:6002',
@@ -250,7 +250,7 @@ const DEFAULT_LIST_SERVER = [
   PORTAL_SERVER,
   BETA_66,
   BETA_2,
-  DEV_TEST_UNIFIED_TOKEN_SERVER,
+  DEV_TEST_AVAX_AURORA,
 ];
 
 export const KEY = {

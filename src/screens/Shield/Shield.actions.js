@@ -3,6 +3,7 @@ import config from '@src/constants/config';
 import { signPublicKeyEncodeSelector } from '@src/redux/selectors/account';
 import {
   genAvaxDepositAddress,
+  genAuroraDepositAddress,
   genBSCDepositAddress,
   genCentralizedDepositAddress,
   genERC20DepositAddress,
@@ -124,6 +125,19 @@ export const actionGetAddressToShield = async ({
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX
     ) {
       generateResult = await genAvaxDepositAddress({
+        paymentAddress: account.PaymentAddress,
+        walletAddress: account.PaymentAddress,
+        tokenId: selectedPrivacy?.tokenId,
+        tokenContractID: selectedPrivacy?.contractId,
+        currencyType: selectedPrivacy?.currencyType,
+        signPublicKeyEncode,
+      });
+    } else if (
+      selectedPrivacy?.isAuroraErc20Token ||
+      selectedPrivacy?.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH
+    ) {
+      generateResult = await genAuroraDepositAddress({
         paymentAddress: account.PaymentAddress,
         walletAddress: account.PaymentAddress,
         tokenId: selectedPrivacy?.tokenId,

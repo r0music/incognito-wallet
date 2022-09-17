@@ -106,6 +106,10 @@ const Extra = (props) => {
       shieldingTimeText = '3 mins';
     }
 
+    if (selectedPrivacy?.isAURORA_ETH || selectedPrivacy?.isAuroraErc20Token) {
+      shieldingTimeText = '3 mins';
+    }
+
     if (isEmpty(shieldingTimeText)) {
       return null;
     }
@@ -136,7 +140,9 @@ const Extra = (props) => {
       selectedPrivacy?.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM ||
       selectedPrivacy?.currencyType ===
-        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX;
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX ||
+      selectedPrivacy?.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH;
     let humanFee = convert.toNumber(
       (isNativeToken ? defaultFee?.estimateFee : defaultFee?.tokenFee) || 0,
       true,

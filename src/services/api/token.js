@@ -11,7 +11,7 @@ import http1 from '@services/http1';
 import PolygonToken from '@src/models/polygonToken';
 import FantomToken from '@src/models/fantomToken';
 import AvaxToken from '@src/models/avaxToken';
-
+import AuroraToken from '@src/models/auroraToken';
 
 let BEP2Tokens = [];
 
@@ -122,31 +122,60 @@ export const addAvaxToken = ({ symbol, name, contractId, decimals }) => {
     .then((res) => new PToken(res));
 };
 
+export const detectAuroraToken = (auroraToken) => {
+  if (!auroraToken) throw new Error('Missing auroraAddress to detect');
+  return http
+    .post('aurora/detect-erc20', {
+      Address: auroraToken,
+    })
+    .then((res) => new AuroraToken(res))
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const addAuroraToken = ({ symbol, name, contractId, decimals }) => {
+  const parseDecimals = Number(decimals);
+
+  if (!symbol) throw new Error('Missing symbol');
+  if (!name) throw new Error('Missing name');
+  if (!contractId) throw new Error('Missing contractId');
+  if (!Number.isInteger(parseDecimals)) throw new Error('Invalid decimals');
+  return http
+    .post('aurora/erc20/add', {
+      ContractID: contractId,
+    })
+    .then((res) => new PToken(res));
+};
+
 export const detectTokenInNetwork = ({ address, network }) => {
   if (!address) throw new Error(`Missing ${network} address to detect`);
   if (!network) throw new Error('Missing network');
   let fn;
   switch (network) {
-  case 'ERC20':
-    fn = detectERC20Token(address);
-    break;
-  case 'BEP2':
-    fn = detectBEP2Token(address);
-    break;
-  case 'BEP20':
-    fn = detectBEP20Token(address);
-    break;
-  case 'POLYGON':
-    fn = detectPolygonToken(address);
-    break;
-  case 'FANTOM':
-    fn = detectFantomToken(address);
-    break;
-  case 'AVAX':
-    fn = detectAvaxToken(address);
-    break;
-  default:
-    break;
+    case 'ERC20':
+      fn = detectERC20Token(address);
+      break;
+    case 'BEP2':
+      fn = detectBEP2Token(address);
+      break;
+    case 'BEP20':
+      fn = detectBEP20Token(address);
+      break;
+    case 'POLYGON':
+      fn = detectPolygonToken(address);
+      break;
+    case 'FANTOM':
+      fn = detectFantomToken(address);
+      break;
+    case 'AVAX':
+      fn = detectAvaxToken(address);
+      break;
+    case 'AURORA':
+      fn = detectAuroraToken(address);
+      break;
+    default:
+      break;
   }
   return fn;
 };
@@ -215,26 +244,29 @@ export const addManuallyToken = ({
   let fn;
   console.log('data: ', network);
   switch (network) {
-  case 'ERC20':
-    fn = addERC20Token({ symbol, name, contractId, decimals });
-    break;
-  case 'BEP2':
-    fn = addBEP2Token({ symbol, name, contractId, decimals });
-    break;
-  case 'BEP20':
-    fn = addBEP20Token({ symbol, name, contractId, decimals });
-    break;
-  case 'POLYGON':
-    fn = addPolygonToken({ symbol, name, contractId, decimals });
-    break;
-  case 'FANTOM':
-    fn = addFantomToken({ symbol, name, contractId, decimals });
-    break;
-  case 'AVAX':
-    fn = addAvaxToken({ symbol, name, contractId, decimals });
-    break;
-  default:
-    break;
+    case 'ERC20':
+      fn = addERC20Token({ symbol, name, contractId, decimals });
+      break;
+    case 'BEP2':
+      fn = addBEP2Token({ symbol, name, contractId, decimals });
+      break;
+    case 'BEP20':
+      fn = addBEP20Token({ symbol, name, contractId, decimals });
+      break;
+    case 'POLYGON':
+      fn = addPolygonToken({ symbol, name, contractId, decimals });
+      break;
+    case 'FANTOM':
+      fn = addFantomToken({ symbol, name, contractId, decimals });
+      break;
+    case 'AVAX':
+      fn = addAvaxToken({ symbol, name, contractId, decimals });
+      break;
+    case 'AURORA':
+      fn = addAuroraToken({ symbol, name, contractId, decimals });
+      break;
+    default:
+      break;
   }
   return fn;
 };

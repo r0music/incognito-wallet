@@ -117,7 +117,8 @@ const NETWORK_NAME = {
   PRV: 'Privacy',
   POLYGON: 'Polygon',
   FANTOM: 'Fantom',
-  AVAX: 'Avax'
+  AVAX: 'Avax',
+  AURORA: 'Aurora',
 };
 
 export const PRV = {
@@ -140,6 +141,7 @@ const FACTORIES_EVM_NETWORK = [
   NETWORK_NAME.POLYGON,
   NETWORK_NAME.FANTOM,
   NETWORK_NAME.AVAX,
+  NETWORK_NAME.AURORA,
 ];
 
 const PRIVATE_TOKEN_CURRENCY_TYPE = {
@@ -161,13 +163,25 @@ const PRIVATE_TOKEN_CURRENCY_TYPE = {
   ZEC: 16,
   DOT: 17,
   INCOGNITO: 'INCOGNITO',
+
+  // Polygon bridge
   MATIC: 19,
   POLYGON_ERC20: 20,
+
+  // Fantom bridge
   FTM: 21,
   FANTOM_ERC20: 22,
+
+  // Unified token
   UNIFIED_TOKEN: 25,
+
+  // Avax bridge
   AVAX: 28,
   AVAX_ERC20: 29,
+
+  // Aurora bridge
+  AURORA_ETH: 30,   //30
+  AURORA_ERC20: 31 //31 
 };
 
 const PRIVATE_TOKEN_CURRENCY_NAME = {
@@ -176,6 +190,7 @@ const PRIVATE_TOKEN_CURRENCY_NAME = {
   [PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20]: 'ERC20 Polygon',
   [PRIVATE_TOKEN_CURRENCY_TYPE.FANTOM_ERC20]: 'ERC20 Fantom',
   [PRIVATE_TOKEN_CURRENCY_TYPE.AVAX_ERC20]: 'ERC20 Avax',
+  [PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ERC20]: 'ERC20 Aurora',
 };
 
 const RESPONSE_PRV_TYPES = [271, 273];

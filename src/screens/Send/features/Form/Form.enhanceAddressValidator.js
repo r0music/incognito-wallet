@@ -25,6 +25,7 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     isPolygonErc20Token,
     isFantomErc20Token,
     isAvaxErc20Token,
+    isAuroraErc20Token,
     currencyType,
     isDecentralized,
   } =
@@ -71,6 +72,13 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
       currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX
     );
   }, [isAvaxErc20Token, currencyType]);
+
+  const isAurora = React.useMemo(() => {
+    return (
+      isAuroraErc20Token ||
+      currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH
+    );
+  }, [isAuroraErc20Token, currencyType]);
 
   const getExternalAddressValidator = () => {
     if (!isAddressValidated) {
@@ -192,6 +200,9 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     }
     if (isExternalAddress && isAvax) {
       return 'You are exiting Incognito and going to Avax network.';
+    }
+    if (isExternalAddress && isAurora) {
+      return 'You are exiting Incognito and going to Aurora network.';
     }
     if (isExternalAddress) {
       return 'You are exiting Incognito and going public.';

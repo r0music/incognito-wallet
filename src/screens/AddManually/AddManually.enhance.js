@@ -11,6 +11,7 @@ export const TYPES = {
   POLYGON: { label: 'POLYGON', value: 'POLYGON' },
   FANTOM: { label: 'FANTOM', value: 'FANTOM' },
   AVAX: { label: 'AVAX', value: 'AVAX' },
+  AURORA: { label: 'AURORA', value: 'AURORA' },
 };
 
 export const AddManuallyContext = React.createContext();

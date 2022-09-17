@@ -25,6 +25,9 @@ function getNetworkName() {
 
   const isAVAX =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX;
+
+  const isAURORA_ETH =
+    this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH;
   
   if (isBSC) {
     name ='BSC';
@@ -46,6 +49,8 @@ function getNetworkName() {
     name = 'Fantom ERC20';
   } else if (this.isAvaxErc20Token) {
     name = 'Avax ERC20';
+  } else if (this.isAuroraErc20Token) {
+    name = 'Aurora ERC20';
   } else if (this.isIncognitoToken || this.isMainCrypto) {
     name = 'Incognito';
   }
@@ -63,6 +68,8 @@ function getNetworkName() {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.FANTOM;
   } else if (isAVAX || this?.isAvaxErc20Token) {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.AVAX;
+  } else if (isAURORA_ETH || this?.isAuroraErc20Token) {
+    rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.AURORA;
   }
   return {
     networkName: name,
@@ -140,6 +147,10 @@ class SelectedPrivacy {
       this.isPrivateToken &&
       this.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX_ERC20;
+    this.isAuroraErc20Token =
+      this.isPrivateToken &&
+      this.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ERC20;
     this.isBep20Token =
       this.isPrivateToken &&
       this.currencyType ===
@@ -211,6 +222,10 @@ class SelectedPrivacy {
       (this.isToken &&
         this.currencyType ===
           CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX);
+      this.isAuroraErc20Token ||
+        (this.isToken &&
+          this.currencyType ===
+            CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH);
     this.isCentralized = this.isToken && !this.isDecentralized;
     this.incognitoTotalSupply =
       (this.isIncognitoToken && Number(token?.totalSupply)) || 0;
@@ -270,6 +285,8 @@ class SelectedPrivacy {
       this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
     this.isAVAX =
       this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX;
+    this.isAURORA_ETH =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH;
   }
 }
 

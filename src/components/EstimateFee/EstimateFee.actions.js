@@ -514,6 +514,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
     isPolygonErc20Token,
     isFantomErc20Token,
     isAvaxErc20Token,
+    isAuroraErc20Token,
     symbol,
   } = selectedPrivacy;
   const { isETH, isUsedPRVFee, userFees, isUnShield } = feeDataSelector(state);
@@ -547,6 +548,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
         isPolygonErc20Token: isPolygonErc20Token,
         isFantomErc20Token: isFantomErc20Token,
         isAvaxErc20Token: isAvaxErc20Token,
+        isAuroraErc20Token: isAuroraErc20Token,
         externalSymbol: externalSymbol,
         isUsedPRVFee,
         signPublicKeyEncode,

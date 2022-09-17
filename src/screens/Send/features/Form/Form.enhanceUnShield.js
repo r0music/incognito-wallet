@@ -21,7 +21,16 @@ import convert from '@src/utils/convert';
 import format from '@src/utils/format';
 import Utils from '@src/utils/Util';
 import {
-  ACCOUNT_CONSTANT, BurningFantomRequestMeta, BurningAvaxRequestMeta, BurningPBSCRequestMeta, BurningPLGRequestMeta, BurningPRVBEP20RequestMeta, BurningPRVERC20RequestMeta, BurningRequestMeta, PrivacyVersion
+  ACCOUNT_CONSTANT,
+  BurningFantomRequestMeta,
+  BurningAvaxRequestMeta,
+  BurningAuroraRequestMeta,
+  BurningPBSCRequestMeta,
+  BurningPLGRequestMeta,
+  BurningPRVBEP20RequestMeta,
+  BurningPRVERC20RequestMeta,
+  BurningRequestMeta,
+  PrivacyVersion,
 } from 'incognito-chain-web-js/build/wallet';
 import { floor, toString } from 'lodash';
 import React from 'react';
@@ -64,6 +73,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     isPolygonErc20Token,
     isFantomErc20Token,
     isAvaxErc20Token,
+    isAuroraErc20Token,
     externalSymbol,
     paymentAddress: walletAddress,
     isDecentralized,
@@ -103,6 +113,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         isPolygon,
         isFantom,
         isAvax,
+        isAurora,
       } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
 
@@ -113,7 +124,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       if (isPolygon) burningRequestMeta = BurningPLGRequestMeta;
       if (isFantom) burningRequestMeta = BurningFantomRequestMeta;
       if (isAvax) burningRequestMeta = BurningAvaxRequestMeta;
-
+      if (isAurora) burningRequestMeta = BurningAuroraRequestMeta;
 
       /**--> Get payment info <--*/
       const paymentInfo = [{
@@ -270,6 +281,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         isPolygonErc20Token: isPolygonErc20Token,
         isFantomErc20Token: isFantomErc20Token,
         isAvaxErc20Token: isAvaxErc20Token,
+        isAuroraErc20Token: isAuroraErc20Token,
         externalSymbol: externalSymbol,
         isUsedPRVFee,
         userFeesData,
@@ -462,6 +474,9 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         isAvax:
           isAvaxErc20Token ||
           currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX,
+        isAurora:
+          isAuroraErc20Token ||
+          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH,
       };
       let res;
       if (isDecentralized) {

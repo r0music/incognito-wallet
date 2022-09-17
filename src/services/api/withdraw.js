@@ -41,6 +41,7 @@ export const withdraw = (data) => {
     isPolygonErc20Token,
     isFantomErc20Token,
     isAvaxErc20Token,
+    isAuroraErc20Token,
     paymentAddress,
     tokenId,
     burningTxId,
@@ -121,6 +122,14 @@ export const withdraw = (data) => {
     return http.post('avax/add-tx-withdraw', payload);
   }
 
+  // Aurora Token
+  if (
+    isAuroraErc20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH
+  ) {
+    return http.post('aurora/add-tx-withdraw', payload);
+  }
+
   return http.post('eta/add-tx-withdraw', payload);
 };
 
@@ -176,6 +185,7 @@ export const estimateUserFees = (data) => {
     isPolygonErc20Token,
     isFantomErc20Token,
     isAvaxErc20Token,
+    isAuroraErc20Token,
     signPublicKeyEncode,
     unifiedTokenId,
   } = data;
@@ -184,7 +194,8 @@ export const estimateUserFees = (data) => {
       isErc20Token ||
       isPolygonErc20Token ||
       isFantomErc20Token ||
-      isAvaxErc20Token) &&
+      isAvaxErc20Token ||
+      isAuroraErc20Token) &&
     !tokenContractID
   ) {
     throw new Error('Missing tokenContractID');
@@ -249,6 +260,14 @@ export const estimateUserFees = (data) => {
     currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX
   ) {
     return http.post('avax/estimate-fees', payload);
+  }
+
+  // Aurora Token
+  if (
+    isAuroraErc20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH
+  ) {
+    return http.post('aurora/estimate-fees', payload);
   }
 
   return http.post('eta/estimate-fees', payload);

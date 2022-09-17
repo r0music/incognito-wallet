@@ -68,6 +68,9 @@ const enhance = (WrappedComp) => (props) => {
     if (tokenInfo?.isAvaxErc20Token || tokenInfo?.isAVAX) {
       return `${CONSTANT_CONFIGS.AVAXSCAN_URL}/token/${tokenInfo?.contractId}`;
     }
+    if (tokenInfo?.isAuroraErc20Token || tokenInfo?.isAURORA_ETH) {
+      return `${CONSTANT_CONFIGS.AURORASCAN_URL}/token/${tokenInfo?.contractId}`;
+    }
     return '';
   };
 
