@@ -33,6 +33,7 @@ const DISABLED = {
   EXPORT_CSV: 'Export CSV',
   CONSOLIDATE: 'Consolidate UTXOs for each keychain',
   CONVERT_UNIFY: 'convert-unify',
+  SUPPORT: 'support',
 };
 
 const FEATURES_ROUTE_MAP = {
