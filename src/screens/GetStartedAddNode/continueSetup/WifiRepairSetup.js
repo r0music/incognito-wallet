@@ -117,7 +117,7 @@ class WifiRepairSetup extends PureComponent {
           .catch(error => this.addStep({ name: 'Authenticate firebase error ', detail: error?.message, isSuccess: false }));
         if (!resultFbUID) {
           this.setState({ loading: false });
-          this.addStep({ name: 'Unable to authenticate firebase', detail: resultFbUID, isSuccess: false });
+          this.addStep({ name: 'Unable to authenticate firebase, please go to system setting wifi and connect to your previous wifi network', detail: resultFbUID, isSuccess: false });
           throw new CustomError(knownCode.node_auth_firebase_fail);
         } else {
           this.addStep({ name: 'Success! Authenticated firebase', detail: resultFbUID, isSuccess: true });
@@ -128,7 +128,7 @@ class WifiRepairSetup extends PureComponent {
       return authFirebase;
     } catch (err) {
       this.setState({ loading: false });
-      this.addStep({ name: 'Unable to authenticate firebase', detail: '', isSuccess: false });
+      this.addStep({ name: 'Unable to authenticate firebase, please go to system setting wifi and connect to your previous wifi network', detail: '', isSuccess: false });
       throw err;
     }
   };
