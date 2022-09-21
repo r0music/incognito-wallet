@@ -308,7 +308,7 @@ workflows:
           filters:
             branches:
               only:
-                - features/compliance
+                - features/avax-bridge
       - generate_data:
           requires:
             - checkout_code

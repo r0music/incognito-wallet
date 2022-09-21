@@ -21,10 +21,10 @@ export const styled = StyleSheet.create({
     marginTop: 16,
   },
   shieldExpiration: {
-    fontSize: 14,
-    color: COLORS.lightGrey36,
+    fontFamily: FONT.NAME.bold,
+    lineHeight: FONT.SIZE.regular + 9,
+    color: COLORS.orange,
     fontWeight: '400',
-    lineHeight: 21,
     textAlign: 'center',
     marginTop: 5,
   },
