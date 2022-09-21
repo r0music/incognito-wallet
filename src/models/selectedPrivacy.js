@@ -221,11 +221,11 @@ class SelectedPrivacy {
       this.isAvaxErc20Token ||
       (this.isToken &&
         this.currencyType ===
-          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX);
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX) ||
       this.isAuroraErc20Token ||
-        (this.isToken &&
-          this.currencyType ===
-            CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH);
+      (this.isToken &&
+        this.currencyType ===
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH);
     this.isCentralized = this.isToken && !this.isDecentralized;
     this.incognitoTotalSupply =
       (this.isIncognitoToken && Number(token?.totalSupply)) || 0;
