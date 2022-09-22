@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { compose } from 'recompose';
@@ -12,6 +12,7 @@ import ROUTE_NAMES from '@routers/routeNames';
 import { ArrowRightGreyIcon } from '@components/Icons';
 import withHistories from '@screens/PoolV2/histories.enhance';
 import withDefaultAccount from '@components/Hoc/withDefaultAccount';
+import Empty from '@src/components/Empty';
 import { LIMIT } from '@screens/PoolV2/constants';
 import globalStyled from '@src/theme/theme.styled';
 import { useSelector } from 'react-redux';
@@ -73,33 +74,49 @@ const History = ({
     );
   };
 
-  const renderFooter = () => isLoadingMoreHistories ?
-    <ActivityIndicator /> : null;
+  const renderFooter = () =>
+    isLoadingMoreHistories ? (
+      <View style={styles.loadMore}>
+        <ActivityIndicator />
+      </View>
+    ) : null;
+
+  const renderListEmptyComponent = () => {
+    return <Empty message="There's no history yet" />;
+  };
 
   return (
     <>
-      <Header title="Provider history" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
-      <View style={[styles.wrapper, styles.historyTitle, { paddingTop: 24 }]} borderTop>
-        {histories.length ? (
-          <VirtualizedList
-            refreshControl={(
-              <RefreshControl
-                refreshing={isLoadingHistories}
-                onRefresh={onReloadHistories}
-              />
-            )}
-            data={histories}
-            renderItem={renderHistoryItem}
-            getItem={(data, index) => data[index]}
-            getItemCount={data => data.length}
-            keyExtractor={(item, index) => `list-item-${index}`}
-            onEndReached={(histories || []).length >= LIMIT ? onLoadMoreHistories : _.noop}
-            onEndReachedThreshold={0.1}
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            ListFooterComponent={renderFooter}
-          />
-        ) : <LoadingContainer /> }
+      <Header
+        title="Provider history"
+        onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)}
+      />
+      <View
+        style={[styles.wrapper, styles.historyTitle, { paddingTop: 24 }]}
+        borderTop
+      >
+        <VirtualizedList
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoadingHistories}
+              onRefresh={onReloadHistories}
+            />
+          }
+          data={histories}
+          renderItem={renderHistoryItem}
+          getItem={(data, index) => data[index]}
+          getItemCount={(data) => data.length}
+          keyExtractor={(item, index) => `list-item-${index}`}
+          onEndReached={
+            (histories || []).length >= LIMIT ? onLoadMoreHistories : _.noop
+          }
+          contentContainerStyle={{ flexGrow: 1 }}
+          onEndReachedThreshold={0.1}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          ListFooterComponent={renderFooter}
+          ListEmptyComponent={renderListEmptyComponent}
+        />
       </View>
     </>
   );

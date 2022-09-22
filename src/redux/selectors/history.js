@@ -2,12 +2,13 @@ import orderBy from 'lodash/orderBy';
 import {
   Validator,
   ACCOUNT_CONSTANT,
-  PRVIDSTR
 } from 'incognito-chain-web-js/build/wallet';
 import { createSelector } from 'reselect';
 import formatUtil from '@src/utils/format';
 import { decimalDigitsSelector } from '@src/screens/Setting';
 import LinkingService from '@src/services/linking';
+import NavigationService from '@services/NavigationService';
+import routeNames from '@src/router/routeNames';
 import {
   checkShieldProcessing,
   checkShieldPortalProcessing,
@@ -149,7 +150,8 @@ export const mappingTxPTokenSelector = createSelector(
       pDecimals,
       decimals,
       unifiedReward,
-      network
+      network,
+      unifiedStatus,
     } = txp;
     const shouldRenderQrShieldingAddress =
       isShieldTx &&
@@ -162,7 +164,9 @@ export const mappingTxPTokenSelector = createSelector(
     const statusColor = isShieldTx
       ? getStatusColorShield(txp)
       : getStatusColorUnshield(txp);
-    const showDetail = !!statusDetail;
+    const showDetail =
+      !!statusDetail &&
+      status !== ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING;
     let receivedFundsStr =
       isShieldTx && receivedAmount
         ? renderAmount({
@@ -203,7 +207,8 @@ export const mappingTxPTokenSelector = createSelector(
         decimalDigits,
       }),
       outchainFeeStr: renderAmount({
-        amount: outchainFee,
+        amount:
+          parseInt(outchainFee || '0') + parseInt(unifiedStatus?.fee || '0'),
         pDecimals: isUnShieldByPToken ? pDecimals : PRV.pDecimals,
         decimalDigits,
       }),
@@ -414,7 +419,8 @@ export const historyDetailFactoriesSelector = createSelector(
           status,
           unifiedReward,
           pDecimals,
-          currencyType
+          currencyType,
+          txRefundBlacklist,
         } = tx;
         const isShieldProcessing = checkShieldProcessing(status, decentralized);
         let estimationShieldingTime = '';
@@ -464,6 +470,13 @@ export const historyDetailFactoriesSelector = createSelector(
           pDecimals,
           decimalDigits,
         });
+
+        const onPressDetail = () => {
+          if (status === ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING) {
+            NavigationService.navigate(routeNames.ShieldRefund);
+          }
+        };
+
         let data = [
           {
             label: 'ID',
@@ -497,7 +510,12 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !statusStr,
             valueTextStyle: { color: statusColor },
             detail: statusDetail,
+            onPressDetail: onPressDetail,
             showDetail,
+            isToggleDetail:
+              status === ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING,
+            showRightIconDetail:
+              status === ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING,
             canResumeExpiredShield,
             canRetryInvalidAmountShield,
           },
@@ -512,6 +530,14 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !txReceive,
             openUrl: !!txReceive,
             handleOpenUrl: () => LinkingService.openUrlInSide(txReceive),
+          },
+          {
+            label: 'Refunded tx',
+            value: `${txRefundBlacklist}`,
+            disabled: !txRefundBlacklist,
+            openUrl: !!txRefundBlacklist,
+            handleOpenUrl: () =>
+              LinkingService.openUrlInSide(txRefundBlacklist),
           },
           {
             label: 'Expired at',
@@ -685,6 +711,12 @@ export const historyDetailFactoriesSelector = createSelector(
           status,
         } = tx;
         const isShieldProcessing = checkShieldPortalProcessing(status);
+        const onPressDetail = () => {
+          if (status === ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING) {
+            NavigationService.navigate(routeNames.ShieldRefund);
+          }
+        };
+
         let data = [
           {
             label: 'Shield',
@@ -698,6 +730,11 @@ export const historyDetailFactoriesSelector = createSelector(
             valueTextStyle: { color: statusColor },
             detail: statusDetail,
             showDetail: !!statusDetail,
+            onPressDetail: onPressDetail,
+            isToggleDetail:
+              status === ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING,
+            showRightIconDetail:
+              status === ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING,
           },
           {
             label: 'Time',

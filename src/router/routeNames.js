@@ -212,5 +212,6 @@ export default {
   ProcessConvertToUnifiedToken: 'ProcessConvertToUnifiedToken',
   ConvertToUnifiedTokenInfo: 'ConvertToUnifiedTokenInfo',
   Tutorial: 'Tutorial',
-  LiquidityVer1: 'LiquidityVer1'
+  LiquidityVer1: 'LiquidityVer1',
+  ShieldRefund: 'ShieldRefund',
 };
