@@ -20,7 +20,7 @@ export const styled = StyleSheet.create({
     marginRight: 15,
   },
   rightHeader: {
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
   styledTabList: {
     borderBottomWidth: 0,

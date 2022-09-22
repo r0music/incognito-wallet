@@ -7,6 +7,9 @@ import PropTypes from 'prop-types';
 export const TokenContext = React.createContext();
 
 const enhance = (WrappedComp) => (props) => {
+  console.log('WrappedComp ', WrappedComp);
+  console.log('props ', props);
+  console.log('-------');
   const { tokenId } = props;
   const token = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID)(
     tokenId,

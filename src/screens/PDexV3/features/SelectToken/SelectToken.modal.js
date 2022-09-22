@@ -39,13 +39,17 @@ const SelectTokenModal = () => {
     handleFilter: () =>
       handleFilterTokenByKeySearch({ tokens: data, keySearch }),
   });
+  console.log('SelectTokenModal ==> ', {
+    keySearch,
+    availableTokens,
+  });
   const { goBack } = useNavigation();
   if (!data) {
     return null;
   }
   return (
     <View style={styled.container}>
-      <Header title="Select coins" style={styled.header} canSearch />
+      <Header title="Select coins 1234" style={styled.header} canSearch />
       <View style={styled.extra}>
         <ListAllTokenSelectable
           styledCheckBox={styled.checkBox}
@@ -55,7 +59,9 @@ const SelectTokenModal = () => {
               onPress={async () => {
                 goBack();
                 dispatch(actionResetData());
-                dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
+                dispatch(
+                  change(formConfigs.formName, formConfigs.feetoken, ''),
+                );
                 await delay(0);
                 if (typeof onPress === 'function') {
                   onPress(item);

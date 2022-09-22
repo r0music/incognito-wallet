@@ -98,7 +98,9 @@ const Header = ({
 
   const renderHeaderTitle = () => {
     if (toggleSearch || autoFocus) {
+      console.log('000000 ');
       if (isNormalSearch) {
+        console.log('1111111');
         return (
           <SearchBox
             placeHolder={placeHolder || ''}
@@ -110,8 +112,10 @@ const Header = ({
           />
         );
       }
+      console.log('222222');
       return <SearchBox title={title} inputStyle={titleStyled} />;
     }
+    console.log('33333');
     return <HeaderTitle />;
   };
   return (
@@ -168,7 +172,7 @@ Header.defaultProps = {
   hideBackButton: false,
   disableAccountButton: false,
   handleSelectedAccount: null,
-  autoFocus: false
+  autoFocus: false,
 };
 
 Header.propTypes = {
@@ -192,7 +196,7 @@ Header.propTypes = {
   hideBackButton: PropTypes.bool,
   disableAccountButton: PropTypes.bool,
   handleSelectedAccount: PropTypes.func,
-  autoFocus: PropTypes.bool
+  autoFocus: PropTypes.bool,
 };
 
 export default withHeader(React.memo(Header));

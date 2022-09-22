@@ -18,8 +18,9 @@ import {
   PowerIcon,
   ProvideIcon,
   ReportIcon,
-  ConsolidateIcon, UTubeIcon,
-  MailIcon
+  ConsolidateIcon,
+  UTubeIcon,
+  MailIcon,
 } from '@components/Icons';
 import { Header, Row } from '@src/components';
 import { ScrollViewBorder, Text, View5 } from '@src/components/core';

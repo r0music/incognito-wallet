@@ -17,7 +17,6 @@ const styled = StyleSheet.create({
 });
 
 export const ListAllTokenSelectable = withTokenVerified((props) => {
-  console.log('44444 props.length ', props);
   return <ListAllToken {...props} />;
 });
 
@@ -48,3 +47,5 @@ SelectToken.propTypes = {
 };
 
 export default withLayout_2(React.memo(SelectToken));
+
+// export default SelectAToken;

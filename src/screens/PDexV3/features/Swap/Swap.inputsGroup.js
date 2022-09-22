@@ -44,6 +44,10 @@ const SwapInputsGroup = React.memo(() => {
   const pairsToken = useSelector(listPairsSelector);
   const selltoken: SelectedPrivacy = useSelector(selltokenSelector);
   const buytoken: SelectedPrivacy = useSelector(buytokenSelector);
+
+  console.log('selltoken ', selltoken);
+  console.log('buytoken ', buytoken);
+
   const platform = useSelector(platformSelectedSelector);
   const inputAmount = useSelector(inputAmountSelector);
   const sellInputAmount = inputAmount(formConfigs.selltoken);
@@ -51,6 +55,7 @@ const SwapInputsGroup = React.memo(() => {
   const onSelectToken = (token, field) => {
     dispatch(actionSelectToken(token, field));
   };
+
   const onSelectSellToken = () => {
     navigation.navigate(routeNames.SelectTokenModal, {
       data: pairsToken.filter(
@@ -59,6 +64,7 @@ const SwapInputsGroup = React.memo(() => {
       onPress: (token) => onSelectToken(token, formConfigs.selltoken),
     });
   };
+
   const onSelectBuyToken = () => {
     navigation.navigate(routeNames.SelectTokenModal, {
       data: pairsToken.filter((token: SelectedPrivacy) => {
@@ -76,7 +82,7 @@ const SwapInputsGroup = React.memo(() => {
   const onFocusToken = (e, field) => dispatch(actionSetFocusToken(swap[field]));
   const onEndEditing = (field) => dispatch(actionEstimateTrade({ field }));
   const onSwapButtons = () => {
-    if(selltoken?.movedUnifiedToken) {
+    if (selltoken?.movedUnifiedToken) {
       return;
     }
     dispatch(actionSwapToken());
@@ -103,14 +109,14 @@ const SwapInputsGroup = React.memo(() => {
   const onChange = (field, value) => {
     dispatch(change(formConfigs.formName, field, value));
     switch (field) {
-    case formConfigs.selltoken:
-      dispatch(change(formConfigs.formName, formConfigs.buytoken, ''));
-      break;
-    case formConfigs.buytoken:
-      dispatch(change(formConfigs.formName, formConfigs.selltoken, ''));
-      break;
-    default:
-      break;
+      case formConfigs.selltoken:
+        dispatch(change(formConfigs.formName, formConfigs.buytoken, ''));
+        break;
+      case formConfigs.buytoken:
+        dispatch(change(formConfigs.formName, formConfigs.selltoken, ''));
+        break;
+      default:
+        break;
     }
   };
   return (
@@ -146,7 +152,10 @@ const SwapInputsGroup = React.memo(() => {
         onEndEditing={() => onEndEditing(formConfigs.buytoken)}
         validate={[...validator.combinedAmount]}
         loadingBalance={!!buyInputAmount?.loadingBalance}
-        editableInput={!!swapInfo?.editableInput && platform.id !== KEYS_PLATFORMS_SUPPORTED.curve}
+        editableInput={
+          !!swapInfo?.editableInput &&
+          platform.id !== KEYS_PLATFORMS_SUPPORTED.curve
+        }
         visibleHeader={false}
         onChange={(value) => onChange(formConfigs.buytoken, value)}
       />

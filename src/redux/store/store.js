@@ -31,10 +31,7 @@ export default function configureStore(preloadedState) {
   };
   const persistedReducer = persistReducer(persistConfig, rootReducer);
   const _composedEnhancers = composeWithDevTools(
-    applyMiddleware(
-      thunkMiddleware,
-      // logger
-    ),
+    applyMiddleware(thunkMiddleware),
   );
   const store = createStore(
     persistedReducer,

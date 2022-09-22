@@ -5,6 +5,7 @@ import Row from '@src/components/Row';
 import React from 'react';
 import { View } from 'react-native';
 import TabSwap from '@screens/PDexV3/features/Swap';
+import { SwapNew } from '@screens/PDexV3/features/Swap_New';
 import OrderLimit, {
   actionInit,
   visibleBtnChartSelector,
@@ -51,9 +52,6 @@ const Trade = (props) => {
           </Row>
         }
       >
-        <View tabID={TAB_SWAP_ID} label="Swap">
-          <TabSwap />
-        </View>
         <View
           tabID={TAB_BUY_LIMIT_ID}
           label="Buy"
@@ -68,13 +66,17 @@ const Trade = (props) => {
         >
           <OrderLimit />
         </View>
+
+        <View tabID={TAB_SWAP_ID} label="Swap">
+          <TabSwap />
+          {/* <SwapNew /> */}
+        </View>
       </Tabs>
     </View>
   );
 };
 
-Trade.defaultProps = {
-};
+Trade.defaultProps = {};
 
 Trade.propTypes = {
   onRefresh: PropTypes.func.isRequired,

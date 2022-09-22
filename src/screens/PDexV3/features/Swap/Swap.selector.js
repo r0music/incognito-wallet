@@ -169,7 +169,7 @@ export const purePairsSelector = createSelector(
 export const listPairsSelector = createSelector(
   swapSelector,
   getPrivacyDataByTokenIDSelector,
-  (
+  ( 
     { pairs, isPrivacyApp, defaultExchange, pancakeTokens, uniTokens, curveTokens },
     getPrivacyDataByTokenID,
   ) => {

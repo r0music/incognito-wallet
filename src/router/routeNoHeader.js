@@ -159,6 +159,8 @@ import HomeLP from '@screens/MainTabBar/features/HomeLP';
 import Tutorial from '@screens/Turotial/Tutorial';
 import LiquidityVer1 from '@screens/Dex/Liquidity';
 
+import SelectAToken from '@screens/PDexV3/features/Swap_New/SelectAToken/SelectAToken';
+
 const masterKeyRoutes = [
   {
     screen: MasterKeyList,
@@ -767,6 +769,10 @@ const routes = [
   {
     screen: LiquidityVer1,
     name: routeNames.LiquidityVer1,
+  },
+  {
+    screen: SelectAToken,
+    name: routeNames.SelectAToken,
   },
   ...masterKeyRoutes,
   ...devRoutes,

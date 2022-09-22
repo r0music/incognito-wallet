@@ -33,36 +33,43 @@ import {
 } from './Trade.constant';
 
 const enhance = (WrappedComp) => (props) => {
+  console.log('Trade.enhance.js  => ', {
+    WrappedComp,
+    props,
+  });
   const [refreshing, setRefreshing] = React.useState(false);
   const { isFetching, isFetched } = useSelector(poolsSelector);
   const activedTab = useSelector(activedTabSelector)(ROOT_TAB_TRADE);
+  console.log('Trade.enhance.js => ', {
+    activedTab,
+  });
   const swapInfo = useDebounceSelector(swapInfoSelector);
   const dispatch = useDispatch();
   const onRefresh = async () => {
     try {
       await setRefreshing(true);
       switch (activedTab) {
-      case TAB_SWAP_ID: {
-        await dispatch(
-          actionInitSwapForm({
-            defaultPair: swapInfo?.defaultPair,
-            refresh: true,
-            shouldFetchHistory: true,
-          })
-        );
-        break;
-      }
-      case TAB_SELL_LIMIT_ID:
-      case TAB_BUY_LIMIT_ID: {
-        await dispatch(actionInit());
-        break;
-      }
-      case TAB_MARKET_ID: {
-        await dispatch(actionFetchPools());
-        break;
-      }
-      default:
-        break;
+        case TAB_SWAP_ID: {
+          await dispatch(
+            actionInitSwapForm({
+              defaultPair: swapInfo?.defaultPair,
+              refresh: true,
+              shouldFetchHistory: true,
+            }),
+          );
+          break;
+        }
+        case TAB_SELL_LIMIT_ID:
+        case TAB_BUY_LIMIT_ID: {
+          await dispatch(actionInit());
+          break;
+        }
+        case TAB_MARKET_ID: {
+          await dispatch(actionFetchPools());
+          break;
+        }
+        default:
+          break;
       }
     } catch (error) {
       new ExHandler(error).showErrorToast();

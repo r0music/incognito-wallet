@@ -4,13 +4,12 @@ const LARGE_KEY = 'LARGEDATA';
 const SIZE = 2e6;
 
 const Storage = {
-
   async handleSaveLargeData(key, value) {
     try {
       // Save new data
       const parts = value.match(/.{1,2000000}/g);
       const objectKey = { type: LARGE_KEY, noOfParts: parts.length };
-      for (let i = 0; i < parts.length; i++){
+      for (let i = 0; i < parts.length; i++) {
         const dataItem = parts[i];
         const keyItem = `${key}-part${i}`;
         await AsyncStorage.setItem(keyItem, dataItem);
@@ -30,7 +29,7 @@ const Storage = {
   async handleLoadLargeData(key, objectKey) {
     try {
       let data = '';
-      for (let i = 0; i < objectKey.noOfParts; i++){
+      for (let i = 0; i < objectKey.noOfParts; i++) {
         const keyItem = `${key}-part${i}`;
         const dataItem = await AsyncStorage.getItem(keyItem);
         data = `${data}${dataItem}`;
@@ -47,7 +46,7 @@ const Storage = {
     }
   },
 
-  setItem(key:string, value:string, callback:function) {
+  setItem(key: string, value: string, callback: function) {
     // console.debug('SET ITEM', key);
     return new Promise(async (resolve, reject) => {
       // If data is larger than 2mb we need to throw error
@@ -74,7 +73,7 @@ const Storage = {
       });
     });
   },
-  getItem(key:string, callback:function) {
+  getItem(key: string, callback: function) {
     // console.debug('GET ITEM', key);
     return new Promise((resolve, reject) => {
       AsyncStorage.getItem(key, async (err, rs) => {
@@ -86,7 +85,7 @@ const Storage = {
         }
         try {
           const parseData = JSON.parse(rs);
-          if (parseData && parseData.type === LARGE_KEY ) {
+          if (parseData && parseData.type === LARGE_KEY) {
             try {
               const result = await this.handleLoadLargeData(key, parseData);
               return resolve(result);
@@ -101,10 +100,10 @@ const Storage = {
       });
     });
   },
-  removeItem(key:string, callback:function) {
+  removeItem(key: string, callback: function) {
     console.debug('REMOVE ITEM', key);
     return new Promise((resolve, reject) => {
-      AsyncStorage.removeItem(key, (err)=> {
+      AsyncStorage.removeItem(key, (err) => {
         if (typeof callback === 'function') {
           callback(err);
         }
@@ -115,9 +114,9 @@ const Storage = {
       });
     });
   },
-  clear(callback:function) {
+  clear(callback: function) {
     return new Promise((resolve, reject) => {
-      AsyncStorage.clear((err)=> {
+      AsyncStorage.clear((err) => {
         if (typeof callback === 'function') {
           callback(err);
         }
@@ -127,7 +126,7 @@ const Storage = {
         return resolve();
       });
     });
-  }
+  },
 };
 
 export default Storage;
