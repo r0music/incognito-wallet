@@ -15,6 +15,7 @@ import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import withChangeInput from '@screens/DexV2/components/Trade/input.enhance';
 import withValidate from '@screens/PoolV2/validate.enhance';
 import { useNavigation } from 'react-navigation-hooks';
+import { COLORS } from '@src/styles';
 import ROUTE_NAMES from '@routers/routeNames';
 import { Header, Row } from '@src/components/';
 import { Text4 } from '@src/components/core/Text';
@@ -131,10 +132,13 @@ const Provide = ({
                     {item.lockTime} Months
                   </Text>
                   <Row centerVertical style={styles.contentView}>
-                    <Text style={[styles.textRight, { color: colors.blue1 }]}>{item.apy}% APR</Text>
+                    <Text style={[styles.textRight, { color: COLORS.green1 }]}>
+                      {item.apy}% APR
+                    </Text>
                     <RatioIcon
                       style={styles.textRight}
                       selected={index === i}
+                      selectedColor={COLORS.green1}
                     />
                   </Row>
                 </Row>

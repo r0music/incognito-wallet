@@ -35,7 +35,7 @@ export default StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   center: {
     justifyContent: 'center',
@@ -45,4 +45,22 @@ export default StyleSheet.create({
     flex: 1,
     marginRight: 25,
   },
+  networkBoxContainer: {
+    backgroundColor: COLORS.gray1,
+    marginLeft: 8,
+    paddingHorizontal: 4,
+    borderRadius: 4,
+  },
+  networkName: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: COLORS.lightGrey36,
+    lineHeight: 18,
+  },
+  loadMore: {
+    width: '100%',
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 });

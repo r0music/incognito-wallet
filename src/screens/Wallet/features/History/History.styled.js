@@ -78,4 +78,9 @@ export const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.small + 5,
     color: COLORS.black,
   },
+  detailContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+  },
 });

@@ -59,15 +59,10 @@ export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivac
     feePrvText,
     feePTokenText,
   } = estimateFee;
-  const selectedPrivacy =
-    childSelectedPrivacyData &&
-    childSelectedPrivacyData?.networkId !== 'INCOGNITO'
-      ? childSelectedPrivacyData
-      : selectedPrivacyData;
-  const { amount } = selectedPrivacy;
+  const { amount } = selectedPrivacyData;
   const isUseTokenFee = actived !== CONSTANT_COMMONS.PRV.id;
   const feeUnit = isUseTokenFee
-    ? selectedPrivacy?.externalSymbol || selectedPrivacy.symbol
+    ? selectedPrivacyData?.externalSymbol || selectedPrivacyData.symbol
     : CONSTANT_COMMONS.PRV.symbol;
   const feePDecimals = isUseTokenFee
     ? selectedPrivacyData?.pDecimals
@@ -82,7 +77,7 @@ export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivac
   const totalFeeText = isUseTokenFee ? totalFeePTokenText : totalFeePrvText;
   const totalFee = isUseTokenFee ? totalFeePToken : totalFeePrv;
   const { maxAmount, maxAmountText } = getMaxAmount({
-    selectedPrivacy,
+    selectedPrivacy: selectedPrivacyData,
     isUseTokenFee,
     totalFee,
   });
@@ -95,9 +90,15 @@ export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivac
     feePDecimals,
   );
   const isETH =
-    selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
+    selectedPrivacyData?.currencyType ===
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH ||
+    childSelectedPrivacyData?.currencyType ===
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
   const isBTC =
-    selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BTC;
+    selectedPrivacyData?.currencyType ===
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BTC ||
+    childSelectedPrivacyData?.currencyType ===
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BTC;
   // const editableInput = !isFetching && !userFees.isFetching;
   const editableInput = true;
   return {

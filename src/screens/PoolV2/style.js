@@ -20,15 +20,12 @@ export default StyleSheet.create({
   coinName: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
-    marginBottom: 8,
   },
   coinInterest: {
     ...FONT.TEXT.incognitoP1,
-    marginBottom: 8,
   },
   coinExtra: {
     ...FONT.TEXT.incognitoP1,
-    marginBottom: 8,
   },
   coinExtraSmall: {
     fontFamily: FONT.NAME.medium,
@@ -55,7 +52,7 @@ export default StyleSheet.create({
     fontSize: 16,
     minHeight: 20,
     fontFamily: FONT.NAME.regular,
-    marginTop: 8
+    marginTop: 8,
   },
   disabled: {
     opacity: 0.5,
@@ -108,13 +105,13 @@ export default StyleSheet.create({
     fontSize: FONT.SIZE.small,
   },
   btnViewDetail: {
+    backgroundColor: COLORS.gray1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 8,
     height: 24,
     paddingHorizontal: 8,
     borderRadius: 4,
-    borderWidth: 1,
+    marginLeft: 8,
   },
   viewDetailText: {
     ...FONT.STYLE.medium,
@@ -127,12 +124,30 @@ export default StyleSheet.create({
   iconUp: {
     width: 14,
     height: 16,
-    marginBottom: 8,
     marginLeft: 4,
   },
   label: {
     fontSize: FONT.SIZE.small,
     ...FONT.STYLE.normal,
     lineHeight: 21,
+  },
+  networkBox: {
+    backgroundColor: COLORS.gray1,
+    marginLeft: 8,
+    paddingHorizontal: 4,
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  networkText: {
+    color: COLORS.lightGrey36,
+    fontSize: 12,
+    fontWeight: '500',
+    lineHeight: 18,
+  },
+  tokenName: {
+    fontSize: 14,
+    color: COLORS.lightGrey36,
+    maxWidth: 100,
   },
 });

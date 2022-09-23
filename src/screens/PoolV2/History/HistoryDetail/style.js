@@ -19,6 +19,26 @@ export default StyleSheet.create({
     marginVertical: 5,
     overflow: 'hidden'
   },
+  descContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  historyType: {
+    color: COLORS.lightGrey36,
+    fontSize: 14,
+  },
+  networkBox: {
+    backgroundColor: COLORS.gray1,
+    marginLeft: 18,
+    borderRadius: 4,
+    paddingHorizontal: 8,
+  },
+  networkName: {
+    color: COLORS.lightGrey36,
+    fontSize: 16,
+    lineHeight: 22,
+  },
   error: {
     color: COLORS.red,
   },
@@ -26,8 +46,8 @@ export default StyleSheet.create({
     ...FONT.STYLE.bold,
   },
   content: {
-    ...FONT.TEXT.incognitoH2,
-    marginTop: 5,
+    fontSize: 20,
+    fontWeight: '500',
   },
   historyItem: {
     marginBottom: 30,

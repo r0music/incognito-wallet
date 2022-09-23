@@ -308,7 +308,7 @@ workflows:
           filters:
             branches:
               only:
-                - features/new-unified
+                - features/compliance
       - generate_data:
           requires:
             - checkout_code

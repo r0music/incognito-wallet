@@ -11,6 +11,7 @@ export interface ModalConfirmProps {
   style?: ViewStyle;
   leftButtonTitle?: string;
   rightButtonTitle?: string;
+  renderModalIcon?: () => void;
   leftButtonStyle?: ViewStyle;
   rightButtonStyle?: ViewStyle;
   onPressLeftButton?: () => void;
@@ -19,6 +20,8 @@ export interface ModalConfirmProps {
   disabledLeftButton?: boolean;
   disabledRightButton?: boolean;
   leftButtonDisabledStyle?: ViewStyle;
+  titleStyle?: TextStyle;
+  descStyle?: TextStyle;
   rightButtonDisabledStyle?: ViewStyle;
   leftButtonTitleStyle?: TextStyle;
   rightButtonTitleStyle?: TextStyle;
@@ -31,6 +34,7 @@ export interface ModalConfirmProps {
 export const ModalConfirm: React.FC<ModalConfirmProps> = ({
   isVisible,
   title,
+  renderModalIcon,
   description,
   leftButtonTitle,
   rightButtonTitle,
@@ -41,6 +45,8 @@ export const ModalConfirm: React.FC<ModalConfirmProps> = ({
   onBackdropPress,
   disabledLeftButton,
   disabledRightButton,
+  titleStyle,
+  descStyle,
   leftButtonDisabledStyle,
   rightButtonDisabledStyle,
   leftButtonTitleStyle,
@@ -63,8 +69,9 @@ export const ModalConfirm: React.FC<ModalConfirmProps> = ({
       style={style}
     >
       <View style={modalContainerStyle}>
-        <Text style={modalTitleStyle}>{title}</Text>
-        <Text style={modalDescriptionStyle}>{description}</Text>
+        {renderModalIcon?.()}
+        <Text style={[modalTitleStyle, titleStyle]}>{title}</Text>
+        <Text style={[modalDescriptionStyle, descStyle]}>{description}</Text>
         <View style={rowStyle}>
           {!hideLeftButton && (
             <Button

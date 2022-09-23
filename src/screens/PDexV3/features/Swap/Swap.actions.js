@@ -444,6 +444,8 @@ export const actionHandleInjectEstDataForCurve =
     try {
       // await dispatch(actionSetFeeToken(PRV.id));
       const state = getState();
+      let feeData = feetokenDataSelector(state);
+      const isUseTokenFee = feeData?.curve?.isUseTokenFee;
       const inputAmount = inputAmountSelector(state);
       let sellInputToken, buyInputToken, inputToken, inputPDecimals;
       sellInputToken = inputAmount(formConfigs.selltoken);
@@ -457,6 +459,13 @@ export const actionHandleInjectEstDataForCurve =
       if (tokenSellCurve == null || tokenBuyCurve == null) {
         throw 'This pair is not existed on curve';
       }
+
+      if (isUseTokenFee) {
+        await dispatch(actionSetFeeToken(selltoken));
+      } else {
+        await dispatch(actionSetFeeToken(PRV.id));
+      }
+
       switch (field) {
       case formConfigs.selltoken: {
         inputPDecimals = tokenBuyCurve.pDecimals;
@@ -471,8 +480,12 @@ export const actionHandleInjectEstDataForCurve =
       default:
         break;
       }
-      const { maxGet, minFeePRVFixed, availableFixedSellAmountPRV } =
-        feetokenDataSelector(state);
+      const {
+        maxGet,
+        minFeePRVFixed,
+        availableFixedSellAmountPRV,
+        minFeeTokenFixed,
+      } = feetokenDataSelector(state);
       const slippagetolerance = slippagetoleranceSelector(state);
       const originalMinAmountExpected =
         field === formConfigs.buytoken
@@ -489,6 +502,7 @@ export const actionHandleInjectEstDataForCurve =
         minAmountExpectedToHumanAmount,
         inputPDecimals,
       );
+
       batch(() => {
         if (useMax) {
           dispatch(
@@ -503,7 +517,11 @@ export const actionHandleInjectEstDataForCurve =
           change(formConfigs.formName, inputToken, minAmountExpectedToFixed),
         );
         dispatch(
-          change(formConfigs.formName, formConfigs.feetoken, minFeePRVFixed),
+          change(
+            formConfigs.formName,
+            formConfigs.feetoken,
+            isUseTokenFee ? minFeeTokenFixed : minFeePRVFixed,
+          ),
         );
       });
     } catch (error) {
@@ -1317,7 +1335,7 @@ export const actionEstimateTrade =
 
         // Show loading estimate trade and reset fee data
         dispatch(actionFetching(true));
-        dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
+        // dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
 
         const inputAmount = inputAmountSelector(state);
         let sellInputToken, buyInputToken, inputToken, inputPDecimals;
@@ -1329,13 +1347,17 @@ export const actionEstimateTrade =
           pDecimals: sellPDecimals,
           availableOriginalAmount: availableSellOriginalAmount,
         } = sellInputToken;
-        let sellAmount = useMax
-          ? availableSellOriginalAmount
-          : sellOriginalAmount;
-        if (new BigNumber(availableSellOriginalAmount).eq(sellOriginalAmount)) {
-          sellAmount = availableSellOriginalAmount;
-          useMax = true;
+
+        let maxAmount = availableSellOriginalAmount;
+        if(useMax) {
+          maxAmount = await dispatch(actionGetMaxAmount());
         }
+
+        let sellAmount = useMax ? maxAmount : sellOriginalAmount;
+        // if (new BigNumber(availableSellOriginalAmount).eq(sellOriginalAmount)) {
+        //   sellAmount = availableSellOriginalAmount;
+        //   useMax = true;
+        // }
 
         // change sell token input when press max
         if(useMax && sellAmount) {
@@ -2218,3 +2240,31 @@ export const actionSwitchPlatform =
       throw error;
     }
   };
+
+export const actionGetMaxAmount = () => async (dispatch, getState) => {
+  const state = getState();
+  let feeData = feetokenDataSelector(state);
+  let isUseTokenFee = false;
+  let platform = platformSelectedSelector(state);
+
+  const inputAmount = inputAmountSelector(state);
+  const sellInputToken = inputAmount(formConfigs.selltoken);
+
+  if (platform.id === KEYS_PLATFORMS_SUPPORTED.pancake) {
+    isUseTokenFee = feeData?.pancake?.isUseTokenFee;
+  } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.uni) {
+    isUseTokenFee = feeData?.uni?.isUseTokenFee;
+  } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.curve) {
+    isUseTokenFee = feeData?.uni?.isUseTokenFee;
+  }
+
+  const availableOriginalAmount = sellInputToken?.availableOriginalAmount;
+  if (!isUseTokenFee) return availableOriginalAmount;
+  const fee = feeData?.minFeeOriginal;
+  let maxAmount = availableOriginalAmount - fee;
+  if (maxAmount < 0) {
+    maxAmount = availableOriginalAmount;
+  }
+
+  return maxAmount;
+};

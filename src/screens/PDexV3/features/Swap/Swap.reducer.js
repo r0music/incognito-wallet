@@ -299,7 +299,7 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       isFetching: action.payload,
-      data: Object.assign({}, initialState.data),
+      // data: Object.assign({}, initialState.data),
     };
   }
   case ACTION_FETCHED: {
