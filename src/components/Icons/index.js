@@ -108,3 +108,5 @@ export { default as CheckIcon } from './icon.check';
 export { default as UTubeIcon } from './icon.utube';
 export { default as CirclePlusIcon } from './icon.circlePlus';
 export { default as IconReward } from './icon.reward';
+export { default as CheckedBlueIcon } from './icon.checkedBlue';
+export { default as MailIcon } from './icon.mail';

@@ -38,34 +38,22 @@ import { estimateFeeSelector, feeDataSelector } from './EstimateFee.selector';
 import { formName } from './EstimateFee.input';
 import { MAX_FEE_PER_TX, getMaxAmount, getTotalFee } from './EstimateFee.utils';
 
-export const actionInitEstimateFee = (config = {}) => async (
-  dispatch,
-  getState,
-) => {
-  const state = getState();
-  const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
-  const account = accountSelector.defaultAccountSelector(state);
-  const wallet = state?.wallet;
+export const actionInitEstimateFee =
+  (config = {}) =>
+  async (dispatch, getState) => {
+    const state = getState();
+    const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
+    const account = accountSelector.defaultAccountSelector(state);
+    const wallet = state?.wallet;
 
-  if (!wallet || !account || !selectedPrivacy) {
-    return;
-  }
-  const { screen = 'Send' } = config;
-  let rate;
-  try {
-    switch (screen) {
-    case 'UnShield': {
+    if (!wallet || !account || !selectedPrivacy) {
+      return;
+    }
+    const { screen = 'Send' } = config;
+    let rate = 1;
+    if (screen === 'UnShield' && selectedPrivacy?.isCentralized) {
       rate = 2;
-      break;
     }
-    default: {
-      rate = 1;
-      break;
-    }
-    }
-  } catch (error) {
-    throw error;
-  } finally {
     await dispatch(
       actionInitFetched({
         screen,
@@ -74,8 +62,7 @@ export const actionInitEstimateFee = (config = {}) => async (
         isValidETHAddress: true,
       }),
     );
-  }
-};
+  };
 
 export const actionFetchedMaxFeePrv = (payload) => ({
   type: ACTION_FETCHED_MAX_FEE_PRV,
@@ -389,15 +376,9 @@ export const actionChangeFee = (payload) => ({
 export const actionFetchFeeByMax = () => async (dispatch, getState) => {
   const state = getState();
   const parentSelectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
-  const childSelectedPrivacy =
-    childSelectedPrivacySelector.childSelectedPrivacy(state);
-  const selectedPrivacy =
-    childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
-      ? childSelectedPrivacy
-      : parentSelectedPrivacy;
   const { isUseTokenFee, isFetched, totalFee, isFetching } =
     feeDataSelector(state);
-  const { amount, isMainCrypto } = selectedPrivacy;
+  const { amount, isMainCrypto } = parentSelectedPrivacy;
   const feeEst = MAX_FEE_PER_TX;
   let _amount = Math.max(isMainCrypto ? amount - feeEst : amount, 0);
   let maxAmount = floor(_amount, parentSelectedPrivacy.pDecimals);
@@ -411,7 +392,7 @@ export const actionFetchFeeByMax = () => async (dispatch, getState) => {
   try {
     if (isFetched) {
       const { maxAmountText: _maxAmountText } = getMaxAmount({
-        selectedPrivacy,
+        selectedPrivacy: parentSelectedPrivacy,
         isUseTokenFee,
         totalFee,
       });

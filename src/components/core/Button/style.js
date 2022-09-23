@@ -27,7 +27,7 @@ export default StyleSheet.create({
     backgroundColor: COLORS.dark3,
   },
   loadingIcon: {
-    marginHorizontal: 2,
+    marginHorizontal: 4,
   },
   disabled: {
     ...THEME.opacityButton.disabled,

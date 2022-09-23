@@ -585,7 +585,7 @@ class WifiSetup extends PureComponent {
       const resultFbUID = await NodeService.authFirebase(productInfo)
         .catch(error => {
           this.setState({ loading: false });
-          this.addStep({ name: 'Unable to authenticate firebase', detail: error?.message, isSuccess: false });
+          this.addStep({ name: 'Unable to authenticate firebase, please go to system setting wifi and connect to your previous wifi network', detail: error?.message, isSuccess: false });
         });
 
       return _.isEmpty(resultFbUID) ? new CustomError(knownCode.node_auth_firebase_fail) : resultFbUID;

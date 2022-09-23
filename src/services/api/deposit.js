@@ -168,3 +168,23 @@ export const genFantomDepositAddress = ({
   }
   return http.post('ftm/generate', body).then(formatResponse);
 };
+
+export const checkShieldRefundInfo = ({ decentralized, shieldID }) => {
+  if (!decentralized || !shieldID) return;
+  let body = {
+    Decentralized: decentralized, // 2(eth), 3(bsc), 4(plg), 5(fantom)
+    ID: shieldID, // ID of shield
+  };
+
+  return http.post('service/blacklist/refund-info', body);
+};
+
+export const submitShieldRefund = ({ decentralized, shieldID }) => {
+  if (!decentralized || !shieldID) return;
+  let body = {
+    Decentralized: decentralized, // 2(eth), 3(bsc), 4(plg), 5(fantom)
+    ID: shieldID, // ID of shield
+  };
+
+  return http.post('service/blacklist/refund-now', body);
+};

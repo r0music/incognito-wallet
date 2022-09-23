@@ -9,6 +9,7 @@ import {
   Image,
 } from '@components/core';
 import mainStyle from '@screens/PoolV2/style';
+import { COLORS } from '@src/styles';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout/index';
 import withCoinsData from '@screens/PoolV2/Provide/SelectCoin/coins.enhance';
@@ -20,7 +21,6 @@ import { Header, Row , ImageCached } from '@src/components/';
 import { COINS } from '@src/constants';
 import { LockTimeComp } from '@screens/PoolV2/Home/CoinList';
 import upToIcon from '@src/assets/images/icons/upto_icon.png';
-import { colorsSelector } from '@src/theme/theme.selector';
 import { useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 
@@ -28,7 +28,6 @@ import { selectedPrivacySelector } from '@src/redux/selectors';
 const SelectCoin = ({ coins }) => {
   const navigation = useNavigation();
   const getPrivacyDataByTokenID = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID);
-  const colors = useSelector(colorsSelector);
   const handleSelect = (coin) => {
     const prv = coins.find((item) => item.id === COINS.PRV_ID);
     navigation.navigate(ROUTE_NAMES.PoolV2ProvideInput, {
@@ -41,12 +40,12 @@ const SelectCoin = ({ coins }) => {
 
   const renderUpToAPY = (item) => {
     return (
-      <Row style={{ alignItems: 'center', marginBottom: 8 }}>
+      <Row centerVertical>
         <Text
           style={[
             mainStyle.coinExtra,
-            { marginBottom: 0, marginTop: 2 },
-            { color: colors.blue1 },
+            { marginBottom: 0 },
+            { color: COLORS.green1 },
           ]}
         >
           {item.displayInterest}
@@ -56,9 +55,9 @@ const SelectCoin = ({ coins }) => {
             source={upToIcon}
             style={{
               width: 14,
-              height: 16,
+              height: 14,
               marginLeft: 4,
-              tintColor: colors.blue1
+              tintColor: COLORS.green1,
             }}
           />
         )}
@@ -71,7 +70,7 @@ const SelectCoin = ({ coins }) => {
       <Header title="Select coin" />
       <ScrollViewBorder style={mainStyle.coinContainerNoMargin}>
         {coins.map((coin) => {
-          const { iconUrl } = getPrivacyDataByTokenID(coin.id);
+          const { iconUrl, network } = getPrivacyDataByTokenID(coin.id);
           return (
             <TouchableOpacity
               key={coin.id}
@@ -79,9 +78,19 @@ const SelectCoin = ({ coins }) => {
               onPress={() => handleSelect(coin)}
               disabled={!coin.balance}
             >
-              <ImageCached uri={iconUrl} style={{ width: 32, height: 32, marginTop: 10, marginRight: 14 }} />
-              <View style={[coin.balance === 0 && mainStyle.disabled, { flex: 1 }]}>
-                <Row spaceBetween style={{ marginBottom: 8 }}>
+              <ImageCached
+                uri={iconUrl}
+                style={{
+                  width: 32,
+                  height: 32,
+                  marginTop: 10,
+                  marginRight: 14,
+                }}
+              />
+              <View
+                style={[coin.balance === 0 && mainStyle.disabled, { flex: 1 }]}
+              >
+                <Row spaceBetween>
                   <Row style={{ alignItems: 'center' }}>
                     <Text style={[mainStyle.coinName, { marginBottom: 0 }]}>
                       {coin.symbol}
@@ -96,7 +105,17 @@ const SelectCoin = ({ coins }) => {
                     <ActivityIndicator />
                   )}
                 </Row>
-                {renderUpToAPY(coin)}
+                <Row centerVertical spaceBetween style={{ marginTop: 8 }}>
+                  <Row centerVertical>
+                    <Text numberOfLines={1} style={mainStyle.tokenName}>{coin.name}</Text>
+                    {coin?.id !== COINS.PRV_ID && (
+                      <View style={[mainStyle.networkBox, { marginLeft: 8 }]}>
+                        <Text style={mainStyle.networkText}>{network}</Text>
+                      </View>
+                    )}
+                  </Row>
+                  {renderUpToAPY(coin)}
+                </Row>
               </View>
             </TouchableOpacity>
           );

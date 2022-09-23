@@ -1,10 +1,10 @@
-import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import TextMarquee from '@screens/MainTabBar/features/Home/AutoScrollText';
 import { TouchableOpacity } from '@src/components/core';
-import { Icon } from 'react-native-elements';
 import { COLORS, FONT } from '@src/styles';
 import PropTypes from 'prop-types';
-import TextMarquee from '@screens/MainTabBar/features/Home/AutoScrollText';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { Icon } from 'react-native-elements';
 
 const styled = StyleSheet.create({
   container: {
@@ -14,9 +14,8 @@ const styled = StyleSheet.create({
     backgroundColor: COLORS.black,
     justifyContent: 'center',
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     position: 'relative',
-    paddingHorizontal: 10
   },
   text: {
     color: COLORS.white,

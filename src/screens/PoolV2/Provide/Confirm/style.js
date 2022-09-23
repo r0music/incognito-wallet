@@ -28,17 +28,29 @@ export default StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
   },
-  extraRight: {
-  },
+  extraRight: {},
   warning: {
     color: COLORS.orange,
   },
   row: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   label: {
     fontFamily: FONT.NAME.medium,
     fontSize: 16,
     lineHeight: 21,
+  },
+  networkBox: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    backgroundColor: COLORS.gray1,
+    marginLeft: 20,
+  },
+  networkText: {
+    color: COLORS.lightGrey36,
+    fontSize: 12,
+    fontWeight: '500',
+    lineHeight: 18,
   },
 });

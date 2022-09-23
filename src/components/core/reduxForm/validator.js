@@ -80,7 +80,7 @@ const maxValue = (max, { message } = {}) => (value) =>
     : undefined;
 
 const largerThan = (min, { message } = {}) => (value) =>
-  value && value <= min
+  value && convert.toNumber(value) <= min
     ? messageHanlder(message, value, min) ??
       `Must be larger than ${formatUtils.number(min)}`
     : undefined;
