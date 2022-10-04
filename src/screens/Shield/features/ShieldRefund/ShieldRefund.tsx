@@ -170,7 +170,7 @@ const ShieldRefund: React.FC = () => {
               </Text>
             </View>
             <Text style={descriptionTextStyle}>
-              Smaller amounts will be rejected by the network and lost.
+              Smaller amounts will not be processed.
             </Text>
 
             {shieldRefundData?.msg && (
