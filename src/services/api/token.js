@@ -12,6 +12,7 @@ import PolygonToken from '@src/models/polygonToken';
 import FantomToken from '@src/models/fantomToken';
 import AvaxToken from '@src/models/avaxToken';
 import AuroraToken from '@src/models/auroraToken';
+import NearToken from '@src/models/nearToken';
 
 let BEP2Tokens = [];
 
@@ -148,6 +149,32 @@ export const addAuroraToken = ({ symbol, name, contractId, decimals }) => {
     .then((res) => new PToken(res));
 };
 
+export const detectNearToken = (nearToken) => {
+  if (!nearToken) throw new Error('Missing auroraAddress to detect');
+  return http
+    .post('aurora/detect-erc20', {
+      Address: nearToken,
+    })
+    .then((res) => new NearToken(res))
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const addNearToken = ({ symbol, name, contractId, decimals }) => {
+  const parseDecimals = Number(decimals);
+
+  if (!symbol) throw new Error('Missing symbol');
+  if (!name) throw new Error('Missing name');
+  if (!contractId) throw new Error('Missing contractId');
+  if (!Number.isInteger(parseDecimals)) throw new Error('Invalid decimals');
+  return http
+    .post('near/near-token/add', {
+      ContractID: contractId,
+    })
+    .then((res) => new PToken(res));
+};
+
 export const detectTokenInNetwork = ({ address, network }) => {
   if (!address) throw new Error(`Missing ${network} address to detect`);
   if (!network) throw new Error('Missing network');
@@ -173,6 +200,9 @@ export const detectTokenInNetwork = ({ address, network }) => {
       break;
     case 'AURORA':
       fn = detectAuroraToken(address);
+      break;
+    case 'NEAR':
+      fn = detectNearToken(address);
       break;
     default:
       break;
@@ -264,6 +294,9 @@ export const addManuallyToken = ({
       break;
     case 'AURORA':
       fn = addAuroraToken({ symbol, name, contractId, decimals });
+      break;
+    case 'NEAR':
+      fn = addNearToken({ symbol, name, contractId, decimals });
       break;
     default:
       break;

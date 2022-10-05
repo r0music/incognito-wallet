@@ -12,6 +12,7 @@ export const TYPES = {
   FANTOM: { label: 'FANTOM', value: 'FANTOM' },
   AVAX: { label: 'AVAX', value: 'AVAX' },
   AURORA: { label: 'AURORA', value: 'AURORA' },
+  NEAR: { label: 'NEAR', value: 'NEAR' },
 };
 
 export const AddManuallyContext = React.createContext();

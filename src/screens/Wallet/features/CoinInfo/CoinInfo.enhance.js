@@ -71,6 +71,9 @@ const enhance = (WrappedComp) => (props) => {
     if (tokenInfo?.isAuroraErc20Token || tokenInfo?.isAURORA_ETH) {
       return `${CONSTANT_CONFIGS.AURORASCAN_URL}/token/${tokenInfo?.contractId}`;
     }
+    if (tokenInfo?.isNearToken || tokenInfo?.isNEAR) {
+      return `${CONSTANT_CONFIGS.NEARSCAN_URL}/token/${tokenInfo?.contractId}`;
+    }
     return '';
   };
 

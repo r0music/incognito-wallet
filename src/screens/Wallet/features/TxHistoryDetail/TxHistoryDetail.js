@@ -236,15 +236,7 @@ const TxHistoryDetail = (props) => {
 
   const historyShieldDecentralizeFactories =
     history?.addressType === CONSTANT_COMMONS.HISTORY.TYPE.SHIELD &&
-    (history?.decentralized === 2 ||
-      history?.decentralized === 3 ||
-      history?.decentralized === 4 ||
-      history?.decentralized === 5 ||
-      history?.decentralized === 6 ||
-      history?.decentralized === 7 ||
-      history?.decentralized === 8 ||
-      history?.decentralized === 9 ||
-      history?.decentralized === 10)
+    history?.decentralized > 1
       ? [
           {
             label: 'Received funds',
@@ -286,17 +278,7 @@ const TxHistoryDetail = (props) => {
     {
       label: 'Fee',
       valueText: `${formatFee} ${feeUnit}`,
-      disabled:
-        !fee ||
-        history?.decentralized === 2 ||
-        history?.decentralized === 3 ||
-        history?.decentralized === 4 ||
-        history?.decentralized === 5 ||
-        history?.decentralized === 6 ||
-        history?.decentralized === 7 ||
-        history?.decentralized === 8 ||
-        history?.decentralized === 9 ||
-        history?.decentralized === 10,
+      disabled: !fee || history?.decentralized > 1,
     },
     {
       label: 'Status',

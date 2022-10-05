@@ -9,7 +9,8 @@ import {
   genERC20DepositAddress,
   genETHDepositAddress,
   genFantomDepositAddress,
-  genPolygonDepositAddress
+  genPolygonDepositAddress,
+  genNearDepositAddress,
 } from '@src/services/api/deposit';
 import { getMinMaxDepositAmount } from '@src/services/api/misc';
 import formatUtil from '@utils/format';
@@ -138,6 +139,19 @@ export const actionGetAddressToShield = async ({
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH
     ) {
       generateResult = await genAuroraDepositAddress({
+        paymentAddress: account.PaymentAddress,
+        walletAddress: account.PaymentAddress,
+        tokenId: selectedPrivacy?.tokenId,
+        tokenContractID: selectedPrivacy?.contractId,
+        currencyType: selectedPrivacy?.currencyType,
+        signPublicKeyEncode,
+      });
+    } else if (
+      selectedPrivacy?.isNearToken ||
+      selectedPrivacy?.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR
+    ) {
+      generateResult = await genNearDepositAddress({
         paymentAddress: account.PaymentAddress,
         walletAddress: account.PaymentAddress,
         tokenId: selectedPrivacy?.tokenId,

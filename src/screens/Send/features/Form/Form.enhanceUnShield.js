@@ -30,6 +30,7 @@ import {
   BurningPRVBEP20RequestMeta,
   BurningPRVERC20RequestMeta,
   BurningRequestMeta,
+  BurningNearRequestMeta,
   PrivacyVersion,
 } from 'incognito-chain-web-js/build/wallet';
 import { floor, toString } from 'lodash';
@@ -74,6 +75,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     isFantomErc20Token,
     isAvaxErc20Token,
     isAuroraErc20Token,
+    isNearToken,
     externalSymbol,
     paymentAddress: walletAddress,
     isDecentralized,
@@ -114,6 +116,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         isFantom,
         isAvax,
         isAurora,
+        isNear
       } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
 
@@ -125,6 +128,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       if (isFantom) burningRequestMeta = BurningFantomRequestMeta;
       if (isAvax) burningRequestMeta = BurningAvaxRequestMeta;
       if (isAurora) burningRequestMeta = BurningAuroraRequestMeta;
+      if (isNear) burningRequestMeta = BurningNearRequestMeta;
 
       /**--> Get payment info <--*/
       const paymentInfo = [{
@@ -282,6 +286,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         isFantomErc20Token: isFantomErc20Token,
         isAvaxErc20Token: isAvaxErc20Token,
         isAuroraErc20Token: isAuroraErc20Token,
+        isNearToken: isNearToken,
         externalSymbol: externalSymbol,
         isUsedPRVFee,
         userFeesData,
@@ -476,7 +481,11 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX,
         isAurora:
           isAuroraErc20Token ||
-          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH,
+          currencyType ===
+            CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH,
+        isNear:
+          isNearToken ||
+          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR,
       };
       let res;
       if (isDecentralized) {

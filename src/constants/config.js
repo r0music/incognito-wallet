@@ -41,6 +41,9 @@ const AVAXSCAN_URL = isMainnet
 const AURORASCAN_URL = isMainnet
   ? 'https://snowtrace.io'
   : 'https://testnet.snowtrace.io';
+const NEARSCAN_URL = isMainnet
+  ? 'https://explorer.near.org'
+  : 'https://testnet.nearblocks.io';
 const BTC_EXPLORER_URL = isMainnet
   ? 'https://live.blockcypher.com/btc'
   : 'https://live.blockcypher.com/btc-testnet';
@@ -132,6 +135,7 @@ export default {
   FANTOMSCAN_URL,
   AVAXSCAN_URL,
   AURORASCAN_URL,
+  NEARSCAN_URL,
   BTC_EXPLORER_URL,
   BINANCE_EXPLORER_URL,
   USDT_TOKEN_ID,

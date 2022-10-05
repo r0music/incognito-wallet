@@ -485,6 +485,17 @@ export const historyDetailFactoriesSelector = createSelector(
           ) {
             estimationShieldingTime = '3 mins';
           }
+          
+          if (
+            selectedPrivacy?.isNEAR ||
+            selectedPrivacy?.isNearToken ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR_TOKEN
+          ) {
+            estimationShieldingTime = '3 mins';
+          }
         }
         const rewardAmountStr = renderAmount({
           amount: unifiedReward?.reward || 0,

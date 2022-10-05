@@ -42,6 +42,7 @@ export const withdraw = (data) => {
     isFantomErc20Token,
     isAvaxErc20Token,
     isAuroraErc20Token,
+    isNearToken,
     paymentAddress,
     tokenId,
     burningTxId,
@@ -130,6 +131,14 @@ export const withdraw = (data) => {
     return http.post('aurora/add-tx-withdraw', payload);
   }
 
+  // Near Token
+  if (
+    isNearToken ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR
+  ) {
+    return http.post('near/add-tx-withdraw', payload);
+  }
+
   return http.post('eta/add-tx-withdraw', payload);
 };
 
@@ -186,6 +195,7 @@ export const estimateUserFees = (data) => {
     isFantomErc20Token,
     isAvaxErc20Token,
     isAuroraErc20Token,
+    isNearToken,
     signPublicKeyEncode,
     unifiedTokenId,
   } = data;
@@ -195,7 +205,8 @@ export const estimateUserFees = (data) => {
       isPolygonErc20Token ||
       isFantomErc20Token ||
       isAvaxErc20Token ||
-      isAuroraErc20Token) &&
+      isAuroraErc20Token ||
+      isNearToken) &&
     !tokenContractID
   ) {
     throw new Error('Missing tokenContractID');
@@ -268,6 +279,14 @@ export const estimateUserFees = (data) => {
     currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH
   ) {
     return http.post('aurora/estimate-fees', payload);
+  }
+
+  // Near Token
+  if (
+    isNearToken ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR
+  ) {
+    return http.post('near/estimate-fees', payload);
   }
 
   return http.post('eta/estimate-fees', payload);
