@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		0D4F7FF3224B482F9DFC427A /* libRNReanimated.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AC3439C990274B2AA62796BA /* libRNReanimated.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -28,7 +27,6 @@
 		2000529E2577658100E21F97 /* libRNSSHClient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2000529B2577655A00E21F97 /* libRNSSHClient.a */; };
 		20B559AF22C393B10079FC06 /* Gomobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B559AE22C393B10079FC06 /* Gomobile.m */; };
 		3B50FECFE455494A8373E5A6 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ECBE1563D1B5449E86A7658F /* libRNVectorIcons.a */; };
-		3EF0EC91E7FE4B16A434459C /* libRNZmqService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */; };
 		712C447B244313E700A3CBA6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 712C447A244313E700A3CBA6 /* GoogleService-Info.plist */; };
 		71ACEF372477D8CE003AE3E3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 71ACEF362477D8CE003AE3E3 /* Images.xcassets */; };
 		7951D9F679874B4EA8E3CFEE /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27AAED89E8AD4248BBC41F79 /* libRNFirebase.a */; };
@@ -60,13 +58,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNSSHClient;
-		};
-		FEEBD6D32355C724006EFECD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FEEBD6CD2355C724006EFECD /* RNZmqService.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 134814201AA4EA6300B7C361;
-			remoteInfo = RNZmqService;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -189,7 +180,6 @@
 		D37F0DCE7984A77E165978F1 /* Pods-Incognito.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Incognito.release.xcconfig"; path = "Target Support Files/Pods-Incognito/Pods-Incognito.release.xcconfig"; sourceTree = "<group>"; };
 		D44C119054EC45B8A1D4E416 /* SF-Pro-Display-RegularItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-RegularItalic.otf"; path = "../src/assets/fonts/SF-Pro-Display-RegularItalic.otf"; sourceTree = "<group>"; };
 		D83A536AAE9B4C2BBE7644F7 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
-		DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNZmqService.a; sourceTree = "<group>"; };
 		E3C9B022E86A08BD344C7392 /* libPods-Incognito.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Incognito.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4407F21D8B54286BA2B42CD /* SF-Pro-Display-Heavy.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-Heavy.otf"; path = "../src/assets/fonts/SF-Pro-Display-Heavy.otf"; sourceTree = "<group>"; };
 		EAE5E838B7D344A5B5978F72 /* PostGroteskLight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskLight.otf; path = ../src/assets/fonts/PostGroteskLight.otf; sourceTree = "<group>"; };
@@ -205,7 +195,6 @@
 		FE6F886022DC3B510009C5AA /* autonomous_config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = autonomous_config.plist; sourceTree = "<group>"; };
 		FE86096422D747230050666A /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FECCEDF722C379D900129059 /* AutonomousZMQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AutonomousZMQ.framework; sourceTree = "<group>"; };
-		FEEBD6CD2355C724006EFECD /* RNZmqService.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNZmqService.xcodeproj; path = "../node_modules/react-native-zmq-service/ios/RNZmqService.xcodeproj"; sourceTree = "<group>"; };
 		FEEBD6D62355CA35006EFECD /* libreact-native-randombytes.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-randombytes.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEEBD6DA2355CA94006EFECD /* libRNPermissions.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNPermissions.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEEBD6DC2355CA94006EFECD /* libRNSensors.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNSensors.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -236,7 +225,6 @@
 				7951D9F679874B4EA8E3CFEE /* libRNFirebase.a in Frameworks */,
 				C2E73AA50DDC4747BAD7CC54 /* libRNOS.a in Frameworks */,
 				D7BDB11DB76A47B9A686E426 /* libTcpSockets.a in Frameworks */,
-				3EF0EC91E7FE4B16A434459C /* libRNZmqService.a in Frameworks */,
 				C944FB71546FC63E3C584A22 /* libPods-Incognito.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -350,7 +338,6 @@
 			isa = PBXGroup;
 			children = (
 				200052962577655A00E21F97 /* RNSSHClient.xcodeproj */,
-				FEEBD6CD2355C724006EFECD /* RNZmqService.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -459,14 +446,6 @@
 			path = ZMQ;
 			sourceTree = "<group>";
 		};
-		FEEBD6CE2355C724006EFECD /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				FEEBD6D42355C724006EFECD /* libRNZmqService.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -540,10 +519,6 @@
 					ProductGroup = 200052972577655A00E21F97 /* Products */;
 					ProjectRef = 200052962577655A00E21F97 /* RNSSHClient.xcodeproj */;
 				},
-				{
-					ProductGroup = FEEBD6CE2355C724006EFECD /* Products */;
-					ProjectRef = FEEBD6CD2355C724006EFECD /* RNZmqService.xcodeproj */;
-				},
 			);
 			projectRoot = "";
 			targets = (
@@ -558,13 +533,6 @@
 			fileType = archive.ar;
 			path = libRNSSHClient.a;
 			remoteRef = 2000529A2577655A00E21F97 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		FEEBD6D42355C724006EFECD /* libRNZmqService.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNZmqService.a;
-			remoteRef = FEEBD6D32355C724006EFECD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -786,7 +754,6 @@
 					"$(SRCROOT)/../node_modules/react-native-iot-wifi/ios",
 					"$(SRCROOT)/../node_modules/react-native-os/ios",
 					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 				);
 				INFOPLIST_FILE = Incognito/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -848,7 +815,6 @@
 					"$(SRCROOT)/../node_modules/react-native-iot-wifi/ios",
 					"$(SRCROOT)/../node_modules/react-native-os/ios",
 					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 				);
 				INFOPLIST_FILE = Incognito/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -958,7 +924,6 @@
 					"$(SRCROOT)/../node_modules/react-native-iot-wifi/ios",
 					"$(SRCROOT)/../node_modules/react-native-os/ios",
 					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
 				INFOPLIST_FILE = Incognito/Info.plist;
@@ -1073,7 +1038,6 @@
 					"$(SRCROOT)/../node_modules/react-native-iot-wifi/ios",
 					"$(SRCROOT)/../node_modules/react-native-os/ios",
 					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
 				INFOPLIST_FILE = Incognito/Info.plist;
@@ -1188,7 +1152,6 @@
 					"$(SRCROOT)/../node_modules/react-native-iot-wifi/ios",
 					"$(SRCROOT)/../node_modules/react-native-os/ios",
 					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
 				INFOPLIST_FILE = Incognito/Info.plist;
@@ -1302,7 +1265,6 @@
 					"$(SRCROOT)/../node_modules/react-native-iot-wifi/ios",
 					"$(SRCROOT)/../node_modules/react-native-os/ios",
 					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
 				INFOPLIST_FILE = Incognito/Info.plist;

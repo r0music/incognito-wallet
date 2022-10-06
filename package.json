@@ -82,7 +82,7 @@
     "ethereumjs-wallet": "^1.0.2",
     "events": "^1.1.1",
     "expo-secure-store": "^10.1.0",
-    "firebase": "^6.4.1",
+    "firebase": "^7.0.0",
     "formik": "^1.5.3",
     "fuse.js": "^6.6.2",
     "https-browserify": "0.0.1",
