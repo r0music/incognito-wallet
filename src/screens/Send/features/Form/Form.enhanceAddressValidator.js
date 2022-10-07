@@ -92,6 +92,9 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     if (!isAddressValidated) {
       return [validator.invalidAddress(`Invalid ${externalSymbol} address`)];
     }
+
+    if (isNear) return validator.combinedNearAddress;
+    
     // if (!isValidETHAddress) {
     //   return [
     //     validator.invalidAddress(

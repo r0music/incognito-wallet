@@ -394,6 +394,7 @@ const combinedBKXAddress = [required(), bkxAddress()];
 const combinedAURAddress = [required(), aurAddress()];
 const combinedZILAddress = [required(), zilAddress()];
 const combinedUnknownAddress = [required(), minLength(15)];
+const combinedNearAddress = [required(), minLength(2)];
 const combinedTokenName = [
   required(),
   minLength(3),
@@ -452,6 +453,7 @@ export default {
   combinedNanoAmount,
   combinedIncognitoAddress,
   combinedUnknownAddress,
+  combinedNearAddress,
   combinedBNBAddress,
   combinedETHAddress,
   combinedTOMOAddress,
