@@ -434,8 +434,8 @@ PODS:
     - React
   - RNVectorIcons (6.6.0):
     - React
-  - RNWifi (4.7.0):
-    - React-Core
+  - RNWifi (2.4.0):
+    - React
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
   - SDWebImage/Core (5.11.1)
@@ -870,7 +870,7 @@ SPEC CHECKSUMS:
   RNShare: d76b8c9c6e6ffb38fc18f40b4338c9d867592ed3
   RNSVG: a53a5de0d90ec96a6502cc3a4534dfcc0c130622
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
-  RNWifi: 94c5dd913df64acbd5024f051552ffdd1681642d
+  RNWifi: 1747f039612dd494192ba6c8bc498606ad9f3ec4
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: f93010f3f6c031e2f8fb3081ca4ee6966c539815
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23

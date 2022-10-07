@@ -239,7 +239,8 @@ const TxHistoryDetail = (props) => {
     (history?.decentralized === 2 ||
       history?.decentralized === 3 ||
       history?.decentralized === 4 ||
-      history?.decentralized === 5)
+      history?.decentralized === 5 ||
+      history?.decentralized === 6)
       ? [
         {
           label: 'Received funds',
@@ -268,8 +269,8 @@ const TxHistoryDetail = (props) => {
       handleOpenLink: () =>
         history?.isIncognitoTx
           ? linkingService.openUrl(
-            `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${history?.id}`,
-          )
+              `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${history?.id}`,
+            )
           : null,
     },
     {
@@ -286,7 +287,8 @@ const TxHistoryDetail = (props) => {
         history?.decentralized === 2 ||
         history?.decentralized === 3 ||
         history?.decentralized === 4 ||
-        history?.decentralized === 5,
+        history?.decentralized === 5 ||
+        history?.decentralized === 6,
     },
     {
       label: 'Status',

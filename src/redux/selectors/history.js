@@ -562,7 +562,7 @@ export const historyDetailFactoriesSelector = createSelector(
             value: outChainTx,
             disabled: !outChainTx,
             openUrl: !!outChainTx,
-            handleOpenUrl: () => LinkingService.openUrlInSide(outChainTx),
+            handleOpenUrl: () => LinkingService.openInBrowser(outChainTx),
           },
           {
             label: 'Contract',
@@ -671,7 +671,7 @@ export const historyDetailFactoriesSelector = createSelector(
             value: outChainTx,
             disabled: !outChainTx,
             openUrl: !!outChainTx,
-            handleOpenUrl: () => LinkingService.openUrlInSide(outChainTx),
+            handleOpenUrl: () => LinkingService.openInBrowser(outChainTx),
           },
           {
             label: 'Contract',
@@ -759,7 +759,7 @@ export const historyDetailFactoriesSelector = createSelector(
             value: outchainTx,
             disabled: !outchainTx,
             openUrl: !!outchainTx,
-            handleOpenUrl: () => LinkingService.openUrlInSide(outchainTx),
+            handleOpenUrl: () => LinkingService.openInBrowser(outchainTx),
           },
           {
             label: 'Coin',
@@ -852,7 +852,7 @@ export const historyDetailFactoriesSelector = createSelector(
             value: outchainTx,
             disabled: !outchainTx,
             openUrl: !!outchainTx,
-            handleOpenUrl: () => LinkingService.openUrlInSide(outchainTx),
+            handleOpenUrl: () => LinkingService.openInBrowser(outchainTx),
           },
           {
             label: 'Coin',

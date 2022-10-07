@@ -8,7 +8,7 @@ const LinkingService = {
   openUrl(url) {
     try {
       if (url && typeof url === 'string') {
-        Linking.canOpenURL(url).then(supported => {
+        Linking.canOpenURL(url).then((supported) => {
           if (supported) {
             Linking.openURL(url);
           } else {
@@ -37,6 +37,10 @@ const LinkingService = {
 
   openLocation() {
     return RNSettings.openSetting(RNSettings.ACTION_LOCATION_SOURCE_SETTINGS);
+  },
+
+  openInBrowser(url) {
+    Linking.openURL(url).catch((err) => console.error(err));
   },
 };
 

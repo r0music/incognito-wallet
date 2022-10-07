@@ -61,14 +61,19 @@ export const genETHDepositAddress = ({
   // }
 
   let body = {
+    CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
+    RequestedAmount: undefined,
+    PaymentAddress: paymentAddress,
     WalletAddress: walletAddress ?? paymentAddress,
+    Erc20TokenAddress: '',
     PrivacyTokenAddress: tokenId,
+    NewShieldDecentralized: 1,
   };
   if (signPublicKeyEncode) {
     body.SignPublicKeyEncode = signPublicKeyEncode;
   }
-  return http.post('eth/generate', body).then(formatResponse);
+  return http.post('eta/generate', body).then(formatResponse);
 };
 
 export const genERC20DepositAddress = ({
@@ -91,16 +96,21 @@ export const genERC20DepositAddress = ({
   // }
 
   let body = {
+    CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
+    RequestedAmount: undefined,
+    PaymentAddress: paymentAddress,
     WalletAddress: walletAddress ?? paymentAddress,
+    Erc20TokenAddress: tokenContractID,
     PrivacyTokenAddress: tokenId,
+    NewShieldDecentralized: 1,
   };
 
   if (signPublicKeyEncode) {
     body.SignPublicKeyEncode = signPublicKeyEncode;
   }
 
-  return http.post('eth/generate', body).then(formatResponse);
+  return http.post('eta/generate', body).then(formatResponse);
 };
 
 export const genBSCDepositAddress = ({
@@ -169,22 +179,24 @@ export const genFantomDepositAddress = ({
   return http.post('ftm/generate', body).then(formatResponse);
 };
 
-export const checkShieldRefundInfo = ({ decentralized, shieldID }) => {
-  if (!decentralized || !shieldID) return;
+export const genNearDepositAddress = ({
+  paymentAddress,
+  walletAddress,
+  tokenId,
+  currencyType,
+  signPublicKeyEncode,
+}) => {
+  if (!paymentAddress) return throw new Error('Missing paymentAddress');
+  if (!walletAddress) return throw new Error('Missing walletAddress');
+  if (!tokenId) return throw new Error('Missing tokenId');
+
   let body = {
-    Decentralized: decentralized, // 2(eth), 3(bsc), 4(plg), 5(fantom)
-    ID: shieldID, // ID of shield
+    AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
+    WalletAddress: walletAddress ?? paymentAddress,
+    PrivacyTokenAddress: tokenId,
   };
-
-  return http.post('service/blacklist/refund-info', body);
-};
-
-export const submitShieldRefund = ({ decentralized, shieldID }) => {
-  if (!decentralized || !shieldID) return;
-  let body = {
-    Decentralized: decentralized, // 2(eth), 3(bsc), 4(plg), 5(fantom)
-    ID: shieldID, // ID of shield
-  };
-
-  return http.post('service/blacklist/refund-now', body);
+  if (signPublicKeyEncode) {
+    body.SignPublicKeyEncode = signPublicKeyEncode;
+  }
+  return http.post('near/generate', body).then(formatResponse);
 };

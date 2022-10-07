@@ -1,24 +1,27 @@
+import { getMinMaxDepositAmount } from '@src/services/api/misc';
+import {
+  genETHDepositAddress,
+  genERC20DepositAddress,
+  genCentralizedDepositAddress,
+  genBSCDepositAddress,
+  genPolygonDepositAddress,
+  genFantomDepositAddress,
+  genNearDepositAddress,
+} from '@src/services/api/deposit';
 import { CONSTANT_COMMONS } from '@src/constants';
 import config from '@src/constants/config';
 import { signPublicKeyEncodeSelector } from '@src/redux/selectors/account';
-import {
-  genBSCDepositAddress,
-  genCentralizedDepositAddress,
-  genERC20DepositAddress,
-  genETHDepositAddress,
-  genFantomDepositAddress,
-  genPolygonDepositAddress
-} from '@src/services/api/deposit';
-import { getMinMaxDepositAmount } from '@src/services/api/misc';
 import formatUtil from '@utils/format';
 import {
-  ACTION_FETCHED,
   ACTION_FETCHING,
+  ACTION_FETCHED,
   ACTION_FETCH_FAIL,
+  ACTION_TOGGLE_GUIDE,
   ACTION_RESET,
-  ACTION_TOGGLE_GUIDE
+  ACTION_BSC_FEE_FETCHING,
 } from './Shield.constant';
 import { shieldSelector } from './Shield.selector';
+import { PRV_ID } from '../DexV2/constants';
 
 export const actionReset = () => ({
   type: ACTION_RESET,
@@ -31,6 +34,11 @@ export const actionFetching = () => ({
 export const actionFetched = (payload) => ({
   type: ACTION_FETCHED,
   payload,
+});
+
+export const actionBSCFetch = (bscPayload) => ({
+  type: ACTION_BSC_FEE_FETCHING,
+  bscPayload,
 });
 
 export const actionFetchFail = (isPortalCompatible = true) => ({
@@ -67,9 +75,24 @@ export const actionGetAddressToShield = async ({
         currencyType: selectedPrivacy?.currencyType,
         signPublicKeyEncode,
       });
-    } else if (selectedPrivacy?.isErc20Token) {
+    } else if (
+      selectedPrivacy?.isErc20Token ||
+      selectedPrivacy?.tokenId === PRV_ID
+    ) {
       let currencyType_ = selectedPrivacy?.currencyType;
       let tokenContractID_ = selectedPrivacy?.contractId;
+      if (selectedPrivacy?.tokenId === PRV_ID) {
+        if (selectedPrivacy?.listChildToken) {
+          const tokenChild = selectedPrivacy?.listChildToken.find(
+            (x) =>
+              x.currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20,
+          );
+          currencyType_ = tokenChild?.currencyType;
+          tokenContractID_ = tokenChild?.contractId;
+        }
+      }
+
       generateResult = await genERC20DepositAddress({
         paymentAddress: account.PaymentAddress,
         walletAddress: account.PaymentAddress,
@@ -117,6 +140,19 @@ export const actionGetAddressToShield = async ({
         currencyType: selectedPrivacy?.currencyType,
         signPublicKeyEncode,
       });
+    } else if (
+      selectedPrivacy?.isNearErc20Token ||
+      selectedPrivacy?.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR
+    ) {
+      generateResult = await genNearDepositAddress({
+        paymentAddress: account.PaymentAddress,
+        walletAddress: account.PaymentAddress,
+        tokenId: selectedPrivacy?.tokenId,
+        tokenContractID: selectedPrivacy?.contractId,
+        currencyType: selectedPrivacy?.currencyType,
+        signPublicKeyEncode,
+      });
     } else {
       generateResult = await genCentralizedDepositAddress({
         paymentAddress: account.PaymentAddress,
@@ -137,6 +173,26 @@ export const actionGetAddressToShield = async ({
   }
 };
 
+export const actionGetPRVBep20FeeToShield =
+  (account, signPublicKeyEncode, selectedPrivacy) =>
+    async (dispatch, getState) => {
+      let generateResult = await genBSCDepositAddress({
+        paymentAddress: account.PaymentAddress,
+        walletAddress: account.PaymentAddress,
+        tokenId: selectedPrivacy?.tokenId,
+        tokenContractID: selectedPrivacy?.contractId,
+        currencyType: selectedPrivacy?.currencyType,
+        signPublicKeyEncode,
+      });
+      let { tokenFee, estimateFee } = generateResult;
+      await dispatch(
+        actionBSCFetch({
+          tokenFee,
+          estimateFee,
+        }),
+      );
+    };
+
 export const actionFetch =
   ({ tokenId, selectedPrivacy, account }) =>
     async (dispatch, getState) => {
@@ -148,20 +204,34 @@ export const actionFetch =
           return;
         }
         dispatch(actionFetching());
-        const addressShield = await actionGetAddressToShield({
-          selectedPrivacy,
-          account,
-          signPublicKeyEncode,
-        });
+        const [dataMinMax, addressShield] = await Promise.all([
+          actionGetMinMaxShield({ tokenId }),
+          actionGetAddressToShield({
+            selectedPrivacy,
+            account,
+            signPublicKeyEncode,
+          }),
+        ]);
 
         let { address, expiredAt, decentralized, tokenFee, estimateFee } =
-          addressShield;
+        addressShield;
+
+        const [min, max] = dataMinMax;
         if (expiredAt) {
           expiredAt = formatUtil.formatDateTime(expiredAt);
         }
 
         await dispatch(
+          actionBSCFetch({
+            tokenFee: 0,
+            estimateFee: 0,
+          }),
+        );
+
+        await dispatch(
           actionFetched({
+            min,
+            max,
             address,
             expiredAt,
             decentralized,

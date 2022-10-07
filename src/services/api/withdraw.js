@@ -40,6 +40,7 @@ export const withdraw = (data) => {
     isBep20Token,
     isPolygonErc20Token,
     isFantomErc20Token,
+    isNearErc20Token,
     paymentAddress,
     tokenId,
     burningTxId,
@@ -112,6 +113,14 @@ export const withdraw = (data) => {
     return http.post('ftm/add-tx-withdraw', payload);
   }
 
+  // Near Token
+  if (
+    isNearErc20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR
+  ) {
+    return http.post('near/add-tx-withdraw', payload);
+  }
+
   return http.post('eta/add-tx-withdraw', payload);
 };
 
@@ -166,6 +175,7 @@ export const estimateUserFees = (data) => {
     isBep20Token,
     isPolygonErc20Token,
     isFantomErc20Token,
+    isNearErc20Token,
     signPublicKeyEncode,
     unifiedTokenId,
   } = data;
@@ -173,7 +183,8 @@ export const estimateUserFees = (data) => {
     (isBep20Token ||
       isErc20Token ||
       isPolygonErc20Token ||
-      isFantomErc20Token) &&
+      isFantomErc20Token ||
+      isNearErc20Token) &&
     !tokenContractID
   ) {
     throw new Error('Missing tokenContractID');
@@ -230,6 +241,13 @@ export const estimateUserFees = (data) => {
     currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM
   ) {
     return http.post('ftm/estimate-fees', payload);
+  }
+
+  if (
+    isNearErc20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR
+  ) {
+    return http.post('near/estimate-fees', payload);
   }
 
   return http.post('eta/estimate-fees', payload);

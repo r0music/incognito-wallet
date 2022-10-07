@@ -10,6 +10,7 @@ export const TYPES = {
   BEP20: { label: 'BEP20', value: 'BEP20' },
   POLYGON: { label: 'POLYGON', value: 'POLYGON' },
   FANTOM: { label: 'FANTOM', value: 'FANTOM' },
+  NEAR: { label: 'NEAR', value: 'NEAR' },
 };
 
 export const AddManuallyContext = React.createContext();

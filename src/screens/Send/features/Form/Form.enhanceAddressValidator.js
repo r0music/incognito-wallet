@@ -1,47 +1,33 @@
 /* eslint-disable import/no-cycle */
-import { validator } from '@src/components/core/reduxForm';
-import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
-import { CONSTANT_COMMONS } from '@src/constants';
-import {
-  selectedPrivacySelector,
-  childSelectedPrivacySelector,
-} from '@src/redux/selectors';
-import accountService from '@src/services/wallet/accountService';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { formValueSelector } from 'redux-form';
+import { validator } from '@src/components/core/reduxForm';
+import { CONSTANT_COMMONS } from '@src/constants';
+import accountService from '@src/services/wallet/accountService';
+import { selectedPrivacySelector } from '@src/redux/selectors';
+import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import { formName } from './Form.enhance';
 
 export const enhanceAddressValidation = (WrappedComp) => (props) => {
   const selector = formValueSelector(formName);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const childSelectedPrivacy = useSelector(
-    childSelectedPrivacySelector.childSelectedPrivacy,
-  );
   const {
     externalSymbol,
     isErc20Token,
     isBep20Token,
     isPolygonErc20Token,
     isFantomErc20Token,
+    isNearErc20Token,
+    isMainCrypto,
     currencyType,
-    isDecentralized,
-  } =
-    childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
-      ? childSelectedPrivacy
-      : selectedPrivacy;
+  } = selectedPrivacy;
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
   const isIncognitoAddress =
     accountService.checkPaymentAddress(toAddress);
   const isExternalAddress =
     (!!toAddress && !isIncognitoAddress) && selectedPrivacy?.isWithdrawable;
-  const isUnshieldPegPRV = selectedPrivacy?.isMainCrypto && isExternalAddress;
-  const isUnshieldPUnifiedToken = selectedPrivacy.isPUnifiedToken && isExternalAddress;
-
-   const currencyTypeName = useSelector((state) =>
-     selector(state, 'currencyType'),
-   );
-
+  const isUnshieldPegPRV = isMainCrypto && isExternalAddress;
   const { isAddressValidated } = useSelector(feeDataSelector);
 
   const isERC20 = React.useMemo(() => {
@@ -64,7 +50,15 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
       currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
   }, [isFantomErc20Token, currencyType]);
 
+  const isNear = React.useMemo(() => {
+    return (
+      isNearErc20Token ||
+      currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR
+    );
+  }, [isNearErc20Token, currencyType]);
+
   const getExternalAddressValidator = () => {
+    if(isNear) return;
     if (!isAddressValidated) {
       return [validator.invalidAddress(`Invalid ${externalSymbol} address`)];
     }
@@ -153,21 +147,14 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   };
 
   const getAddressValidator = () => {
-    if (
-      currencyTypeName == CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.INCOGNITO
-    ) {
-      return validator.combinedIncognitoAddress;
+    if (isExternalAddress) {
+      return getExternalAddressValidator();
     }
-    return getExternalAddressValidator();
+    return validator.combinedIncognitoAddress;
   };
 
   const getWarningAddress = () => {
-    if (
-      isExternalAddress &&
-      (isDecentralized ||
-        selectedPrivacy.isMainCrypto ||
-        selectedPrivacy.isPUnifiedToken)
-    ) {
+    if (isExternalAddress && !isNear && (selectedPrivacy.isDecentralized || selectedPrivacy.isMainCrypto)) {
       return 'To avoid loss of funds, please make sure your destination address can receive funds from smart contracts. If you’re not sure, a personal address is always recommended.';
     }
     if (isExternalAddress && isERC20) {
@@ -181,6 +168,9 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     }
     if (isExternalAddress && isFantom) {
       return 'You are exiting Incognito and going to Fantom network.';
+    }
+    if (isExternalAddress && isNear) {
+      return 'You are exiting Incognito and going to Near network.';
     }
     if (isExternalAddress) {
       return 'You are exiting Incognito and going public.';
@@ -201,7 +191,6 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
         isIncognitoAddress,
         isExternalAddress,
         isUnshieldPegPRV,
-        isUnshieldPUnifiedToken,
       }}
     />
   );
