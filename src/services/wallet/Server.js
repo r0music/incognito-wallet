@@ -151,10 +151,10 @@ export const DEV_TEST_SERVER = {
 export const DEV_TEST_AVAX_AURORA = {
   id: 'devTestAvaxAurora',
   default: false,
-  address: 'http://51.161.117.193:31334',
+  address: DEV_TEST_FULLNODE,
   username: '',
   password: '',
-  name: 'Dev test avax aurora',
+  name: 'Dev test avax aurora near',
   coinServices: 'http://51.161.117.193:6002',
   pubsubServices: 'http://51.161.117.193:6004',
   requestServices: 'http://51.161.117.193:6002',
