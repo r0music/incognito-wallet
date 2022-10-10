@@ -152,7 +152,7 @@ export const addAuroraToken = ({ symbol, name, contractId, decimals }) => {
 export const detectNearToken = (nearToken) => {
   if (!nearToken) throw new Error('Missing auroraAddress to detect');
   return http
-    .post('aurora/detect-erc20', {
+    .post('near/detect-near-token', {
       Address: nearToken,
     })
     .then((res) => new NearToken(res))
