@@ -4,8 +4,8 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 require_relative '../node_modules/react-native-unimodules/cocoapods.rb'
 
 # Required by RNFirebase
-pod 'Firebase/Analytics'
-pod 'Firebase/Core', '~> 6.3.0'
+pod 'Firebase/Core'
+pod 'Firebase/Analytics', '~> 6.3.0'
 pod 'Firebase/Messaging', '~> 6.3.0'
 pod 'Firebase/Auth', '~> 6.3.0'
 pod 'Firebase/Database', '~> 6.3.0'
@@ -14,10 +14,11 @@ pod 'Crashlytics', '~> 3.13.2'
 pod 'GoogleIDFASupport', '~> 3.14.0'
 pod 'lottie-ios', '~> 3.1.3'
 target 'Incognito' do
-  use_unimodules!
+  # use_modular_headers!
   # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
-  # use_frameworks!
-#  inherit! :search_paths
+  use_frameworks! :linkage => :static
+  use_unimodules!
+  # inherit! :search_paths
   permissions_path = '../node_modules/react-native-permissions/ios'
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
@@ -49,6 +50,7 @@ target 'Incognito' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
   pod 'NMSSH', '~> 2.2.5'
+  pod 'RNSSHClient', :path => '../node_modules/react-native-ssh-sftp'
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
@@ -110,6 +112,17 @@ target 'Incognito' do
     replace = "_currentFrame.CGImage ;} else { [super displayLayer:layer];"
     op = `sed -ie "s/#{find}/#{replace}/" ../node_modules/react-native/Libraries/Image/RCTUIImageViewAnimated.m`
     puts("Image fix for ios14 done")
+
+    # workaround for Permission Handler issue with use_framworks https://github.com/zoontek/react-native-permissions#workaround-for-use_frameworks-issues
+    Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
+    installer.pod_targets.each do |pod|
+      if pod.name.eql?('RNPermissions') || pod.name.start_with?('Permission-')
+        def pod.build_type;
+          Pod::BuildType.static_library # >= 1.9
+          # Pod::Target::BuildType.static_library # < 1.9
+        end
+      end
+    end
   end
 
   post_install do |installer|
@@ -145,11 +158,20 @@ target 'Incognito' do
           end
       end
     end
-
-#    rnfirebase = installer.pods_project.targets.find { |target| target.name == 'RNFirebase' }
-#    rnfirebase.build_configurations.each do |config|
-#      config.build_settings['HEADER_SEARCH_PATHS'] = '$(inherited) ${PODS_ROOT}/Headers/Public/**'
-#    end
+    installer.pods_project.build_configurations.each do |config|
+      config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
+    end
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        # Inherit the deployment target defined in this Podfile instead, e.g. platform :ios, '11.0' at the top of this file
+        config.build_settings['ENABLE_BITCODE'] = 'NO'
+        config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
+      end
+    end
+    rnfirebase = installer.pods_project.targets.find { |target| target.name == 'RNFirebase' }
+    rnfirebase.build_configurations.each do |config|
+      config.build_settings['HEADER_SEARCH_PATHS'] = '$(inherited) ${PODS_ROOT}/Headers/Public/**'
+    end
   end
   # use_native_modules!
 end

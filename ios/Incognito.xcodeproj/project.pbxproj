@@ -3,14 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
+
 /* Begin PBXBuildFile section */
-		0D4F7FF3224B482F9DFC427A /* libRNReanimated.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AC3439C990274B2AA62796BA /* libRNReanimated.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		1F298112246D5724000EE1C6 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB61A68108700A75B9A /* Info.plist */; };
 		1F3B2CDE247FC9FB00F8A129 /* Helvetica-Neue-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F1BF8E22472DFF700A2DA95 /* Helvetica-Neue-Bold.otf */; };
 		1F3B2CDF247FC9FB00F8A129 /* Helvetica-Neue-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F1BF8E52472DFF800A2DA95 /* Helvetica-Neue-Medium.otf */; };
 		1F3B2CE0247FC9FB00F8A129 /* Helvetica-Neue.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F1BF8DE2472DCA200A2DA95 /* Helvetica-Neue.otf */; };
@@ -24,51 +23,28 @@
 		1F3B2CE8247FC9FB00F8A129 /* SF-Pro-Display-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980D9246D55E3000EE1C6 /* SF-Pro-Display-MediumItalic.otf */; };
 		1F3B2CE9247FC9FB00F8A129 /* SF-Pro-Display-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980E5246D55E4000EE1C6 /* SF-Pro-Display-Regular.otf */; };
 		1F3B2CEA247FC9FB00F8A129 /* SF-Pro-Display-RegularItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980D5246D55E2000EE1C6 /* SF-Pro-Display-RegularItalic.otf */; };
-		2000529E2577658100E21F97 /* libRNSSHClient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2000529B2577655A00E21F97 /* libRNSSHClient.a */; };
 		20B559AF22C393B10079FC06 /* Gomobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B559AE22C393B10079FC06 /* Gomobile.m */; };
-		3B50FECFE455494A8373E5A6 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ECBE1563D1B5449E86A7658F /* libRNVectorIcons.a */; };
 		712C447B244313E700A3CBA6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 712C447A244313E700A3CBA6 /* GoogleService-Info.plist */; };
 		71ACEF372477D8CE003AE3E3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 71ACEF362477D8CE003AE3E3 /* Images.xcassets */; };
-		7951D9F679874B4EA8E3CFEE /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27AAED89E8AD4248BBC41F79 /* libRNFirebase.a */; };
-		82E467C899D04A02A0589EB9 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB08C251E22B438096EA6169 /* libRNGestureHandler.a */; };
-		9A35DA29B0814E0E85D3F53B /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6024CBE183FA4307ABE2C4F5 /* libRNDeviceInfo.a */; };
-		A23A5B4BF797429292519AC6 /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D828B2179CD4981AB6E75EE /* libRNCAsyncStorage.a */; };
-		B265A4B428607D760039035C /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B265A4B328607D760039035C /* Gomobile.framework */; };
-		C2E73AA50DDC4747BAD7CC54 /* libRNOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 342DA32C89DE489180AC3EF2 /* libRNOS.a */; };
-		C944FB71546FC63E3C584A22 /* libPods-Incognito.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C9B022E86A08BD344C7392 /* libPods-Incognito.a */; };
-		D7BDB11DB76A47B9A686E426 /* libTcpSockets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5D037565762439F89BE1412 /* libTcpSockets.a */; };
-		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
+		BC1C863A4F5BCE6A86215E44 /* Pods_Incognito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA99558BC6AAF131DEFDB82C /* Pods_Incognito.framework */; };
+		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		FD6F21E124750AA0000CC07D /* BridgeLottie.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6F21E024750AA0000CC07D /* BridgeLottie.swift */; };
-		FE57448622F97A3700F2A2BC /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE57448522F97A3700F2A2BC /* NetworkExtension.framework */; };
-		FE5C9FA82355D46900AC6E90 /* libreact-native-netinfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5C9FA72355D46900AC6E90 /* libreact-native-netinfo.a */; };
-		FE5C9FB52355EE0100AC6E90 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4BA287542ADF445498FC2188 /* MaterialIcons.ttf */; };
-		FE86096522D747230050666A /* libFirebaseCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE86096422D747230050666A /* libFirebaseCore.a */; };
+		FDF318E628F55CEF005FF5BF /* RNFirebase.podspec in Resources */ = {isa = PBXBuildFile; fileRef = FDF318E528F55CEF005FF5BF /* RNFirebase.podspec */; };
+		FDF318EF28F573A5005FF5BF /* Pods_Incognito.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 893810401843F39E077FC63A /* Pods_Incognito.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		FDF318FB28F58272005FF5BF /* AutonomousZMQ.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF318F528F57C1D005FF5BF /* AutonomousZMQ.xcframework */; };
+		FDF318FD28F58274005FF5BF /* Gomobile.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF318CA28F511AA005FF5BF /* Gomobile.xcframework */; };
+		FE57448622F97A3700F2A2BC /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE57448522F97A3700F2A2BC /* NetworkExtension.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		FED68302235DBC6A002F1A7C /* autonomous_config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE6F886022DC3B510009C5AA /* autonomous_config.plist */; };
-		FEEBD6BF2355AD57006EFECD /* AutonomousZMQ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; };
-		FEEBD6C02355AD57006EFECD /* AutonomousZMQ.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FEEBD6D72355CA35006EFECD /* libreact-native-randombytes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEBD6D62355CA35006EFECD /* libreact-native-randombytes.a */; };
-		FEEBD6DB2355CA94006EFECD /* libRNPermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEBD6DA2355CA94006EFECD /* libRNPermissions.a */; };
-		FEEBD6E32355CBB3006EFECD /* libreact-native-camera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEBD6E22355CBB3006EFECD /* libreact-native-camera.a */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		2000529A2577655A00E21F97 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 200052962577655A00E21F97 /* RNSSHClient.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 134814201AA4EA6300B7C361;
-			remoteInfo = RNSSHClient;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXCopyFilesBuildPhase section */
-		FEEBD6C12355AD57006EFECD /* Embed Frameworks */ = {
+		FDF318F028F573A5005FF5BF /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				FEEBD6C02355AD57006EFECD /* AutonomousZMQ.framework in Embed Frameworks */,
+				FDF318EF28F573A5005FF5BF /* Pods_Incognito.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -108,14 +84,12 @@
 		1F2980E5246D55E4000EE1C6 /* SF-Pro-Display-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Display-Regular.otf"; path = "../../src/assets/fonts/SF-Pro-Display-Regular.otf"; sourceTree = "<group>"; };
 		1F2980E7246D55E4000EE1C6 /* SF-Pro-Display-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Display-Light.otf"; path = "../../src/assets/fonts/SF-Pro-Display-Light.otf"; sourceTree = "<group>"; };
 		1FE9C669E1BF469DA6A28690 /* libRNRandomBytes-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNRandomBytes-tvOS.a"; sourceTree = "<group>"; };
-		200052962577655A00E21F97 /* RNSSHClient.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSSHClient.xcodeproj; path = "../node_modules/react-native-ssh-sftp/ios/RNSSHClient.xcodeproj"; sourceTree = "<group>"; };
 		20160FCB034340829E942C14 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		20B559AD22C393920079FC06 /* Gomobile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Gomobile.h; sourceTree = "<group>"; };
 		20B559AE22C393B10079FC06 /* Gomobile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Gomobile.m; sourceTree = "<group>"; };
 		258780DD51904E869891CA34 /* HelveticaNeueLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = HelveticaNeueLight.ttf; path = ../src/assets/fonts/HelveticaNeueLight.ttf; sourceTree = "<group>"; };
 		27AAED89E8AD4248BBC41F79 /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
 		284975DB01B328413EF03AE1 /* Pods-Incognito.next2.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Incognito.next2.xcconfig"; path = "Target Support Files/Pods-Incognito/Pods-Incognito.next2.xcconfig"; sourceTree = "<group>"; };
-		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		300F9AAF96894BAAB4DBA851 /* SF-Pro-Display-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-Regular.otf"; path = "../src/assets/fonts/SF-Pro-Display-Regular.otf"; sourceTree = "<group>"; };
 		33CF6CB29ADA5D561A73FDBD /* Pods-Incognito.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Incognito.staging.xcconfig"; path = "Target Support Files/Pods-Incognito/Pods-Incognito.staging.xcconfig"; sourceTree = "<group>"; };
 		3414813A22EC45FFB8C27649 /* SF-Pro-Display-LightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-LightItalic.otf"; path = "../src/assets/fonts/SF-Pro-Display-LightItalic.otf"; sourceTree = "<group>"; };
@@ -151,6 +125,7 @@
 		82DA549DAEFB4E95AB8C2EB1 /* Roboto_bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Roboto_bold.ttf; path = ../src/assets/fonts/Roboto_bold.ttf; sourceTree = "<group>"; };
 		853D28BBA7164A1CBE898557 /* HelveticaNeueMed.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = HelveticaNeueMed.ttf; path = ../src/assets/fonts/HelveticaNeueMed.ttf; sourceTree = "<group>"; };
 		867A1BB9427A41FDA3A5EFF3 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
+		893810401843F39E077FC63A /* Pods_Incognito.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Incognito.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A166D7044534B31A2BD26EC /* PostGroteskMedium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskMedium.otf; path = ../src/assets/fonts/PostGroteskMedium.otf; sourceTree = "<group>"; };
 		8AAC257CB88444EE8DD9D0EA /* SF-Pro-Display-UltralightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-UltralightItalic.otf"; path = "../src/assets/fonts/SF-Pro-Display-UltralightItalic.otf"; sourceTree = "<group>"; };
 		8AF67533B48F42BE9BA7E129 /* SF-Pro-Display-HeavyItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-HeavyItalic.otf"; path = "../src/assets/fonts/SF-Pro-Display-HeavyItalic.otf"; sourceTree = "<group>"; };
@@ -170,7 +145,6 @@
 		AF1B701A774B4C75BB5DD399 /* libRNGestureHandler-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNGestureHandler-tvOS.a"; sourceTree = "<group>"; };
 		B0A5302B2B7A412C881FE22B /* SF-Pro-Display-BlackItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-BlackItalic.otf"; path = "../src/assets/fonts/SF-Pro-Display-BlackItalic.otf"; sourceTree = "<group>"; };
 		B21C0D59E5564F04B44CD65D /* libReactNativePermissions.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativePermissions.a; sourceTree = "<group>"; };
-		B265A4B328607D760039035C /* Gomobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gomobile.framework; sourceTree = "<group>"; };
 		B9A60B371464497786EFB6D1 /* Helvetica-Neue-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Helvetica-Neue-Medium.otf"; path = "../src/assets/fonts/Helvetica-Neue-Medium.otf"; sourceTree = "<group>"; };
 		C2A67D1A4580441FB14BDBC5 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		C33937D3476A44DEBFDB66AC /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
@@ -180,26 +154,23 @@
 		D37F0DCE7984A77E165978F1 /* Pods-Incognito.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Incognito.release.xcconfig"; path = "Target Support Files/Pods-Incognito/Pods-Incognito.release.xcconfig"; sourceTree = "<group>"; };
 		D44C119054EC45B8A1D4E416 /* SF-Pro-Display-RegularItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-RegularItalic.otf"; path = "../src/assets/fonts/SF-Pro-Display-RegularItalic.otf"; sourceTree = "<group>"; };
 		D83A536AAE9B4C2BBE7644F7 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
-		E3C9B022E86A08BD344C7392 /* libPods-Incognito.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Incognito.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4407F21D8B54286BA2B42CD /* SF-Pro-Display-Heavy.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-Heavy.otf"; path = "../src/assets/fonts/SF-Pro-Display-Heavy.otf"; sourceTree = "<group>"; };
 		EAE5E838B7D344A5B5978F72 /* PostGroteskLight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskLight.otf; path = ../src/assets/fonts/PostGroteskLight.otf; sourceTree = "<group>"; };
 		ECBE1563D1B5449E86A7658F /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F150832F71344BE09CCA8702 /* Helvetica-Neue.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Helvetica-Neue.otf"; path = "../src/assets/fonts/Helvetica-Neue.otf"; sourceTree = "<group>"; };
+		FA99558BC6AAF131DEFDB82C /* Pods_Incognito.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Incognito.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB08C251E22B438096EA6169 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
 		FD6F21E024750AA0000CC07D /* BridgeLottie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeLottie.swift; sourceTree = "<group>"; };
-		FE44A8F923997BA3009DA0DE /* libreact-native-network-info.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-network-info.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FDF318CA28F511AA005FF5BF /* Gomobile.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Gomobile.xcframework; sourceTree = "<group>"; };
+		FDF318E528F55CEF005FF5BF /* RNFirebase.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = RNFirebase.podspec; path = "../node_modules/react-native-firebase/ios/RNFirebase.podspec"; sourceTree = "<group>"; };
+		FDF318F528F57C1D005FF5BF /* AutonomousZMQ.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AutonomousZMQ.xcframework; path = lib/AutonomousZMQ.xcframework; sourceTree = "<group>"; };
+		FDF318F928F5814B005FF5BF /* libRNPermissions.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNPermissions.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AutonomousZMQ.framework; path = "../node_modules/react-native-zmq-service/ios/AutonomousZMQ.framework"; sourceTree = "<group>"; };
 		FE57448522F97A3700F2A2BC /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
-		FE5C9FA72355D46900AC6E90 /* libreact-native-netinfo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-netinfo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE6F886022DC3B510009C5AA /* autonomous_config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = autonomous_config.plist; sourceTree = "<group>"; };
 		FE86096422D747230050666A /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FECCEDF722C379D900129059 /* AutonomousZMQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AutonomousZMQ.framework; sourceTree = "<group>"; };
-		FEEBD6D62355CA35006EFECD /* libreact-native-randombytes.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-randombytes.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		FEEBD6DA2355CA94006EFECD /* libRNPermissions.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNPermissions.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		FEEBD6DC2355CA94006EFECD /* libRNSensors.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNSensors.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		FEEBD6DE2355CA94006EFECD /* libRNSound.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNSound.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		FEEBD6E22355CBB3006EFECD /* libreact-native-camera.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-camera.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -207,25 +178,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2000529E2577658100E21F97 /* libRNSSHClient.a in Frameworks */,
-				FE5C9FA82355D46900AC6E90 /* libreact-native-netinfo.a in Frameworks */,
-				FEEBD6E32355CBB3006EFECD /* libreact-native-camera.a in Frameworks */,
-				FEEBD6DB2355CA94006EFECD /* libRNPermissions.a in Frameworks */,
-				B265A4B428607D760039035C /* Gomobile.framework in Frameworks */,
-				FEEBD6D72355CA35006EFECD /* libreact-native-randombytes.a in Frameworks */,
-				FE86096522D747230050666A /* libFirebaseCore.a in Frameworks */,
 				ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */,
+				FDF318FD28F58274005FF5BF /* Gomobile.xcframework in Frameworks */,
+				FDF318FB28F58272005FF5BF /* AutonomousZMQ.xcframework in Frameworks */,
 				FE57448622F97A3700F2A2BC /* NetworkExtension.framework in Frameworks */,
-				82E467C899D04A02A0589EB9 /* libRNGestureHandler.a in Frameworks */,
-				3B50FECFE455494A8373E5A6 /* libRNVectorIcons.a in Frameworks */,
-				A23A5B4BF797429292519AC6 /* libRNCAsyncStorage.a in Frameworks */,
-				0D4F7FF3224B482F9DFC427A /* libRNReanimated.a in Frameworks */,
-				FEEBD6BF2355AD57006EFECD /* AutonomousZMQ.framework in Frameworks */,
-				9A35DA29B0814E0E85D3F53B /* libRNDeviceInfo.a in Frameworks */,
-				7951D9F679874B4EA8E3CFEE /* libRNFirebase.a in Frameworks */,
-				C2E73AA50DDC4747BAD7CC54 /* libRNOS.a in Frameworks */,
-				D7BDB11DB76A47B9A686E426 /* libTcpSockets.a in Frameworks */,
-				C944FB71546FC63E3C584A22 /* libPods-Incognito.a in Frameworks */,
+				BC1C863A4F5BCE6A86215E44 /* Pods_Incognito.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,14 +224,6 @@
 			path = fonts;
 			sourceTree = "<group>";
 		};
-		200052972577655A00E21F97 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				2000529B2577655A00E21F97 /* libRNSSHClient.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		202892B6227045F6004F5C14 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -296,8 +245,8 @@
 				342DA32C89DE489180AC3EF2 /* libRNOS.a */,
 				C5D037565762439F89BE1412 /* libTcpSockets.a */,
 				FECCEDF722C379D900129059 /* AutonomousZMQ.framework */,
-				DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */,
 				97C3A54F4B934DA1A6004B78 /* libRNSSH.a */,
+				893810401843F39E077FC63A /* Pods_Incognito.framework */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -318,18 +267,13 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				FE44A8F923997BA3009DA0DE /* libreact-native-network-info.a */,
-				FE5C9FA72355D46900AC6E90 /* libreact-native-netinfo.a */,
-				FEEBD6E22355CBB3006EFECD /* libreact-native-camera.a */,
-				FEEBD6DA2355CA94006EFECD /* libRNPermissions.a */,
-				FEEBD6DC2355CA94006EFECD /* libRNSensors.a */,
-				FEEBD6DE2355CA94006EFECD /* libRNSound.a */,
-				FEEBD6D62355CA35006EFECD /* libreact-native-randombytes.a */,
+				FDF318F528F57C1D005FF5BF /* AutonomousZMQ.xcframework */,
+				FDF318CA28F511AA005FF5BF /* Gomobile.xcframework */,
 				FE57448522F97A3700F2A2BC /* NetworkExtension.framework */,
 				FE86096422D747230050666A /* libFirebaseCore.a */,
+				FDF318F928F5814B005FF5BF /* libRNPermissions.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				2D16E6891FA4F8E400B85C8A /* libReact.a */,
-				E3C9B022E86A08BD344C7392 /* libPods-Incognito.a */,
+				FA99558BC6AAF131DEFDB82C /* Pods_Incognito.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -337,7 +281,6 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				200052962577655A00E21F97 /* RNSSHClient.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -345,10 +288,10 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				B265A4B328607D760039035C /* Gomobile.framework */,
+				FDF318E528F55CEF005FF5BF /* RNFirebase.podspec */,
+				FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */,
 				1F29808A246D5526000EE1C6 /* fonts */,
 				FD6F21E024750AA0000CC07D /* BridgeLottie.swift */,
-				FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */,
 				FE6F885F22DC3B0E0009C5AA /* ZMQ */,
 				13B07FAE1A68108700A75B9A /* Incognito */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -455,13 +398,13 @@
 			buildPhases = (
 				EB6D31875BA0A202461A49DA /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
-				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
+				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				20143B3B23475B11001C797B /* Run Script Fabric */,
-				FEEBD6C12355AD57006EFECD /* Embed Frameworks */,
-				9E18A249B674B720543F46B5 /* [CP] Copy Pods Resources */,
 				FE22CCEB2302CF20001C60E6 /* ShellScript */,
+				FDF318F028F573A5005FF5BF /* Embed Frameworks */,
+				847D6D9A7443871BC81BB116 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -514,28 +457,12 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 200052972577655A00E21F97 /* Products */;
-					ProjectRef = 200052962577655A00E21F97 /* RNSSHClient.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* Incognito */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		2000529B2577655A00E21F97 /* libRNSSHClient.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNSSHClient.a;
-			remoteRef = 2000529A2577655A00E21F97 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		13B07F8E1A680F5B00A75B9A /* Resources */ = {
@@ -551,14 +478,13 @@
 				1F3B2CE4247FC9FB00F8A129 /* SF-Pro-Display-HeavyItalic.otf in Resources */,
 				1F3B2CE5247FC9FB00F8A129 /* SF-Pro-Display-Light.otf in Resources */,
 				1F3B2CE6247FC9FB00F8A129 /* SF-Pro-Display-LightItalic.otf in Resources */,
+				FDF318E628F55CEF005FF5BF /* RNFirebase.podspec in Resources */,
 				1F3B2CE7247FC9FB00F8A129 /* SF-Pro-Display-Medium.otf in Resources */,
 				1F3B2CE8247FC9FB00F8A129 /* SF-Pro-Display-MediumItalic.otf in Resources */,
 				1F3B2CE9247FC9FB00F8A129 /* SF-Pro-Display-Regular.otf in Resources */,
 				1F3B2CEA247FC9FB00F8A129 /* SF-Pro-Display-RegularItalic.otf in Resources */,
-				FE5C9FB52355EE0100AC6E90 /* MaterialIcons.ttf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				FED68302235DBC6A002F1A7C /* autonomous_config.plist in Resources */,
-				1F298112246D5724000EE1C6 /* Info.plist in Resources */,
 				712C447B244313E700A3CBA6 /* GoogleService-Info.plist in Resources */,
 				71ACEF372477D8CE003AE3E3 /* Images.xcassets in Resources */,
 			);
@@ -600,9 +526,9 @@
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/Fabric/run\"\n";
 		};
-		9E18A249B674B720543F46B5 /* [CP] Copy Pods Resources */ = {
+		847D6D9A7443871BC81BB116 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
+			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
@@ -756,18 +682,18 @@
 					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
 				);
 				INFOPLIST_FILE = Incognito/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
+					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 50.24;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet.debug;
 				PRODUCT_NAME = Incognito;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -817,18 +743,18 @@
 					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
 				);
 				INFOPLIST_FILE = Incognito/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
+					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 50.24;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet;
 				PRODUCT_NAME = Incognito;
 				PROVISIONING_PROFILE_SPECIFIER = AppStore_com.incognito.wallet;
@@ -879,8 +805,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -927,20 +854,20 @@
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
 				INFOPLIST_FILE = Incognito/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 50.24;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				PODS_CONFIGURATION_BUILD_DIR = "${PODS_BUILD_DIR}/Release$(EFFECTIVE_PLATFORM_NAME)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet.next;
 				PRODUCT_NAME = Incognito;
@@ -992,8 +919,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -1041,20 +969,20 @@
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
 				INFOPLIST_FILE = Incognito/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 50.24;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				PODS_CONFIGURATION_BUILD_DIR = "${PODS_BUILD_DIR}/Release$(EFFECTIVE_PLATFORM_NAME)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet.next2;
 				PRODUCT_NAME = Incognito;
@@ -1106,8 +1034,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -1155,20 +1084,20 @@
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
 				INFOPLIST_FILE = Incognito/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 50.24;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				PODS_CONFIGURATION_BUILD_DIR = "${PODS_BUILD_DIR}/Release$(EFFECTIVE_PLATFORM_NAME)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet.next3;
 				PRODUCT_NAME = Incognito;
@@ -1220,8 +1149,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -1268,20 +1198,20 @@
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
 				INFOPLIST_FILE = Incognito/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 50.24;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				PODS_CONFIGURATION_BUILD_DIR = "${PODS_BUILD_DIR}/Release$(EFFECTIVE_PLATFORM_NAME)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet.staging;
 				PRODUCT_NAME = Incognito;
@@ -1340,7 +1270,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
@@ -1388,8 +1318,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
