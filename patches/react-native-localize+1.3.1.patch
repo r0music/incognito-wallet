@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-localize/RNLocalize.podspec b/node_modules/react-native-localize/RNLocalize.podspec
+index 3d7de2f..c4021cd 100644
+--- a/node_modules/react-native-localize/RNLocalize.podspec
++++ b/node_modules/react-native-localize/RNLocalize.podspec
+@@ -3,7 +3,7 @@ package = JSON.parse(File.read('./package.json'))
+ 
+ Pod::Spec.new do |s|
+   s.name            = "RNLocalize"
+-  s.dependency        "React"
++  s.dependency "React-Core"
+ 
+   s.version         = package["version"]
+   s.license         = package["license"]

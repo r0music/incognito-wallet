@@ -1,0 +1,24 @@
+diff --git a/node_modules/react-native-zmq-service/RNZmqService.podspec b/node_modules/react-native-zmq-service/RNZmqService.podspec
+index edc9c20..7e22043 100644
+--- a/node_modules/react-native-zmq-service/RNZmqService.podspec
++++ b/node_modules/react-native-zmq-service/RNZmqService.podspec
+@@ -14,5 +14,5 @@ Pod::Spec.new do |s|
+ 
+   s.source       = { :git => "https://github.com/matsatit/RNZmqService.git", :tag => "#{s.version}" }
+   s.source_files  = "ios/**/*.{h,m}"
+-  s.dependency 'React'
++  s.dependency "React-Core"
+ end
+diff --git a/node_modules/react-native-zmq-service/ios/RNZmqService.podspec b/node_modules/react-native-zmq-service/ios/RNZmqService.podspec
+index f7297d5..2f66796 100644
+--- a/node_modules/react-native-zmq-service/ios/RNZmqService.podspec
++++ b/node_modules/react-native-zmq-service/ios/RNZmqService.podspec
+@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
+   s.requires_arc = true
+ 
+ 
+-  s.dependency "React"
++  s.dependency "React-Core"
+   #s.dependency "others"
+ 
+ end

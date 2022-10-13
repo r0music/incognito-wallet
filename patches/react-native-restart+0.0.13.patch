@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-restart/ios/RCTRestart.podspec b/node_modules/react-native-restart/ios/RCTRestart.podspec
+index f423966..d2cc6c6 100644
+--- a/node_modules/react-native-restart/ios/RCTRestart.podspec
++++ b/node_modules/react-native-restart/ios/RCTRestart.podspec
+@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
+   s.source_files = 'RCTRestart/**/*.{h,m}'
+   s.requires_arc = true
+ 
+-  s.dependency "React"
++  s.dependency "React-Core"
+ end
+ 
+   

@@ -1,0 +1,11 @@
+diff --git a/node_modules/react-native-get-random-values/react-native-get-random-values.podspec b/node_modules/react-native-get-random-values/react-native-get-random-values.podspec
+index 931762a..f34a40d 100644
+--- a/node_modules/react-native-get-random-values/react-native-get-random-values.podspec
++++ b/node_modules/react-native-get-random-values/react-native-get-random-values.podspec
+@@ -16,5 +16,5 @@ Pod::Spec.new do |s|
+   s.source_files = "ios/**/*.{h,m,swift}"
+   s.requires_arc = true
+ 
+-  s.dependency "React"
++  s.dependency "React-Core"
+ end

@@ -1,0 +1,38 @@
+diff --git a/node_modules/react-native-udp/android/src/main/java/com/tradle/react/UdpSocketClient.java b/node_modules/react-native-udp/android/src/main/java/com/tradle/react/UdpSocketClient.java
+index 15d6526..510f06d 100644
+--- a/node_modules/react-native-udp/android/src/main/java/com/tradle/react/UdpSocketClient.java
++++ b/node_modules/react-native-udp/android/src/main/java/com/tradle/react/UdpSocketClient.java
+@@ -8,7 +8,7 @@
+ package com.tradle.react;
+ 
+ import android.os.AsyncTask;
+-import android.support.annotation.Nullable;
++import androidx.annotation.Nullable;
+ import android.util.Base64;
+ import android.util.Pair;
+ 
+diff --git a/node_modules/react-native-udp/android/src/main/java/com/tradle/react/UdpSockets.java b/node_modules/react-native-udp/android/src/main/java/com/tradle/react/UdpSockets.java
+index 93693c9..572439f 100644
+--- a/node_modules/react-native-udp/android/src/main/java/com/tradle/react/UdpSockets.java
++++ b/node_modules/react-native-udp/android/src/main/java/com/tradle/react/UdpSockets.java
+@@ -9,7 +9,7 @@ package com.tradle.react;
+ 
+ import android.content.Context;
+ import android.net.wifi.WifiManager;
+-import android.support.annotation.Nullable;
++import androidx.annotation.Nullable;
+ import android.util.SparseArray;
+ 
+ import com.facebook.common.logging.FLog;
+diff --git a/node_modules/react-native-udp/react-native-udp.podspec b/node_modules/react-native-udp/react-native-udp.podspec
+index e396fe0..e63490f 100644
+--- a/node_modules/react-native-udp/react-native-udp.podspec
++++ b/node_modules/react-native-udp/react-native-udp.podspec
+@@ -12,6 +12,6 @@ Pod::Spec.new do |s|
+   s.platform       = :ios, "7.0"
+   s.source         = { :git => package_json["repository"]["url"].gsub(/(http.*)/).first, :tag => "v#{s.version}" }
+   s.source_files   = 'ios/**/*.{h,m}'
+-  s.dependency 'React'
++  s.dependency "React-Core"
+   
+ end

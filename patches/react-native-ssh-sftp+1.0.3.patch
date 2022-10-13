@@ -1,0 +1,25 @@
+diff --git a/node_modules/react-native-ssh-sftp/RNSSHClient.podspec b/node_modules/react-native-ssh-sftp/RNSSHClient.podspec
+index a2962e1..bc87f35 100644
+--- a/node_modules/react-native-ssh-sftp/RNSSHClient.podspec
++++ b/node_modules/react-native-ssh-sftp/RNSSHClient.podspec
+@@ -14,6 +14,6 @@ Pod::Spec.new do |s|
+   s.requires_arc     = true
+   s.platforms        = { :ios => "8.0", :tvos => "9.2" }
+ 
+-  s.dependency 'React'
++  s.dependency "React-Core"
+   s.dependency 'NMSSH'
+ end
+diff --git a/node_modules/react-native-ssh-sftp/android/src/main/java/com/reactlibrary/RNSshClientModule.java b/node_modules/react-native-ssh-sftp/android/src/main/java/com/reactlibrary/RNSshClientModule.java
+index a8d97ac..3fae2b1 100644
+--- a/node_modules/react-native-ssh-sftp/android/src/main/java/com/reactlibrary/RNSshClientModule.java
++++ b/node_modules/react-native-ssh-sftp/android/src/main/java/com/reactlibrary/RNSshClientModule.java
+@@ -2,7 +2,7 @@ package com.reactlibrary;
+ 
+ import android.os.Environment;
+ import android.util.Log;
+-import android.support.annotation.Nullable;
++import androidx.annotation.Nullable;
+ 
+ import com.facebook.react.bridge.Arguments;
+ import com.facebook.react.bridge.Callback;

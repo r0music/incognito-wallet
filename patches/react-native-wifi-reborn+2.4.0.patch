@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-wifi-reborn/RNWifi.podspec b/node_modules/react-native-wifi-reborn/RNWifi.podspec
+index 3918c5e..41a88eb 100644
+--- a/node_modules/react-native-wifi-reborn/RNWifi.podspec
++++ b/node_modules/react-native-wifi-reborn/RNWifi.podspec
+@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
+   s.source_files   = 'ios/**/*.{h,m}'
+   s.exclude_files  = 'android/**/*'
+ 
+-  s.dependency "React"
++  s.dependency "React-Core"
+   #s.dependency "others"
+ 
+ end

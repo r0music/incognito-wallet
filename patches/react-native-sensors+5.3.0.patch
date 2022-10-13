@@ -1,0 +1,80 @@
+diff --git a/node_modules/react-native-sensors/RNSensors.podspec b/node_modules/react-native-sensors/RNSensors.podspec
+index 292d549..cabe9d1 100644
+--- a/node_modules/react-native-sensors/RNSensors.podspec
++++ b/node_modules/react-native-sensors/RNSensors.podspec
+@@ -14,5 +14,5 @@ Pod::Spec.new do |s|
+   s.platform            = :ios, "7.0"
+   s.source_files        = "ios/*.{h,m}"
+   s.preserve_paths      = "*.js"
+-  s.dependency 'React'
++  s.dependency "React-Core"
+ end
+\ No newline at end of file
+diff --git a/node_modules/react-native-sensors/android/src/main/java/com/sensors/Accelerometer.java b/node_modules/react-native-sensors/android/src/main/java/com/sensors/Accelerometer.java
+index bef1229..a8efebf 100644
+--- a/node_modules/react-native-sensors/android/src/main/java/com/sensors/Accelerometer.java
++++ b/node_modules/react-native-sensors/android/src/main/java/com/sensors/Accelerometer.java
+@@ -6,7 +6,7 @@ import android.hardware.SensorEvent;
+ import android.hardware.SensorEventListener;
+ import android.hardware.SensorManager;
+ import android.util.Log;
+-import android.support.annotation.Nullable;
++import androidx.annotation.Nullable;
+ 
+ import com.facebook.react.bridge.Arguments;
+ import com.facebook.react.bridge.ReactApplicationContext;
+diff --git a/node_modules/react-native-sensors/android/src/main/java/com/sensors/Barometer.java b/node_modules/react-native-sensors/android/src/main/java/com/sensors/Barometer.java
+index 5bc9ed1..81eb05d 100644
+--- a/node_modules/react-native-sensors/android/src/main/java/com/sensors/Barometer.java
++++ b/node_modules/react-native-sensors/android/src/main/java/com/sensors/Barometer.java
+@@ -6,7 +6,7 @@ import android.hardware.SensorEvent;
+ import android.hardware.SensorEventListener;
+ import android.hardware.SensorManager;
+ import android.util.Log;
+-import android.support.annotation.Nullable;
++import androidx.annotation.Nullable;
+ 
+ import com.facebook.react.bridge.Arguments;
+ import com.facebook.react.bridge.ReactApplicationContext;
+diff --git a/node_modules/react-native-sensors/android/src/main/java/com/sensors/Gyroscope.java b/node_modules/react-native-sensors/android/src/main/java/com/sensors/Gyroscope.java
+index ef7783c..00d0859 100644
+--- a/node_modules/react-native-sensors/android/src/main/java/com/sensors/Gyroscope.java
++++ b/node_modules/react-native-sensors/android/src/main/java/com/sensors/Gyroscope.java
+@@ -6,7 +6,7 @@ import android.hardware.SensorEvent;
+ import android.hardware.SensorEventListener;
+ import android.hardware.SensorManager;
+ import android.util.Log;
+-import android.support.annotation.Nullable;
++import androidx.annotation.Nullable;
+ 
+ import com.facebook.react.bridge.Arguments;
+ import com.facebook.react.bridge.ReactApplicationContext;
+diff --git a/node_modules/react-native-sensors/android/src/main/java/com/sensors/Magnetometer.java b/node_modules/react-native-sensors/android/src/main/java/com/sensors/Magnetometer.java
+index ca53e5d..bcc9f9a 100644
+--- a/node_modules/react-native-sensors/android/src/main/java/com/sensors/Magnetometer.java
++++ b/node_modules/react-native-sensors/android/src/main/java/com/sensors/Magnetometer.java
+@@ -6,7 +6,7 @@ import android.hardware.SensorEvent;
+ import android.hardware.SensorEventListener;
+ import android.hardware.SensorManager;
+ import android.util.Log;
+-import android.support.annotation.Nullable;
++import androidx.annotation.Nullable;
+ 
+ import com.facebook.react.bridge.Arguments;
+ import com.facebook.react.bridge.ReactApplicationContext;
+diff --git a/node_modules/react-native-sensors/tests/android/app/src/androidTest/java/com/tests/DetoxTest.java b/node_modules/react-native-sensors/tests/android/app/src/androidTest/java/com/tests/DetoxTest.java
+index de2516a..62fa07a 100644
+--- a/node_modules/react-native-sensors/tests/android/app/src/androidTest/java/com/tests/DetoxTest.java
++++ b/node_modules/react-native-sensors/tests/android/app/src/androidTest/java/com/tests/DetoxTest.java
+@@ -1,8 +1,8 @@
+ package com.tests;
+ 
+-import android.support.test.filters.LargeTest;
+-import android.support.test.rule.ActivityTestRule;
+-import android.support.test.runner.AndroidJUnit4;
++import androidx.test.filters.LargeTest;
++import androidx.test.rule.ActivityTestRule;
++import androidx.test.runner.AndroidJUnit4;
+ 
+ import com.wix.detox.Detox;
+ 

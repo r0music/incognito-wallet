@@ -26,25 +26,25 @@
 		20B559AF22C393B10079FC06 /* Gomobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B559AE22C393B10079FC06 /* Gomobile.m */; };
 		712C447B244313E700A3CBA6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 712C447A244313E700A3CBA6 /* GoogleService-Info.plist */; };
 		71ACEF372477D8CE003AE3E3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 71ACEF362477D8CE003AE3E3 /* Images.xcassets */; };
-		BC1C863A4F5BCE6A86215E44 /* Pods_Incognito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA99558BC6AAF131DEFDB82C /* Pods_Incognito.framework */; };
+		96602E408486094DFDCB0FE8 /* libPods-Incognito.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC9B2D25A5F69F2E4B55651D /* libPods-Incognito.a */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		FD6F21E124750AA0000CC07D /* BridgeLottie.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6F21E024750AA0000CC07D /* BridgeLottie.swift */; };
 		FDF318E628F55CEF005FF5BF /* RNFirebase.podspec in Resources */ = {isa = PBXBuildFile; fileRef = FDF318E528F55CEF005FF5BF /* RNFirebase.podspec */; };
-		FDF318EF28F573A5005FF5BF /* Pods_Incognito.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 893810401843F39E077FC63A /* Pods_Incognito.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FDF318FB28F58272005FF5BF /* AutonomousZMQ.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF318F528F57C1D005FF5BF /* AutonomousZMQ.xcframework */; };
-		FDF318FD28F58274005FF5BF /* Gomobile.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF318CA28F511AA005FF5BF /* Gomobile.xcframework */; };
+		FDF3FEE928F7D86E001530E7 /* AutonomousZMQ.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF318F528F57C1D005FF5BF /* AutonomousZMQ.xcframework */; };
+		FDF3FEEA28F7D86E001530E7 /* AutonomousZMQ.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FDF318F528F57C1D005FF5BF /* AutonomousZMQ.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		FDF3FEEC28F7D870001530E7 /* Gomobile.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF318CA28F511AA005FF5BF /* Gomobile.xcframework */; };
 		FE57448622F97A3700F2A2BC /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE57448522F97A3700F2A2BC /* NetworkExtension.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		FED68302235DBC6A002F1A7C /* autonomous_config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE6F886022DC3B510009C5AA /* autonomous_config.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		FDF318F028F573A5005FF5BF /* Embed Frameworks */ = {
+		FDF3FEEB28F7D86F001530E7 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				FDF318EF28F573A5005FF5BF /* Pods_Incognito.framework in Embed Frameworks */,
+				FDF3FEEA28F7D86E001530E7 /* AutonomousZMQ.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -156,20 +156,18 @@
 		D83A536AAE9B4C2BBE7644F7 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		E4407F21D8B54286BA2B42CD /* SF-Pro-Display-Heavy.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-Heavy.otf"; path = "../src/assets/fonts/SF-Pro-Display-Heavy.otf"; sourceTree = "<group>"; };
 		EAE5E838B7D344A5B5978F72 /* PostGroteskLight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskLight.otf; path = ../src/assets/fonts/PostGroteskLight.otf; sourceTree = "<group>"; };
+		EC9B2D25A5F69F2E4B55651D /* libPods-Incognito.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Incognito.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECBE1563D1B5449E86A7658F /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F150832F71344BE09CCA8702 /* Helvetica-Neue.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Helvetica-Neue.otf"; path = "../src/assets/fonts/Helvetica-Neue.otf"; sourceTree = "<group>"; };
-		FA99558BC6AAF131DEFDB82C /* Pods_Incognito.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Incognito.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB08C251E22B438096EA6169 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
 		FD6F21E024750AA0000CC07D /* BridgeLottie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeLottie.swift; sourceTree = "<group>"; };
 		FDF318CA28F511AA005FF5BF /* Gomobile.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Gomobile.xcframework; sourceTree = "<group>"; };
 		FDF318E528F55CEF005FF5BF /* RNFirebase.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = RNFirebase.podspec; path = "../node_modules/react-native-firebase/ios/RNFirebase.podspec"; sourceTree = "<group>"; };
 		FDF318F528F57C1D005FF5BF /* AutonomousZMQ.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AutonomousZMQ.xcframework; path = lib/AutonomousZMQ.xcframework; sourceTree = "<group>"; };
-		FDF318F928F5814B005FF5BF /* libRNPermissions.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNPermissions.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AutonomousZMQ.framework; path = "../node_modules/react-native-zmq-service/ios/AutonomousZMQ.framework"; sourceTree = "<group>"; };
 		FE57448522F97A3700F2A2BC /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		FE6F886022DC3B510009C5AA /* autonomous_config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = autonomous_config.plist; sourceTree = "<group>"; };
-		FE86096422D747230050666A /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FECCEDF722C379D900129059 /* AutonomousZMQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AutonomousZMQ.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -179,10 +177,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */,
-				FDF318FD28F58274005FF5BF /* Gomobile.xcframework in Frameworks */,
-				FDF318FB28F58272005FF5BF /* AutonomousZMQ.xcframework in Frameworks */,
+				FDF3FEE928F7D86E001530E7 /* AutonomousZMQ.xcframework in Frameworks */,
+				FDF3FEEC28F7D870001530E7 /* Gomobile.xcframework in Frameworks */,
 				FE57448622F97A3700F2A2BC /* NetworkExtension.framework in Frameworks */,
-				BC1C863A4F5BCE6A86215E44 /* Pods_Incognito.framework in Frameworks */,
+				96602E408486094DFDCB0FE8 /* libPods-Incognito.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,10 +268,8 @@
 				FDF318F528F57C1D005FF5BF /* AutonomousZMQ.xcframework */,
 				FDF318CA28F511AA005FF5BF /* Gomobile.xcframework */,
 				FE57448522F97A3700F2A2BC /* NetworkExtension.framework */,
-				FE86096422D747230050666A /* libFirebaseCore.a */,
-				FDF318F928F5814B005FF5BF /* libRNPermissions.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				FA99558BC6AAF131DEFDB82C /* Pods_Incognito.framework */,
+				EC9B2D25A5F69F2E4B55651D /* libPods-Incognito.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -403,8 +399,8 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				20143B3B23475B11001C797B /* Run Script Fabric */,
 				FE22CCEB2302CF20001C60E6 /* ShellScript */,
-				FDF318F028F573A5005FF5BF /* Embed Frameworks */,
 				847D6D9A7443871BC81BB116 /* [CP] Copy Pods Resources */,
+				FDF3FEEB28F7D86F001530E7 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -697,6 +693,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet.debug;
 				PRODUCT_NAME = Incognito;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				STRIP_BITCODE_FROM_COPIED_FILES = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -758,6 +755,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet;
 				PRODUCT_NAME = Incognito;
 				PROVISIONING_PROFILE_SPECIFIER = AppStore_com.incognito.wallet;
+				STRIP_BITCODE_FROM_COPIED_FILES = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -872,6 +870,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet.next;
 				PRODUCT_NAME = Incognito;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				STRIP_BITCODE_FROM_COPIED_FILES = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -987,6 +986,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet.next2;
 				PRODUCT_NAME = Incognito;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				STRIP_BITCODE_FROM_COPIED_FILES = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1102,6 +1102,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet.next3;
 				PRODUCT_NAME = Incognito;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				STRIP_BITCODE_FROM_COPIED_FILES = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1216,6 +1217,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet.staging;
 				PRODUCT_NAME = Incognito;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				STRIP_BITCODE_FROM_COPIED_FILES = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

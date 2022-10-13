@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-os/RNOS.podspec b/node_modules/react-native-os/RNOS.podspec
+index 17949bb..9c153cc 100644
+--- a/node_modules/react-native-os/RNOS.podspec
++++ b/node_modules/react-native-os/RNOS.podspec
+@@ -16,5 +16,5 @@ Pod::Spec.new do |s|
+   s.source_files        = 'ios/**/*.{h,m}'
+   s.exclude_files       = 'android/**/*'
+   s.exclude_files       = 'example/**/*'
+-  s.dependency 'React'
++  s.dependency "React-Core"
+ end
+\ No newline at end of file

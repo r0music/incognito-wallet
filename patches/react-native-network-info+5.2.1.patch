@@ -1,0 +1,11 @@
+diff --git a/node_modules/react-native-network-info/react-native-network-info.podspec b/node_modules/react-native-network-info/react-native-network-info.podspec
+index b427aeb..c511a42 100644
+--- a/node_modules/react-native-network-info/react-native-network-info.podspec
++++ b/node_modules/react-native-network-info/react-native-network-info.podspec
+@@ -14,5 +14,5 @@ Pod::Spec.new do |s|
+ 
+   s.source_files  = "ios/*.{h,m,c}"
+ 
+-  s.dependency 'React'
++  s.dependency "React-Core"
+ end

@@ -1,0 +1,24 @@
+diff --git a/node_modules/react-native-settings/ios/RNSettings.podspec b/node_modules/react-native-settings/ios/RNSettings.podspec
+index 0f91af8..40524b2 100644
+--- a/node_modules/react-native-settings/ios/RNSettings.podspec
++++ b/node_modules/react-native-settings/ios/RNSettings.podspec
+@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
+   s.requires_arc = true
+ 
+ 
+-  s.dependency "React"
++  s.dependency "React-Core"
+   #s.dependency "others"
+ 
+ end
+diff --git a/node_modules/react-native-settings/react-native-settings.podspec b/node_modules/react-native-settings/react-native-settings.podspec
+index af29573..8edd636 100644
+--- a/node_modules/react-native-settings/react-native-settings.podspec
++++ b/node_modules/react-native-settings/react-native-settings.podspec
+@@ -15,5 +15,5 @@ Pod::Spec.new do |s|
+   s.source       = { :git => "https://github.com/rmrs/react-native-settings.git", :tag => "v#{s.version}" }
+   s.source_files  = "ios/**/*.{h,m}"
+ 
+-  s.dependency 'React'
++  s.dependency "React-Core"
+ end
