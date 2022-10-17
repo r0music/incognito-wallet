@@ -76,7 +76,7 @@ const SwapInputsGroup = React.memo(() => {
   const onFocusToken = (e, field) => dispatch(actionSetFocusToken(swap[field]));
   const onEndEditing = (field) => dispatch(actionEstimateTrade({ field }));
   const onSwapButtons = () => {
-    if(selltoken?.movedUnifiedToken) {
+    if (selltoken?.movedUnifiedToken) {
       return;
     }
     dispatch(actionSwapToken());
@@ -103,14 +103,14 @@ const SwapInputsGroup = React.memo(() => {
   const onChange = (field, value) => {
     dispatch(change(formConfigs.formName, field, value));
     switch (field) {
-    case formConfigs.selltoken:
-      dispatch(change(formConfigs.formName, formConfigs.buytoken, ''));
-      break;
-    case formConfigs.buytoken:
-      dispatch(change(formConfigs.formName, formConfigs.selltoken, ''));
-      break;
-    default:
-      break;
+      case formConfigs.selltoken:
+        dispatch(change(formConfigs.formName, formConfigs.buytoken, ''));
+        break;
+      case formConfigs.buytoken:
+        dispatch(change(formConfigs.formName, formConfigs.selltoken, ''));
+        break;
+      default:
+        break;
     }
   };
   return (
@@ -143,10 +143,14 @@ const SwapInputsGroup = React.memo(() => {
         symbol={buytoken?.symbol}
         onPressSymbol={onSelectBuyToken}
         onFocus={(e) => onFocusToken(e, formConfigs.buytoken)}
-        onEndEditing={() => onEndEditing(formConfigs.buytoken)}
+        // onEndEditing={() => onEndEditing(formConfigs.buytoken)}
+        onEndEditing={() => onEndEditing(formConfigs.selltoken)}
         validate={[...validator.combinedAmount]}
         loadingBalance={!!buyInputAmount?.loadingBalance}
-        editableInput={!!swapInfo?.editableInput && platform.id !== KEYS_PLATFORMS_SUPPORTED.curve}
+        editableInput={
+          !!swapInfo?.editableInput &&
+          platform.id !== KEYS_PLATFORMS_SUPPORTED.curve
+        }
         visibleHeader={false}
         onChange={(value) => onChange(formConfigs.buytoken, value)}
       />

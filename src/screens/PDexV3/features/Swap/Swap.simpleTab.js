@@ -90,7 +90,11 @@ export const useTabFactories = () => {
         label: 'Trade path',
         value: feeTokenData?.tradePathStr,
         valueNumberOfLine: 10,
-        customValue: platformId === KEYS_PLATFORMS_SUPPORTED.uni ? renderTradePath() : null
+        // customValue:
+        //   platformId === KEYS_PLATFORMS_SUPPORTED.uni
+        //     ? renderTradePath()
+        //     : null,
+        customValue: null,
       },
       {
         label: 'Price impact',

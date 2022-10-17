@@ -8,14 +8,17 @@ import { CONSTANT_CONFIGS } from '@src/constants';
 import axios from 'axios';
 import { cachePromise, EXPIRED_TIME, KEYS } from '@services/cache';
 import http1 from '@services/http1';
+import http4 from '@services/http4';
 import PolygonToken from '@src/models/polygonToken';
 import FantomToken from '@src/models/fantomToken';
 
 let BEP2Tokens = [];
 
 const getTokenListNoCache = () => {
-  return http1
-    .get('coins/tokenlist')
+  // return http1
+  //   .get('coins/tokenlist')
+  return http4
+    .get('tokenlist')
     .then((res) => res.map((token) => new PToken(token, res)));
 };
 
@@ -99,23 +102,23 @@ export const detectTokenInNetwork = ({ address, network }) => {
   if (!network) throw new Error('Missing network');
   let fn;
   switch (network) {
-  case 'ERC20':
-    fn = detectERC20Token(address);
-    break;
-  case 'BEP2':
-    fn = detectBEP2Token(address);
-    break;
-  case 'BEP20':
-    fn = detectBEP20Token(address);
-    break;
-  case 'POLYGON':
-    fn = detectPolygonToken(address);
-    break;
-  case 'FANTOM':
-    fn = detectFantomToken(address);
-    break;
-  default:
-    break;
+    case 'ERC20':
+      fn = detectERC20Token(address);
+      break;
+    case 'BEP2':
+      fn = detectBEP2Token(address);
+      break;
+    case 'BEP20':
+      fn = detectBEP20Token(address);
+      break;
+    case 'POLYGON':
+      fn = detectPolygonToken(address);
+      break;
+    case 'FANTOM':
+      fn = detectFantomToken(address);
+      break;
+    default:
+      break;
   }
   return fn;
 };
@@ -184,23 +187,23 @@ export const addManuallyToken = ({
   let fn;
   console.log('data: ', network);
   switch (network) {
-  case 'ERC20':
-    fn = addERC20Token({ symbol, name, contractId, decimals });
-    break;
-  case 'BEP2':
-    fn = addBEP2Token({ symbol, name, contractId, decimals });
-    break;
-  case 'BEP20':
-    fn = addBEP20Token({ symbol, name, contractId, decimals });
-    break;
-  case 'POLYGON':
-    fn = addPolygonToken({ symbol, name, contractId, decimals });
-    break;
-  case 'FANTOM':
-    fn = addFantomToken({ symbol, name, contractId, decimals });
-    break;
-  default:
-    break;
+    case 'ERC20':
+      fn = addERC20Token({ symbol, name, contractId, decimals });
+      break;
+    case 'BEP2':
+      fn = addBEP2Token({ symbol, name, contractId, decimals });
+      break;
+    case 'BEP20':
+      fn = addBEP20Token({ symbol, name, contractId, decimals });
+      break;
+    case 'POLYGON':
+      fn = addPolygonToken({ symbol, name, contractId, decimals });
+      break;
+    case 'FANTOM':
+      fn = addFantomToken({ symbol, name, contractId, decimals });
+      break;
+    default:
+      break;
   }
   return fn;
 };
@@ -264,16 +267,16 @@ export const addTokenInfo = ({
 
 const getTokenInfoNoCache =
   ({ tokenId } = {}) =>
-    () => {
-      const endpoint = tokenId ? 'pcustomtoken/get' : 'pcustomtoken/list';
-      return http
-        .get(endpoint, tokenId ? { params: { TokenID: tokenId } } : undefined)
-        .then((res) => {
-          return tokenId
-            ? new IncognitoCoinInfo(res)
-            : res.map((token) => new IncognitoCoinInfo(token));
-        });
-    };
+  () => {
+    const endpoint = tokenId ? 'pcustomtoken/get' : 'pcustomtoken/list';
+    return http
+      .get(endpoint, tokenId ? { params: { TokenID: tokenId } } : undefined)
+      .then((res) => {
+        return tokenId
+          ? new IncognitoCoinInfo(res)
+          : res.map((token) => new IncognitoCoinInfo(token));
+      });
+  };
 
 /**
  * get incognito token info from backend, if `tokenId` is not passed in then get info for all tokens

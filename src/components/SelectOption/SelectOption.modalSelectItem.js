@@ -7,7 +7,13 @@ import { FONT } from '@src/styles';
 import ModalBottomSheet from '@src/components/Modal/features/ModalBottomSheet';
 import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme';
-import { AppIcon, PancakeIcon, UniIcon, CurveIcon } from '@src/components/Icons';
+import {
+  AppIcon,
+  PancakeIcon,
+  UniIcon,
+  CurveIcon,
+  SpoonkyIcon,
+} from '@src/components/Icons';
 import { KEYS_PLATFORMS_SUPPORTED } from '@src/screens/PDexV3/features/Swap';
 import { isEmpty } from 'lodash';
 
@@ -73,30 +79,23 @@ export const SelectItem = React.memo(
     const colors = useSelector(colorsSelector);
     let icon = null;
     switch (id) {
-    case KEYS_PLATFORMS_SUPPORTED.incognito:
-      icon = (
-        <AppIcon style={styled.icon} />
-      );
-      break;
-    case KEYS_PLATFORMS_SUPPORTED.pancake:
-      icon = (
-        <PancakeIcon
-          style={styled.icon}
-        />
-      );
-      break;
-    case KEYS_PLATFORMS_SUPPORTED.uni:
-      icon = (
-        <UniIcon style={styled.icon} />
-      );
-      break;
-    case KEYS_PLATFORMS_SUPPORTED.curve:
-      icon = (
-        <CurveIcon style={styled.icon} />
-      );
-      break;
-    default:
-      break;
+      case KEYS_PLATFORMS_SUPPORTED.incognito:
+        icon = <AppIcon style={styled.icon} />;
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.pancake:
+        icon = <PancakeIcon style={styled.icon} />;
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.uni:
+        icon = <UniIcon style={styled.icon} />;
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.curve:
+        icon = <CurveIcon style={styled.icon} />;
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.spooky:
+        icon = <SpoonkyIcon style={styled.icon} />;
+        break;
+      default:
+        break;
     }
     return (
       <TouchableOpacity
@@ -170,11 +169,11 @@ const SelectOptionModal = ({ options }) => {
   return (
     <ModalBottomSheet
       style={{
-        height: 150,
+        height: 200,
         paddingHorizontal: 0,
         paddingVertical: 0,
       }}
-      customContent={(
+      customContent={
         <ScrollView style={styled.scrollview}>
           {options.map((option, index, arr) => (
             <SelectItem
@@ -187,7 +186,7 @@ const SelectOptionModal = ({ options }) => {
             />
           ))}
         </ScrollView>
-      )}
+      }
     />
   );
 };

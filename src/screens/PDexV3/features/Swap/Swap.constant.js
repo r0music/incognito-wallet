@@ -35,8 +35,8 @@ export const ACTION_TOGGLE_PRO_TAB = '[pDexV3][swap] Toggle pro tab';
 
 export const ACTION_CHANGE_SELECTED_PLATFORM =
   '[pDexV3][swap] Change selected platform';
-export const ACTION_CHANGE_STATUS_VISIBLE_PLATFORM =
-  '[pDexV3][swap] Change status visible platform';
+// export const ACTION_CHANGE_STATUS_VISIBLE_PLATFORM =
+//   '[pDexV3][swap] Change status visible platform';
 
 export const ACTION_SAVE_LAST_FIELD = '[pDexV3][swap] Save last field';
 export const ACTION_CHANGE_ESTIMATE_DATA =
@@ -70,6 +70,11 @@ export const ROOT_TAB_SWAP_HISTORY = 'ROOT_TAB_SWAP_HISTORY';
 export const TAB_SWAP_HISTORY_ID = 'swap_sub_info] swap history';
 export const TAB_REWARD_HISTORY_ID = '[swap_sub_info] reward history';
 
+export const ACTION_SET_BEST_RATE_EXCHANGE =
+  '[pDexV3][swap] Set Best Rate Exchange';
+export const ACTION_SET_EXCHANGE_SUPPORT_LIST =
+  '[pDexV3][swap] Set Exchange support list';
+
 export const SCREENS_TO_SHOW_REWARD_HISTORY_TAB = [
   routeNames.PrivacyAppsPancake,
   routeNames.PrivacyAppsUni,
@@ -89,6 +94,36 @@ export const KEYS_PLATFORMS_SUPPORTED = {
   pancake: 'pancake',
   uni: 'uni',
   curve: 'curve',
+  spooky: 'spooky',
+};
+
+export const KEYS_PLATFORMS_SUPPORTED_NETWORKS = {
+  incognito: ['bsc', 'plg', 'eth', 'inc'],
+  pancake: ['bsc'],
+  uni: ['plg'],
+  curve: ['plg'],
+};
+
+export const NETWORK_NAME_SUPPORTED = {
+  INCOGNITO: 'inc',
+  ETHEREUM: 'eth',
+  POLYGON: 'plg',
+  FANTOM: 'ftm',
+  BINANCE_SMART_CHAIN: 'bsc',
+};
+
+export const NETWORK_IDS_MAPPING = {
+  [NETWORK_NAME_SUPPORTED.INCOGNITO]: 0,
+  [NETWORK_NAME_SUPPORTED.ETHEREUM]: 1,
+  [NETWORK_NAME_SUPPORTED.BINANCE_SMART_CHAIN]: 2,
+  [NETWORK_NAME_SUPPORTED.POLYGON]: 3,
+  [NETWORK_NAME_SUPPORTED.FANTOM]: 4,
+};
+
+export const SwapExchange = {
+  PANCAKE_SWAP: 'pancake',
+  UNISWAP: 'uniswap',
+  CURVE: 'curve',
 };
 
 export const PLATFORMS_SUPPORTED = [
@@ -116,6 +151,13 @@ export const PLATFORMS_SUPPORTED = [
   {
     id: KEYS_PLATFORMS_SUPPORTED.curve,
     title: 'Curve',
+    desc: '',
+    visible: true,
+    isSelected: false,
+  },
+  {
+    id: KEYS_PLATFORMS_SUPPORTED.spooky,
+    title: 'Spooky',
     desc: '',
     visible: true,
     isSelected: false,

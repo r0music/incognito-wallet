@@ -22,12 +22,16 @@ function getNetworkName() {
   // Native token of Fantom network
   const isFTM =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
-  
+
   if (isBSC) {
-    name ='BSC';
+    name = 'BSC';
   } else if (isBNB) {
-    name ='BNB Chain';
-  } else if (this.isIncognitoToken || this.isMainCrypto || this.isPUnifiedToken) {
+    name = 'BNB Chain';
+  } else if (
+    this.isIncognitoToken ||
+    this.isMainCrypto ||
+    this.isPUnifiedToken
+  ) {
     name = 'Incognito';
   } else if (this.isPrivateCoin) {
     name = `${this.name}`;
@@ -165,8 +169,8 @@ class SelectedPrivacy {
     this.tokenId = _tokenID
       ? _tokenID
       : this.isMainCrypto
-        ? CONSTANT_COMMONS.PRV_TOKEN_ID
-        : tokenId;
+      ? CONSTANT_COMMONS.PRV_TOKEN_ID
+      : tokenId;
     this.contractId = pTokenData.contractId;
     this.decimals = this.isMainCrypto
       ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
@@ -236,16 +240,24 @@ class SelectedPrivacy {
     this.hasSameSymbol = pTokenData.hasSameSymbol;
 
     // Unified Token
-    this.listUnifiedToken = pTokenData?.listUnifiedToken;
+    this.listUnifiedToken = pTokenData?.listUnifiedToken || [];
     this.movedUnifiedToken = pTokenData?.movedUnifiedToken;
     this.parentUnifiedID = pTokenData?.parentUnifiedID;
+    this.listUnifiedTokenCurrencyType =
+      this.listUnifiedToken.map((token) => token.currencyType) || [];
 
     // Native Token of Network
-    this.isETH = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
-    this.isBSC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
-    this.isBNB = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
-    this.isMATIC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
-    this.isFTM = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
+    this.isETH =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
+    this.isBSC =
+      this?.currencyType ===
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
+    this.isBNB =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
+    this.isMATIC =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
+    this.isFTM =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
   }
 }
 
