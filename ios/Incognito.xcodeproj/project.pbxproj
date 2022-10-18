@@ -11,6 +11,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1F298112246D5724000EE1C6 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB61A68108700A75B9A /* Info.plist */; };
 		1F3B2CDE247FC9FB00F8A129 /* Helvetica-Neue-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F1BF8E22472DFF700A2DA95 /* Helvetica-Neue-Bold.otf */; };
 		1F3B2CDF247FC9FB00F8A129 /* Helvetica-Neue-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F1BF8E52472DFF800A2DA95 /* Helvetica-Neue-Medium.otf */; };
 		1F3B2CE0247FC9FB00F8A129 /* Helvetica-Neue.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F1BF8DE2472DCA200A2DA95 /* Helvetica-Neue.otf */; };
@@ -34,7 +35,7 @@
 		82E467C899D04A02A0589EB9 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB08C251E22B438096EA6169 /* libRNGestureHandler.a */; };
 		9A35DA29B0814E0E85D3F53B /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6024CBE183FA4307ABE2C4F5 /* libRNDeviceInfo.a */; };
 		A23A5B4BF797429292519AC6 /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D828B2179CD4981AB6E75EE /* libRNCAsyncStorage.a */; };
-		B2D6948228ED8F85009705B2 /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2D6948128ED8F85009705B2 /* Gomobile.framework */; };
+		B265A4B428607D760039035C /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B265A4B328607D760039035C /* Gomobile.framework */; };
 		C2E73AA50DDC4747BAD7CC54 /* libRNOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 342DA32C89DE489180AC3EF2 /* libRNOS.a */; };
 		C944FB71546FC63E3C584A22 /* libPods-Incognito.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C9B022E86A08BD344C7392 /* libPods-Incognito.a */; };
 		D7BDB11DB76A47B9A686E426 /* libTcpSockets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5D037565762439F89BE1412 /* libTcpSockets.a */; };
@@ -42,6 +43,7 @@
 		FD6F21E124750AA0000CC07D /* BridgeLottie.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6F21E024750AA0000CC07D /* BridgeLottie.swift */; };
 		FE57448622F97A3700F2A2BC /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE57448522F97A3700F2A2BC /* NetworkExtension.framework */; };
 		FE5C9FA82355D46900AC6E90 /* libreact-native-netinfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5C9FA72355D46900AC6E90 /* libreact-native-netinfo.a */; };
+		FE5C9FB52355EE0100AC6E90 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4BA287542ADF445498FC2188 /* MaterialIcons.ttf */; };
 		FE86096522D747230050666A /* libFirebaseCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE86096422D747230050666A /* libFirebaseCore.a */; };
 		FED68302235DBC6A002F1A7C /* autonomous_config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE6F886022DC3B510009C5AA /* autonomous_config.plist */; };
 		FEEBD6BF2355AD57006EFECD /* AutonomousZMQ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; };
@@ -177,7 +179,7 @@
 		AF1B701A774B4C75BB5DD399 /* libRNGestureHandler-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNGestureHandler-tvOS.a"; sourceTree = "<group>"; };
 		B0A5302B2B7A412C881FE22B /* SF-Pro-Display-BlackItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-BlackItalic.otf"; path = "../src/assets/fonts/SF-Pro-Display-BlackItalic.otf"; sourceTree = "<group>"; };
 		B21C0D59E5564F04B44CD65D /* libReactNativePermissions.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativePermissions.a; sourceTree = "<group>"; };
-		B2D6948128ED8F85009705B2 /* Gomobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gomobile.framework; sourceTree = "<group>"; };
+		B265A4B328607D760039035C /* Gomobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gomobile.framework; sourceTree = "<group>"; };
 		B9A60B371464497786EFB6D1 /* Helvetica-Neue-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Helvetica-Neue-Medium.otf"; path = "../src/assets/fonts/Helvetica-Neue-Medium.otf"; sourceTree = "<group>"; };
 		C2A67D1A4580441FB14BDBC5 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		C33937D3476A44DEBFDB66AC /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
@@ -220,7 +222,7 @@
 				FE5C9FA82355D46900AC6E90 /* libreact-native-netinfo.a in Frameworks */,
 				FEEBD6E32355CBB3006EFECD /* libreact-native-camera.a in Frameworks */,
 				FEEBD6DB2355CA94006EFECD /* libRNPermissions.a in Frameworks */,
-				B2D6948228ED8F85009705B2 /* Gomobile.framework in Frameworks */,
+				B265A4B428607D760039035C /* Gomobile.framework in Frameworks */,
 				FEEBD6D72355CA35006EFECD /* libreact-native-randombytes.a in Frameworks */,
 				FE86096522D747230050666A /* libFirebaseCore.a in Frameworks */,
 				ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */,
@@ -356,7 +358,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				B2D6948128ED8F85009705B2 /* Gomobile.framework */,
+				B265A4B328607D760039035C /* Gomobile.framework */,
 				1F29808A246D5526000EE1C6 /* fonts */,
 				FD6F21E024750AA0000CC07D /* BridgeLottie.swift */,
 				FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */,
@@ -585,8 +587,10 @@
 				1F3B2CE8247FC9FB00F8A129 /* SF-Pro-Display-MediumItalic.otf in Resources */,
 				1F3B2CE9247FC9FB00F8A129 /* SF-Pro-Display-Regular.otf in Resources */,
 				1F3B2CEA247FC9FB00F8A129 /* SF-Pro-Display-RegularItalic.otf in Resources */,
+				FE5C9FB52355EE0100AC6E90 /* MaterialIcons.ttf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				FED68302235DBC6A002F1A7C /* autonomous_config.plist in Resources */,
+				1F298112246D5724000EE1C6 /* Info.plist in Resources */,
 				712C447B244313E700A3CBA6 /* GoogleService-Info.plist in Resources */,
 				71ACEF372477D8CE003AE3E3 /* Images.xcassets in Resources */,
 			);
