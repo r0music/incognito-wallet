@@ -2389,7 +2389,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
             callContract: exchangeData.callContract || '',
             callData: exchangeData.callData || '',
             exchangeNetworkID: exchangeData.networkID || 0,
-            buyTokenID: buyInputAmount.tokenId || '',
+            sellChildTokenID: exchangeData.incTokenID || '',
             buyContractID: !tokenBuyData.isPUnifiedToken
               ? tokenBuyData.contractId
               : tokenBuyData.listUnifiedToken.filter(

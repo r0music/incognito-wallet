@@ -15,7 +15,7 @@ export type CreateTransactionPAppsPayload = {
   callData: string;
   exchangeNetworkID: number;
 
-  buyTokenID: string;
+  sellChildTokenID: string;
   buyContractID: string;
 
   remoteAddress?: string;
@@ -39,7 +39,7 @@ const createTransactionPApps = async (
       callData,
       exchangeNetworkID,
 
-      buyTokenID,
+      sellChildTokenID,
       buyContractID,
 
       remoteAddress = REMOTE_ADDRESS,
@@ -62,7 +62,7 @@ const createTransactionPApps = async (
         callContract, // proxy route
         callData,
         exchangeNetworkID, // networkID exchange, exp: ETH = 1
-        buyTokenID,
+        sellChildTokenID,
         buyContractID,
         // remoteAddress, case reDeposit = 0x0000000000000000000000000000000000000000
         // send out EVN use user address
