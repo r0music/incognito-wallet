@@ -25,6 +25,7 @@ export type ExchangeData = {
   impactAmount: string | number;
   networkID: number;
   networkName: string;
+  feeAddressShardID: number;
 };
 
 export type ExchangeRawDetail = {

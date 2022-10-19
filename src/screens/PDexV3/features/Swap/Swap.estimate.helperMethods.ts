@@ -76,6 +76,7 @@ const parseExchangeDataModelResponse = (
     impactAmount: data.ImpactAmount || 0,
     networkID,
     networkName,
+    feeAddressShardID: data.FeeAddressShardID,
   };
   return exchangeData;
 };

@@ -583,6 +583,24 @@ export const platformsSupportedSelector1 = createSelector(
   },
 );
 
+export const getExchangeSupportByPlatformId = createSelector(
+  exchangeSupportsListSelector,
+  (exchangeSupportsList) => (platformId) => {
+    try {
+      const exchangeFounded = exchangeSupportsList.find(
+        (platform) => platform.exchangeName === platformId,
+      );
+      if (!exchangeFounded) {
+        console.log('[getExchangeSupportByPlatformId] ERROR ', exchangeFounded);
+        return;
+      }
+      return exchangeFounded;
+    } catch (error) {
+      console.log('error', error);
+    }
+  },
+);
+
 export const platformSelectedSelector = createSelector(
   platformsSupportedSelector,
   (platforms) =>

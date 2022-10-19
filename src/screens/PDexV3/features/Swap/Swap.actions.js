@@ -108,6 +108,7 @@ import {
   listPairsIDVerifiedSelector,
   listPairsIDBuyTokenVerifiedSelector,
   findTokenSpookyByIdSelector,
+  getExchangeSupportByPlatformId,
 } from './Swap.selector';
 import {
   calMintAmountExpected,
@@ -120,7 +121,12 @@ import {
   UNISWAP_SUPPORT_NETWORK,
   CURVE_SUPPORT_NETWORK,
   SPOOKY_SUPPORT_NETWORK,
+  ExchangeData,
 } from './Swap.types';
+
+import TransactionHandler, {
+  CreateTransactionPAppsPayload,
+} from './Swap.transactionHandler';
 
 // const logger = createLogger('LOG');
 
@@ -2313,10 +2319,16 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
     if (!sellInputAmount || !buyInputAmount || !feetokenData) {
       return;
     }
-    const { tokenId: tokenIDToSell, originalAmount: sellAmount } =
-      sellInputAmount;
-    const { tokenId: tokenIDToBuy, originalAmount: minAcceptableAmount } =
-      buyInputAmount;
+    const {
+      tokenId: tokenIDToSell,
+      originalAmount: sellAmount,
+      tokenData: tokenSellData,
+    } = sellInputAmount;
+    const {
+      tokenId: tokenIDToBuy,
+      originalAmount: minAcceptableAmount,
+      tokenData: tokenBuyData,
+    } = buyInputAmount;
     const {
       origininalFeeAmount: tradingFee,
       feetoken,
@@ -2325,6 +2337,9 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
     } = feetokenData;
     const pDexV3Inst = await getPDexV3Instance({ account });
     const platform = platformSelectedSelector(state);
+    const exchangeData: ExchangeData = getExchangeSupportByPlatformId(state)(
+      platform.id,
+    );
     switch (platform.id) {
       case KEYS_PLATFORMS_SUPPORTED.incognito:
         {
@@ -2347,194 +2362,234 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
           }
         }
         break;
-      case KEYS_PLATFORMS_SUPPORTED.pancake: {
-        const { tradeID, feeAddress, signAddress, unifiedTokenId, tokenId } =
-          feeDataByPlatform;
-        const getPancakeTokenParamReq = findTokenPancakeByIdSelector(state);
-        const tokenSellPancake = getPancakeTokenParamReq(tokenIDToSell);
-        const tokenBuyPancake = getPancakeTokenParamReq(tokenIDToBuy);
-        let response;
-        if (
-          tokenSellPancake?.currencyType ===
-          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.UNIFIED_TOKEN
-        ) {
-          response =
-            await pDexV3Inst.createAndSendTradeRequestPancakeTxForUnifiedToken({
-              burningPayload: {
-                originalBurnAmount: sellAmount,
-                tokenID: unifiedTokenId,
-                signKey: signAddress,
-                feeAddress,
-                tradeFee: tradingFee,
-                info: String(tradeID),
-                feeToken: feetoken,
-                incTokenID: tokenId,
-                expectedAmt: sellAmount,
-              },
-              tradePayload: {
-                tradeID,
-                srcTokenID: tokenSellPancake?.tokenID,
-                destTokenID: tokenBuyPancake?.tokenID,
-                paths: tradePath.join(','),
-                srcQties: String(sellAmount),
-                expectedDestAmt: String(minAcceptableAmount),
-                userFeeSelection: feetoken === PRV.id ? 2 : 1,
-                isNative:
-                  tokenBuyPancake?.contractId ===
-                  '0x0000000000000000000000000000000000000000',
-              },
-            });
-        } else {
-          response = await pDexV3Inst.createAndSendTradeRequestPancakeTx({
-            burningPayload: {
-              originalBurnAmount: sellAmount,
-              tokenID: tokenIDToSell,
-              signKey: signAddress,
-              feeAddress,
-              tradeFee: tradingFee,
-              info: String(tradeID),
-              feeToken: feetoken,
-              incTokenID: tokenId,
-            },
-            tradePayload: {
-              tradeID,
-              srcTokenID: tokenSellPancake?.tokenID,
-              destTokenID: tokenBuyPancake?.tokenID,
-              paths: tradePath.join(','),
-              userFeeSelection: feetoken === PRV.id ? 2 : 1,
-              srcQties: String(sellAmount),
-              expectedDestAmt: String(minAcceptableAmount),
-              isNative:
-                tokenBuyPancake?.contractId ===
-                '0x0000000000000000000000000000000000000000',
-            },
+      case KEYS_PLATFORMS_SUPPORTED.pancake:
+      case KEYS_PLATFORMS_SUPPORTED.uni:
+      case KEYS_PLATFORMS_SUPPORTED.curve:
+        {
+          console.log('SWAP => pAPP ' + platform.id);
+          console.log(' ALL DATA ..... ');
+          console.log({
+            sellInputAmount,
+            buyInputAmount,
+            platform,
+            feetokenData,
+            exchangeData,
+            tokenSellData,
+            tokenBuyData,
           });
-        }
-        tx = response;
-        break;
-      }
-      case KEYS_PLATFORMS_SUPPORTED.uni: {
-        const { tradeID, feeAddress, signAddress, tokenId } = feeDataByPlatform;
-        const getUniTokenParamReq = findTokenUniByIdSelector(state);
-        const tokenSellUni = getUniTokenParamReq(tokenIDToSell);
-        const tokenBuyUni = getUniTokenParamReq(tokenIDToBuy);
-        let response;
-        if (
-          tokenSellUni?.currencyType ===
-          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.UNIFIED_TOKEN
-        ) {
-          response =
-            await pDexV3Inst.createAndSendTradeRequestUniTxForUnifiedToken({
-              burningPayload: {
-                originalBurnAmount: sellAmount,
-                tokenID: tokenIDToSell,
-                signKey: signAddress,
-                feeAddress,
-                tradeFee: tradingFee,
-                info: String(tradeID),
-                feeToken: feetoken,
-                incTokenID: tokenId,
-                expectedAmt: sellAmount,
-              },
-              tradePayload: {
-                fees: JSON.stringify(feetokenData?.uni?.fees),
-                tradeID,
-                srcTokenID: tokenSellUni?.tokenID,
-                destTokenID: tokenBuyUni?.tokenID,
-                paths: JSON.stringify(tradePath),
-                srcQties: String(sellAmount),
-                expectedDestAmt: String(minAcceptableAmount),
-                percents: JSON.stringify(feetokenData?.uni?.percents),
-                isMulti: feetokenData?.uni?.multiRouter,
-                userFeeSelection: feetoken === PRV.id ? 2 : 1,
-              },
-            });
-        } else {
-          response = await pDexV3Inst.createAndSendTradeRequestUniTx({
-            burningPayload: {
-              originalBurnAmount: sellAmount,
-              tokenID: tokenIDToSell,
-              signKey: signAddress,
-              feeAddress,
-              tradeFee: tradingFee,
-              info: String(tradeID),
-              feeToken: feetoken,
-            },
-            tradePayload: {
-              fees: JSON.stringify(feetokenData?.uni?.fees),
-              tradeID,
-              srcTokenID: tokenSellUni?.tokenID,
-              destTokenID: tokenBuyUni?.tokenID,
-              paths: JSON.stringify(tradePath),
-              srcQties: String(sellAmount),
-              expectedDestAmt: String(minAcceptableAmount),
-              percents: JSON.stringify(feetokenData?.uni?.percents),
-              isMulti: feetokenData?.uni?.multiRouter,
-              userFeeSelection: feetoken === PRV.id ? 2 : 1,
-            },
-          });
-        }
 
-        tx = response;
-        break;
-      }
-      case KEYS_PLATFORMS_SUPPORTED.curve: {
-        const { tradeID, feeAddress, signAddress, tokenId } = feeDataByPlatform;
-        const getCurveTokenParamReq = findTokenCurveByIdSelector(state);
-        const tokenSellCurve = getCurveTokenParamReq(tokenIDToSell);
-        const tokenBuyCurve = getCurveTokenParamReq(tokenIDToBuy);
-        let response;
-        if (
-          tokenSellCurve?.currencyType ===
-          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.UNIFIED_TOKEN
-        ) {
-          response =
-            await pDexV3Inst.createAndSendTradeRequestCurveTxForUnifiedToken({
-              burningPayload: {
-                originalBurnAmount: sellAmount,
-                tokenID: tokenIDToSell,
-                signKey: signAddress,
-                feeAddress,
-                tradeFee: tradingFee,
-                info: String(tradeID),
-                feeToken: feetoken,
-                incTokenID: tokenId,
-                expectedAmt: sellAmount,
-              },
-              tradePayload: {
-                tradeID,
-                srcTokenID: tokenSellCurve?.tokenID,
-                destTokenID: tokenBuyCurve?.tokenID,
-                srcQties: String(sellAmount),
-                expectedDestAmt: String(minAcceptableAmount),
-                userFeeSelection: feetoken === PRV.id ? 2 : 1,
-              },
-            });
-        } else {
-          response = await pDexV3Inst.createAndSendTradeRequestCurveTx({
-            burningPayload: {
-              originalBurnAmount: sellAmount,
-              tokenID: tokenIDToSell,
-              signKey: signAddress,
-              feeAddress,
-              tradeFee: tradingFee,
-              info: String(tradeID),
-              feeToken: feetoken,
-            },
-            tradePayload: {
-              tradeID,
-              srcTokenID: tokenSellCurve?.tokenID,
-              destTokenID: tokenBuyCurve?.tokenID,
-              srcQties: String(sellAmount),
-              expectedDestAmt: String(minAcceptableAmount),
-              userFeeSelection: feetoken === PRV.id ? 2 : 1,
-            },
-          });
+          const createTransactionPAppsPayload: CreateTransactionPAppsPayload = {
+            pDexV3Instance: pDexV3Inst || {},
+            sellTokenID: tokenIDToSell || '',
+            senderFeeAddressShardID: exchangeData.feeAddressShardID | 0,
+            feeReceiverAddress: exchangeData.feeAddress || '',
+            feeTokenID: exchangeData.fees[0]?.tokenid || '',
+            feeAmount: exchangeData.fees[0]?.amount?.toString() || '',
+            sellAmount: sellAmount.toString() || '',
+            callContract: exchangeData.callContract || '',
+            callData: exchangeData.callData || '',
+            exchangeNetworkID: exchangeData.networkID || 0,
+            buyTokenID: buyInputAmount.tokenId || '',
+            buyContractID: !tokenBuyData.isPUnifiedToken
+              ? tokenBuyData.contractId
+              : tokenBuyData.listUnifiedToken.filter(
+                  (token) => token.networkId === exchangeData.networkID,
+                )[0]?.contractId || '',
+          };
+          await TransactionHandler.createTransactionPApps(
+            createTransactionPAppsPayload,
+          );
         }
-
-        tx = response;
         break;
-      }
+
+      // case KEYS_PLATFORMS_SUPPORTED.pancake: {
+      //   const { tradeID, feeAddress, signAddress, unifiedTokenId, tokenId } =
+      //     feeDataByPlatform;
+      //   const getPancakeTokenParamReq = findTokenPancakeByIdSelector(state);
+      //   const tokenSellPancake = getPancakeTokenParamReq(tokenIDToSell);
+      //   const tokenBuyPancake = getPancakeTokenParamReq(tokenIDToBuy);
+      //   let response;
+      //   if (
+      //     tokenSellPancake?.currencyType ===
+      //     CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.UNIFIED_TOKEN
+      //   ) {
+      //     response =
+      //       await pDexV3Inst.createAndSendTradeRequestPancakeTxForUnifiedToken({
+      //         burningPayload: {
+      //           originalBurnAmount: sellAmount,
+      //           tokenID: unifiedTokenId,
+      //           signKey: signAddress,
+      //           feeAddress,
+      //           tradeFee: tradingFee,
+      //           info: String(tradeID),
+      //           feeToken: feetoken,
+      //           incTokenID: tokenId,
+      //           expectedAmt: sellAmount,
+      //         },
+      //         tradePayload: {
+      //           tradeID,
+      //           srcTokenID: tokenSellPancake?.tokenID,
+      //           destTokenID: tokenBuyPancake?.tokenID,
+      //           paths: tradePath.join(','),
+      //           srcQties: String(sellAmount),
+      //           expectedDestAmt: String(minAcceptableAmount),
+      //           userFeeSelection: feetoken === PRV.id ? 2 : 1,
+      //           isNative:
+      //             tokenBuyPancake?.contractId ===
+      //             '0x0000000000000000000000000000000000000000',
+      //         },
+      //       });
+      //   } else {
+      //     response = await pDexV3Inst.createAndSendTradeRequestPancakeTx({
+      //       burningPayload: {
+      //         originalBurnAmount: sellAmount,
+      //         tokenID: tokenIDToSell,
+      //         signKey: signAddress,
+      //         feeAddress,
+      //         tradeFee: tradingFee,
+      //         info: String(tradeID),
+      //         feeToken: feetoken,
+      //         incTokenID: tokenId,
+      //       },
+      //       tradePayload: {
+      //         tradeID,
+      //         srcTokenID: tokenSellPancake?.tokenID,
+      //         destTokenID: tokenBuyPancake?.tokenID,
+      //         paths: tradePath.join(','),
+      //         userFeeSelection: feetoken === PRV.id ? 2 : 1,
+      //         srcQties: String(sellAmount),
+      //         expectedDestAmt: String(minAcceptableAmount),
+      //         isNative:
+      //           tokenBuyPancake?.contractId ===
+      //           '0x0000000000000000000000000000000000000000',
+      //       },
+      //     });
+      //   }
+      //   tx = response;
+      //   break;
+      // }
+      // case KEYS_PLATFORMS_SUPPORTED.uni: {
+      //   const { tradeID, feeAddress, signAddress, tokenId } = feeDataByPlatform;
+      //   const getUniTokenParamReq = findTokenUniByIdSelector(state);
+      //   const tokenSellUni = getUniTokenParamReq(tokenIDToSell);
+      //   const tokenBuyUni = getUniTokenParamReq(tokenIDToBuy);
+      //   let response;
+      //   if (
+      //     tokenSellUni?.currencyType ===
+      //     CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.UNIFIED_TOKEN
+      //   ) {
+      //     response =
+      //       await pDexV3Inst.createAndSendTradeRequestUniTxForUnifiedToken({
+      //         burningPayload: {
+      //           originalBurnAmount: sellAmount,
+      //           tokenID: tokenIDToSell,
+      //           signKey: signAddress,
+      //           feeAddress,
+      //           tradeFee: tradingFee,
+      //           info: String(tradeID),
+      //           feeToken: feetoken,
+      //           incTokenID: tokenId,
+      //           expectedAmt: sellAmount,
+      //         },
+      //         tradePayload: {
+      //           fees: JSON.stringify(feetokenData?.uni?.fees),
+      //           tradeID,
+      //           srcTokenID: tokenSellUni?.tokenID,
+      //           destTokenID: tokenBuyUni?.tokenID,
+      //           paths: JSON.stringify(tradePath),
+      //           srcQties: String(sellAmount),
+      //           expectedDestAmt: String(minAcceptableAmount),
+      //           percents: JSON.stringify(feetokenData?.uni?.percents),
+      //           isMulti: feetokenData?.uni?.multiRouter,
+      //           userFeeSelection: feetoken === PRV.id ? 2 : 1,
+      //         },
+      //       });
+      //   } else {
+      //     response = await pDexV3Inst.createAndSendTradeRequestUniTx({
+      //       burningPayload: {
+      //         originalBurnAmount: sellAmount,
+      //         tokenID: tokenIDToSell,
+      //         signKey: signAddress,
+      //         feeAddress,
+      //         tradeFee: tradingFee,
+      //         info: String(tradeID),
+      //         feeToken: feetoken,
+      //       },
+      //       tradePayload: {
+      //         fees: JSON.stringify(feetokenData?.uni?.fees),
+      //         tradeID,
+      //         srcTokenID: tokenSellUni?.tokenID,
+      //         destTokenID: tokenBuyUni?.tokenID,
+      //         paths: JSON.stringify(tradePath),
+      //         srcQties: String(sellAmount),
+      //         expectedDestAmt: String(minAcceptableAmount),
+      //         percents: JSON.stringify(feetokenData?.uni?.percents),
+      //         isMulti: feetokenData?.uni?.multiRouter,
+      //         userFeeSelection: feetoken === PRV.id ? 2 : 1,
+      //       },
+      //     });
+      //   }
+
+      //   tx = response;
+      //   break;
+      // }
+      // case KEYS_PLATFORMS_SUPPORTED.curve: {
+      //   const { tradeID, feeAddress, signAddress, tokenId } = feeDataByPlatform;
+      //   const getCurveTokenParamReq = findTokenCurveByIdSelector(state);
+      //   const tokenSellCurve = getCurveTokenParamReq(tokenIDToSell);
+      //   const tokenBuyCurve = getCurveTokenParamReq(tokenIDToBuy);
+      //   let response;
+      //   if (
+      //     tokenSellCurve?.currencyType ===
+      //     CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.UNIFIED_TOKEN
+      //   ) {
+      //     response =
+      //       await pDexV3Inst.createAndSendTradeRequestCurveTxForUnifiedToken({
+      //         burningPayload: {
+      //           originalBurnAmount: sellAmount,
+      //           tokenID: tokenIDToSell,
+      //           signKey: signAddress,
+      //           feeAddress,
+      //           tradeFee: tradingFee,
+      //           info: String(tradeID),
+      //           feeToken: feetoken,
+      //           incTokenID: tokenId,
+      //           expectedAmt: sellAmount,
+      //         },
+      //         tradePayload: {
+      //           tradeID,
+      //           srcTokenID: tokenSellCurve?.tokenID,
+      //           destTokenID: tokenBuyCurve?.tokenID,
+      //           srcQties: String(sellAmount),
+      //           expectedDestAmt: String(minAcceptableAmount),
+      //           userFeeSelection: feetoken === PRV.id ? 2 : 1,
+      //         },
+      //       });
+      //   } else {
+      //     response = await pDexV3Inst.createAndSendTradeRequestCurveTx({
+      //       burningPayload: {
+      //         originalBurnAmount: sellAmount,
+      //         tokenID: tokenIDToSell,
+      //         signKey: signAddress,
+      //         feeAddress,
+      //         tradeFee: tradingFee,
+      //         info: String(tradeID),
+      //         feeToken: feetoken,
+      //       },
+      //       tradePayload: {
+      //         tradeID,
+      //         srcTokenID: tokenSellCurve?.tokenID,
+      //         destTokenID: tokenBuyCurve?.tokenID,
+      //         srcQties: String(sellAmount),
+      //         expectedDestAmt: String(minAcceptableAmount),
+      //         userFeeSelection: feetoken === PRV.id ? 2 : 1,
+      //       },
+      //     });
+      //   }
+
+      //   tx = response;
+      //   break;
+      // }
       default:
         break;
     }
