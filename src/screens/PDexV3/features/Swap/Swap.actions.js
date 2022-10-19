@@ -1626,6 +1626,25 @@ export const actionEstimateTrade =
         return;
       }
 
+      let network;
+      switch (defaultExchange) {
+      case KEYS_PLATFORMS_SUPPORTED.pancake:
+        network = 'bsc';
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.curve:
+        network = 'plg';
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.uni:
+        network = 'eth';
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.spooky:
+        network = 'ftm';
+        break;
+      default:
+        network = 'inc';
+        break;
+      }
+
       const estimateRawData = await SwapService.getEstiamteTradingFee({
         amount: convert
           .toHumanAmount(payload.sellamount, inputPDecimals)
@@ -1633,6 +1652,7 @@ export const actionEstimateTrade =
         fromToken: payload.selltoken,
         toToken: payload.buytoken,
         slippage: slippagetolerance.toString(),
+        network: network
       });
 
       if (!estimateRawData) {
