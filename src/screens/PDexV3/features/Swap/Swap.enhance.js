@@ -12,7 +12,7 @@ import withLazy from '@src/components/LazyHoc/LazyHoc';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { formConfigs, KEYS_PLATFORMS_SUPPORTED } from './Swap.constant';
+import { formConfigs, KEYS_PLATFORMS_SUPPORTED, NETWORK_NAME_SUPPORTED } from './Swap.constant';
 import {
   actionInitSwapForm,
   actionReset,
@@ -39,6 +39,7 @@ const enhance = (WrappedComp) => (props) => {
   const {
     isPrivacyApp = false,
     exchange = KEYS_PLATFORMS_SUPPORTED.incognito,
+    network = NETWORK_NAME_SUPPORTED.INCOGNITO
   } = props;
   const unmountSwap = () => {
     dispatch(actionReset());
@@ -120,7 +121,11 @@ const enhance = (WrappedComp) => (props) => {
   };
   const handleInitSwapForm = async () => {
     if (isPrivacyApp) {
-      await dispatch(actionSetDefaultExchange({ isPrivacyApp, exchange }));
+      await dispatch(actionSetDefaultExchange({
+        isPrivacyApp,
+        exchange,
+        network
+      }));
     }
     initSwapForm(true);
   };

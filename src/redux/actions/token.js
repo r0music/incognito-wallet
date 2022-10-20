@@ -38,6 +38,7 @@ import {
   FollowSelector,
 } from '@screens/Wallet/features/FollowList';
 import { batch } from 'react-redux';
+import orderBy from 'lodash/orderBy';
 import { setWallet } from './wallet';
 
 export const setToken = (
@@ -174,10 +175,10 @@ export const getPTokenList =
         await getTokenList({ expiredTime }),
       ]);
 
-      const tokens = uniqBy(
+      const tokens = orderBy(uniqBy(
         [...(coinIndexTokens || []), ...pTokens],
         'tokenId',
-      );
+      ) || [], ['isPUnifiedToken', 'verified'], ['desc', 'desc']);
       await dispatch(setListPToken(tokens));
       return tokens;
     } catch (e) {

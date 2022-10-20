@@ -1313,3 +1313,9 @@ export const errorEstimateTradeSelector = createSelector(
   platformIdSelectedSelector,
   ({ data }, platformId) => data[platformId]?.error || '',
 );
+
+
+export const exchangeNetworkSelector = createSelector(
+  swapSelector,
+  ({ network }) => network,
+);

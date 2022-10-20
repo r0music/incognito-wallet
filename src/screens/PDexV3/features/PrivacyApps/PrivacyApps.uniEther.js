@@ -13,15 +13,15 @@ import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { ANALYTICS } from '@src/constants';
 import { swapInfoSelector } from '../Swap/Swap.selector';
 
-const PrivacyAppsCurve = () => {
+const PrivacyAppsUni = () => {
   const dispatch = useDispatch();
   const swapInfo = useDebounceSelector(swapInfoSelector);
   const handleOnRefresh = async () => {
     await dispatch(
       actionSetDefaultExchange({
         isPrivacyApp: true,
-        exchange: KEYS_PLATFORMS_SUPPORTED.curve,
-        network: NETWORK_NAME_SUPPORTED.POLYGON
+        exchange: KEYS_PLATFORMS_SUPPORTED.uni,
+        network: NETWORK_NAME_SUPPORTED.ETHEREUM
       }),
     );
     await dispatch(
@@ -33,21 +33,21 @@ const PrivacyAppsCurve = () => {
     );
   };
   React.useEffect(() => {
-    dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CURVE));
+    dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.UNISWAP));
     dispatch(actionReset());
   }, []);
   return (
     <>
       <Header
-        title="pCurve"
+        title="pUniswap"
         accountSelectable
         handleSelectedAccount={handleOnRefresh}
       />
-      <TabSwap isPrivacyApp exchange={KEYS_PLATFORMS_SUPPORTED.curve} network={NETWORK_NAME_SUPPORTED.POLYGON} />
+      <TabSwap isPrivacyApp exchange={KEYS_PLATFORMS_SUPPORTED.uni} network={NETWORK_NAME_SUPPORTED.ETHEREUM} />
     </>
   );
 };
 
-PrivacyAppsCurve.propTypes = {};
+PrivacyAppsUni.propTypes = {};
 
-export default withLayout_2(React.memo(PrivacyAppsCurve));
+export default withLayout_2(React.memo(PrivacyAppsUni));

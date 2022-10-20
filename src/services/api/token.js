@@ -7,7 +7,6 @@ import http from '@src/services/http';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import axios from 'axios';
 import { cachePromise, EXPIRED_TIME, KEYS } from '@services/cache';
-import http1 from '@services/http1';
 import http4 from '@services/http4';
 import PolygonToken from '@src/models/polygonToken';
 import FantomToken from '@src/models/fantomToken';
@@ -19,12 +18,12 @@ const getTokenListNoCache = () => {
   //   .get('coins/tokenlist')
   return http4
     .get('tokenlist')
-    .then((res) => res.map((token) => new PToken(token, res)));
+    .then((res) => (res || []).map((token) => new PToken(token, res)));
 };
 
 export const getTokensInfo = (tokenIDs = []) => {
-  return http1
-    .post('coins/tokeninfo', { TokenIDs: tokenIDs })
+  return http4
+    .post('tokeninfo', { TokenIDs: tokenIDs })
     .then((res) => res?.map((token) => new PToken(token, res)))
     .catch((error) => {
       console.log('error', error);

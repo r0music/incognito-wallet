@@ -43,6 +43,9 @@ const PrivacyApps = () => {
     case KEYS_PLATFORMS_SUPPORTED.curve:
       navigation.navigate(routeNames.PrivacyAppsCurve);
       break;
+    case KEYS_PLATFORMS_SUPPORTED.uniEther:
+      navigation.navigate(routeNames.PrivacyAppsUniEther);
+      break;
     default:
       break;
     }
@@ -76,6 +79,24 @@ const PrivacyApps = () => {
           {
             id: 'POLYGON',
             title: 'Polygon',
+          },
+          {
+            id: 'DEX',
+            title: 'DEX',
+          },
+        ],
+        desc: 'Trade confidentially on everyone’s favorite DEX. Faster and cheaper thanks to Polygon, and private like all Incognito apps.',
+        onPressItem,
+      },
+      {
+        privacyAppId: KEYS_PLATFORMS_SUPPORTED.uniEther,
+        icon: <UniIcon2 />,
+        headerTitle: 'pUniswap',
+        headerSub: 'Private Uniswap',
+        groupActions: [
+          {
+            id: 'ETHEREUM',
+            title: 'Etherum',
           },
           {
             id: 'DEX',

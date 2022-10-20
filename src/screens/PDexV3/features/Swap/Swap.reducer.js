@@ -116,6 +116,7 @@ const initialState = {
   isUsePRVToPayFee: true,
   bestRateExchange: null,
   exchangeSupportsList: [],
+  network: null
 };
 
 const reducer = (state = initialState, action) => {
@@ -153,7 +154,7 @@ const reducer = (state = initialState, action) => {
       };
     }
     case ACTION_SET_DEFAULT_EXCHANGE: {
-      const { exchange, isPrivacyApp } = action.payload;
+      const { exchange, isPrivacyApp, network } = action.payload;
       return {
         ...state,
         defaultExchange: exchange,
@@ -162,6 +163,7 @@ const reducer = (state = initialState, action) => {
             ? { ...platform, visible: true }
             : { ...platform, visible: false },
         ),
+        network,
         isPrivacyApp,
       };
     }

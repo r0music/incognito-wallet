@@ -79,7 +79,7 @@ import {
   ACTION_RESET_DATA,
   NETWORK_IDS_MAPPING,
   ACTION_SET_BEST_RATE_EXCHANGE,
-  ACTION_SET_EXCHANGE_SUPPORT_LIST,
+  ACTION_SET_EXCHANGE_SUPPORT_LIST, NETWORK_NAME_SUPPORTED,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -108,7 +108,7 @@ import {
   listPairsIDVerifiedSelector,
   listPairsIDBuyTokenVerifiedSelector,
   findTokenSpookyByIdSelector,
-  getExchangeSupportByPlatformId,
+  getExchangeSupportByPlatformId, exchangeNetworkSelector,
 } from './Swap.selector';
 import {
   calMintAmountExpected,
@@ -155,11 +155,12 @@ export const actionRemoveError = () => ({
   type: ACTION_REMOVE_ERROR,
 });
 
-export const actionSetDefaultExchange = ({ isPrivacyApp, exchange }) => ({
+export const actionSetDefaultExchange = ({ isPrivacyApp, exchange, network = null }) => ({
   type: ACTION_SET_DEFAULT_EXCHANGE,
   payload: {
     isPrivacyApp,
     exchange,
+    network
   },
 });
 
@@ -1528,6 +1529,7 @@ export const actionEstimateTrade =
     let isFetched = false;
     let state = getState();
     const defaultExchange = defaultExchangeSelector(state);
+    const exchangeNetwork = exchangeNetworkSelector(state);
     try {
       const params = { field, useMax };
       // Show loading estimate trade and reset fee data
@@ -1628,17 +1630,17 @@ export const actionEstimateTrade =
       }
 
       let network;
-      switch (defaultExchange) {
-      case KEYS_PLATFORMS_SUPPORTED.pancake:
+      switch (exchangeNetwork) {
+      case NETWORK_NAME_SUPPORTED.BINANCE_SMART_CHAIN:
         network = 'bsc';
         break;
-      case KEYS_PLATFORMS_SUPPORTED.curve:
+      case NETWORK_NAME_SUPPORTED.POLYGON:
         network = 'plg';
         break;
-      case KEYS_PLATFORMS_SUPPORTED.uni:
+      case NETWORK_NAME_SUPPORTED.ETHEREUM:
         network = 'eth';
         break;
-      case KEYS_PLATFORMS_SUPPORTED.spooky:
+      case NETWORK_NAME_SUPPORTED.FANTOM:
         network = 'ftm';
         break;
       default:
@@ -1667,6 +1669,8 @@ export const actionEstimateTrade =
         sellInputToken.tokenData,
         defaultExchange,
       );
+
+      const networkExchange = exchangeNetworkSelector(state);
 
       //convert new data to data old structror (BIND UI)
       exchangeSupports.map(async (exchange) => {

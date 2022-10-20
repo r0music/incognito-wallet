@@ -95,6 +95,7 @@ export const KEYS_PLATFORMS_SUPPORTED = {
   uni: 'uni',
   curve: 'curve',
   spooky: 'spooky',
+  uniEther: 'uniEther',
 };
 
 export const KEYS_PLATFORMS_SUPPORTED_NETWORKS = {

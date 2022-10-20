@@ -3,7 +3,7 @@ import TabSwap, {
   KEYS_PLATFORMS_SUPPORTED,
   actionSetDefaultExchange,
   actionInitSwapForm,
-  actionReset,
+  actionReset, NETWORK_NAME_SUPPORTED,
 } from '@screens/PDexV3/features/Swap';
 import { withLayout_2 } from '@src/components/Layout';
 import Header from '@src/components/Header';
@@ -21,6 +21,7 @@ const PrivacyAppsUni = () => {
       actionSetDefaultExchange({
         isPrivacyApp: true,
         exchange: KEYS_PLATFORMS_SUPPORTED.uni,
+        network: NETWORK_NAME_SUPPORTED.POLYGON
       }),
     );
     await dispatch(
@@ -42,7 +43,7 @@ const PrivacyAppsUni = () => {
         accountSelectable
         handleSelectedAccount={handleOnRefresh}
       />
-      <TabSwap isPrivacyApp exchange={KEYS_PLATFORMS_SUPPORTED.uni} />
+      <TabSwap isPrivacyApp exchange={KEYS_PLATFORMS_SUPPORTED.uni} network={NETWORK_NAME_SUPPORTED.POLYGON} />
     </>
   );
 };
