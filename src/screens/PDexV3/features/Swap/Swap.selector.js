@@ -593,7 +593,7 @@ export const getExchangeSupportByPlatformId = createSelector(
           platform.exchangeName === 'pdex',
       );
       if (!exchangeFounded) {
-        console.log('[getExchangeSupportByPlatformId] ERROR ', exchangeFounded);
+        console.log('[getExchangeSupportByPlatformId] NOT FOUND ');
         return;
       }
       return exchangeFounded;
@@ -1314,8 +1314,13 @@ export const errorEstimateTradeSelector = createSelector(
   ({ data }, platformId) => data[platformId]?.error || '',
 );
 
-
 export const exchangeNetworkSelector = createSelector(
   swapSelector,
   ({ network }) => network,
+);
+
+export const getExchangeDataEstimateTradeSelector = createSelector(
+  swapSelector,
+  platformIdSelectedSelector,
+  ({ data }, platformId) => data[platformId] || undefined,
 );

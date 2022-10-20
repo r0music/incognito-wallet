@@ -79,7 +79,8 @@ import {
   ACTION_RESET_DATA,
   NETWORK_IDS_MAPPING,
   ACTION_SET_BEST_RATE_EXCHANGE,
-  ACTION_SET_EXCHANGE_SUPPORT_LIST, NETWORK_NAME_SUPPORTED,
+  ACTION_SET_EXCHANGE_SUPPORT_LIST,
+  NETWORK_NAME_SUPPORTED,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -108,7 +109,8 @@ import {
   listPairsIDVerifiedSelector,
   listPairsIDBuyTokenVerifiedSelector,
   findTokenSpookyByIdSelector,
-  getExchangeSupportByPlatformId, exchangeNetworkSelector,
+  getExchangeSupportByPlatformId,
+  exchangeNetworkSelector,
 } from './Swap.selector';
 import {
   calMintAmountExpected,
@@ -155,12 +157,16 @@ export const actionRemoveError = () => ({
   type: ACTION_REMOVE_ERROR,
 });
 
-export const actionSetDefaultExchange = ({ isPrivacyApp, exchange, network = null }) => ({
+export const actionSetDefaultExchange = ({
+  isPrivacyApp,
+  exchange,
+  network = null,
+}) => ({
   type: ACTION_SET_DEFAULT_EXCHANGE,
   payload: {
     isPrivacyApp,
     exchange,
-    network
+    network,
   },
 });
 
@@ -1576,6 +1582,7 @@ export const actionEstimateTrade =
         tokenId: buytoken,
         originalAmount: buyAmount,
         pDecimals: buyPDecimals,
+        symbol: buyInputSymbol,
       } = buyInputToken;
 
       let payload = {
@@ -1631,22 +1638,22 @@ export const actionEstimateTrade =
       }
 
       let network;
-      switch (exchangeNetwork) {
-      case NETWORK_NAME_SUPPORTED.BINANCE_SMART_CHAIN:
-        network = 'bsc';
-        break;
-      case NETWORK_NAME_SUPPORTED.POLYGON:
-        network = 'plg';
-        break;
-      case NETWORK_NAME_SUPPORTED.ETHEREUM:
-        network = 'eth';
-        break;
-      case NETWORK_NAME_SUPPORTED.FANTOM:
-        network = 'ftm';
-        break;
-      default:
-        network = 'inc';
-        break;
+      switch (defaultExchange) {
+        case KEYS_PLATFORMS_SUPPORTED.pancake:
+          network = 'bsc';
+          break;
+        case KEYS_PLATFORMS_SUPPORTED.curve:
+          network = 'plg';
+          break;
+        case KEYS_PLATFORMS_SUPPORTED.uni:
+          network = 'eth';
+          break;
+        case KEYS_PLATFORMS_SUPPORTED.spooky:
+          network = 'ftm';
+          break;
+        default:
+          network = 'inc';
+          break;
       }
 
       const estimateRawData = await SwapService.getEstiamteTradingFee({
@@ -1656,7 +1663,7 @@ export const actionEstimateTrade =
         fromToken: payload.selltoken,
         toToken: payload.buytoken,
         slippage: slippagetolerance.toString(),
-        network: network
+        network: network,
       });
 
       if (!estimateRawData) {
@@ -1683,13 +1690,16 @@ export const actionEstimateTrade =
           impactAmount,
           incTokenID,
           appName,
+          amountOutPreSlippage,
         } = exchange;
         const [isUseTokenFee, originalTradeFee] = isUseTokenFeeParser(fees);
         const platformData = {
           feePrv: {
             fee: isUseTokenFee ? 0 : originalTradeFee,
             isSignificant: false,
-            maxGet: amountOut.toString(),
+            maxGet: amountOutPreSlippage
+              ? amountOutPreSlippage.toString()
+              : '0',
             route: routes,
             sellAmount: payload.sellamount,
             buyAmount: amountOut,
@@ -1701,7 +1711,9 @@ export const actionEstimateTrade =
             buyAmount: amountOut,
             fee: isUseTokenFee ? originalTradeFee : 0,
             isSignificant: false,
-            maxGet: amountOut.toString(),
+            maxGet: amountOutPreSlippage
+              ? amountOutPreSlippage.toString()
+              : '0',
             route: routes,
             impactAmount,
             tokenRoute: routes,
@@ -1713,6 +1725,9 @@ export const actionEstimateTrade =
           tokenId: incTokenID,
           isUseTokenFee,
           error: null,
+          minimumReceived: amountOut
+            ? `${amountOut.toString()} ${buyInputSymbol}`
+            : undefined,
         };
 
         console.log('------------------------------');
@@ -2059,16 +2074,16 @@ const pancakeFilterToken = (privacyDataFilterList) => {
 };
 
 const uniswapFilterToken = (privacyDataFilterList, network) => {
-  const getRule = (_token: SelectedPrivacy) => (
-    network === NETWORK_NAME_SUPPORTED.ETHEREUM ?
-      (_token.isErc20Token || _token.isETH)
-      :
-      (_token.isPolygonErc20Token || _token.isMATIC)
-  );
+  const getRule = (_token: SelectedPrivacy) =>
+    network === NETWORK_NAME_SUPPORTED.ETHEREUM
+      ? _token.isErc20Token || _token.isETH
+      : _token.isPolygonErc20Token || _token.isMATIC;
   let uniswapTokens = privacyDataFilterList.filter((token: SelectedPrivacy) => {
     if (token.movedUnifiedToken) return false;
     if (token.isPUnifiedToken) {
-      return token.listUnifiedToken.some((token: SelectedPrivacy) => getRule(token));
+      return token.listUnifiedToken.some((token: SelectedPrivacy) =>
+        getRule(token),
+      );
     }
     return getRule(token);
   });
@@ -2392,7 +2407,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
               sellAmount: String(sellAmount),
               tokenIDToBuy,
               tradingFee,
-              tradePath: exchangeData.poolPairs || [''],
+              tradePath: exchangeData?.poolPairs || [''],
               feetoken,
               version: PrivacyVersion.ver2,
               minAcceptableAmount: String(minAcceptableAmount),
