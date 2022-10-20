@@ -11,6 +11,7 @@ export type ExchangeData = {
   amountOutRaw: number;
   appName: ExchangePlatformSupported | string;
   exchangeName: string;
+  amountOutPreSlippage: string;
   fees: {
     amount: number;
     tokenid: string;
@@ -34,6 +35,7 @@ export type ExchangeRawDetail = {
   AmountOut: string;
   AmountOutRaw: string;
   AppName: ExchangePlatformSupported | string;
+  AmountOutPreSlippage: string;
   Fee: {
     amount: number;
     tokenid: string;

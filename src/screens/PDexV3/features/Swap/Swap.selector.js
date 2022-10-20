@@ -588,7 +588,9 @@ export const getExchangeSupportByPlatformId = createSelector(
   (exchangeSupportsList) => (platformId) => {
     try {
       const exchangeFounded = exchangeSupportsList.find(
-        (platform) => platform.exchangeName === platformId,
+        (platform) =>
+          platform.exchangeName === platformId ||
+          platform.exchangeName === 'pdex',
       );
       if (!exchangeFounded) {
         console.log('[getExchangeSupportByPlatformId] ERROR ', exchangeFounded);
@@ -784,7 +786,7 @@ export const feetokenDataSelector = createSelector(
       } catch {
         //
       }
-      const tradePath = payFeeByPRV ? tradePathPRV : tradePathToken;
+      let tradePath = payFeeByPRV ? tradePathPRV : tradePathToken;
       const tokenRoute = payFeeByPRV ? tokenRoutePRV : tokenRouteToken;
       const impactAmount = payFeeByPRV ? impactAmountPRV : impactAmountToken;
       const impactOriginalAmount = convert.toOriginalAmount(impactAmount, 2);
@@ -842,13 +844,15 @@ export const feetokenDataSelector = createSelector(
       let tradePathStr = '';
       let tradePathArr = [];
 
+      // console.log('777777 platformID ', platformID);
       // console.log('777777 tokenRoute ', tokenRoute);
-      // get trade path array by platform
       try {
         if (tokenRoute?.length > 0) {
           switch (platformID) {
             case KEYS_PLATFORMS_SUPPORTED.incognito: {
               tradePathArr = tokenRoute;
+              tradePath = [tokenRoute.join('-')];
+              // console.log('777777 tradePath ', tradePath);
               break;
             }
             case KEYS_PLATFORMS_SUPPORTED.pancake: {

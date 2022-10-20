@@ -154,10 +154,6 @@ const reducer = (state = initialState, action) => {
     }
     case ACTION_SET_DEFAULT_EXCHANGE: {
       const { exchange, isPrivacyApp } = action.payload;
-      console.log('PHAT ACTION_SET_DEFAULT_EXCHANGE ', {
-        exchange,
-        isPrivacyApp,
-      });
       return {
         ...state,
         defaultExchange: exchange,

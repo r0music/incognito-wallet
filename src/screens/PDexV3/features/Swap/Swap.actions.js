@@ -126,6 +126,7 @@ import {
 
 import TransactionHandler, {
   CreateTransactionPAppsPayload,
+  CreateTransactionPDexPayload,
 } from './Swap.transactionHandler';
 
 // const logger = createLogger('LOG');
@@ -2360,43 +2361,48 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
     const exchangeData: ExchangeData = getExchangeSupportByPlatformId(state)(
       platform.id,
     );
+    console.log('SWAP => ' + platform.id);
     switch (platform.id) {
       case KEYS_PLATFORMS_SUPPORTED.incognito:
         {
-          const params = {
+          const params: CreateTransactionPDexPayload = {
             transfer: { fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX, info: '' },
             extra: {
               tokenIDToSell,
               sellAmount: String(sellAmount),
               tokenIDToBuy,
               tradingFee,
-              tradePath,
+              tradePath: exchangeData.poolPairs || [''],
               feetoken,
               version: PrivacyVersion.ver2,
               minAcceptableAmount: String(minAcceptableAmount),
             },
           };
-          tx = await pDexV3Inst.createAndSendSwapRequestTx(params);
-          if (!tx) {
-            console.log('error');
-          }
+          // tx = await pDexV3Inst.createAndSendSwapRequestTx(params);
+          // if (!tx) {
+          //   console.log('error');
+          // }
+          await TransactionHandler.createTransactionPDex({
+            pDexV3Instance: pDexV3Inst || {},
+            params,
+          });
         }
         break;
       case KEYS_PLATFORMS_SUPPORTED.pancake:
       case KEYS_PLATFORMS_SUPPORTED.uni:
       case KEYS_PLATFORMS_SUPPORTED.curve:
         {
-          console.log('SWAP => pAPP ' + platform.id);
-          console.log(' ALL DATA ..... ');
-          console.log({
-            sellInputAmount,
-            buyInputAmount,
-            platform,
-            feetokenData,
-            exchangeData,
-            tokenSellData,
-            tokenBuyData,
-          });
+          // console.log('SWAP => pAPP ' + platform.id);
+          // console.log(' ALL DATA ..... ');
+          // console.log({
+          //   sellInputAmount,
+          //   buyInputAmount,
+          //   platform,
+          //   feetokenData,
+          //   exchangeData,
+          //   tokenSellData,
+          //   tokenBuyData,
+          // });
 
           const createTransactionPAppsPayload: CreateTransactionPAppsPayload = {
             pDexV3Instance: pDexV3Inst || {},

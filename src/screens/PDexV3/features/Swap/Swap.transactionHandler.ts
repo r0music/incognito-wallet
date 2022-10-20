@@ -21,6 +21,26 @@ export type CreateTransactionPAppsPayload = {
   remoteAddress?: string;
 };
 
+export type CreateTransactionPDexPayload = {
+  pDexV3Instance: any;
+  params: {
+    transfer: {
+      fee: number;
+      info: string;
+    };
+    extra: {
+      tokenIDToSell: string;
+      sellAmount: string;
+      tokenIDToBuy: string;
+      feetoken: string;
+      minAcceptableAmount: string;
+      tradePath: string[];
+      tradingFee: number;
+      version: number;
+    };
+  };
+};
+
 const createTransactionPApps = async (
   params: CreateTransactionPAppsPayload,
 ) => {
@@ -78,10 +98,27 @@ const createTransactionPApps = async (
   }
 };
 
+const createTransactionPDex = async (payload: CreateTransactionPDexPayload) => {
+  try {
+    const { pDexV3Instance, params } = payload;
+
+    console.log('[createTransactionPDex] params ', params);
+
+    const tx = await pDexV3Instance.createAndSendSwapRequestTx(params);
+    console.log('[createTransactionPDex] tx ', tx);
+    if (!tx) {
+      console.log('[createTransactionPDex] TO DO ');
+    }
+  } catch (error) {
+    console.log('[createTransactionPDex] ERROR ', error);
+  }
+};
+
 const abc = () => {};
 
 const TransactionHandler = {
   createTransactionPApps,
+  createTransactionPDex,
   abc,
 };
 

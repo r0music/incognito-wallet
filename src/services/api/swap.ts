@@ -1,8 +1,7 @@
 import http4 from '@src/services/http4';
-// import createLogger from '@utils/logger';
-// import BigNumber from 'bignumber.js';
+import createLogger from '@utils/logger';
 
-// const logger = createLogger('API');
+const logger = createLogger('API');
 
 type GetEstiamteTradingFeePayload = {
   amount: string;
@@ -29,6 +28,7 @@ const getEstiamteTradingFee = async (payload: GetEstiamteTradingFeePayload) => {
     };
     // logger('[getEstiamteTradingFee]  params ', params);
     const data: any = await http4.post('papps/estimateswapfee', params);
+    // logger('[getEstiamteTradingFee]  response ', data);
     const exchangeSupports = data?.Networks;
     return exchangeSupports;
   } catch (error) {

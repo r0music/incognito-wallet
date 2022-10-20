@@ -66,6 +66,7 @@ const parseExchangeDataModelResponse = (
     amountOutRaw: parseFloat(data.AmountOutRaw) || 0,
     appName: data.AppName === 'pdex' ? 'incognito' : data.AppName,
     exchangeName: data.AppName || '',
+    amountOutPreSlippage: data.AmountOutPreSlippage || '',
     fees: data.Fee || [],
     routes: data.Paths || [],
     incTokenID: incTokenID || '',
@@ -80,6 +81,24 @@ const parseExchangeDataModelResponse = (
   };
   return exchangeData;
 };
+
+// AppName
+// const convertExchangeName = (AppName: string): string => {
+//   switch (AppName) {
+//     case 'pdex':
+//       return 'incognito';
+//     case 'pancake':
+//       return 'pancake';
+//     case 'uniswap':
+//       return 'uniswap';
+//     case 'curve':
+//       return 'curve';
+//     case 'spooky':
+//       return 'spooky';
+//     default:
+//       return 'incognito';
+//   }
+// };
 
 const convertNetworkNameFromCurrentPlatformSelected = (
   currentPlatformSelected,
