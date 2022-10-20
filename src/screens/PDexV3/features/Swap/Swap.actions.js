@@ -815,81 +815,81 @@ export const actionHandleInjectEstDataForSpooky =
       } else {
         await dispatch(actionSetFeeToken(PRV.id));
       }
-      const { field, useMax } = feeData;
-      const getSpookyTokenParamReq = findTokenSpookyByIdSelector(state);
-      const tokenSellSpooky = getSpookyTokenParamReq(selltoken);
-      const tokenBuySpooky = getSpookyTokenParamReq(buytoken);
-      if (tokenSellSpooky == null || tokenBuySpooky == null) {
-        throw 'This pair is not existed on spooky';
-      }
-      switch (field) {
-        case formConfigs.selltoken: {
-          inputPDecimals = tokenBuySpooky.pDecimals;
-          inputToken = formConfigs.buytoken;
-          break;
-        }
-        case formConfigs.buytoken: {
-          inputPDecimals = tokenSellSpooky.pDecimals;
-          inputToken = formConfigs.selltoken;
-          break;
-        }
-        default:
-          break;
-      }
-      const {
-        maxGet,
-        minFeePRVFixed,
-        availableFixedSellAmountPRV,
-        minFeeTokenFixed,
-      } = feetokenDataSelector(state);
-      const slippagetolerance = slippagetoleranceSelector(state);
-
-      const originalMinAmountExpected =
-        field === formConfigs.buytoken
-          ? maxGet
-          : calMintAmountExpected({
-              maxGet,
-              slippagetolerance,
-            });
-
-      const minAmountExpectedToHumanAmount = convert.toHumanAmount(
-        originalMinAmountExpected,
-        inputPDecimals,
-      );
-
-      const minAmountExpectedToFixed = format.toFixed(
-        minAmountExpectedToHumanAmount,
-        inputPDecimals,
-      );
-
-      batch(() => {
-        if (useMax) {
-          dispatch(
-            change(
-              formConfigs.formName,
-              formConfigs.selltoken,
-              availableFixedSellAmountPRV,
-            ),
-          );
-        }
-        // dispatch(
-        //   change(formConfigs.formName, inputToken, minAmountExpectedToFixed)
-        // );
-        dispatch(
-          change(
-            formConfigs.formName,
-            inputToken,
-            maxGet ? maxGet.toString() : '',
-          ),
-        );
-        dispatch(
-          change(
-            formConfigs.formName,
-            formConfigs.feetoken,
-            isUseTokenFee ? minFeeTokenFixed : minFeePRVFixed,
-          ),
-        );
-      });
+      // const { field, useMax } = feeData;
+      // const getSpookyTokenParamReq = findTokenSpookyByIdSelector(state);
+      // const tokenSellSpooky = getSpookyTokenParamReq(selltoken);
+      // const tokenBuySpooky = getSpookyTokenParamReq(buytoken);
+      // if (tokenSellSpooky == null || tokenBuySpooky == null) {
+      //   throw 'This pair is not existed on spooky';
+      // }
+      // switch (field) {
+      //   case formConfigs.selltoken: {
+      //     inputPDecimals = tokenBuySpooky.pDecimals;
+      //     inputToken = formConfigs.buytoken;
+      //     break;
+      //   }
+      //   case formConfigs.buytoken: {
+      //     inputPDecimals = tokenSellSpooky.pDecimals;
+      //     inputToken = formConfigs.selltoken;
+      //     break;
+      //   }
+      //   default:
+      //     break;
+      // }
+      // const {
+      //   maxGet,
+      //   minFeePRVFixed,
+      //   availableFixedSellAmountPRV,
+      //   minFeeTokenFixed,
+      // } = feetokenDataSelector(state);
+      // const slippagetolerance = slippagetoleranceSelector(state);
+      //
+      // const originalMinAmountExpected =
+      //   field === formConfigs.buytoken
+      //     ? maxGet
+      //     : calMintAmountExpected({
+      //         maxGet,
+      //         slippagetolerance,
+      //       });
+      //
+      // const minAmountExpectedToHumanAmount = convert.toHumanAmount(
+      //   originalMinAmountExpected,
+      //   inputPDecimals,
+      // );
+      //
+      // const minAmountExpectedToFixed = format.toFixed(
+      //   minAmountExpectedToHumanAmount,
+      //   inputPDecimals,
+      // );
+      //
+      // batch(() => {
+      //   if (useMax) {
+      //     dispatch(
+      //       change(
+      //         formConfigs.formName,
+      //         formConfigs.selltoken,
+      //         availableFixedSellAmountPRV,
+      //       ),
+      //     );
+      //   }
+      //   // dispatch(
+      //   //   change(formConfigs.formName, inputToken, minAmountExpectedToFixed)
+      //   // );
+      //   dispatch(
+      //     change(
+      //       formConfigs.formName,
+      //       inputToken,
+      //       maxGet ? maxGet.toString() : '',
+      //     ),
+      //   );
+      //   dispatch(
+      //     change(
+      //       formConfigs.formName,
+      //       formConfigs.feetoken,
+      //       isUseTokenFee ? minFeeTokenFixed : minFeePRVFixed,
+      //     ),
+      //   );
+      // });
     } catch (error) {
       throw error;
     }
@@ -1383,145 +1383,146 @@ export const actionEstimateTradeForPancake =
     };
   };
 
-export const actionFindBestRateBetweenPlatforms =
-  ({ pDexData, pancakeData, uniData, curveData, params }) =>
-  async (dispatch, getState) => {
-    const { field } = params;
-    const state = getState();
-    const {
-      minSellOriginalAmount: sellPDexAmount,
-      maxBuyOriginalAmount: buyPDexAmount,
-    } = pDexData;
-    const {
-      minSellOriginalAmount: sellPancakeAmount,
-      maxBuyOriginalAmount: buyPancakeAmount,
-    } = pancakeData;
-    const {
-      minSellOriginalAmount: sellUniAmount,
-      maxBuyOriginalAmount: buyUniAmount,
-    } = uniData;
-    const {
-      minSellOriginalAmount: sellCurveAmount,
-      maxBuyOriginalAmount: buyCurveAmount,
-    } = curveData;
-    let platformIdHasBestRate;
-    const isPairSupportedTradeOnPancake =
-      isPairSupportedTradeOnPancakeSelector(state);
-    const isPairSupportedTradeOnUni = isPairSupportedTradeOnUniSelector(state);
-    const isPairSupportedTradeOnCurve =
-      isPairSupportedTradeOnCurveSelector(state);
-    console.log('pdexData', pDexData);
-    console.log('pancakeData', pancakeData);
-    console.log('uniData', uniData);
-    console.log('curveData', curveData);
-    try {
-      switch (field) {
-        case formConfigs.selltoken: {
-          let arrMaxBuyAmount = [];
-          if (new BigNumber(buyPDexAmount).isGreaterThan(0)) {
-            arrMaxBuyAmount.push({
-              id: KEYS_PLATFORMS_SUPPORTED.incognito,
-              amount: buyPDexAmount,
-            });
-          }
-          if (
-            isPairSupportedTradeOnPancake &&
-            new BigNumber(buyPancakeAmount).isGreaterThan(0)
-          ) {
-            arrMaxBuyAmount.push({
-              id: KEYS_PLATFORMS_SUPPORTED.pancake,
-              amount: buyPancakeAmount,
-            });
-          }
-          if (
-            isPairSupportedTradeOnUni &&
-            new BigNumber(buyUniAmount).isGreaterThan(0)
-          ) {
-            arrMaxBuyAmount.push({
-              id: KEYS_PLATFORMS_SUPPORTED.uni,
-              amount: buyUniAmount,
-            });
-          }
-          if (
-            isPairSupportedTradeOnCurve &&
-            new BigNumber(buyCurveAmount).isGreaterThan(0)
-          ) {
-            arrMaxBuyAmount.push({
-              id: KEYS_PLATFORMS_SUPPORTED.curve,
-              amount: buyCurveAmount,
-            });
-          }
-          if (arrMaxBuyAmount.length > 0) {
-            const bestRate = findBestRateOfMaxBuyAmount(arrMaxBuyAmount);
-            platformIdHasBestRate = bestRate?.id;
-          }
-          break;
-        }
-        case formConfigs.buytoken: {
-          const arrMinSellAmount = [];
-          if (new BigNumber(sellPDexAmount).isGreaterThan(0)) {
-            arrMinSellAmount.push({
-              id: KEYS_PLATFORMS_SUPPORTED.incognito,
-              amount: sellPDexAmount,
-            });
-          }
-          if (
-            isPairSupportedTradeOnPancake &&
-            new BigNumber(sellPancakeAmount).isGreaterThan(0)
-          ) {
-            arrMinSellAmount.push({
-              id: KEYS_PLATFORMS_SUPPORTED.pancake,
-              amount: sellPancakeAmount,
-            });
-          }
-          if (
-            isPairSupportedTradeOnUni &&
-            new BigNumber(sellUniAmount).isGreaterThan(0)
-          ) {
-            arrMinSellAmount.push({
-              id: KEYS_PLATFORMS_SUPPORTED.uni,
-              amount: sellUniAmount,
-            });
-          }
-          if (
-            isPairSupportedTradeOnCurve &&
-            new BigNumber(sellCurveAmount).isGreaterThan(0)
-          ) {
-            arrMinSellAmount.push({
-              id: KEYS_PLATFORMS_SUPPORTED.curve,
-              amount: sellCurveAmount,
-            });
-          }
-          if (arrMinSellAmount.length > 0) {
-            const bestRate = findBestRateOfMinSellAmount(arrMinSellAmount);
-            platformIdHasBestRate = bestRate?.id;
-          }
-          break;
-        }
-        default:
-          break;
-      }
-
-      // Set default platformIdBestRate if can not find platformIdBestRate
-      if (!platformIdHasBestRate) {
-        if (isPairSupportedTradeOnPancake) {
-          platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.pancake;
-        } else if (isPairSupportedTradeOnUni) {
-          platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.uni;
-        } else if (isPairSupportedTradeOnCurve) {
-          platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.curve;
-        } else {
-          platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.incognito;
-        }
-      }
-
-      if (platformIdHasBestRate) {
-        await dispatch(actionSwitchPlatform(platformIdHasBestRate));
-      }
-    } catch (error) {
-      throw error;
-    }
-  };
+// Todo: REMOVE SWAP
+// export const actionFindBestRateBetweenPlatforms =
+//   ({ pDexData, pancakeData, uniData, curveData, params }) =>
+//   async (dispatch, getState) => {
+//     const { field } = params;
+//     const state = getState();
+//     const {
+//       minSellOriginalAmount: sellPDexAmount,
+//       maxBuyOriginalAmount: buyPDexAmount,
+//     } = pDexData;
+//     const {
+//       minSellOriginalAmount: sellPancakeAmount,
+//       maxBuyOriginalAmount: buyPancakeAmount,
+//     } = pancakeData;
+//     const {
+//       minSellOriginalAmount: sellUniAmount,
+//       maxBuyOriginalAmount: buyUniAmount,
+//     } = uniData;
+//     const {
+//       minSellOriginalAmount: sellCurveAmount,
+//       maxBuyOriginalAmount: buyCurveAmount,
+//     } = curveData;
+//     let platformIdHasBestRate;
+//     const isPairSupportedTradeOnPancake =
+//       isPairSupportedTradeOnPancakeSelector(state);
+//     const isPairSupportedTradeOnUni = isPairSupportedTradeOnUniSelector(state);
+//     const isPairSupportedTradeOnCurve =
+//       isPairSupportedTradeOnCurveSelector(state);
+//     console.log('pdexData', pDexData);
+//     console.log('pancakeData', pancakeData);
+//     console.log('uniData', uniData);
+//     console.log('curveData', curveData);
+//     try {
+//       switch (field) {
+//         case formConfigs.selltoken: {
+//           let arrMaxBuyAmount = [];
+//           if (new BigNumber(buyPDexAmount).isGreaterThan(0)) {
+//             arrMaxBuyAmount.push({
+//               id: KEYS_PLATFORMS_SUPPORTED.incognito,
+//               amount: buyPDexAmount,
+//             });
+//           }
+//           if (
+//             isPairSupportedTradeOnPancake &&
+//             new BigNumber(buyPancakeAmount).isGreaterThan(0)
+//           ) {
+//             arrMaxBuyAmount.push({
+//               id: KEYS_PLATFORMS_SUPPORTED.pancake,
+//               amount: buyPancakeAmount,
+//             });
+//           }
+//           if (
+//             isPairSupportedTradeOnUni &&
+//             new BigNumber(buyUniAmount).isGreaterThan(0)
+//           ) {
+//             arrMaxBuyAmount.push({
+//               id: KEYS_PLATFORMS_SUPPORTED.uni,
+//               amount: buyUniAmount,
+//             });
+//           }
+//           if (
+//             isPairSupportedTradeOnCurve &&
+//             new BigNumber(buyCurveAmount).isGreaterThan(0)
+//           ) {
+//             arrMaxBuyAmount.push({
+//               id: KEYS_PLATFORMS_SUPPORTED.curve,
+//               amount: buyCurveAmount,
+//             });
+//           }
+//           if (arrMaxBuyAmount.length > 0) {
+//             const bestRate = findBestRateOfMaxBuyAmount(arrMaxBuyAmount);
+//             platformIdHasBestRate = bestRate?.id;
+//           }
+//           break;
+//         }
+//         case formConfigs.buytoken: {
+//           const arrMinSellAmount = [];
+//           if (new BigNumber(sellPDexAmount).isGreaterThan(0)) {
+//             arrMinSellAmount.push({
+//               id: KEYS_PLATFORMS_SUPPORTED.incognito,
+//               amount: sellPDexAmount,
+//             });
+//           }
+//           if (
+//             isPairSupportedTradeOnPancake &&
+//             new BigNumber(sellPancakeAmount).isGreaterThan(0)
+//           ) {
+//             arrMinSellAmount.push({
+//               id: KEYS_PLATFORMS_SUPPORTED.pancake,
+//               amount: sellPancakeAmount,
+//             });
+//           }
+//           if (
+//             isPairSupportedTradeOnUni &&
+//             new BigNumber(sellUniAmount).isGreaterThan(0)
+//           ) {
+//             arrMinSellAmount.push({
+//               id: KEYS_PLATFORMS_SUPPORTED.uni,
+//               amount: sellUniAmount,
+//             });
+//           }
+//           if (
+//             isPairSupportedTradeOnCurve &&
+//             new BigNumber(sellCurveAmount).isGreaterThan(0)
+//           ) {
+//             arrMinSellAmount.push({
+//               id: KEYS_PLATFORMS_SUPPORTED.curve,
+//               amount: sellCurveAmount,
+//             });
+//           }
+//           if (arrMinSellAmount.length > 0) {
+//             const bestRate = findBestRateOfMinSellAmount(arrMinSellAmount);
+//             platformIdHasBestRate = bestRate?.id;
+//           }
+//           break;
+//         }
+//         default:
+//           break;
+//       }
+//
+//       // Set default platformIdBestRate if can not find platformIdBestRate
+//       if (!platformIdHasBestRate) {
+//         if (isPairSupportedTradeOnPancake) {
+//           platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.pancake;
+//         } else if (isPairSupportedTradeOnUni) {
+//           platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.uni;
+//         } else if (isPairSupportedTradeOnCurve) {
+//           platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.curve;
+//         } else {
+//           platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.incognito;
+//         }
+//       }
+//
+//       if (platformIdHasBestRate) {
+//         await dispatch(actionSwitchPlatform(platformIdHasBestRate));
+//       }
+//     } catch (error) {
+//       throw error;
+//     }
+//   };
 
 export const actionEstimateTrade =
   ({ field = formConfigs.selltoken, useMax = false } = {}) =>
@@ -1714,8 +1715,10 @@ export const actionEstimateTrade =
           error: null,
         };
 
+        console.log('------------------------------');
         console.log('platformData ', platformData);
         console.log('appName ', appName);
+        console.log('exchange ', exchange);
 
         switch (appName) {
           case 'pancake':
@@ -1777,6 +1780,8 @@ export const actionEstimateTrade =
       } else if (bestRateExchange.appName === 'pdex')
         platformIdHasBestRate = 'incognito';
       else platformIdHasBestRate = bestRateExchange.appName;
+
+      console.log('platformIdHasBestRate');
 
       await dispatch(actionSwitchPlatform(platformIdHasBestRate));
 
@@ -1921,7 +1926,15 @@ export const actionFetchPairs1 = (refresh) => async (dispatch, getState) => {
     }
 
     const defaultExchange = defaultExchangeSelector(state);
+    const exchangeNetwork = exchangeNetworkSelector(state);
     const isPrivacyApp = isPrivacyAppSelector(state);
+
+    pancakeTokens = pancakeFilterToken(privacyDataFilterList);
+    uniTokens = uniswapFilterToken(privacyDataFilterList, exchangeNetwork);
+    spookyTokens = spoonkyFilterToken(privacyDataFilterList);
+    curveTokens = privacyDataFilterList.filter((token) =>
+      CURVE_SUPPORT_NETWORK.includes(token.currencyType),
+    );
     if (!isPrivacyApp) {
       // const tasks = [
       //   pDexV3Inst.getListPair(),
@@ -1950,15 +1963,12 @@ export const actionFetchPairs1 = (refresh) => async (dispatch, getState) => {
       // ];
       // pairs = uniq(pairs);
       const pairsIdsList = privacyDataFilterList.map((token) => token.tokenId);
-      pancakeTokens = pancakeFilterToken(privacyDataFilterList);
-      uniTokens = uniswapFilterToken(privacyDataFilterList);
-      spookyTokens = spoonkyFilterToken(privacyDataFilterList);
       pairs = [...pairsIdsList];
     } else {
       switch (defaultExchange) {
         case KEYS_PLATFORMS_SUPPORTED.pancake:
           {
-            pancakeTokens = pancakeFilterToken(privacyDataFilterList);
+            // pancakeTokens = pancakeFilterToken(privacyDataFilterList);
             pairs = [...pancakeTokens.map((token) => token.tokenId)];
           }
           break;
@@ -1966,7 +1976,7 @@ export const actionFetchPairs1 = (refresh) => async (dispatch, getState) => {
           {
             // uniTokens = await pDexV3Inst.getUniTokens();
             // pairs = [...uniTokens.map((t) => t?.tokenID)];
-            uniTokens = uniswapFilterToken(privacyDataFilterList);
+            // uniTokens = uniswapFilterToken(privacyDataFilterList, exchangeNetwork);
             pairs = [...uniTokens.map((token) => token.tokenId)];
           }
           break;
@@ -1974,9 +1984,9 @@ export const actionFetchPairs1 = (refresh) => async (dispatch, getState) => {
           {
             // curveTokens = await pDexV3Inst.getCurveTokens();
             // pairs = [...curveTokens.map((t) => t?.tokenID)];
-            curveTokens = privacyDataFilterList.filter((token) =>
-              CURVE_SUPPORT_NETWORK.includes(token.currencyType),
-            );
+            // curveTokens = privacyDataFilterList.filter((token) =>
+            //   CURVE_SUPPORT_NETWORK.includes(token.currencyType),
+            // );
             pairs = [...curveTokens.map((token) => token.tokenId)];
           }
           break;
@@ -1985,7 +1995,7 @@ export const actionFetchPairs1 = (refresh) => async (dispatch, getState) => {
           {
             // curveTokens = await pDexV3Inst.getCurveTokens();
             // pairs = [...curveTokens.map((t) => t?.tokenID)];
-            spookyTokens = spoonkyFilterToken(privacyDataFilterList);
+            // spookyTokens = spoonkyFilterToken(privacyDataFilterList);
             pairs = [...spookyTokens.map((token) => token.tokenId)];
           }
           break;
@@ -2048,13 +2058,19 @@ const pancakeFilterToken = (privacyDataFilterList) => {
   return pancakeTokens;
 };
 
-const uniswapFilterToken = (privacyDataFilterList) => {
-  let uniswapTokens = privacyDataFilterList.filter((token) => {
-    let isSupport = UNISWAP_SUPPORT_NETWORK.includes(token.currencyType);
-    let isSupportUnified = UNISWAP_SUPPORT_NETWORK.some((currencyType) =>
-      token.listUnifiedTokenCurrencyType.includes(currencyType),
-    );
-    return isSupport || isSupportUnified;
+const uniswapFilterToken = (privacyDataFilterList, network) => {
+  const getRule = (_token: SelectedPrivacy) => (
+    network === NETWORK_NAME_SUPPORTED.ETHEREUM ?
+      (_token.isErc20Token || _token.isETH)
+      :
+      (_token.isPolygonErc20Token || _token.isMATIC)
+  );
+  let uniswapTokens = privacyDataFilterList.filter((token: SelectedPrivacy) => {
+    if (token.movedUnifiedToken) return false;
+    if (token.isPUnifiedToken) {
+      return token.listUnifiedToken.some((token: SelectedPrivacy) => getRule(token));
+    }
+    return getRule(token);
   });
 
   uniswapTokens = uniswapTokens.map((token) => {

@@ -142,7 +142,7 @@ export const getTokenIdByContractIdGetRateSelector = createSelector(
   (pancakeTokens) =>
     memoize((contractIdGetRate) => {
       let tokenID = '';
-      const foundToken = pancakeTokens.find((token) => {
+      pancakeTokens.forEach((token) => {
         if (
           isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
         ) {
