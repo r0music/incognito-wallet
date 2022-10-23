@@ -2,9 +2,8 @@ import axios from 'axios';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import { camelCaseKeys } from '@src/utils';
 import createLogger from '@utils/logger';
+import { DEBUG } from '@src/utils/logger';
 import { CustomError, ErrorCode, ExHandler } from './exception';
-
-const DEBUG = false && process.env.NODE_ENV === 'development';
 
 const HEADERS = { 'Content-Type': 'application/json' };
 const TIMEOUT = 20000;

@@ -88,6 +88,9 @@ export const SelectItem = React.memo(
       case KEYS_PLATFORMS_SUPPORTED.uni:
         icon = <UniIcon style={styled.icon} />;
         break;
+      case KEYS_PLATFORMS_SUPPORTED.uniEther:
+        icon = <UniIcon style={styled.icon} />;
+        break;
       case KEYS_PLATFORMS_SUPPORTED.curve:
         icon = <CurveIcon style={styled.icon} />;
         break;

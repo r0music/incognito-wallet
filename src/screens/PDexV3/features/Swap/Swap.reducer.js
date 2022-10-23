@@ -66,6 +66,12 @@ const initialState = {
       feeToken: {},
       error: null,
     },
+    [KEYS_PLATFORMS_SUPPORTED.uniEther]: {
+      // uniEther
+      feePrv: {},
+      feeToken: {},
+      error: null,
+    },
     [KEYS_PLATFORMS_SUPPORTED.curve]: {
       // curve
       feePrv: {},
@@ -73,7 +79,7 @@ const initialState = {
       error: null,
     },
     [KEYS_PLATFORMS_SUPPORTED.spooky]: {
-      // curve
+      // spooky
       feePrv: {},
       feeToken: {},
       error: null,
@@ -116,7 +122,7 @@ const initialState = {
   isUsePRVToPayFee: true,
   bestRateExchange: null,
   exchangeSupportsList: [],
-  network: null
+  network: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -190,6 +196,7 @@ const reducer = (state = initialState, action) => {
           feetoken = PRV_ID;
           break;
         case KEYS_PLATFORMS_SUPPORTED.uni:
+        case KEYS_PLATFORMS_SUPPORTED.uniEther:
           feetoken = PRV_ID;
           break;
         case KEYS_PLATFORMS_SUPPORTED.curve:

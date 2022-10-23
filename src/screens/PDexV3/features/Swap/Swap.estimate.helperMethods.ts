@@ -1,11 +1,18 @@
 import { PRV_ID } from '@src/constants/common';
 import {
-  NETWORK_IDS_MAPPING,
   NETWORK_NAME_SUPPORTED,
   KEYS_PLATFORMS_SUPPORTED,
 } from './Swap.constant';
 
-import { ExchangeData, EstimateRawData, ExchangeRawDetail } from './Swap.types';
+import {
+  ExchangeData,
+  EstimateRawData,
+  ExchangeRawDetail,
+  KeysPlatformSupported,
+  MAIN_NETWORK,
+  NETWORK_IDS_MAPPING,
+  EXCHANGES_NETWROK_ID,
+} from './Swap.types';
 
 const parseExchangeSupport = (
   estimateData,
@@ -34,7 +41,10 @@ const parseExchangeSupport = (
   return exchangeSupport;
 };
 
-const getIncognitoTokenId = (tokenModel, networkId) => {
+const getIncognitoTokenId = (
+  tokenModel: any,
+  networkId: EXCHANGES_NETWROK_ID,
+) => {
   if (!tokenModel) return '';
 
   let incTokenId = tokenModel.tokenId;
@@ -55,7 +65,7 @@ const parseExchangeDataModelResponse = (
   // Swap network name
   networkName: string,
   // Swap networkID
-  networkID: number,
+  networkID: EXCHANGES_NETWROK_ID,
   // Child buy tokenId
   incTokenID: string,
 ): ExchangeData => {
@@ -67,6 +77,7 @@ const parseExchangeDataModelResponse = (
     appName: data.AppName === 'pdex' ? 'incognito' : data.AppName,
     exchangeName: data.AppName || '',
     amountOutPreSlippage: data.AmountOutPreSlippage || '',
+    amountOutPreSlippageNumber: parseFloat(data.AmountOutPreSlippage || '0'),
     fees: data.Fee || [],
     routes: data.Paths || [],
     incTokenID: incTokenID || '',
@@ -78,27 +89,40 @@ const parseExchangeDataModelResponse = (
     networkID,
     networkName,
     feeAddressShardID: data.FeeAddressShardID,
+    platformNameSupported: convertAppNameToPlatformSupported(
+      data.AppName,
+      networkID,
+    ),
   };
   return exchangeData;
 };
 
-// AppName
-// const convertExchangeName = (AppName: string): string => {
-//   switch (AppName) {
-//     case 'pdex':
-//       return 'incognito';
-//     case 'pancake':
-//       return 'pancake';
-//     case 'uniswap':
-//       return 'uniswap';
-//     case 'curve':
-//       return 'curve';
-//     case 'spooky':
-//       return 'spooky';
-//     default:
-//       return 'incognito';
-//   }
-// };
+const convertAppNameToPlatformSupported = (
+  appName: string, //appName field from Back End
+  networkID: EXCHANGES_NETWROK_ID,
+): KeysPlatformSupported => {
+  switch (appName) {
+    case 'pdex':
+      return 'incognito';
+    case 'pancake':
+      return 'pancake';
+    case 'uniswap':
+      {
+        if (networkID === MAIN_NETWORK.ETH) return 'uniEther';
+        if (networkID === MAIN_NETWORK.POLYGON) return 'uni';
+      }
+      break;
+    case 'curve':
+      return 'curve';
+    case 'spooky':
+      return 'spooky';
+    default:
+      console.error(
+        `[convertAppNameToPlatformName] appName NOT FOUND, appName = ${appName}. Return default: incognito `,
+      );
+      return 'incognito';
+  }
+};
 
 const convertNetworkNameFromCurrentPlatformSelected = (
   currentPlatformSelected,
@@ -109,6 +133,8 @@ const convertNetworkNameFromCurrentPlatformSelected = (
     case 'pancake':
       return 'pancake';
     case 'uni':
+      return 'uniswap';
+    case 'uniEther':
       return 'uniswap';
     case 'curve':
       return 'curve';

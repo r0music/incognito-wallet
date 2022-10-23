@@ -26,9 +26,9 @@ const getEstiamteTradingFee = async (payload: GetEstiamteTradingFeePayload) => {
       ...payload,
       network: payload.network ?? 'inc', //Default network = inc
     };
-    // logger('[getEstiamteTradingFee]  params ', params);
+    logger('[getEstiamteTradingFee]  params ', params);
     const data: any = await http4.post('papps/estimateswapfee', params);
-    // logger('[getEstiamteTradingFee]  response ', data);
+    logger('[getEstiamteTradingFee]  response ', data);
     const exchangeSupports = data?.Networks;
     return exchangeSupports;
   } catch (error) {

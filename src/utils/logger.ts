@@ -1,3 +1,5 @@
+export const DEBUG = false;
+
 type LoggerTags = 'API' | 'LOG' | 'INFO' | 'DEBUG' | 'WARN' | 'ERROR' | string;
 
 const TagStyleDecorator = {
@@ -53,6 +55,7 @@ const TagStyleDecorator = {
 const createLogger =
   (tag: LoggerTags = 'INFO') =>
   (message: string = '', ...rest) => {
+    if (!DEBUG) return;
     if (!rest) return;
     if (
       Array.isArray(rest) &&

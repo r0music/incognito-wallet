@@ -65,8 +65,8 @@ const createTransactionPApps = async (
       remoteAddress = REMOTE_ADDRESS,
     } = params;
 
-    // console.log('[createTransactionPApps] params ', params);
-    // console.log('[createTransactionPApps] remoteAddress ', remoteAddress);
+    console.log('[createTransactionPApps] params ', params);
+    console.log('[createTransactionPApps] remoteAddress ', remoteAddress);
     const tx = await pDexV3Instance.createTransactionPApps({
       transfer: { version: PRIVACY_VERSION },
       extra: {
@@ -94,7 +94,8 @@ const createTransactionPApps = async (
       console.log('[createTransactionPApps] TO DO ');
     }
   } catch (error) {
-    console.log('[createTransactionPApps] ERROR ', error);
+    console.error('[createTransactionPApps] ERROR ', error);
+    throw new Error(error);
   }
 };
 
@@ -110,16 +111,14 @@ const createTransactionPDex = async (payload: CreateTransactionPDexPayload) => {
       console.log('[createTransactionPDex] TO DO ');
     }
   } catch (error) {
-    console.log('[createTransactionPDex] ERROR ', error);
+    console.error('[createTransactionPDex] ERROR ', error);
+    throw new Error(error);
   }
 };
-
-const abc = () => {};
 
 const TransactionHandler = {
   createTransactionPApps,
   createTransactionPDex,
-  abc,
 };
 
 export default TransactionHandler;

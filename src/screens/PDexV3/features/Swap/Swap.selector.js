@@ -92,7 +92,9 @@ export const findTokenUniByIdSelector = createSelector(
 export const findTokenCurveByIdSelector = createSelector(
   curvePairsSelector,
   (curveTokens) =>
-    memoize((tokenID) => curveTokens.find((t) => t?.tokenID === tokenID)),
+    memoize((tokenID) =>
+      curveTokens.find((t) => t?.tokenID === tokenID || t?.tokenId === tokenID),
+    ),
 );
 
 export const findTokenSpookyByIdSelector = createSelector(
@@ -202,14 +204,30 @@ export const getTokenIdByUniContractIdGetRateSelector = createSelector(
 export const getTokenIdByCurveContractIdSelector = createSelector(
   curvePairsSelector,
   (curveTokens) =>
-    memoize((contractId) => {
+    memoize((contractIdGetRate) => {
       let tokenID = '';
-      const foundToken = curveTokens.find((token) =>
-        isEqual(toLower(contractId), toLower(token?.contractId)),
-      );
-      if (foundToken) {
-        tokenID = foundToken?.tokenID;
-      }
+      const foundToken = curveTokens.find((token) => {
+        if (
+          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
+        ) {
+          tokenID = token.tokenID;
+          return true;
+        } else {
+          token.listUnifiedToken.find((tokenChild) => {
+            if (
+              isEqual(
+                toLower(contractIdGetRate),
+                toLower(tokenChild?.contractId),
+              )
+            ) {
+              tokenID = tokenChild.tokenId;
+              return true;
+            }
+          });
+        }
+        return false;
+      });
+
       return tokenID;
     }),
 );
@@ -290,7 +308,8 @@ export const listPairsSelector = createSelector(
           });
           break;
         }
-        case KEYS_PLATFORMS_SUPPORTED.uni: {
+        case KEYS_PLATFORMS_SUPPORTED.uni:
+        case KEYS_PLATFORMS_SUPPORTED.uniEther: {
           list = list.map((token: SelectedPrivacy) => {
             let { priority, isVerified } = token;
             const foundedToken = uniTokens.find(
@@ -568,12 +587,12 @@ export const platformsSupportedSelector1 = createSelector(
           (platform) => platform.id === KEYS_PLATFORMS_SUPPORTED.incognito,
         );
       } else {
-        const appNameList = exchangeSupportsList.map((exchange) => {
-          if (exchange.appName === 'uniswap') return 'uni';
-          else return exchange.appName;
-        });
+        const platformNameSupportedList = exchangeSupportsList.map(
+          (exchange) => exchange.platformNameSupported,
+        );
+
         _platforms = platforms.filter((platform) =>
-          appNameList.includes(platform.id),
+          platformNameSupportedList.includes(platform.id),
         );
       }
     } catch (error) {
@@ -585,15 +604,15 @@ export const platformsSupportedSelector1 = createSelector(
 
 export const getExchangeSupportByPlatformId = createSelector(
   exchangeSupportsListSelector,
-  (exchangeSupportsList) => (platformId) => {
+  (exchangeSupportsList) => (platformSelectedId) => {
     try {
       const exchangeFounded = exchangeSupportsList.find(
-        (platform) =>
-          platform.exchangeName === platformId ||
-          platform.exchangeName === 'pdex',
+        (ex) => ex.platformNameSupported === platformSelectedId,
       );
       if (!exchangeFounded) {
-        console.log('[getExchangeSupportByPlatformId] NOT FOUND ');
+        console.error(
+          `[getExchangeSupportByPlatformId] NOT FOUND , platformSelectedId = ${platformSelectedId}`,
+        );
         return;
       }
       return exchangeFounded;
@@ -604,7 +623,7 @@ export const getExchangeSupportByPlatformId = createSelector(
 );
 
 export const platformSelectedSelector = createSelector(
-  platformsSupportedSelector,
+  platformsSupportedSelector1,
   (platforms) =>
     platforms.find((platform) => !!platform.isSelected) ||
     PLATFORMS_SUPPORTED[0],
@@ -670,6 +689,7 @@ export const feetokenDataSelector = createSelector(
       const fee = selector(state, formConfigs.feetoken);
       const { id: platformID } = platform;
       const feeDataByPlatform = data[platformID];
+
       const { feePrv: feePrvEst = {}, feeToken: feeTokenEst = {} } =
         feeDataByPlatform;
       const {
@@ -862,7 +882,8 @@ export const feetokenDataSelector = createSelector(
               // tradePathArr = tokenRoute;
               break;
             }
-            case KEYS_PLATFORMS_SUPPORTED.uni: {
+            case KEYS_PLATFORMS_SUPPORTED.uni:
+            case KEYS_PLATFORMS_SUPPORTED.uniEther: {
               tradePathArr = tokenRoute.map((contractId) =>
                 getTokenIdByUniContractIdGetRate(contractId),
               );
@@ -893,6 +914,7 @@ export const feetokenDataSelector = createSelector(
           case KEYS_PLATFORMS_SUPPORTED.incognito:
           case KEYS_PLATFORMS_SUPPORTED.pancake:
           case KEYS_PLATFORMS_SUPPORTED.uni:
+          case KEYS_PLATFORMS_SUPPORTED.uniEther:
           case KEYS_PLATFORMS_SUPPORTED.curve:
           case KEYS_PLATFORMS_SUPPORTED.spooky:
             tradePathStr = tradePathArr
@@ -1004,7 +1026,8 @@ export const feeTypesSelector = createSelector(
         ];
         break;
       }
-      case KEYS_PLATFORMS_SUPPORTED.uni: {
+      case KEYS_PLATFORMS_SUPPORTED.uni:
+      case KEYS_PLATFORMS_SUPPORTED.uniEther: {
         types = [
           {
             tokenId: feeToken.tokenId,

@@ -86,7 +86,8 @@ const TabPro = React.memo(() => {
         await dispatch(actionHandleInjectEstDataForPancake());
         break;
       case KEYS_PLATFORMS_SUPPORTED.uni:
-        await dispatch(actionHandleInjectEstDataForUni());
+      case KEYS_PLATFORMS_SUPPORTED.uniEther:
+        await dispatch(actionHandleInjectEstDataForUni(platformId));
         break;
       default:
         break;
@@ -153,7 +154,6 @@ const TabPro = React.memo(() => {
   );
   // const platforms = useSelector(platformsSupportedSelector);
   const platforms = useSelector(platformsSupportedSelector1);
-
   const options = React.useMemo(
     () =>
       platforms.map((platform) => {
@@ -172,7 +172,6 @@ const TabPro = React.memo(() => {
     [platforms],
   );
   const platformSelected = options.find((option) => !!option?.isSelected);
-
   let extraFactories = [
     {
       title: 'Slippage tolerance',

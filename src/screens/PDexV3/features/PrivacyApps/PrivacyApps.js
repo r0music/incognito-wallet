@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, { useCallback } from 'react';
 import { StyleSheet } from 'react-native';
 import { withLayout_2 } from '@src/components/Layout';
 import { View } from '@src/components/core';
@@ -21,7 +21,7 @@ import PrivacyAppsItem from './PrivacyApps.item';
 const styled = StyleSheet.create({
   flatListContainer: {
     flexGrow: 1,
-    padding: 20
+    padding: 20,
   },
   itemSpace: {
     height: 20,
@@ -34,20 +34,21 @@ const PrivacyApps = () => {
   const getActivedTab = useSelector(activedTabSelector);
   const onPressItem = (id) => {
     switch (id) {
-    case KEYS_PLATFORMS_SUPPORTED.pancake:
-      navigation.navigate(routeNames.PrivacyAppsPancake);
-      break;
-    case KEYS_PLATFORMS_SUPPORTED.uni:
-      navigation.navigate(routeNames.PrivacyAppsUni);
-      break;
-    case KEYS_PLATFORMS_SUPPORTED.curve:
-      navigation.navigate(routeNames.PrivacyAppsCurve);
-      break;
-    case KEYS_PLATFORMS_SUPPORTED.uniEther:
-      navigation.navigate(routeNames.PrivacyAppsUniEther);
-      break;
-    default:
-      break;
+      case KEYS_PLATFORMS_SUPPORTED.pancake:
+        navigation.navigate(routeNames.PrivacyAppsPancake);
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.uni:
+      case KEYS_PLATFORMS_SUPPORTED.uniEther:
+        navigation.navigate(routeNames.PrivacyAppsUni);
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.curve:
+        navigation.navigate(routeNames.PrivacyAppsCurve);
+        break;
+      // case KEYS_PLATFORMS_SUPPORTED.uniEther:
+      //   navigation.navigate(routeNames.PrivacyAppsUniEther);
+      // break;
+      default:
+        break;
     }
   };
   const factories = React.useMemo(() => {
@@ -81,31 +82,35 @@ const PrivacyApps = () => {
             title: 'Polygon',
           },
           {
-            id: 'DEX',
-            title: 'DEX',
-          },
-        ],
-        desc: 'Trade confidentially on everyone’s favorite DEX. Faster and cheaper thanks to Polygon, and private like all Incognito apps.',
-        onPressItem,
-      },
-      {
-        privacyAppId: KEYS_PLATFORMS_SUPPORTED.uniEther,
-        icon: <UniIcon2 />,
-        headerTitle: 'pUniswap',
-        headerSub: 'Private Uniswap',
-        groupActions: [
-          {
             id: 'ETHEREUM',
-            title: 'Etherum',
+            title: 'Ethereum',
           },
           {
             id: 'DEX',
             title: 'DEX',
           },
         ],
-        desc: 'Trade confidentially on everyone’s favorite DEX. Faster and cheaper thanks to Polygon, and private like all Incognito apps.',
+        desc: 'Trade confidentially on everyone’s favorite DEX. Faster and cheaper thanks to Polygon, Ethereum, and private like all Incognito apps.',
         onPressItem,
       },
+      // {
+      //   privacyAppId: KEYS_PLATFORMS_SUPPORTED.uniEther,
+      //   icon: <UniIcon2 />,
+      //   headerTitle: 'pUniswap',
+      //   headerSub: 'Private Uniswap',
+      //   groupActions: [
+      //     {
+      //       id: 'ETHEREUM',
+      //       title: 'Etherum',
+      //     },
+      //     {
+      //       id: 'DEX',
+      //       title: 'DEX',
+      //     },
+      //   ],
+      //   desc: 'Trade confidentially on everyone’s favorite DEX. Faster and cheaper thanks to Polygon, and private like all Incognito apps.',
+      //   onPressItem,
+      // },
       {
         privacyAppId: KEYS_PLATFORMS_SUPPORTED.curve,
         icon: <CurveIcon2 />,

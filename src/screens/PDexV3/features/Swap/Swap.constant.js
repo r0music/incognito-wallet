@@ -113,14 +113,6 @@ export const NETWORK_NAME_SUPPORTED = {
   BINANCE_SMART_CHAIN: 'bsc',
 };
 
-export const NETWORK_IDS_MAPPING = {
-  [NETWORK_NAME_SUPPORTED.INCOGNITO]: 0,
-  [NETWORK_NAME_SUPPORTED.ETHEREUM]: 1,
-  [NETWORK_NAME_SUPPORTED.BINANCE_SMART_CHAIN]: 2,
-  [NETWORK_NAME_SUPPORTED.POLYGON]: 3,
-  [NETWORK_NAME_SUPPORTED.FANTOM]: 4,
-};
-
 export const SwapExchange = {
   PANCAKE_SWAP: 'pancake',
   UNISWAP: 'uniswap',
@@ -144,7 +136,14 @@ export const PLATFORMS_SUPPORTED = [
   },
   {
     id: KEYS_PLATFORMS_SUPPORTED.uni,
-    title: 'Uniswap',
+    title: 'Uniswap (Polygon)',
+    desc: '',
+    visible: true,
+    isSelected: false,
+  },
+  {
+    id: KEYS_PLATFORMS_SUPPORTED.uniEther,
+    title: 'Uniswap (Ethereum)',
     desc: '',
     visible: true,
     isSelected: false,
