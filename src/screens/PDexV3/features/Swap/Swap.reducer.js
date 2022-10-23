@@ -160,7 +160,12 @@ const reducer = (state = initialState, action) => {
       };
     }
     case ACTION_SET_DEFAULT_EXCHANGE: {
-      const { exchange, isPrivacyApp, network } = action.payload;
+      let _isPrivacyApp = state.isPrivacyApp;
+      const {
+        exchange,
+        isPrivacyApp = _isPrivacyApp,
+        network,
+      } = action.payload;
       return {
         ...state,
         defaultExchange: exchange,

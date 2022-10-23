@@ -553,10 +553,9 @@ export const platformsSupportedSelector = createSelector(
 );
 
 export const platformsSupportedSelector1 = createSelector(
-  swapSelector,
-  platformsVisibleSelector,
+  platformsSelector,
   exchangeSupportsListSelector,
-  ({ data }, platforms, exchangeSupportsList) => {
+  (platforms, exchangeSupportsList) => {
     let _platforms = [...platforms];
     try {
       if (!exchangeSupportsList || exchangeSupportsList.length === 0) {
@@ -565,8 +564,7 @@ export const platformsSupportedSelector1 = createSelector(
         const platformNameSupportedList = exchangeSupportsList.map(
           (exchange) => exchange.platformNameSupported,
         );
-
-        _platforms = platforms.filter((platform) =>
+        _platforms = _platforms.filter((platform) =>
           platformNameSupportedList.includes(platform.id),
         );
       }
@@ -664,7 +662,6 @@ export const feetokenDataSelector = createSelector(
       const fee = selector(state, formConfigs.feetoken);
       const { id: platformID } = platform;
       const feeDataByPlatform = data[platformID];
-
       const { feePrv: feePrvEst = {}, feeToken: feeTokenEst = {} } =
         feeDataByPlatform;
       const {
@@ -807,47 +804,15 @@ export const feetokenDataSelector = createSelector(
         buyAmountToken,
       );
 
-      if (
-        platformID === KEYS_PLATFORMS_SUPPORTED.uni ||
-        platformID === KEYS_PLATFORMS_SUPPORTED.curve
-      ) {
-        // Calculate price impact for pUniswap
-        // const sellTokenPriceUSD = sellTokenData?.externalPriceUSD;
-        // const buyTokenPriceUSD = buyTokenData?.externalPriceUSD;
-        // const sellHumanAmount = convert.toHumanAmount(
-        //   sellAmountToken,
-        //   sellTokenData?.pDecimals
-        // );
-        // const buyHumanAmount = convert.toHumanAmount(
-        //   buyAmountToken,
-        //   buyTokenData?.pDecimals
-        // );
-        // impactAmountStr =
-        //   sellTokenPriceUSD === 0 ||
-        //   buyTokenPriceUSD === 0 ||
-        //   sellHumanAmount === 0 ||
-        //   buyHumanAmount === 0
-        //     ? 0
-        //     : (
-        //         (1 -
-        //           (buyHumanAmount * buyTokenPriceUSD) /
-        //             (sellHumanAmount * sellTokenPriceUSD)) *
-        //         100
-        //       )?.toFixed(2);
-      }
-
       let tradePathStr = '';
       let tradePathArr = [];
 
-      // console.log('777777 platformID ', platformID);
-      // console.log('777777 tokenRoute ', tokenRoute);
       try {
         if (tokenRoute?.length > 0) {
           switch (platformID) {
             case KEYS_PLATFORMS_SUPPORTED.incognito: {
               tradePathArr = tokenRoute;
               tradePath = [tokenRoute.join('-')];
-              // console.log('777777 tradePath ', tradePath);
               break;
             }
             case KEYS_PLATFORMS_SUPPORTED.pancake: {
@@ -883,8 +848,6 @@ export const feetokenDataSelector = createSelector(
           }
         }
 
-        // console.log('777777 tradePathArr ', tradePathArr);
-        // get trade path string by platform
         switch (platformID) {
           case KEYS_PLATFORMS_SUPPORTED.incognito:
           case KEYS_PLATFORMS_SUPPORTED.pancake:

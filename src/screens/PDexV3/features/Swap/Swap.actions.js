@@ -1027,7 +1027,7 @@ export const actionEstimateTrade =
           isUseTokenFee,
           error: null,
           minimumReceived: amountOut
-            ? `${amountOut.toString()} ${buyInputSymbol}`
+            ? `${amountOut.toString().slice(0, 8)} ${buyInputSymbol}`
             : undefined,
         };
 
@@ -2252,24 +2252,22 @@ export const actionSwitchPlatform =
           await dispatch(actionHandleInjectEstDataForPancake());
           break;
         case KEYS_PLATFORMS_SUPPORTED.uni: {
-          // await dispatch(
-          //   actionSetDefaultExchange({
-          //     isPrivacyApp: true,
-          //     exchange: KEYS_PLATFORMS_SUPPORTED.uni,
-          //     network: NETWORK_NAME_SUPPORTED.POLYGON,
-          //   }),
-          // );
+          await dispatch(
+            actionSetDefaultExchange({
+              exchange: KEYS_PLATFORMS_SUPPORTED.uni,
+              network: NETWORK_NAME_SUPPORTED.POLYGON,
+            }),
+          );
           await dispatch(actionHandleInjectEstDataForUni(platformId));
           break;
         }
         case KEYS_PLATFORMS_SUPPORTED.uniEther:
-          // await dispatch(
-          //   actionSetDefaultExchange({
-          //     isPrivacyApp: true,
-          //     exchange: KEYS_PLATFORMS_SUPPORTED.uniEther,
-          //     network: NETWORK_NAME_SUPPORTED.ETHEREUM,
-          //   }),
-          // );
+          await dispatch(
+            actionSetDefaultExchange({
+              exchange: KEYS_PLATFORMS_SUPPORTED.uniEther,
+              network: NETWORK_NAME_SUPPORTED.ETHEREUM,
+            }),
+          );
           await dispatch(actionHandleInjectEstDataForUni(platformId));
           break;
         case KEYS_PLATFORMS_SUPPORTED.curve:

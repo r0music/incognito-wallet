@@ -167,10 +167,19 @@ export const filterExchangeSupportWithDefaultExchange = (
     return flattenEstimateData;
 
   //otherwise, filter only data with currentPlatformSelected (pancake | uniswap | curve)
+
+  if (
+    currentPlatformSelected === 'uni' ||
+    currentPlatformSelected === 'uniEther'
+  ) {
+    return flattenEstimateData.filter(
+      (item) =>
+        item.platformNameSupported === 'uni' ||
+        item.platformNameSupported === 'uniEther',
+    );
+  }
   return flattenEstimateData.filter(
-    (item) =>
-      item.appName ===
-      convertNetworkNameFromCurrentPlatformSelected(currentPlatformSelected),
+    (item) => item.platformNameSupported === currentPlatformSelected,
   );
 };
 
