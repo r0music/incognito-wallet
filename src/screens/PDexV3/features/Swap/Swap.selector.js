@@ -52,11 +52,6 @@ export const slippagetoleranceSelector = createSelector(
   },
 );
 
-// export const pDexPairsSelector = createSelector(
-//   swapSelector,
-//   ({ pDEXPairs }) => pDEXPairs
-// );
-
 export const pancakePairsSelector = createSelector(
   swapSelector,
   ({ pancakeTokens }) => pancakeTokens,
@@ -107,24 +102,6 @@ export const hashmapContractIDsSelector = createSelector(
   pancakePairsSelector,
   (pancakeTokens) =>
     pancakeTokens
-      .filter((token) => token?.isPopular === true)
-      .reduce((curr, token) => {
-        const { symbol, contractIdGetRate, decimals } = token;
-        curr = {
-          ...curr,
-          [toLower(contractIdGetRate)]: {
-            symbol: toLower(symbol),
-            decimals,
-          },
-        };
-        return curr;
-      }, {}),
-);
-
-export const hashmapUniContractIDsSelector = createSelector(
-  uniPairsSelector,
-  (uniTokens) =>
-    uniTokens
       .filter((token) => token?.isPopular === true)
       .reduce((curr, token) => {
         const { symbol, contractIdGetRate, decimals } = token;
@@ -583,9 +560,7 @@ export const platformsSupportedSelector1 = createSelector(
     let _platforms = [...platforms];
     try {
       if (!exchangeSupportsList || exchangeSupportsList.length === 0) {
-        _platforms = platforms.filter(
-          (platform) => platform.id === KEYS_PLATFORMS_SUPPORTED.incognito,
-        );
+        _platforms = [PLATFORMS_SUPPORTED[0]];
       } else {
         const platformNameSupportedList = exchangeSupportsList.map(
           (exchange) => exchange.platformNameSupported,
