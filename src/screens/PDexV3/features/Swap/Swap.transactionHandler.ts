@@ -19,6 +19,10 @@ export type CreateTransactionPAppsPayload = {
   buyContractID: string;
 
   remoteAddress?: string;
+
+  buyTokenID: string,
+  sellAmountText: string,
+  buyAmountText: string,
 };
 
 export type CreateTransactionPDexPayload = {
@@ -63,6 +67,9 @@ const createTransactionPApps = async (
       buyContractID,
 
       remoteAddress = REMOTE_ADDRESS,
+      buyTokenID,
+      sellAmountText,
+      buyAmountText
     } = params;
 
     console.log('[createTransactionPApps] params ', params);
@@ -87,6 +94,9 @@ const createTransactionPApps = async (
         // remoteAddress, case reDeposit = 0x0000000000000000000000000000000000000000
         // send out EVN use user address
         remoteAddress,
+        buyTokenID,
+        sellAmountText,
+        buyAmountText
       },
     });
     console.log('[createTransactionPApps] tx ', tx);

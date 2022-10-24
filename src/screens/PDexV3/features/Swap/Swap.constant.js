@@ -1,4 +1,5 @@
 import routeNames from '@src/router/routeNames';
+import { CONSTANT_CONFIGS } from '@src/constants';
 
 export const ACTION_FETCHING = '[pDexV3][swap] Fetching data';
 export const ACTION_FETCHED = '[pDexV3][swap] Fetched data';
@@ -163,3 +164,49 @@ export const PLATFORMS_SUPPORTED = [
     isSelected: false,
   },
 ];
+
+const isMainnet = global.isMainnet;
+
+export const CALL_CONTRACT = {
+  UNI_ETH: isMainnet
+    ? '0xe38e54B2d6B1FCdfaAe8B674bF36ca62429fdBDe'
+    : '0xf31D49B636C24a854Eabe9BB05e85baA7411A380',
+
+  PANCAKE_BSC: isMainnet ?
+    '0x95Cd8898917c7216Da0517aAB6A115d7A7b6CA90' :
+    '0x0e2923c21E2C5A2BDD18aa460B3FdDDDaDb0aE18',
+
+  CURVE_PLG: isMainnet
+    ? '0x55b08b7c1ecdc1931660b18fe2d46ce7b20613e2'
+    : '',
+
+  UNI_PLG: isMainnet
+    ? '0xCC8c88e9Dae72fa07aC077933a2E73d146FECdf0'
+    : '0xAe85BB3D2ED209736E4d236DcE24624EA1A04249',
+
+  SPOOKY_FTM: isMainnet ?
+    '0x6e6Cc30856eB766557418d58af6ED8eaB767940d' :
+    '0x14D0cf3bC307aA15DA40Aa4c8cc2A2a81eF96B3a',
+};
+
+export const getExchangeDataWithCallContract = ({ callContract }) => {
+  let name = 'Incognito';
+  let exchangeScan = CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL;
+  if (CALL_CONTRACT.UNI_ETH.includes(callContract)) {
+    name = 'Uniswap (ETH)';
+    exchangeScan = CONSTANT_CONFIGS.ETHERSCAN_URL;
+  } else if (CALL_CONTRACT.PANCAKE_BSC.includes(callContract)) {
+    name = 'Pancake';
+    exchangeScan = CONSTANT_CONFIGS.BSCSCAN_URL;
+  } else if (CALL_CONTRACT.UNI_PLG.includes(callContract)) {
+    name = 'Uniswap (PLG)';
+    exchangeScan = CONSTANT_CONFIGS.POLYGONSCAN_URL;
+  } else if (CALL_CONTRACT.SPOOKY_FTM.includes(callContract)) {
+    name = 'Spooky';
+    exchangeScan = CONSTANT_CONFIGS.FANTOMSCAN_URL;
+  } else if (CALL_CONTRACT.CURVE_PLG.includes(callContract)) {
+    name = 'Curve';
+    exchangeScan = CONSTANT_CONFIGS.POLYGONSCAN_URL;
+  }
+  return { name, exchangeScan };
+};

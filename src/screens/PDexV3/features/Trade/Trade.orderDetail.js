@@ -36,18 +36,18 @@ export const styled = StyleSheet.create({
 });
 
 export const OrderDetailValue = React.memo(
-  ({ copiable, openUrl, handleOpenUrl, value, containerStyle }) => {
+  ({ copiable, openUrl, handleOpenUrl, value, containerStyle, valueStyle = {}}) => {
     const handleCopy = () => ClipboardService.set(value);
     return (
       <Row style={[styled.rowValue, containerStyle || {}]}>
-        <Text style={styled.value} ellipsizeMode="middle" numberOfLines={1}>
+        <Text style={[styled.value, valueStyle]} ellipsizeMode="middle" numberOfLines={1}>
           {value}
         </Text>
         {copiable && (
           <BtnCopy onPress={handleCopy} containerStyle={styled.btn} />
         )}
         {openUrl && (
-          <BtnOpenUrl onPress={handleOpenUrl} containerStyle={styled.btn} />
+          <BtnOpenUrl onPress={handleOpenUrl} containerStyle={[styled.btn, { marginTop: 3 }]} />
         )}
       </Row>
     );
@@ -63,8 +63,10 @@ const OrderDetail = ({
   customValue,
   hookStyled,
   labelStyle,
+  valueStyle,
   valueContainerStyle
 }) => {
+  if (!value) return null;
   return (
     <Row style={{ ...styled.row, ...hookStyled }}>
       <Text
@@ -83,6 +85,7 @@ const OrderDetail = ({
             openUrl,
             handleOpenUrl,
             value,
+            valueStyle,
             containerStyle: valueContainerStyle || {},
           }}
         />

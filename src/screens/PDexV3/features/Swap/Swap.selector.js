@@ -25,6 +25,7 @@ import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
   PLATFORMS_SUPPORTED,
+  getExchangeDataWithCallContract
 } from './Swap.constant';
 import { getInputAmount, calMintAmountExpected } from './Swap.utils';
 
@@ -1122,93 +1123,147 @@ export const mappingOrderHistorySelector = createSelector(
       if (!order) {
         return {};
       }
-      let {
-        sellTokenId,
-        amount,
-        buyTokenId,
-        requestime,
+      // let {
+      //   sellTokenId,
+      //   amount,
+      //   buyTokenId,
+      //   requestime,
+      //   status,
+      //   fee,
+      //   feeToken: feeTokenId,
+      //   fromStorage,
+      //   amountOut,
+      //   statusCode,
+      //   minAccept,
+      // } = order;
+      // let statusStr = capitalize(status);
+      // amountOut = parseInt(amountOut);
+      // minAccept = parseInt(minAccept);
+      // if (fromStorage) {
+      //   switch (statusCode) {
+      //     case ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_CANCELED:
+      //     case ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_FAILED: {
+      //       statusStr = 'Failed';
+      //       break;
+      //     }
+      //     default:
+      //       statusStr = 'Processing';
+      //       break;
+      //   }
+      // }
+      // const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
+      // const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
+      // const feeToken: SelectedPrivacy = getPrivacyDataByTokenID(feeTokenId);
+      // const amountStr = format.amountVer2(amount, sellToken.pDecimals);
+      // const buyAmountStr = format.amountVer2(
+      //   amountOut || minAccept,
+      //   buyToken.pDecimals,
+      // );
+      // const sellStr = `${amountStr} ${sellToken.symbol}`;
+      // const buyStr = `${buyAmountStr} ${buyToken.symbol}`;
+      // const timeStr = format.formatDateTime(requestime, 'DD MMM HH:mm');
+      // const rate = getPairRate({
+      //   token1Value: amount,
+      //   token2Value: amountOut || minAccept,
+      //   token1: sellToken,
+      //   token2: buyToken,
+      // });
+      // let rateStr = '';
+      // if (statusCode !== HISTORY_STATUS_CODE.REJECTED) {
+      //   rateStr = getExchangeRate(
+      //     sellToken,
+      //     buyToken,
+      //     amount,
+      //     amountOut || minAccept,
+      //   );
+      // }
+      //
+      // let totalFee = fee;
+      // let networkFee = ACCOUNT_CONSTANT.MAX_FEE_PER_TX;
+      // if (feeToken.isMainCrypto) {
+      //   totalFee = new BigNumber(totalFee).plus(networkFee).toNumber();
+      // }
+      // const tradingFeeStr = `${format.amountFull(
+      //   totalFee,
+      //   feeToken.pDecimals,
+      //   false,
+      // )} ${feeToken.symbol}`;
+      // let swapStr = '';
+      // if (statusCode !== HISTORY_STATUS_CODE.REJECTED) {
+      //   swapStr = amountOut || minAccept ? `${sellStr} = ${buyStr}` : '';
+      // }
+      // const result = {
+      //   ...order,
+      //   sellStr,
+      //   buyStr,
+      //   sellTokenNetwork: sellToken?.network,
+      //   buyTokenNetwork: buyToken?.network,
+      //   rateStr,
+      //   timeStr,
+      //   rate,
+      //   networkfeeAmountStr: `${format.amountVer2(networkFee, PRV.pDecimals)} ${
+      //     PRV.symbol
+      //   }`,
+      //   tradingFeeStr,
+      //   statusStr,
+      //   swapStr,
+      //   tradingFeeByPRV: feeToken.isMainCrypto,
+      // };
+      // return result;
+      const {
+        buyTokenID,
+        sellTokenID,
         status,
-        fee,
-        feeToken: feeTokenId,
-        fromStorage,
-        amountOut,
-        statusCode,
-        minAccept,
+        color,
+        callContract,
+        sellAmountText,
+        buyAmountText,
+        time,
+        outchainTxStatus,
+        swapExchangeStatus,
+        redepositStatus
       } = order;
-      let statusStr = capitalize(status);
-      amountOut = parseInt(amountOut);
-      minAccept = parseInt(minAccept);
-      if (fromStorage) {
-        switch (statusCode) {
-          case ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_CANCELED:
-          case ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_FAILED: {
-            statusStr = 'Failed';
-            break;
-          }
-          default:
-            statusStr = 'Processing';
-            break;
-        }
-      }
-      const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
-      const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
-      const feeToken: SelectedPrivacy = getPrivacyDataByTokenID(feeTokenId);
-      const amountStr = format.amountVer2(amount, sellToken.pDecimals);
-      const buyAmountStr = format.amountVer2(
-        amountOut || minAccept,
-        buyToken.pDecimals,
-      );
-      const sellStr = `${amountStr} ${sellToken.symbol}`;
+      const sellToken = getPrivacyDataByTokenID(sellTokenID);
+      const buyToken = getPrivacyDataByTokenID(buyTokenID);
+      const { name: exchange, exchangeScan } = getExchangeDataWithCallContract({ callContract });
+      const sellAmountStr = format.amountVer2(sellAmountText, 0);
+      const sellStr = `${sellAmountStr} ${sellToken.symbol}`;
+      const buyAmountStr = format.amountVer2(buyAmountText, 0);
       const buyStr = `${buyAmountStr} ${buyToken.symbol}`;
-      const timeStr = format.formatDateTime(requestime, 'DD MMM HH:mm');
-      const rate = getPairRate({
-        token1Value: amount,
-        token2Value: amountOut || minAccept,
-        token1: sellToken,
-        token2: buyToken,
-      });
-      let rateStr = '';
-      if (statusCode !== HISTORY_STATUS_CODE.REJECTED) {
-        rateStr = getExchangeRate(
-          sellToken,
-          buyToken,
-          amount,
-          amountOut || minAccept,
-        );
-      }
-
-      let totalFee = fee;
-      let networkFee = ACCOUNT_CONSTANT.MAX_FEE_PER_TX;
-      if (feeToken.isMainCrypto) {
-        totalFee = new BigNumber(totalFee).plus(networkFee).toNumber();
-      }
-      const tradingFeeStr = `${format.amountFull(
-        totalFee,
-        feeToken.pDecimals,
-        false,
-      )} ${feeToken.symbol}`;
-      let swapStr = '';
-      if (statusCode !== HISTORY_STATUS_CODE.REJECTED) {
-        swapStr = amountOut || minAccept ? `${sellStr} = ${buyStr}` : '';
-      }
-      const result = {
+      const swapStr = `${sellStr} = ${buyStr}`;
+      const timeStr = format.formatDateTime(time, 'DD MMM HH:mm');
+      const statusStr =
+        status
+          ? status.charAt(0).toUpperCase() + status.slice(1)
+          : '';
+      const outchainTxStatusStr =
+        outchainTxStatus
+          ? outchainTxStatus.charAt(0).toUpperCase() + outchainTxStatus.slice(1)
+          : '';
+      const swapExchangeStatusStr =
+        swapExchangeStatus ?
+          swapExchangeStatus.charAt(0).toUpperCase() + swapExchangeStatus.slice(1)
+          : '';
+      const redepositStatusStr =
+        redepositStatus ?
+          redepositStatus.charAt(0).toUpperCase() + redepositStatus.slice(1)
+          : '';
+      return {
         ...order,
+        statusStr,
+        statusColor: color,
+        exchange,
+        swapStr,
+        timeStr,
         sellStr,
         buyStr,
-        sellTokenNetwork: sellToken?.network,
-        buyTokenNetwork: buyToken?.network,
-        rateStr,
-        timeStr,
-        rate,
-        networkfeeAmountStr: `${format.amountVer2(networkFee, PRV.pDecimals)} ${
-          PRV.symbol
-        }`,
-        tradingFeeStr,
-        statusStr,
-        swapStr,
-        tradingFeeByPRV: feeToken.isMainCrypto,
+        sellTokenNetwork: sellToken.network,
+        buyTokenNetwork: buyToken.network,
+        outchainTxStatusStr,
+        swapExchangeStatusStr,
+        redepositStatusStr,
+        exchangeScan
       };
-      return result;
     } catch (error) {
       console.log('mappingOrderHistorySelector1-error', error);
     }
