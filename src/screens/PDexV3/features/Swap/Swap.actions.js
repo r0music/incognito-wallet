@@ -2032,7 +2032,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
 
     setTimeout(() => {
       dispatch(actionFetchHistory());
-    }, 2000);
+    }, 20000);
   }
   return tx;
 };
