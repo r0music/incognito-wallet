@@ -2022,14 +2022,17 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
   } finally {
     batch(() => {
       dispatch(actionFetchingSwap(false));
-      dispatch(actionFetchHistory());
-      if (currentScreen !== routeNames.Trade) {
-        dispatch(actionFetchRewardHistories());
-      }
+      // if (currentScreen !== routeNames.Trade) {
+      //   dispatch(actionFetchRewardHistories());
+      // }
       // Reset data after swap
       dispatch(actionResetData());
       dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
     });
+
+    setTimeout(() => {
+      dispatch(actionFetchHistory());
+    }, 2000);
   }
   return tx;
 };
