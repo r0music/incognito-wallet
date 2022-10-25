@@ -80,6 +80,7 @@ export const SCREENS_TO_SHOW_REWARD_HISTORY_TAB = [
   routeNames.PrivacyAppsPancake,
   routeNames.PrivacyAppsUni,
   routeNames.PrivacyAppsCurve,
+  routeNames.PrivacyAppsSpooky,
 ];
 
 export const formConfigs = {
@@ -172,21 +173,19 @@ export const CALL_CONTRACT = {
     ? '0xe38e54B2d6B1FCdfaAe8B674bF36ca62429fdBDe'
     : '0xf31D49B636C24a854Eabe9BB05e85baA7411A380',
 
-  PANCAKE_BSC: isMainnet ?
-    '0x95Cd8898917c7216Da0517aAB6A115d7A7b6CA90' :
-    '0x0e2923c21E2C5A2BDD18aa460B3FdDDDaDb0aE18',
+  PANCAKE_BSC: isMainnet
+    ? '0x95Cd8898917c7216Da0517aAB6A115d7A7b6CA90'
+    : '0x0e2923c21E2C5A2BDD18aa460B3FdDDDaDb0aE18',
 
-  CURVE_PLG: isMainnet
-    ? '0x55b08b7c1ecdc1931660b18fe2d46ce7b20613e2'
-    : '',
+  CURVE_PLG: isMainnet ? '0x55b08b7c1ecdc1931660b18fe2d46ce7b20613e2' : '',
 
   UNI_PLG: isMainnet
     ? '0xCC8c88e9Dae72fa07aC077933a2E73d146FECdf0'
     : '0xAe85BB3D2ED209736E4d236DcE24624EA1A04249',
 
-  SPOOKY_FTM: isMainnet ?
-    '0x6e6Cc30856eB766557418d58af6ED8eaB767940d' :
-    '0x14D0cf3bC307aA15DA40Aa4c8cc2A2a81eF96B3a',
+  SPOOKY_FTM: isMainnet
+    ? '0x6e6Cc30856eB766557418d58af6ED8eaB767940d'
+    : '0x14D0cf3bC307aA15DA40Aa4c8cc2A2a81eF96B3a',
 };
 
 export const getExchangeDataWithCallContract = ({ callContract }) => {

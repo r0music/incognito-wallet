@@ -79,7 +79,8 @@ import {
   ACTION_RESET_DATA,
   ACTION_SET_BEST_RATE_EXCHANGE,
   ACTION_SET_EXCHANGE_SUPPORT_LIST,
-  NETWORK_NAME_SUPPORTED, CALL_CONTRACT,
+  NETWORK_NAME_SUPPORTED,
+  CALL_CONTRACT,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -1249,7 +1250,6 @@ export const actionFetchPairs1 = (refresh) => async (dispatch, getState) => {
     pancakeTokens = pancakeFilterToken(privacyDataFilterList);
     uniTokens = uniswapFilterToken(privacyDataFilterList);
     curveTokens = curveFilterToken(privacyDataFilterList);
-
     spookyTokens = spoonkyFilterToken(privacyDataFilterList);
 
     // curveTokens = privacyDataFilterList.filter((token) =>
@@ -1716,6 +1716,9 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
         case KEYS_PLATFORMS_SUPPORTED.curve:
           analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_CURVE;
           break;
+        case KEYS_PLATFORMS_SUPPORTED.spooky:
+          analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_SPOOKY;
+          break;
       }
       dispatch(requestUpdateMetrics(analytic, params));
     }, 300);
@@ -1739,10 +1742,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       tokenData: tokenBuyData,
       amountText: buyAmountText,
     } = buyInputAmount;
-    const {
-      origininalFeeAmount: tradingFee,
-      feetoken,
-    } = feetokenData;
+    const { origininalFeeAmount: tradingFee, feetoken } = feetokenData;
     const pDexV3Inst = await getPDexV3Instance({ account });
     const platform = platformSelectedSelector(state);
     const exchangeData: ExchangeData = getExchangeSupportByPlatformId(state)(
@@ -1764,7 +1764,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
               version: PrivacyVersion.ver2,
               minAcceptableAmount: String(minAcceptableAmount),
               sellAmountText: sellAmountText,
-              buyAmountText: buyAmountText
+              buyAmountText: buyAmountText,
             },
           };
           // tx = await pDexV3Inst.createAndSendSwapRequestTx(params);
@@ -1812,7 +1812,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
                 )[0]?.contractId || '',
             buyTokenID: tokenIDToBuy,
             sellAmountText: sellAmountText,
-            buyAmountText: buyAmountText
+            buyAmountText: buyAmountText,
             // buyTokenID: !tokenBuyData.isPUnifiedToken
             //   ? tokenBuyData.tokenId
             //   : tokenBuyData.listUnifiedToken.filter(
@@ -2062,7 +2062,9 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     let callContracts = [];
     switch (defaultExchange) {
       case KEYS_PLATFORMS_SUPPORTED.incognito:
-        callContracts = Object.values(CALL_CONTRACT).filter(contract => !!contract);
+        callContracts = Object.values(CALL_CONTRACT).filter(
+          (contract) => !!contract,
+        );
         break;
       case KEYS_PLATFORMS_SUPPORTED.pancake:
         callContracts.push(CALL_CONTRACT.PANCAKE_BSC);

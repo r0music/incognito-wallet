@@ -2,7 +2,12 @@ import React, { useCallback } from 'react';
 import { StyleSheet } from 'react-native';
 import { withLayout_2 } from '@src/components/Layout';
 import { View } from '@src/components/core';
-import { PancakeIcon2, UniIcon2, CurveIcon2 } from '@src/components/Icons';
+import {
+  PancakeIcon2,
+  UniIcon2,
+  CurveIcon2,
+  SpoonkyIcon,
+} from '@src/components/Icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { FONT } from '@src/styles';
 import { KEYS_PLATFORMS_SUPPORTED } from '@screens/PDexV3/features/Swap';
@@ -47,6 +52,9 @@ const PrivacyApps = () => {
       // case KEYS_PLATFORMS_SUPPORTED.uniEther:
       //   navigation.navigate(routeNames.PrivacyAppsUniEther);
       // break;
+      case KEYS_PLATFORMS_SUPPORTED.spooky:
+        navigation.navigate(routeNames.PrivacyAppsSpooky);
+        break;
       default:
         break;
     }
@@ -127,6 +135,24 @@ const PrivacyApps = () => {
           },
         ],
         desc: 'Swap stablecoins with complete confidentiality using Privacy Curve. Low fees on Polygon meets full privacy on Incognito.',
+        onPressItem,
+      },
+      {
+        privacyAppId: KEYS_PLATFORMS_SUPPORTED.spooky,
+        icon: <SpoonkyIcon />, // TO DO, change icon
+        headerTitle: 'pSpooky',
+        headerSub: 'Private Spooky',
+        groupActions: [
+          {
+            id: 'FANTOM',
+            title: 'Fantom',
+          },
+          {
+            id: 'DEX',
+            title: 'DEX',
+          },
+        ],
+        desc: 'Swap stablecoins with complete confidentiality using Privacy Spooky. Low fees on Spooky meets full privacy on Incognito.',
         onPressItem,
       },
     ];

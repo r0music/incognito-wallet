@@ -25,7 +25,7 @@ import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
   PLATFORMS_SUPPORTED,
-  getExchangeDataWithCallContract
+  getExchangeDataWithCallContract,
 } from './Swap.constant';
 import { getInputAmount, calMintAmountExpected } from './Swap.utils';
 
@@ -96,7 +96,11 @@ export const findTokenCurveByIdSelector = createSelector(
 export const findTokenSpookyByIdSelector = createSelector(
   spoonkyPairsSelector,
   (spookyTokens) =>
-    memoize((tokenID) => spookyTokens.find((t) => t?.tokenID === tokenID)),
+    memoize((tokenID) =>
+      spookyTokens.find(
+        (t) => t?.tokenID === tokenID || t?.tokenId === tokenID,
+      ),
+    ),
 );
 
 export const hashmapContractIDsSelector = createSelector(
@@ -1221,33 +1225,32 @@ export const mappingOrderHistorySelector = createSelector(
         time,
         outchainTxStatus,
         swapExchangeStatus,
-        redepositStatus
+        redepositStatus,
       } = order;
       const sellToken = getPrivacyDataByTokenID(sellTokenID);
       const buyToken = getPrivacyDataByTokenID(buyTokenID);
-      const { name: exchange, exchangeScan } = getExchangeDataWithCallContract({ callContract });
+      const { name: exchange, exchangeScan } = getExchangeDataWithCallContract({
+        callContract,
+      });
       const sellAmountStr = format.amountVer2(sellAmountText, 0);
       const sellStr = `${sellAmountStr} ${sellToken.symbol}`;
       const buyAmountStr = format.amountVer2(buyAmountText, 0);
       const buyStr = `${buyAmountStr} ${buyToken.symbol}`;
       const swapStr = `${sellStr} = ${buyStr}`;
       const timeStr = format.formatDateTime(time, 'DD MMM HH:mm');
-      const statusStr =
-        status
-          ? status.charAt(0).toUpperCase() + status.slice(1)
-          : '';
-      const outchainTxStatusStr =
-        outchainTxStatus
-          ? outchainTxStatus.charAt(0).toUpperCase() + outchainTxStatus.slice(1)
-          : '';
-      const swapExchangeStatusStr =
-        swapExchangeStatus ?
-          swapExchangeStatus.charAt(0).toUpperCase() + swapExchangeStatus.slice(1)
-          : '';
-      const redepositStatusStr =
-        redepositStatus ?
-          redepositStatus.charAt(0).toUpperCase() + redepositStatus.slice(1)
-          : '';
+      const statusStr = status
+        ? status.charAt(0).toUpperCase() + status.slice(1)
+        : '';
+      const outchainTxStatusStr = outchainTxStatus
+        ? outchainTxStatus.charAt(0).toUpperCase() + outchainTxStatus.slice(1)
+        : '';
+      const swapExchangeStatusStr = swapExchangeStatus
+        ? swapExchangeStatus.charAt(0).toUpperCase() +
+          swapExchangeStatus.slice(1)
+        : '';
+      const redepositStatusStr = redepositStatus
+        ? redepositStatus.charAt(0).toUpperCase() + redepositStatus.slice(1)
+        : '';
       return {
         ...order,
         statusStr,
@@ -1262,7 +1265,7 @@ export const mappingOrderHistorySelector = createSelector(
         outchainTxStatusStr,
         swapExchangeStatusStr,
         redepositStatusStr,
-        exchangeScan
+        exchangeScan,
       };
     } catch (error) {
       console.log('mappingOrderHistorySelector1-error', error);

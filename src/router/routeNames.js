@@ -206,6 +206,7 @@ export default {
   PrivacyAppsUni: 'PrivacyAppsUni',
   PrivacyAppsUniEther: 'PrivacyAppsUniEther',
   PrivacyAppsCurve: 'PrivacyAppsCurve',
+  PrivacyAppsSpooky: 'PrivacyAppsSpooky',
   MarketSearchCoins: 'MarketSearchCoins',
   HomeLP: 'TabHomeLP',
   ConvertToUnifiedToken: 'ConvertToUnifiedToken',
