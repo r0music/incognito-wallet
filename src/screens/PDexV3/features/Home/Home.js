@@ -27,7 +27,10 @@ import { styled } from './Home.styled';
 const TabPools = React.memo(() => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const listPools = useDebounceSelector(listPoolsSelector);
+  const listPools = (useDebounceSelector(listPoolsSelector) || []).filter(({
+      token1,
+      token2,
+    }) => !token1.movedUnifiedToken && !token2.movedUnifiedToken);
   const onNavigateContribute = (poolId) => {
     batch(() => {
       dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.EARN_NOW));
