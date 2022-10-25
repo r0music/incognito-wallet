@@ -1,4 +1,6 @@
 import { PRV_ID } from '@src/constants/common';
+import { replaceDecimals } from '@src/utils/convert';
+
 import {
   NETWORK_NAME_SUPPORTED,
   KEYS_PLATFORMS_SUPPORTED,
@@ -76,7 +78,7 @@ const parseExchangeDataModelResponse = (
     amountOutRaw: parseFloat(data.AmountOutRaw) || 0,
     appName: data.AppName === 'pdex' ? 'incognito' : data.AppName,
     exchangeName: data.AppName || '',
-    amountOutPreSlippage: data.AmountOutPreSlippage || '',
+    amountOutPreSlippage: replaceDecimals(data.AmountOutPreSlippage || ''),
     amountOutPreSlippageNumber: parseFloat(data.AmountOutPreSlippage || '0'),
     fees: data.Fee || [],
     routes: data.Paths || [],

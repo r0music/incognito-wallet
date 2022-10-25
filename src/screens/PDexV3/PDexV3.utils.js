@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 import BigNumber from 'bignumber.js';
 import format from '@src/utils/format';
-import convertUtil from '@utils/convert';
+import convertUtil, { replaceDecimals } from '@utils/convert';
 import isNumber from 'lodash/isNumber';
 import isNaN from 'lodash/isNaN';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
@@ -84,7 +84,9 @@ export const getExchangeRate1 = (token1, token2, token1Value, token2Value) => {
       return '';
     }
 
-    const value1 = (token2Value / token1Value).toFixed(6);
+    const value1 = replaceDecimals(
+      (token2Value / token1Value).toFixed(6) || '',
+    );
 
     return `1 ${token1?.symbol} = ${value1} ${token2?.symbol}`;
   } catch (error) {

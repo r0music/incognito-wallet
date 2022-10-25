@@ -17,7 +17,7 @@ import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { batch } from 'react-redux';
 import uniq from 'lodash/uniq';
 import { PRV, PRV_ID } from '@src/constants/common';
-import convert from '@src/utils/convert';
+import convert, { replaceDecimals } from '@src/utils/convert';
 import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
 import floor from 'lodash/floor';
@@ -999,9 +999,8 @@ export const actionEstimateTrade =
           feePrv: {
             fee: isUseTokenFee ? 0 : originalTradeFee,
             isSignificant: false,
-            maxGet: amountOutPreSlippage
-              ? amountOutPreSlippage.toString()
-              : '0',
+            maxGet: amountOutPreSlippage ? amountOutPreSlippage : '0',
+
             route: routes,
             sellAmount: payload.sellamount,
             buyAmount: amountOut,
@@ -1013,9 +1012,7 @@ export const actionEstimateTrade =
             buyAmount: amountOut,
             fee: isUseTokenFee ? originalTradeFee : 0,
             isSignificant: false,
-            maxGet: amountOutPreSlippage
-              ? amountOutPreSlippage.toString()
-              : '0',
+            maxGet: amountOutPreSlippage ? amountOutPreSlippage : '0',
             route: routes,
             impactAmount,
             tokenRoute: routes,
@@ -1028,7 +1025,9 @@ export const actionEstimateTrade =
           isUseTokenFee,
           error: null,
           minimumReceived: amountOut
-            ? `${amountOut.toString().slice(0, 8)} ${buyInputSymbol}`
+            ? `${replaceDecimals(
+                amountOut.toString().slice(0, 8),
+              )} ${buyInputSymbol}`
             : undefined,
         };
 
