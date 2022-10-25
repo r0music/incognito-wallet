@@ -6,7 +6,7 @@ import {
   PancakeIcon2,
   UniIcon2,
   CurveIcon2,
-  SpoonkyIcon,
+  SpoonkyIcon2,
 } from '@src/components/Icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { FONT } from '@src/styles';
@@ -139,9 +139,9 @@ const PrivacyApps = () => {
       },
       {
         privacyAppId: KEYS_PLATFORMS_SUPPORTED.spooky,
-        icon: <SpoonkyIcon />, // TO DO, change icon
+        icon: <SpoonkyIcon2 />,
         headerTitle: 'pSpooky',
-        headerSub: 'Private Spooky',
+        headerSub: 'Private SpookySwap',
         groupActions: [
           {
             id: 'FANTOM',
@@ -152,7 +152,7 @@ const PrivacyApps = () => {
             title: 'DEX',
           },
         ],
-        desc: 'Swap stablecoins with complete confidentiality using Privacy Spooky. Low fees on Spooky meets full privacy on Incognito.',
+        desc: 'Explore DeFi on Fantom with full privacy for your activity and assets. Swap Fantom coins anonymously with Private SpookySwap.',
         onPressItem,
       },
     ];

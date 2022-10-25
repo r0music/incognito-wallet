@@ -11,11 +11,11 @@ const styled = StyleSheet.create({
   },
 });
 
-const PancakeIcon = (props: ImageProps) => {
+const SpoonkyIcon = (props: ImageProps) => {
   const { style, ...rest } = props;
   return <Image source={spoonkyIcon} style={[styled.icon, style]} {...rest} />;
 };
 
-PancakeIcon.propTypes = {};
+SpoonkyIcon.propTypes = {};
 
-export default PancakeIcon;
+export default SpoonkyIcon;
