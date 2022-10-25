@@ -806,7 +806,7 @@ export const feetokenDataSelector = createSelector(
         sellTokenData,
         buyTokenData,
         convert.toHumanAmount(sellAmountToken, sellTokenData?.pDecimals),
-        buyAmountToken,
+        maxGet ? parseFloat(maxGet) : buyAmountToken,
       );
 
       let tradePathStr = '';
