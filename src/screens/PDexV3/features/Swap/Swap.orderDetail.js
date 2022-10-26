@@ -83,7 +83,7 @@ const SwapOrderDetail = () => {
       },
       {
         label: 'Rate',
-        value: order?.swapStr,
+        value: order?.rateStr,
       },
     ]);
     if (order?.respondTxs?.length > 0) {
@@ -141,15 +141,15 @@ const SwapOrderDetail = () => {
                   `${order.exchangeScan}/tx/${order?.outchainTx}`,
                 )
               }
-              value={`#${order?.redepositTxInc}`}
+              value={`#${order?.outchainTx}`}
             />
           </Row>
         )
       },
-      {
-        label: 'Outchain Status',
-        value: order?.outchainTxStatusStr,
-      },
+      // {
+      //   label: 'Outchain Status',
+      //   value: order?.outchainTxStatusStr,
+      // },
       {
         label: 'Exchange Status',
         value: order?.swapExchangeStatusStr,

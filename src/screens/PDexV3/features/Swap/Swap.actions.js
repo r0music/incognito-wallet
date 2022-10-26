@@ -950,7 +950,8 @@ export const actionEstimateTrade =
           network = 'plg';
           break;
         case KEYS_PLATFORMS_SUPPORTED.uni:
-          network = 'eth';
+        case KEYS_PLATFORMS_SUPPORTED.uniEther:
+          network = 'inc';
           break;
         case KEYS_PLATFORMS_SUPPORTED.spooky:
           network = 'ftm';
@@ -1748,8 +1749,12 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       platform.id,
     );
     console.log('PlatformId: => ' + platform.id);
-    const _sellAmountText = convert.toNumber(sellAmountText || 0, true).toString();
-    const _buyAmountText = convert.toNumber(buyAmountText || 0, true).toString();
+    const _sellAmountText = convert
+      .toNumber(sellAmountText || 0, true)
+      .toString();
+    const _buyAmountText = convert
+      .toNumber(buyAmountText || 0, true)
+      .toString();
     switch (platform.id) {
       case KEYS_PLATFORMS_SUPPORTED.incognito:
         {
@@ -2207,7 +2212,9 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
   try {
     await dispatch(actionFetchingOrderDetail(_order));
     const orders = (await dispatch(actionFetchHistory())) || [];
-    _order = orders.find(({ requestBurnTxInc }) => requestBurnTxInc === order?.requestBurnTxInc);
+    _order = orders.find(
+      ({ requestBurnTxInc }) => requestBurnTxInc === order?.requestBurnTxInc,
+    );
   } catch (e) {
     console.log('error');
   } finally {

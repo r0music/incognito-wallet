@@ -1237,6 +1237,9 @@ export const mappingOrderHistorySelector = createSelector(
       const buyAmountStr = format.amountVer2(buyAmountText, 0);
       const buyStr = `${buyAmountStr} ${buyToken.symbol}`;
       const swapStr = `${sellStr} = ${buyStr}`;
+      const rateStr = `1 ${sellToken.symbol} = ${format.amountVer2(
+        new BigNumber(buyAmountText || 0).div(sellAmountText) || 0, 0
+      )} ${buyToken.symbol}`;
       const timeStr = format.formatDateTime(time, 'DD MMM HH:mm');
       const statusStr = status
         ? status.charAt(0).toUpperCase() + status.slice(1)
@@ -1266,6 +1269,7 @@ export const mappingOrderHistorySelector = createSelector(
         swapExchangeStatusStr,
         redepositStatusStr,
         exchangeScan,
+        rateStr
       };
     } catch (error) {
       console.log('mappingOrderHistorySelector1-error', error);
