@@ -2255,22 +2255,10 @@ export const actionSwitchPlatform =
           await dispatch(actionHandleInjectEstDataForPancake());
           break;
         case KEYS_PLATFORMS_SUPPORTED.uni: {
-          await dispatch(
-            actionSetDefaultExchange({
-              exchange: KEYS_PLATFORMS_SUPPORTED.uni,
-              network: NETWORK_NAME_SUPPORTED.POLYGON,
-            }),
-          );
           await dispatch(actionHandleInjectEstDataForUni(platformId));
           break;
         }
         case KEYS_PLATFORMS_SUPPORTED.uniEther:
-          await dispatch(
-            actionSetDefaultExchange({
-              exchange: KEYS_PLATFORMS_SUPPORTED.uniEther,
-              network: NETWORK_NAME_SUPPORTED.ETHEREUM,
-            }),
-          );
           await dispatch(actionHandleInjectEstDataForUni(platformId));
           break;
         case KEYS_PLATFORMS_SUPPORTED.curve:
