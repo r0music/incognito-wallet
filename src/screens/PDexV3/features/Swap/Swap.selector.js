@@ -917,6 +917,7 @@ export const feetokenDataSelector = createSelector(
         tradePathStr,
         tradePathArr,
         impactAmountStr,
+        impactAmount,
       };
     } catch (error) {
       console.log('feetokenDataSelector-error', error);
@@ -1238,7 +1239,8 @@ export const mappingOrderHistorySelector = createSelector(
       const buyStr = `${buyAmountStr} ${buyToken.symbol}`;
       const swapStr = `${sellStr} = ${buyStr}`;
       const rateStr = `1 ${sellToken.symbol} = ${format.amountVer2(
-        new BigNumber(buyAmountText || 0).div(sellAmountText) || 0, 0
+        new BigNumber(buyAmountText || 0).div(sellAmountText) || 0,
+        0,
       )} ${buyToken.symbol}`;
       const timeStr = format.formatDateTime(time, 'DD MMM HH:mm');
       const statusStr = status
@@ -1269,7 +1271,7 @@ export const mappingOrderHistorySelector = createSelector(
         swapExchangeStatusStr,
         redepositStatusStr,
         exchangeScan,
-        rateStr
+        rateStr,
       };
     } catch (error) {
       console.log('mappingOrderHistorySelector1-error', error);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Hook } from '@screens/PDexV3/features/Extra';
-import { FONT } from '@src/styles';
+import { FONT, COLORS } from '@src/styles';
 import { useSelector } from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
@@ -79,6 +79,12 @@ export const useTabFactories = () => {
   //   );
   // };
 
+  const priceImpactDecorator = (priceImpactValue) => {
+    if (priceImpactValue >= 15) return COLORS.red;
+    if (priceImpactValue >= 5) return COLORS.lightOrange;
+    return COLORS.white;
+  };
+
   const hooksFactories = React.useMemo(() => {
     let result = [
       {
@@ -108,6 +114,9 @@ export const useTabFactories = () => {
       {
         label: 'Price impact',
         value: `${feeTokenData?.impactAmountStr}%`,
+        customStyledValue: {
+          color: priceImpactDecorator(parseFloat(feeTokenData.impactAmount)),
+        },
       },
     ];
     if (feeTokenData.isMainCrypto) {
