@@ -5,8 +5,8 @@ import { useSearchBox } from '@src/components/Header';
 import { handleFilterTokenByKeySearch } from '@src/components/Token';
 import PropTypes from 'prop-types';
 import orderBy from 'lodash/orderBy';
-import {marketTabSelector} from '@screens/Setting';
-import {MarketTabs} from '@screens/MainTabBar/features/Market/Market.header';
+import { marketTabSelector } from '@screens/Setting';
+import { MarketTabs } from '@screens/MainTabBar/features/Market/Market.header';
 import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { useNavigation } from 'react-navigation-hooks';
@@ -19,10 +19,7 @@ const enhance = (WrappedComp) => (props) => {
     props?.availableTokens || useDebounceSelector(availableTokensSelector);
   const activeTab = useDebounceSelector(marketTabSelector);
   const navigation = useNavigation();
-  const {
-    verifiedTokens,
-    unVerifiedTokens
-  } = React.useMemo(() => {
+  const { verifiedTokens, unVerifiedTokens } = React.useMemo(() => {
     let verifiedTokens = [];
     let unVerifiedTokens = [];
     // remove tokens has convert to unified token when current screen is Shield
@@ -38,7 +35,7 @@ const enhance = (WrappedComp) => (props) => {
     );
     return {
       verifiedTokens,
-      unVerifiedTokens
+      unVerifiedTokens,
     };
   }, [availableTokens]);
 
@@ -78,17 +75,29 @@ const enhance = (WrappedComp) => (props) => {
     let marketTokens = [];
     if (activeTab === MarketTabs.ALL) {
       marketTokens = _verifiedTokens
-        .concat(_unVerifiedTokens.filter(item => item.isFollowed))
-        .filter(token => !!token.defaultPoolPair);
+        .concat(_unVerifiedTokens.filter((item) => item.isFollowed))
+        .filter((token) => !!token.defaultPoolPair);
     } else {
       marketTokens = _verifiedTokens
-        .filter(item => item.isFollowed || item.tokenId === PRVIDSTR)
-        .concat(_unVerifiedTokens.filter(item => item.isFollowed))
-        .filter(token => !!token.defaultPoolPair);
+        .filter((item) => item.isFollowed || item.tokenId === PRVIDSTR)
+        .concat(_unVerifiedTokens.filter((item) => item.isFollowed))
+        .filter((token) => !!token.defaultPoolPair);
     }
-    marketTokens = orderBy(marketTokens, item => Number(item[filterField] || '0'), [orderField]);
-    const __verifiedTokens = orderBy(_verifiedTokens, item => Number(item[filterField] || '0'), [orderField]);
-    const __unVerifiedTokens = orderBy(_unVerifiedTokens, item => Number(item[filterField] || '0'), [orderField]);
+    marketTokens = orderBy(
+      marketTokens,
+      (item) => Number(item[filterField] || '0'),
+      [orderField],
+    );
+    const __verifiedTokens = orderBy(
+      _verifiedTokens,
+      ['isPRV', 'isPUnifiedToken', 'network', 'symbol'],
+      ['desc', 'desc', 'asc', 'asc'],
+    );
+    const __unVerifiedTokens = orderBy(
+      _unVerifiedTokens,
+      (item) => Number(item[filterField] || '0'),
+      [orderField],
+    );
     return [
       {
         data: __verifiedTokens,
@@ -104,9 +113,16 @@ const enhance = (WrappedComp) => (props) => {
         data: marketTokens,
         visible: true,
         styledListToken: { paddingTop: 15 },
-      }
+      },
     ];
-  }, [_unVerifiedTokens, _verifiedTokens, toggleUnVerified, filterField, orderField, activeTab]);
+  }, [
+    _unVerifiedTokens,
+    _verifiedTokens,
+    toggleUnVerified,
+    filterField,
+    orderField,
+    activeTab,
+  ]);
 
   React.useEffect(() => {
     if (toggleUnVerified && !keySearch) {
@@ -122,7 +138,7 @@ const enhance = (WrappedComp) => (props) => {
           tokensFactories,
           toggleUnVerified,
           onToggleUnVerifiedTokens,
-          keySearch
+          keySearch,
         }}
       />
     </ErrorBoundary>
@@ -130,12 +146,12 @@ const enhance = (WrappedComp) => (props) => {
 };
 enhance.defaultProps = {
   filterField: 'change',
-  orderField: 'desc'
+  orderField: 'desc',
 };
 enhance.propTypes = {
   availableTokens: PropTypes.array.isRequired,
   filterField: PropTypes.string,
-  orderField: PropTypes.string
+  orderField: PropTypes.string,
 };
 
 export default enhance;
