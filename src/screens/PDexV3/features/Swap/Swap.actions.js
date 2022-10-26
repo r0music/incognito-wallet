@@ -754,81 +754,81 @@ export const actionHandleInjectEstDataForSpooky =
       } else {
         await dispatch(actionSetFeeToken(PRV.id));
       }
-      // const { field, useMax } = feeData;
-      // const getSpookyTokenParamReq = findTokenSpookyByIdSelector(state);
-      // const tokenSellSpooky = getSpookyTokenParamReq(selltoken);
-      // const tokenBuySpooky = getSpookyTokenParamReq(buytoken);
-      // if (tokenSellSpooky == null || tokenBuySpooky == null) {
-      //   throw 'This pair is not existed  on spooky';
-      // }
-      // switch (field) {
-      //   case formConfigs.selltoken: {
-      //     inputPDecimals = tokenBuySpooky.pDecimals;
-      //     inputToken = formConfigs.buytoken;
-      //     break;
-      //   }
-      //   case formConfigs.buytoken: {
-      //     inputPDecimals = tokenSellSpooky.pDecimals;
-      //     inputToken = formConfigs.selltoken;
-      //     break;
-      //   }
-      //   default:
-      //     break;
-      // }
-      // const {
-      //   maxGet,
-      //   minFeePRVFixed,
-      //   availableFixedSellAmountPRV,
-      //   minFeeTokenFixed,
-      // } = feetokenDataSelector(state);
-      // const slippagetolerance = slippagetoleranceSelector(state);
-      //
-      // const originalMinAmountExpected =
-      //   field === formConfigs.buytoken
-      //     ? maxGet
-      //     : calMintAmountExpected({
-      //         maxGet,
-      //         slippagetolerance,
-      //       });
-      //
-      // const minAmountExpectedToHumanAmount = convert.toHumanAmount(
-      //   originalMinAmountExpected,
-      //   inputPDecimals,
-      // );
-      //
-      // const minAmountExpectedToFixed = format.toFixed(
-      //   minAmountExpectedToHumanAmount,
-      //   inputPDecimals,
-      // );
-      //
-      // batch(() => {
-      //   if (useMax) {
-      //     dispatch(
-      //       change(
-      //         formConfigs.formName,
-      //         formConfigs.selltoken,
-      //         availableFixedSellAmountPRV,
-      //       ),
-      //     );
-      //   }
-      //   // dispatch(
-      //   //   change(formConfigs.formName, inputToken, minAmountExpectedToFixed)
-      //   // );
-      //   dispatch(
-      //     change(
-      //       formConfigs.formName,
-      //       inputToken,
-      //       maxGet ? maxGet.toString() : '',
-      //     ),
-      //   );
-      //   dispatch(
-      //     change(
-      //       formConfigs.formName,
-      //       formConfigs.feetoken,
-      //       isUseTokenFee ? minFeeTokenFixed : minFeePRVFixed,
-      //     ),
-      //   );
-      // });
+      const { field, useMax } = feeData;
+      const getSpookyTokenParamReq = findTokenSpookyByIdSelector(state);
+      const tokenSellSpooky = getSpookyTokenParamReq(selltoken);
+      const tokenBuySpooky = getSpookyTokenParamReq(buytoken);
+      if (tokenSellSpooky == null || tokenBuySpooky == null) {
+        throw 'This pair is not existed  on spooky';
+      }
+      switch (field) {
+        case formConfigs.selltoken: {
+          inputPDecimals = tokenBuySpooky.pDecimals;
+          inputToken = formConfigs.buytoken;
+          break;
+        }
+        case formConfigs.buytoken: {
+          inputPDecimals = tokenSellSpooky.pDecimals;
+          inputToken = formConfigs.selltoken;
+          break;
+        }
+        default:
+          break;
+      }
+      const {
+        maxGet,
+        minFeePRVFixed,
+        availableFixedSellAmountPRV,
+        minFeeTokenFixed,
+      } = feetokenDataSelector(state);
+      const slippagetolerance = slippagetoleranceSelector(state);
+
+      const originalMinAmountExpected =
+        field === formConfigs.buytoken
+          ? maxGet
+          : calMintAmountExpected({
+              maxGet,
+              slippagetolerance,
+            });
+
+      const minAmountExpectedToHumanAmount = convert.toHumanAmount(
+        originalMinAmountExpected,
+        inputPDecimals,
+      );
+
+      const minAmountExpectedToFixed = format.toFixed(
+        minAmountExpectedToHumanAmount,
+        inputPDecimals,
+      );
+
+      batch(() => {
+        if (useMax) {
+          dispatch(
+            change(
+              formConfigs.formName,
+              formConfigs.selltoken,
+              availableFixedSellAmountPRV,
+            ),
+          );
+        }
+        // dispatch(
+        //   change(formConfigs.formName, inputToken, minAmountExpectedToFixed)
+        // );
+        dispatch(
+          change(
+            formConfigs.formName,
+            inputToken,
+            maxGet ? maxGet.toString() : '',
+          ),
+        );
+        dispatch(
+          change(
+            formConfigs.formName,
+            formConfigs.feetoken,
+            isUseTokenFee ? minFeeTokenFixed : minFeePRVFixed,
+          ),
+        );
+      });
     } catch (error) {
       throw error;
     }
