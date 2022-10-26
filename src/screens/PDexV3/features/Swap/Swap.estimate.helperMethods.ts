@@ -78,7 +78,7 @@ const parseExchangeDataModelResponse = (
     amountOutRaw: parseFloat(data.AmountOutRaw) || 0,
     appName: data.AppName === 'pdex' ? 'incognito' : data.AppName,
     exchangeName: data.AppName || '',
-    amountOutPreSlippage: replaceDecimals(data.AmountOutPreSlippage || ''),
+    amountOutPreSlippage: data.AmountOutPreSlippage || '0',
     amountOutPreSlippageNumber: parseFloat(data.AmountOutPreSlippage || '0'),
     fees: data.Fee || [],
     routes: data.Paths || [],

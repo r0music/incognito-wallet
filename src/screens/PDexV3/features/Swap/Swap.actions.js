@@ -40,7 +40,6 @@ import {
   isUseTokenFeeParser,
   extractEstimateData,
 } from './Swap.estimate.helperMethods';
-
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -982,6 +981,8 @@ export const actionEstimateTrade =
         sellInputToken.tokenData,
         defaultExchange,
       );
+      // console.log('buyInputToken ', buyInputToken);
+      // console.log('payload ', payload);
 
       //convert new data to data old structror (BIND UI)
       exchangeSupports.map(async (exchange) => {
@@ -1001,8 +1002,7 @@ export const actionEstimateTrade =
           feePrv: {
             fee: isUseTokenFee ? 0 : originalTradeFee,
             isSignificant: false,
-            maxGet: amountOutPreSlippage ? amountOutPreSlippage : '0',
-
+            maxGet: format.amount(amountOutPreSlippage, 0),
             route: routes,
             sellAmount: payload.sellamount,
             buyAmount: amountOut,
@@ -1015,7 +1015,7 @@ export const actionEstimateTrade =
             buyAmount: amountOut,
             fee: isUseTokenFee ? originalTradeFee : 0,
             isSignificant: false,
-            maxGet: amountOutPreSlippage ? amountOutPreSlippage : '0',
+            maxGet: format.amount(amountOutPreSlippage, 0),
             route: routes,
             impactAmount,
             tokenRoute: routes,
