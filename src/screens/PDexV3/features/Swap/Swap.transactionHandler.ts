@@ -41,6 +41,8 @@ export type CreateTransactionPDexPayload = {
       tradePath: string[];
       tradingFee: number;
       version: number;
+      sellAmountText: string;
+      buyAmountText: string;
     };
   };
 };

@@ -1748,6 +1748,8 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       platform.id,
     );
     console.log('PlatformId: => ' + platform.id);
+    const _sellAmountText = convert.toNumber(sellAmountText || 0, true).toString();
+    const _buyAmountText = convert.toNumber(buyAmountText || 0, true).toString();
     switch (platform.id) {
       case KEYS_PLATFORMS_SUPPORTED.incognito:
         {
@@ -1762,8 +1764,8 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
               feetoken,
               version: PrivacyVersion.ver2,
               minAcceptableAmount: String(minAcceptableAmount),
-              sellAmountText: sellAmountText,
-              buyAmountText: buyAmountText,
+              sellAmountText: _sellAmountText,
+              buyAmountText: _buyAmountText,
             },
           };
           // tx = await pDexV3Inst.createAndSendSwapRequestTx(params);
@@ -1810,8 +1812,8 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
                   (token) => token.networkId === exchangeData.networkID,
                 )[0]?.contractId || '',
             buyTokenID: tokenIDToBuy,
-            sellAmountText: sellAmountText,
-            buyAmountText: buyAmountText,
+            sellAmountText: _sellAmountText,
+            buyAmountText: _buyAmountText,
             // buyTokenID: !tokenBuyData.isPUnifiedToken
             //   ? tokenBuyData.tokenId
             //   : tokenBuyData.listUnifiedToken.filter(
@@ -2021,6 +2023,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
   } finally {
     batch(() => {
       dispatch(actionFetchingSwap(false));
+      dispatch(actionFetchHistory());
       // if (currentScreen !== routeNames.Trade) {
       //   dispatch(actionFetchRewardHistories());
       // }
@@ -2028,10 +2031,6 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       dispatch(actionResetData());
       dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
     });
-
-    setTimeout(() => {
-      dispatch(actionFetchHistory());
-    }, 20000);
   }
   return tx;
 };
@@ -2132,6 +2131,7 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     history = await pDexV3.getSwapHistoryStorage({ callContracts });
     history = orderBy(history, 'time', 'desc');
     await dispatch(actionFetchedOrdersHistory(history));
+    return history;
   } catch (error) {
     console.log('actionFetchHistory-error', error);
     new ExHandler(error).showErrorToast();
@@ -2201,57 +2201,19 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
   let _order = {};
   const state = getState();
   const { order } = orderDetailSelector(state);
-  if (!order?.requestTx) {
+  if (!order?.requestBurnTxInc) {
     return;
   }
   try {
-    await dispatch(actionFetchingOrderDetail());
-    const pDexV3 = await dispatch(actionGetPDexV3Inst());
-    switch (order?.exchange) {
-      case EXCHANGE_SUPPORTED.incognito: {
-        _order = await pDexV3.getOrderSwapDetail({
-          requestTx: order?.requestTx,
-          version: PrivacyVersion.ver2,
-          fromStorage: !!order?.fromStorage,
-        });
-        break;
-      }
-      case EXCHANGE_SUPPORTED.pancake: {
-        _order = await pDexV3.getOrderSwapPancakeDetail({
-          requestTx: order?.requestTx,
-          version: PrivacyVersion.ver2,
-          fromStorage: !!order?.fromStorage,
-          tradeID: order?.tradeID,
-        });
-        break;
-      }
-      case EXCHANGE_SUPPORTED.uni: {
-        _order = await pDexV3.getOrderSwapUniDetail({
-          requestTx: order?.requestTx,
-          version: PrivacyVersion.ver2,
-          fromStorage: !!order?.fromStorage,
-          tradeID: order?.tradeID,
-        });
-        break;
-      }
-      case EXCHANGE_SUPPORTED.curve: {
-        _order = await pDexV3.getOrderSwapCurveDetail({
-          requestTx: order?.requestTx,
-          version: PrivacyVersion.ver2,
-          fromStorage: !!order?.fromStorage,
-          tradeID: order?.tradeID,
-        });
-        break;
-      }
-      default:
-        break;
-    }
-  } catch (error) {
-    _order = { ...order };
-    new ExHandler(error).showErrorToast();
+    await dispatch(actionFetchingOrderDetail(_order));
+    const orders = (await dispatch(actionFetchHistory())) || [];
+    _order = orders.find(({ requestBurnTxInc }) => requestBurnTxInc === order?.requestBurnTxInc);
+  } catch (e) {
+    console.log('error');
   } finally {
-    _order = _order || order;
-    await dispatch(actionFetchedOrderDetail(_order));
+    if (_order) {
+      await dispatch(actionFetchedOrderDetail(_order));
+    }
   }
 };
 

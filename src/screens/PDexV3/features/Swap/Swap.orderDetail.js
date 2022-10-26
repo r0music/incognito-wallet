@@ -17,7 +17,7 @@ import TradeOrderDetail, {
 } from '@screens/PDexV3/features/Trade/Trade.orderDetail';
 import { Row } from '@src/components';
 import { orderDetailSelector } from './Swap.selector';
-import { actionFetchDataOrderDetail, actionFetchHistory } from './Swap.actions';
+import { actionFetchDataOrderDetail } from './Swap.actions';
 
 const styled = StyleSheet.create({
   container: { flex: 1 },
@@ -28,7 +28,7 @@ const SwapOrderDetail = () => {
   const dispatch = useDispatch();
   const { fetching: refreshing, order } = useSelector(orderDetailSelector);
   const onRefresh = async () => {
-    dispatch(actionFetchHistory());
+    dispatch(actionFetchDataOrderDetail());
   };
 
   const getTradingTimeEstimation = () => {
