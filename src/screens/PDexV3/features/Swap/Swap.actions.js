@@ -1782,7 +1782,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
             tokenBuyData,
             exchangeData,
           );
-          await TransactionHandler.createTransactionPDex({
+          tx = await TransactionHandler.createTransactionPDex({
             pDexV3Instance: pDexV3Inst || {},
             params,
           });
@@ -1826,7 +1826,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
             //     )[0]?.tokenId || '',
           };
 
-          await TransactionHandler.createTransactionPApps(
+          tx = await TransactionHandler.createTransactionPApps(
             createTransactionPAppsPayload,
           );
         }
