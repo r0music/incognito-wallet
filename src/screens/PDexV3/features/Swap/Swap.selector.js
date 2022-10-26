@@ -16,6 +16,7 @@ import memoize from 'lodash/memoize';
 import {
   getExchangeRate,
   getExchangeRate1,
+  getExchangeRate2,
   getPairRate,
   getPoolSize,
 } from '@screens/PDexV3';
@@ -667,8 +668,11 @@ export const feetokenDataSelector = createSelector(
       const fee = selector(state, formConfigs.feetoken);
       const { id: platformID } = platform;
       const feeDataByPlatform = data[platformID];
-      const { feePrv: feePrvEst = {}, feeToken: feeTokenEst = {} } =
-        feeDataByPlatform;
+      const {
+        feePrv: feePrvEst = {},
+        feeToken: feeTokenEst = {},
+        rateValue = 0,
+      } = feeDataByPlatform;
       const {
         fee: feePrv,
         sellAmount: sellAmountPRV,
@@ -802,12 +806,14 @@ export const feetokenDataSelector = createSelector(
       //   buyAmountToken
       // );
 
-      const rateStr = getExchangeRate1(
-        sellTokenData,
-        buyTokenData,
-        convert.toHumanAmount(sellAmountToken, sellTokenData?.pDecimals),
-        maxGet ? parseFloat(maxGet) : buyAmountToken,
-      );
+      // const rateStr = getExchangeRate1(
+      //   sellTokenData,
+      //   buyTokenData,
+      //   convert.toHumanAmount(sellAmountToken, sellTokenData?.pDecimals),
+      //   maxGet ? parseFloat(maxGet) : buyAmountToken,
+      // );
+
+      const rateStr = getExchangeRate2(sellTokenData, buyTokenData, rateValue);
 
       let tradePathStr = '';
       let tradePathArr = [];

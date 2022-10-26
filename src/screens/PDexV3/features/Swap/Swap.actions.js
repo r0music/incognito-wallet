@@ -994,6 +994,7 @@ export const actionEstimateTrade =
           incTokenID,
           platformNameSupported,
           amountOutPreSlippage,
+          rate,
         } = exchange;
         const [isUseTokenFee, originalTradeFee] = isUseTokenFeeParser(fees);
         const platformData = {
@@ -1007,6 +1008,7 @@ export const actionEstimateTrade =
             buyAmount: amountOut,
             impactAmount,
             tokenRoute: routes,
+            rateValue: rate,
           },
           feeToken: {
             sellAmount: payload.sellamount,
@@ -1017,7 +1019,9 @@ export const actionEstimateTrade =
             route: routes,
             impactAmount,
             tokenRoute: routes,
+            rateValue: rate,
           },
+          rateValue: rate,
           tradeID: '',
           feeAddress,
           signAddress: '',

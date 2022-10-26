@@ -94,6 +94,17 @@ export const getExchangeRate1 = (token1, token2, token1Value, token2Value) => {
   }
 };
 
+export const getExchangeRate2 = (token1, token2, rateValue) => {
+  try {
+    if (!token1 || !token2 || !rateValue) {
+      return '';
+    }
+    return `1 ${token1?.symbol} = ${rateValue.toFixed(6)} ${token2?.symbol}`;
+  } catch (error) {
+    console.log('getExchangeRate-error', error);
+  }
+};
+
 export const getPrincipal = ({ token1, token2, shareData }) => {
   const { maxInputShareDisplayStr, maxOutputShareDisplayStr } =
     getShareDataValue({

@@ -54,6 +54,8 @@ export type ExchangeData = {
   exchangeName: string;
   amountOutPreSlippage: string;
   amountOutPreSlippageNumber: number;
+  redepositReward: number;
+  rate: number;
   fees: {
     amount: number;
     tokenid: string;
@@ -79,6 +81,8 @@ export type ExchangeRawDetail = {
   AmountOutRaw: string;
   AppName: string;
   AmountOutPreSlippage: string;
+  RedepositReward: string;
+  Rate: string;
   Fee: {
     amount: number;
     tokenid: string;

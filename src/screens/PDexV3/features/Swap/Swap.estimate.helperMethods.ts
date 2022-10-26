@@ -95,6 +95,8 @@ const parseExchangeDataModelResponse = (
       data.AppName,
       networkID,
     ),
+    redepositReward: parseFloat(data.RedepositReward) || 0,
+    rate: parseFloat(data.Rate) || 0,
   };
   return exchangeData;
 };
@@ -122,25 +124,6 @@ const convertAppNameToPlatformSupported = (
       console.error(
         `[convertAppNameToPlatformName] appName NOT FOUND, appName = ${appName}. Return default: incognito `,
       );
-      return 'incognito';
-  }
-};
-
-const convertNetworkNameFromCurrentPlatformSelected = (
-  currentPlatformSelected,
-) => {
-  switch (currentPlatformSelected) {
-    case 'incognito':
-      return 'incognito';
-    case 'pancake':
-      return 'pancake';
-    case 'uni':
-      return 'uniswap';
-    case 'uniEther':
-      return 'uniswap';
-    case 'curve':
-      return 'curve';
-    default:
       return 'incognito';
   }
 };
@@ -244,6 +227,5 @@ export {
   parseExchangeSupport,
   getIncognitoTokenId,
   parseExchangeDataModelResponse,
-  convertNetworkNameFromCurrentPlatformSelected,
   isUseTokenFeeParser,
 };
