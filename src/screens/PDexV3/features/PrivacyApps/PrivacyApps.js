@@ -77,6 +77,12 @@ const PrivacyApps = () => {
           },
         ],
         desc: 'Trade anonymously on Binance Smart Chain’s leading DEX. Deep liquidity and super low fees – now with privacy.',
+        defaultPair: {
+          selltoken:
+            '545ef6e26d4d428b16117523935b6be85ec0a63e8c2afeb0162315eb0ce3d151', //USDC (UT)
+          buytoken:
+            'e5032c083f0da67ca141331b6005e4a3740c50218f151a5e829e9d03227e33e2', //BNB (BSC)
+        },
         onPressItem,
       },
       {
@@ -99,6 +105,12 @@ const PrivacyApps = () => {
           },
         ],
         desc: 'Trade confidentially on everyone’s favorite DEX. Faster and cheaper thanks to Polygon, Ethereum, and private like all Incognito apps.',
+        defaultPair: {
+          selltoken:
+            '545ef6e26d4d428b16117523935b6be85ec0a63e8c2afeb0162315eb0ce3d151', //USDC (UT)
+          buytoken:
+            '3ee31eba6376fc16cadb52c8765f20b6ebff92c0b1c5ab5fc78c8c25703bb19e', //ETH (UT)
+        },
         onPressItem,
       },
       // {
@@ -135,6 +147,12 @@ const PrivacyApps = () => {
           },
         ],
         desc: 'Swap stablecoins with complete confidentiality using Privacy Curve. Low fees on Polygon meets full privacy on Incognito.',
+        defaultPair: {
+          selltoken:
+            '545ef6e26d4d428b16117523935b6be85ec0a63e8c2afeb0162315eb0ce3d151', //USDC (UT)
+          buytoken:
+            '076a4423fa20922526bd50b0d7b0dc1c593ce16e15ba141ede5fb5a28aa3f229', //USDT (UT)
+        },
         onPressItem,
       },
       {
@@ -153,6 +171,12 @@ const PrivacyApps = () => {
           },
         ],
         desc: 'Explore DeFi on Fantom with full privacy for your activity and assets. Swap Fantom coins anonymously with Private SpookySwap.',
+        defaultPair: {
+          selltoken:
+            '545ef6e26d4d428b16117523935b6be85ec0a63e8c2afeb0162315eb0ce3d151', //USDC (UT)
+          buytoken:
+            '6eed691cb14d11066f939630ff647f5f1c843a8f964d9a4d295fa9cd1111c474', //FTM
+        },
         onPressItem,
       },
     ];
