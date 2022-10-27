@@ -72,6 +72,7 @@ const enhance = (WrappedComp) => (props) => {
   }, [availableTokens]);
 
   const tokensFactories = React.useMemo(() => {
+    let _verifiedTokens1 = _verifiedTokens;
     let marketTokens = [];
     if (activeTab === MarketTabs.ALL) {
       marketTokens = _verifiedTokens
@@ -88,11 +89,20 @@ const enhance = (WrappedComp) => (props) => {
       (item) => Number(item[filterField] || '0'),
       [orderField],
     );
-    const __verifiedTokens = orderBy(
-      _verifiedTokens,
-      ['isPRV', 'isPUnifiedToken', 'network', 'symbol'],
-      ['desc', 'desc', 'asc', 'asc'],
-    );
+    if (!keySearch) {
+      _verifiedTokens1 = orderBy(
+        _verifiedTokens,
+        ['isPRV', 'isPUnifiedToken', 'network', 'symbol'],
+        ['desc', 'desc', 'asc', 'asc'],
+      );
+    } else {
+      _verifiedTokens1 = orderBy(
+        _verifiedTokens,
+        (item) => Number(item[filterField] || '0'),
+        [orderField],
+      );
+    }
+
     const __unVerifiedTokens = orderBy(
       _unVerifiedTokens,
       (item) => Number(item[filterField] || '0'),
@@ -100,7 +110,8 @@ const enhance = (WrappedComp) => (props) => {
     );
     return [
       {
-        data: __verifiedTokens,
+        // data: _verifiedTokens,
+        data: _verifiedTokens1,
         visible: true,
         styledListToken: { paddingTop: 0 },
       },
@@ -122,6 +133,7 @@ const enhance = (WrappedComp) => (props) => {
     filterField,
     orderField,
     activeTab,
+    keySearch,
   ]);
 
   React.useEffect(() => {

@@ -180,10 +180,7 @@ export const getPrivacyDataFilterSelector = createSelector(
   (getAllPrivacyDataFunction) => {
     const selectTokenList: SelectedPrivacy[] = getAllPrivacyDataFunction();
     return (
-      selectTokenList.filter(
-        (token) =>
-          token.tokenId && !token.movedUnifiedToken && token.isVerified,
-      ) || []
+      selectTokenList.filter((token) => token.tokenId && token.isVerified) || []
     );
   },
 );

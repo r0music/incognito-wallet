@@ -370,10 +370,7 @@ export const listPairsIDBuyTokenVerifiedSelector = createSelector(
   listPairsSelector,
   (pairs) => {
     const result = pairs
-      .filter(
-        (token: SelectedPrivacy) =>
-          !!token?.isVerified && !token?.movedUnifiedToken,
-      )
+      .filter((token: SelectedPrivacy) => !!token?.isVerified)
       .map((token) => token?.tokenId);
     return result;
   },
