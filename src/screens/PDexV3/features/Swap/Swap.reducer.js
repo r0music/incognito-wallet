@@ -3,6 +3,7 @@ import autoMergeLevel1 from 'redux-persist/es/stateReconciler/autoMergeLevel1';
 import { persistReducer } from 'redux-persist';
 import { PRV_ID } from '@src/constants/common';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
+// import format from '@src/utils/format';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -117,6 +118,7 @@ const initialState = {
   defaultExchange: KEYS_PLATFORMS_SUPPORTED.incognito,
   isPrivacyApp: false,
   error: null,
+  // slippage: format.amount('0.5', 0).toString(),
   slippage: '1',
   rewardHistories: [],
   isUsePRVToPayFee: true,

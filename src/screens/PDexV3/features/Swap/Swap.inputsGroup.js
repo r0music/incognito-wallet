@@ -4,7 +4,7 @@ import {
   RFTradeInputAmount as TradeInputAmount,
   validator,
 } from '@components/core/reduxForm';
-import { change, Field } from 'redux-form';
+import { change, Field, isValid } from 'redux-form';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { useDispatch, useSelector } from 'react-redux';
 import { SwapButton } from '@src/components/core';
@@ -15,6 +15,7 @@ import ToggleArrow from '@src/components/ToggleArrow';
 import { maxAmountValidatorForSellInput } from './Swap.utils';
 import { formConfigs } from './Swap.constant';
 import SwapDetails from './Swap.details';
+
 import {
   listPairsSelector,
   selltokenSelector,
@@ -54,7 +55,8 @@ const SwapInputsGroup = React.memo(() => {
   const onSelectSellToken = () => {
     navigation.navigate(routeNames.SelectTokenModal, {
       data: pairsToken.filter(
-        (token: SelectedPrivacy) => token?.tokenId !== selltoken?.tokenId && !token.movedUnifiedToken,
+        (token: SelectedPrivacy) =>
+          token?.tokenId !== selltoken?.tokenId && !token.movedUnifiedToken,
       ),
       onPress: (token) => onSelectToken(token, formConfigs.selltoken),
     });
@@ -63,7 +65,9 @@ const SwapInputsGroup = React.memo(() => {
     navigation.navigate(routeNames.SelectTokenModal, {
       data: pairsToken.filter((token: SelectedPrivacy) => {
         if (navigation?.state?.routeName === routeNames.Trade) {
-          return token?.tokenId !== buytoken?.tokenId && !token.movedUnifiedToken;
+          return (
+            token?.tokenId !== buytoken?.tokenId && !token.movedUnifiedToken
+          );
         } else {
           return (
             token?.tokenId !== buytoken?.tokenId && !token?.movedUnifiedToken

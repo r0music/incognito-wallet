@@ -10,7 +10,7 @@ import serverService from '@src/services/wallet/Server';
 import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
 import { ExHandler } from '@src/services/exception';
 import routeNames from '@src/router/routeNames';
-import { change, reset } from 'redux-form';
+import { change, reset, isValid } from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 import Util from '@utils/Util';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
@@ -30,6 +30,7 @@ import { ANALYTICS, CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 import SwapService from '@src/services/api/swap';
 import createLogger from '@utils/logger';
+
 // import TokenService from '@src/services/api/tokenService';
 // import { pTokenIdsSelector } from '@src/redux/selectors/token';
 import {
@@ -110,6 +111,7 @@ import {
   findTokenSpookyByIdSelector,
   getExchangeSupportByPlatformId,
   exchangeNetworkSelector,
+  swapFormErrorSelector,
 } from './Swap.selector';
 import {
   calMintAmountExpected,
@@ -838,6 +840,13 @@ export const actionEstimateTrade =
   async (dispatch, getState) => {
     let isFetched = false;
     let state = getState();
+
+    // let formErrorState = swapFormErrorSelector(state);
+    // console.log('formErrorState ', formErrorState);
+
+    // if (!isValid(formConfigs.formName)(state)) {
+    //   return;
+    // }
     const defaultExchange = defaultExchangeSelector(state);
     const exchangeNetwork = exchangeNetworkSelector(state);
     try {
@@ -1023,7 +1032,7 @@ export const actionEstimateTrade =
             tokenRoute: routes,
             rateValue: format.amount(rateStr, 0),
           },
-          rateValue: format.amount(rateStr, 0),
+          rateValue: format.amountVer2(rateStr, 0),
           tradeID: '',
           feeAddress,
           signAddress: '',
@@ -1032,7 +1041,7 @@ export const actionEstimateTrade =
           isUseTokenFee,
           error: null,
           minimumReceived: amountOutStr
-            ? `${format.amount(amountOutStr, 0)} ${buyInputSymbol}`
+            ? `${format.amountVer2(amountOutStr, 0)} ${buyInputSymbol}`
             : undefined,
         };
 
@@ -1772,7 +1781,8 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
               tradePath: exchangeData?.poolPairs || [''],
               feetoken,
               version: PrivacyVersion.ver2,
-              minAcceptableAmount: String(minAcceptableAmount),
+              // minAcceptableAmount: String(amountOutStr), // TO DO !!!
+              minAcceptableAmount: String(exchangeData.amountOutStr),
               sellAmountText: _sellAmountText,
               buyAmountText: _buyAmountText,
             },
@@ -1796,6 +1806,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       case KEYS_PLATFORMS_SUPPORTED.uni:
       case KEYS_PLATFORMS_SUPPORTED.uniEther:
       case KEYS_PLATFORMS_SUPPORTED.curve:
+      case KEYS_PLATFORMS_SUPPORTED.spooky:
         {
           console.log(
             `[pApps - ${platform.id}]: RepareData create TX: `,
