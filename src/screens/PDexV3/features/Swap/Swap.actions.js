@@ -996,6 +996,8 @@ export const actionEstimateTrade =
           platformNameSupported,
           amountOutPreSlippage,
           rate,
+          rateStr,
+          amountOutStr,
         } = exchange;
         const [isUseTokenFee, originalTradeFee] = isUseTokenFeeParser(fees);
         const platformData = {
@@ -1006,9 +1008,9 @@ export const actionEstimateTrade =
             route: routes,
             sellAmount: payload.sellamount,
             buyAmount: amountOut,
-            impactAmount,
+            impactAmount: format.amount(impactAmount, 0),
             tokenRoute: routes,
-            rateValue: rate,
+            rateValue: format.amount(rateStr, 0),
           },
           feeToken: {
             sellAmount: payload.sellamount,
@@ -1017,11 +1019,11 @@ export const actionEstimateTrade =
             isSignificant: false,
             maxGet: format.amount(amountOutPreSlippage, 0),
             route: routes,
-            impactAmount,
+            impactAmount: format.amount(impactAmount, 0),
             tokenRoute: routes,
-            rateValue: rate,
+            rateValue: format.amount(rateStr, 0),
           },
-          rateValue: rate,
+          rateValue: format.amount(rateStr, 0),
           tradeID: '',
           feeAddress,
           signAddress: '',
@@ -1029,10 +1031,8 @@ export const actionEstimateTrade =
           tokenId: incTokenID,
           isUseTokenFee,
           error: null,
-          minimumReceived: amountOut
-            ? `${replaceDecimals(
-                amountOut.toString().slice(0, 8),
-              )} ${buyInputSymbol}`
+          minimumReceived: amountOutStr
+            ? `${format.amount(amountOutStr, 0)} ${buyInputSymbol}`
             : undefined,
         };
 

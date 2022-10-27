@@ -75,6 +75,7 @@ const parseExchangeDataModelResponse = (
     amountIn: parseFloat(data.AmountIn) || 0,
     amountInRaw: parseFloat(data.AmountInRaw) || 0,
     amountOut: parseFloat(data.AmountOut) || 0,
+    amountOutStr: data.AmountOut || '0',
     amountOutRaw: parseFloat(data.AmountOutRaw) || 0,
     appName: data.AppName === 'pdex' ? 'incognito' : data.AppName,
     exchangeName: data.AppName || '',
@@ -97,6 +98,7 @@ const parseExchangeDataModelResponse = (
     ),
     redepositReward: parseFloat(data.RedepositReward) || 0,
     rate: parseFloat(data.Rate) || 0,
+    rateStr: data.Rate || '0',
   };
   return exchangeData;
 };
