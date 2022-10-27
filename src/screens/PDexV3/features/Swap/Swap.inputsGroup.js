@@ -12,6 +12,7 @@ import { actionToggleModal } from '@src/components/Modal';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import ToggleArrow from '@src/components/ToggleArrow';
+import convert from '@utils/convert';
 import { maxAmountValidatorForSellInput } from './Swap.utils';
 import { formConfigs } from './Swap.constant';
 import SwapDetails from './Swap.details';
@@ -26,7 +27,7 @@ import {
   platformSelectedSelector,
 } from './Swap.selector';
 import {
-  actionEstimateTrade,
+  actionEstimateTrade, actionGetMaxAmount,
   actionResetData,
   actionSelectToken,
   actionSetFocusToken,
@@ -97,12 +98,10 @@ const SwapInputsGroup = React.memo(() => {
       navigation,
     ],
   );
-  const onPressInfinityIcon = () => {
-    dispatch(
-      actionEstimateTrade({
-        useMax: true,
-      }),
-    );
+  const onPressInfinityIcon = async () => {
+    const { availableAmountText } = await dispatch(actionGetMaxAmount());
+    dispatch(change(formConfigs.formName, formConfigs.selltoken, availableAmountText));
+    dispatch(actionEstimateTrade({ useMax: false }));
   };
   const onChange = (field, value) => {
     dispatch(change(formConfigs.formName, field, value));

@@ -883,7 +883,8 @@ export const actionEstimateTrade =
       let maxAmount = availableSellOriginalAmount;
 
       if (useMax) {
-        maxAmount = await dispatch(actionGetMaxAmount());
+        const { maxAmount: _maxAmount } = await dispatch(actionGetMaxAmount());
+        maxAmount = format.amountFull(_maxAmount, sellPDecimals, false);
       }
 
       // let sellAmount = useMax ? maxAmount : sellOriginalAmount;
@@ -900,7 +901,7 @@ export const actionEstimateTrade =
           change(
             formConfigs.formName,
             formConfigs.selltoken,
-            convert.toHumanAmount(sellAmount, sellPDecimals)?.toString(),
+            maxAmount,
           ),
         );
       }
@@ -983,6 +984,7 @@ export const actionEstimateTrade =
           network = 'inc';
           break;
       }
+      // amount:  convert.toNumber(payload.sellamount || 0, true).toFixed(inputPDecimals),
 
       const estimateRawData = await SwapService.getEstiamteTradingFee({
         // amount: convert
@@ -1029,7 +1031,7 @@ export const actionEstimateTrade =
           feePrv: {
             fee: isUseTokenFee ? 0 : originalTradeFee,
             isSignificant: false,
-            maxGet: format.amount(amountOutPreSlippage, 0),
+            maxGet: format.amountFull(amountOutPreSlippage, 0),
             route: routes,
             sellAmount: payload.sellamount,
             buyAmount: amountOut,
@@ -1042,7 +1044,7 @@ export const actionEstimateTrade =
             buyAmount: amountOut,
             fee: isUseTokenFee ? originalTradeFee : 0,
             isSignificant: false,
-            maxGet: format.amount(amountOutPreSlippage, 0),
+            maxGet: format.amountFull(amountOutPreSlippage, 0),
             route: routes,
             impactAmount: format.amount(impactAmount, 0),
             tokenRoute: routes,
@@ -1577,7 +1579,6 @@ export const actionInitSwapForm =
       state = getState();
       const { slippage: defautSlippage, resetSlippage1 } = swapSelector(state);
       let _defautSlippage = defautSlippage;
-      console.log('SANG TEST: ',resetSlippage1);
       if (!resetSlippage1) {
         _defautSlippage = '0.5';
         dispatch(actionResetSlippage());
@@ -2320,6 +2321,7 @@ export const actionGetMaxAmount = () => async (dispatch, getState) => {
 
   const inputAmount = inputAmountSelector(state);
   const sellInputToken = inputAmount(formConfigs.selltoken);
+  console.log('SANG TEST: ', sellInputToken);
 
   if (platform.id === KEYS_PLATFORMS_SUPPORTED.pancake) {
     isUseTokenFee = feeData?.pancake?.isUseTokenFee;
@@ -2332,14 +2334,13 @@ export const actionGetMaxAmount = () => async (dispatch, getState) => {
   } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.spooky) {
     isUseTokenFee = feeData?.spooky?.isUseTokenFee;
   }
-
   const availableOriginalAmount = sellInputToken?.availableOriginalAmount;
-  if (!isUseTokenFee) return availableOriginalAmount;
+  if (!isUseTokenFee) return { maxAmount: availableOriginalAmount, availableAmountText: sellInputToken.availableAmountText, inputPDecimals: sellInputToken.pDecimals } ;
   const fee = feeData?.minFeeOriginal;
   let maxAmount = availableOriginalAmount - fee;
   if (maxAmount < 0) {
     maxAmount = availableOriginalAmount;
   }
 
-  return maxAmount;
+  return { maxAmount, availableAmountText: sellInputToken.availableAmountText, inputPDecimals: sellInputToken.pDecimals };
 };
