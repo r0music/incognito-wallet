@@ -1781,8 +1781,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
               tradePath: exchangeData?.poolPairs || [''],
               feetoken,
               version: PrivacyVersion.ver2,
-              // minAcceptableAmount: String(amountOutStr), // TO DO !!!
-              minAcceptableAmount: String(exchangeData.amountOutStr),
+              minAcceptableAmount: `${new BigNumber(exchangeData.amountOutRaw || 0).integerValue()}`,
               sellAmountText: _sellAmountText,
               buyAmountText: _buyAmountText,
             },
