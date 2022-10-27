@@ -42,6 +42,7 @@ import {
   ACTION_RESET_DATA,
   ACTION_SET_BEST_RATE_EXCHANGE,
   ACTION_SET_EXCHANGE_SUPPORT_LIST,
+  ACTION_SET_RESET_SLIPPAGE,
 } from './Swap.constant';
 
 const initialState = {
@@ -117,8 +118,8 @@ const initialState = {
   defaultExchange: KEYS_PLATFORMS_SUPPORTED.incognito,
   isPrivacyApp: false,
   error: null,
-  // slippage: format.amountFull(0.5, 0),
-  slippage: '1',
+  slippage: '0.5',
+  resetSlippage1: false,
   rewardHistories: [],
   isUsePRVToPayFee: true,
   bestRateExchange: null,
@@ -318,7 +319,11 @@ const reducer = (state = initialState, action) => {
       };
     }
     case ACTION_RESET: {
-      return Object.assign({}, { ...initialState, slippage: state.slippage });
+      return Object.assign({}, {
+        ...initialState,
+        slippage: state.slippage,
+        resetSlippage1: state.resetSlippage1
+      });
     }
     case ACTION_RESET_DATA: {
       return {
@@ -420,6 +425,12 @@ const reducer = (state = initialState, action) => {
         exchangeSupportsList: action.payload,
       };
     }
+    case ACTION_SET_RESET_SLIPPAGE: {
+      return {
+        ...state,
+        resetSlippage1: true,
+      };
+    }
     default:
       return state;
   }
@@ -428,7 +439,7 @@ const reducer = (state = initialState, action) => {
 const persistConfig = {
   key: 'swap',
   storage: AsyncStorage,
-  whitelist: ['slippage'],
+  whitelist: ['slippage', 'resetSlippage1'],
   stateReconciler: autoMergeLevel1,
 };
 

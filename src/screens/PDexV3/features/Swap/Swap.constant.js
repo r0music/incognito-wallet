@@ -75,6 +75,7 @@ export const ACTION_SET_BEST_RATE_EXCHANGE =
   '[pDexV3][swap] Set Best Rate Exchange';
 export const ACTION_SET_EXCHANGE_SUPPORT_LIST =
   '[pDexV3][swap] Set Exchange support list';
+export const ACTION_SET_RESET_SLIPPAGE = '[pDexV3][swap] ACTION_SET_RESET_SLIPPAGE';
 
 export const SCREENS_TO_SHOW_REWARD_HISTORY_TAB = [
   routeNames.PrivacyAppsPancake,

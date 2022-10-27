@@ -81,6 +81,7 @@ import {
   ACTION_SET_EXCHANGE_SUPPORT_LIST,
   NETWORK_NAME_SUPPORTED,
   CALL_CONTRACT,
+  ACTION_SET_RESET_SLIPPAGE,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -205,6 +206,10 @@ export const actionSetBuyTokenFetched = (payload) => ({
 export const actionSetFeeToken = (payload) => ({
   type: ACTION_SET_FEE_TOKEN,
   payload,
+});
+
+export const actionResetSlippage = () => ({
+  type: ACTION_SET_RESET_SLIPPAGE,
 });
 
 export const actionSetFocusToken = (payload) => ({
@@ -1570,14 +1575,20 @@ export const actionInitSwapForm =
       }
       const { selltoken } = pair;
       state = getState();
-      const { slippage: defautSlippage } = swapSelector(state);
-      console.log('defautSlippage', defautSlippage);
+      const { slippage: defautSlippage, resetSlippage1 } = swapSelector(state);
+      let _defautSlippage = defautSlippage;
+      console.log('SANG TEST: ',resetSlippage1);
+      if (!resetSlippage1) {
+        _defautSlippage = '0.5';
+        dispatch(actionResetSlippage());
+      }
+      _defautSlippage = format.amount(_defautSlippage || '0.5');
       batch(() => {
         dispatch(
           change(
             formConfigs.formName,
             formConfigs.slippagetolerance,
-            defautSlippage,
+            _defautSlippage,
           ),
         );
         const useFeeByToken = selltoken !== PRV_ID && !isUsePRVToPayFee;
