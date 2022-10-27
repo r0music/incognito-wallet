@@ -112,6 +112,7 @@ import {
   getExchangeSupportByPlatformId,
   exchangeNetworkSelector,
   swapFormErrorSelector,
+  getSlippageSelector,
 } from './Swap.selector';
 import {
   calMintAmountExpected,
@@ -849,6 +850,7 @@ export const actionEstimateTrade =
     // }
     const defaultExchange = defaultExchangeSelector(state);
     const exchangeNetwork = exchangeNetworkSelector(state);
+    const slippage1 = getSlippageSelector(state);
     try {
       const params = { field, useMax };
       // Show loading estimate trade and reset fee data
@@ -860,11 +862,17 @@ export const actionEstimateTrade =
       sellInputToken = inputAmount(formConfigs.selltoken);
       buyInputToken = inputAmount(formConfigs.buytoken);
 
+      // console.log('AAAAAABBBBB : ', {
+      //   sellInputToken,
+      //   buyInputToken,
+      // });
+
       const {
         tokenId: selltoken,
         originalAmount: sellOriginalAmount,
         pDecimals: sellPDecimals,
         availableOriginalAmount: availableSellOriginalAmount,
+        amount: sellAmountEx,
       } = sellInputToken;
 
       let maxAmount = availableSellOriginalAmount;
@@ -873,7 +881,9 @@ export const actionEstimateTrade =
         maxAmount = await dispatch(actionGetMaxAmount());
       }
 
-      let sellAmount = useMax ? maxAmount : sellOriginalAmount;
+      // let sellAmount = useMax ? maxAmount : sellOriginalAmount;
+      let sellAmount = useMax ? maxAmount : sellAmountEx;
+
       // if (new BigNumber(availableSellOriginalAmount).eq(sellOriginalAmount)) {
       //   sellAmount = availableSellOriginalAmount;
       //   useMax = true;
@@ -970,9 +980,10 @@ export const actionEstimateTrade =
       }
 
       const estimateRawData = await SwapService.getEstiamteTradingFee({
-        amount: convert
-          .toHumanAmount(payload.sellamount, inputPDecimals)
-          ?.toString(),
+        // amount: convert
+        //   .toHumanAmount(payload.sellamount, inputPDecimals)
+        //   ?.toString(),
+        amount: payload.sellamount,
         fromToken: payload.selltoken,
         toToken: payload.buytoken,
         slippage: slippagetolerance.toString(),

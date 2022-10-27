@@ -108,8 +108,8 @@ const createTransactionPApps = async (
       return tx;
     }
   } catch (error) {
-    console.error('[createTransactionPApps] ERROR ', error);
-    throw new Error(error);
+    console.log('[createTransactionPApps] ERROR ', error);
+    throw error;
   }
 };
 
@@ -127,8 +127,8 @@ const createTransactionPDex = async (payload: CreateTransactionPDexPayload) => {
       return tx;
     }
   } catch (error) {
-    console.error('[createTransactionPDex] ERROR ', error);
-    throw new Error(error);
+    console.log('[createTransactionPDex] ERROR ', error);
+    throw error;
   }
 };
 

@@ -35,6 +35,11 @@ export const swapSelector = createSelector(
   ({ swap }) => swap,
 );
 
+export const getSlippageSelector = createSelector(
+  swapSelector,
+  ({ slippage }) => slippage,
+);
+
 export const exchangeSupportsListSelector = createSelector(
   swapSelector,
   ({ exchangeSupportsList }) => exchangeSupportsList,
