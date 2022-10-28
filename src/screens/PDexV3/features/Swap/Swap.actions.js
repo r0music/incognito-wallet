@@ -1546,6 +1546,7 @@ export const actionInitSwapForm =
       let state = getState();
       const feetoken = feeSelectedSelector(state);
       const defaultExchange = defaultExchangeSelector(state);
+      const { slippage: defautSlippage, resetSlippage1 } = swapSelector(state);
       const isUsePRVToPayFee = feetoken === PRV.id;
       let pair = defaultPair || defaultPairSelector(state);
       batch(() => {
@@ -1577,13 +1578,11 @@ export const actionInitSwapForm =
       }
       const { selltoken } = pair;
       state = getState();
-      const { slippage: defautSlippage, resetSlippage1 } = swapSelector(state);
       let _defautSlippage = defautSlippage;
       if (!resetSlippage1) {
-        _defautSlippage = '0.5';
+        _defautSlippage = format.amountFull('0.5', 0);
         dispatch(actionResetSlippage());
       }
-      _defautSlippage = format.amount(_defautSlippage || '0.5');
       batch(() => {
         dispatch(
           change(
@@ -2321,7 +2320,6 @@ export const actionGetMaxAmount = () => async (dispatch, getState) => {
 
   const inputAmount = inputAmountSelector(state);
   const sellInputToken = inputAmount(formConfigs.selltoken);
-  console.log('SANG TEST: ', sellInputToken);
 
   if (platform.id === KEYS_PLATFORMS_SUPPORTED.pancake) {
     isUseTokenFee = feeData?.pancake?.isUseTokenFee;
