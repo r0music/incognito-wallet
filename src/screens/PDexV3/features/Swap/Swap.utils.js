@@ -21,7 +21,6 @@ import { Text } from 'react-native';
 import routeNames from '@routers/routeNames';
 import { formConfigs } from './Swap.constant';
 
-
 export const minFeeValidator = (feetokenData, isFetching) => {
   if (!feetokenData || isFetching) {
     return undefined;
@@ -118,7 +117,7 @@ export const maxAmountValidatorForSellInput = (sellInputAmount, navigation) => {
       availableOriginalAmount,
       symbol,
       availableAmountText,
-      tokenData
+      tokenData,
     } = sellInputAmount || {};
     const onMessagePress = () => {
       navigation.navigate(routeNames.ChooseNetworkForShield, {
@@ -128,7 +127,8 @@ export const maxAmountValidatorForSellInput = (sellInputAmount, navigation) => {
     if (navigation && !availableOriginalAmount) {
       return (
         <Text onPress={onMessagePress}>
-          Insufficient balance. <Text style={{ textDecorationLine: 'underline' }}>Add funds</Text>.
+          Insufficient balance.{' '}
+          <Text style={{ textDecorationLine: 'underline' }}>Add funds</Text>.
         </Text>
       );
     }
@@ -140,7 +140,8 @@ export const maxAmountValidatorForSellInput = (sellInputAmount, navigation) => {
     ) {
       return (
         <Text onPress={onMessagePress}>
-          {`Max amount you can convert is ${availableAmountText} ${symbol}.`}&nbsp;
+          {`Max amount you can convert is ${availableAmountText} ${symbol}.`}
+          &nbsp;
           <Text style={{ textDecorationLine: 'underline' }}>Add funds</Text>.
         </Text>
       );
@@ -475,7 +476,13 @@ export const findBestRateOfMinSellAmount = (arr) =>
     (platform) => platform?.amount,
   );
 
-export const getMaxAmount = ({ amount,isMainCrypto, pDecimals, isUseTokenFee, totalFee }) => {
+export const getMaxAmount = ({
+  amount,
+  isMainCrypto,
+  pDecimals,
+  isUseTokenFee,
+  totalFee,
+}) => {
   let amountNumber = amount;
   if (isUseTokenFee || isMainCrypto) {
     const newAmount = amountNumber - totalFee;

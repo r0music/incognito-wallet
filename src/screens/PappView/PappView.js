@@ -15,13 +15,14 @@ import { isEmpty } from 'lodash';
 import { COMMANDS } from 'papp-sdk/src/base/constants';
 import DeviceInfo from 'react-native-device-info';
 import { View2 } from '@components/core/View';
+import LocalDatabase from '@utils/LocalDatabase';
 import Validator from './sdk/validator';
 import RequestSendTx from './RequestSendTx';
 import { APPSDK, ERRORSDK, CONSTANTSDK } from './sdk';
 import styles from './style';
 
 let sdk: APPSDK = null;
-const updateDataToPapp = (data) => {
+const updateDataToPapp = async (data) => {
   if (!sdk) return;
 
   try {
@@ -34,7 +35,7 @@ const updateDataToPapp = (data) => {
         selectedPrivacy?.amount,
         selectedPrivacy.pDecimals,
       );
-    const deviceId = DeviceInfo.getUniqueId();
+    const deviceId = await LocalDatabase.getDeviceId();
     paymentAddress && sdk.sendUpdatePaymentAddress(paymentAddress);
     publicKey && sdk.sendUpdatePublicKey(publicKey);
     deviceId && sdk.sendUpdateDeviceId(deviceId);

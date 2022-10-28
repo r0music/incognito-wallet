@@ -34,6 +34,7 @@ const asyncMethods = [
   'setShardCount',
   'generateBTCMultisigAddress',
   'createOTAReceiver',
+  'createOTAReceiverWithCfg',
 ];
 try {
   console.log('INIT GOMOBILE');

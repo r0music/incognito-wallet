@@ -55,7 +55,9 @@ const SelectTokenModal = () => {
               onPress={async () => {
                 goBack();
                 dispatch(actionResetData());
-                dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
+                dispatch(
+                  change(formConfigs.formName, formConfigs.feetoken, ''),
+                );
                 await delay(0);
                 if (typeof onPress === 'function') {
                   onPress(item);

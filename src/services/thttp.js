@@ -3,6 +3,7 @@ import { getToken as getFirebaseToken } from '@services/firebase';
 import DeviceInfo from 'react-native-device-info';
 import LocalDatabase from '@utils/LocalDatabase';
 import userModel from '@models/user';
+import { v4 } from 'uuid';
 import { CustomError, ErrorCode, ExHandler } from './exception';
 
 const HEADERS = { 'Content-Type': 'application/json' };
@@ -38,11 +39,11 @@ async function login() {
       firebaseToken = await getFirebaseToken();
     } catch (error) {
       // Use this to authenticate app for device without Google Services (Chinese Phone)
-      firebaseToken = DeviceInfo.getUniqueId() + new Date().getTime();
+      firebaseToken = (await LocalDatabase.getDeviceId()) || v4() + new Date().getTime();
       console.debug('Can not get firebase token');
     }
     const uniqueId =
-      (await LocalDatabase.getDeviceId()) || DeviceInfo.getUniqueId();
+      (await LocalDatabase.getDeviceId()) || v4();
     const tokenData = await instance
       .post('/auth/new-token', {
         DeviceID: uniqueId,

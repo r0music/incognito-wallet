@@ -6,4 +6,5 @@ module.exports = {
   arrowParens: 'always',
   semi: true,
   tabWidth: 2,
+  // printWidth: 100, will update after
 };
