@@ -9,7 +9,7 @@ const checkAmount = (amount) => {
     throw new Error('Can not format invalid amount');
 };
 
-const replaceDecimals = (text, autoCorrect = false) => {
+export const replaceDecimals = (text, autoCorrect = false) => {
   if (typeof text !== 'string') {
     return text;
   }
@@ -36,7 +36,7 @@ const toNumber = (text, autoCorrect = false) => {
   return _.toNumber(number);
 };
 
-const  toPlainString = (num) => {
+const toPlainString = (num) => {
   return ('' + +num).replace(
     /(-?)(\d*)\.?(\d*)e([+-]\d+)/,
     function (a, b, c, d, e) {
@@ -111,7 +111,7 @@ export default {
   toNumber,
 
   toPlainString,
-  
+
   toInput(text) {
     if (typeof text !== 'string') {
       return text;

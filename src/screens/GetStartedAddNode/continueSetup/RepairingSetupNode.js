@@ -1,5 +1,5 @@
 import BaseScreen from '@screens/BaseScreen';
-import { View } from '@src/components/core';
+import { ScrollViewBorder, View } from '@src/components/core';
 import { getAccountByName } from '@src/redux/selectors/account';
 import routeNames from '@src/router/routeNames';
 import React from 'react';
@@ -10,6 +10,7 @@ import Header from '@src/components/Header';
 import { BtnQuestionDefault } from '@src/components/Button';
 import NavigationService from '@src/services/NavigationService';
 import { BackUpAccountModal } from '@screens/Node/BackuUpAccountModal';
+import { withLayout_2 } from '@components/Layout';
 import styles from './styles';
 import WifiRepairSetup from './WifiRepairSetup';
 
@@ -72,14 +73,14 @@ class RepairingSetupNode extends BaseScreen {
   render() {
     const { success } = this.state;
     return (
-      <View style={styles.container}>
+      <>
         <Header
           title="Continue setup"
           rightHeader={<BtnQuestionDefault onPress={() => { NavigationService.navigate(routeNames.NodeHelp); }} />}
         />
         <BackUpAccountModal visible={success} onClose={this.handleFinish} />
         {this.renderStep()}
-      </View>
+      </>
     );
   }
 
@@ -95,4 +96,4 @@ const mapDispatchToProps = {};
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withNavigationFocus(RepairingSetupNode));
+)(withLayout_2(RepairingSetupNode));

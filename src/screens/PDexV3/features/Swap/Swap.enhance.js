@@ -12,7 +12,11 @@ import withLazy from '@src/components/LazyHoc/LazyHoc';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { formConfigs, KEYS_PLATFORMS_SUPPORTED } from './Swap.constant';
+import {
+  formConfigs,
+  KEYS_PLATFORMS_SUPPORTED,
+  NETWORK_NAME_SUPPORTED,
+} from './Swap.constant';
 import {
   actionInitSwapForm,
   actionReset,
@@ -39,6 +43,7 @@ const enhance = (WrappedComp) => (props) => {
   const {
     isPrivacyApp = false,
     exchange = KEYS_PLATFORMS_SUPPORTED.incognito,
+    network = NETWORK_NAME_SUPPORTED.INCOGNITO,
   } = props;
   const unmountSwap = () => {
     dispatch(actionReset());
@@ -120,7 +125,28 @@ const enhance = (WrappedComp) => (props) => {
   };
   const handleInitSwapForm = async () => {
     if (isPrivacyApp) {
-      await dispatch(actionSetDefaultExchange({ isPrivacyApp, exchange }));
+      await dispatch(
+        actionSetDefaultExchange({
+          isPrivacyApp,
+          exchange,
+          network,
+        }),
+      );
+    } else {
+      setTimeout(() => {
+        dispatch(
+          actionInitSwapForm({
+            defaultPair: {
+              selltoken:
+                'b832e5d3b1f01a4f0623f7fe91d6673461e1f5d37d91fe78c5c2e6183ff39696', //BTC
+              buytoken:
+                '0000000000000000000000000000000000000000000000000000000000000004', //PRV
+            },
+            refresh: true,
+            shouldFetchHistory: false,
+          }),
+        );
+      }, 500);
     }
     initSwapForm(true);
   };

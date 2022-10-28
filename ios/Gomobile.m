@@ -188,4 +188,14 @@ RCT_EXPORT_METHOD(createOTAReceiver:(NSString *)data callback:(RCTResponseSender
   }
 }
 
+RCT_EXPORT_METHOD(createOTAReceiverWithCfg:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileCreateOTAReceiverWithCfg(data, nil);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
 @end

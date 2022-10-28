@@ -60,20 +60,23 @@ const GroupSubInfo = ({ page, isExpandPage, setShowHistory }) => {
         </View>
         {/* Only show Reward history tab when screen is privacy app, not show in Dex
         screen */}
-        {routeName !== routeNames.Trade ? (
-          <View
-            tabID={`${TAB_REWARD_HISTORY_ID} ${routeName}`}
-            label="Trading rewards"
-            onChangeTab={() => null}
-            upperCase={false}
-          >
-            <RewardHistory page={page} />
-          </View>
-        ) : (
-          <View tabID="" label="" onChangeTab={() => null} upperCase={false}>
-            <View />
-          </View>
-        )}
+        {/*{routeName !== routeNames.Trade ? (*/}
+        {/*  <View*/}
+        {/*    tabID={`${TAB_REWARD_HISTORY_ID} ${routeName}`}*/}
+        {/*    label="Trading rewards"*/}
+        {/*    onChangeTab={() => null}*/}
+        {/*    upperCase={false}*/}
+        {/*  >*/}
+        {/*    <RewardHistory page={page} />*/}
+        {/*  </View>*/}
+        {/*) : (*/}
+        {/*  <View tabID="" label="" onChangeTab={() => null} upperCase={false}>*/}
+        {/*    <View />*/}
+        {/*  </View>*/}
+        {/*)}*/}
+        <View tabID="" label="" onChangeTab={() => null} upperCase={false}>
+          <View />
+        </View>
       </Tabs>
     </View>
   );

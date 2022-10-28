@@ -71,7 +71,7 @@ const locationPermission = async () => {
   if (isAndroid()) {
     try {
       const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
           title: 'Location Permission',
           message: 'To find Node, please give this app access to your location.',
@@ -130,7 +130,7 @@ const checkPermission = () => {
     );
   }
   else {
-    return new Promise((resolve, reject) => check(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION)
+    return new Promise((resolve, reject) => check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
       .then((result) => {
         switch (result) {
         case RESULTS.UNAVAILABLE:

@@ -91,7 +91,8 @@ const BaseTextInput = (props: TextInputProps) => {
       autoCorrect={false}
       spellCheck={false}
       autoCompleteType="off"
-      style={[styles.input, style, !editable ? { color: colors.text4 } : null]}
+      // style={[styles.input, style, !editable ? { color: colors.text4 } : null]}
+      style={[styles.input, style]}
       editable={editable}
       value={value}
       selection={isAndroid() && !!selection ? selection : undefined}

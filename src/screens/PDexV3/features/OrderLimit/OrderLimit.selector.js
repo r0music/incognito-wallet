@@ -706,14 +706,20 @@ export const selectableTokens1Selector = createSelector(
   listPoolsVerifySelector,
   getPrivacyDataByTokenIDSelector,
   (pools, getPrivacyDataByTokenID) => {
-    let list = uniq(pools.map(({ token1 }) => token1?.tokenId));
-    list = list.map((tokenID) => getPrivacyDataByTokenID(tokenID));
-    list = orderBy(
-      list,
+    let tokenIDs = uniq(pools.map(({ token1 }) => token1?.tokenId));
+    let tokens = [];
+    tokenIDs.forEach((tokenID) => {
+      const token = getPrivacyDataByTokenID(tokenID);
+      if (token && !token.movedUnifiedToken) {
+        tokens.push(token);
+      }
+    });
+    tokens = orderBy(
+      tokens,
       ['priority', 'hasIcon', 'verified'],
       ['asc', 'desc', 'desc'],
     );
-    return list;
+    return tokens;
   },
 );
 
@@ -723,7 +729,7 @@ export const selectableTokens2Selector = createSelector(
   (pools, poolSelected) => {
     const { tokenId: token1Id } = poolSelected?.token1;
     return pools
-      .filter(({ token1 }) => token1?.tokenId === token1Id)
+      .filter(({ token1, token2 }) => token1?.tokenId === token1Id && !token1.movedUnifiedToken && !token2.movedUnifiedToken)
       .map(({ token2 }) => token2);
   },
 );

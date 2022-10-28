@@ -1,17 +1,18 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Hook } from '@screens/PDexV3/features/Extra';
-import { FONT } from '@src/styles';
+import { FONT, COLORS } from '@src/styles';
 import { useSelector } from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
-import { Text } from '@src/components/core';
+// import { Text } from '@src/components/core';
 import {
   feetokenDataSelector,
   swapInfoSelector,
   selltokenSelector,
+  getExchangeDataEstimateTradeSelector,
 } from './Swap.selector';
-import { KEYS_PLATFORMS_SUPPORTED, platformIdSelectedSelector } from '.';
+// import { KEYS_PLATFORMS_SUPPORTED, platformIdSelectedSelector } from '.';
 
 const styled = StyleSheet.create({
   container: {
@@ -45,42 +46,56 @@ const styled = StyleSheet.create({
 export const useTabFactories = () => {
   const swapInfo = useSelector(swapInfoSelector);
   const selltoken: SelectedPrivacy = useSelector(selltokenSelector);
-  const platformId = useSelector(platformIdSelectedSelector);
+  // const platformId = useSelector(platformIdSelectedSelector);
   const feeTokenData = useSelector(feetokenDataSelector);
-  const tradePathArr = feeTokenData?.tradePathArr || [];
+  // const tradePathArr = feeTokenData?.tradePathArr || [];
+  const currentExchangeData = useSelector(getExchangeDataEstimateTradeSelector);
 
-  const renderTradePath = () => {
-    const percents = feeTokenData?.uni?.percents || [];
-    return (
-      <View style={styled.tradePathRightContainer}>
-        {tradePathArr?.map((tradePath, tradePathIndex) => {
-          return (
-            <View
-              key={tradePathIndex}
-              style={[
-                styled.tradePathItem,
-                { marginTop: tradePathIndex === 0 ? 0 : 4 },
-              ]}
-            >
-              <View>
-                <Text style={styled.text}>{tradePath}</Text>
-              </View>
-              {percents[tradePathIndex] && (
-                <View style={styled.percentContainer}>
-                  <Text style={styled.text}>{percents[tradePathIndex]}%</Text>
-                </View>
-              )}
-            </View>
-          );
-        })}
-      </View>
-    );
+  // const renderTradePath = () => {
+  //   const percents = feeTokenData?.uni?.percents || [];
+  //   return (
+  //     <View style={styled.tradePathRightContainer}>
+  //       {tradePathArr?.map((tradePath, tradePathIndex) => {
+  //         return (
+  //           <View
+  //             key={tradePathIndex}
+  //             style={[
+  //               styled.tradePathItem,
+  //               { marginTop: tradePathIndex === 0 ? 0 : 4 },
+  //             ]}
+  //           >
+  //             <View>
+  //               <Text style={styled.text}>{tradePath}</Text>
+  //             </View>
+  //             {percents[tradePathIndex] && (
+  //               <View style={styled.percentContainer}>
+  //                 <Text style={styled.text}>{percents[tradePathIndex]}%</Text>
+  //               </View>
+  //             )}
+  //           </View>
+  //         );
+  //       })}
+  //     </View>
+  //   );
+  // };
+
+  const priceImpactDecorator = (priceImpactValue) => {
+    if (priceImpactValue >= 15) return COLORS.red;
+    if (priceImpactValue >= 5) return COLORS.lightOrange;
+    return COLORS.white;
   };
+
   const hooksFactories = React.useMemo(() => {
     let result = [
       {
         label: `${selltoken?.symbol || ''} Balance`,
         value: swapInfo?.balanceStr,
+      },
+      {
+        label: 'Minimum received',
+        value: currentExchangeData
+          ? currentExchangeData.minimumReceived
+          : undefined,
       },
       {
         label: 'Rate',
@@ -90,11 +105,18 @@ export const useTabFactories = () => {
         label: 'Trade path',
         value: feeTokenData?.tradePathStr,
         valueNumberOfLine: 10,
-        customValue: platformId === KEYS_PLATFORMS_SUPPORTED.uni ? renderTradePath() : null
+        // customValue:
+        //   platformId === KEYS_PLATFORMS_SUPPORTED.uni
+        //     ? renderTradePath()
+        //     : null,
+        customValue: null,
       },
       {
         label: 'Price impact',
         value: `${feeTokenData?.impactAmountStr}%`,
+        customStyledValue: {
+          color: priceImpactDecorator(parseFloat(feeTokenData.impactAmount)),
+        },
       },
     ];
     if (feeTokenData.isMainCrypto) {
@@ -109,7 +131,7 @@ export const useTabFactories = () => {
       });
     }
     return result.filter((hook) => !isEmpty(hook) && !!hook?.value);
-  }, [swapInfo, feeTokenData]);
+  }, [swapInfo, feeTokenData, currentExchangeData]);
   return {
     hooksFactories,
   };
