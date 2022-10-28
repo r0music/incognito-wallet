@@ -27,7 +27,8 @@ import {
   platformSelectedSelector,
 } from './Swap.selector';
 import {
-  actionEstimateTrade, actionGetMaxAmount,
+  actionEstimateTrade,
+  actionGetMaxAmount,
   actionResetData,
   actionSelectToken,
   actionSetFocusToken,
@@ -100,7 +101,9 @@ const SwapInputsGroup = React.memo(() => {
   );
   const onPressInfinityIcon = async () => {
     const { availableAmountText } = await dispatch(actionGetMaxAmount());
-    dispatch(change(formConfigs.formName, formConfigs.selltoken, availableAmountText));
+    dispatch(
+      change(formConfigs.formName, formConfigs.selltoken, availableAmountText),
+    );
     dispatch(actionEstimateTrade({ useMax: false }));
   };
   const onChange = (field, value) => {
@@ -121,14 +124,14 @@ const SwapInputsGroup = React.memo(() => {
       <Field
         component={TradeInputAmount}
         name={formConfigs.selltoken}
-        hasInfinityIcon
+        // hasInfinityIcon
         canSelectSymbol
         symbol={selltoken?.symbol}
         onChange={(value) => onChange(formConfigs.selltoken, value)}
         onPressSymbol={onSelectSellToken}
         onFocus={(e) => onFocusToken(e, formConfigs.selltoken)}
         onEndEditing={() => onEndEditing(formConfigs.selltoken)}
-        onPressInfinityIcon={onPressInfinityIcon}
+        // onPressInfinityIcon={onPressInfinityIcon}
         validate={[
           ...(selltoken.isIncognitoToken
             ? validator.combinedNanoAmount
