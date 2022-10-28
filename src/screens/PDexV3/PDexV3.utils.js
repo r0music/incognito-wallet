@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 import BigNumber from 'bignumber.js';
 import format from '@src/utils/format';
-import convertUtil from '@utils/convert';
+import convertUtil, { replaceDecimals } from '@utils/convert';
 import isNumber from 'lodash/isNumber';
 import isNaN from 'lodash/isNaN';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
@@ -9,7 +9,12 @@ import { getShareDataValue } from '@screens/PDexV3/features/Liquidity/Liquidity.
 
 export const convertToUSD = ({ amount, priceUsd, pDecimals }) => {
   const _amount = convertUtil.toNumber(amount, true);
-  return Math.ceil(new BigNumber(_amount).multipliedBy(priceUsd).multipliedBy(Math.pow(10, pDecimals)).toNumber());
+  return Math.ceil(
+    new BigNumber(_amount)
+      .multipliedBy(priceUsd)
+      .multipliedBy(Math.pow(10, pDecimals))
+      .toNumber(),
+  );
 };
 
 export const getPairRate = ({ token1, token2, token1Value, token2Value }) => {
@@ -73,17 +78,50 @@ export const getExchangeRate = (token1, token2, token1Value, token2Value) => {
   }
 };
 
+export const getExchangeRate1 = (token1, token2, token1Value, token2Value) => {
+  try {
+    if (!token1 || !token2 || !token1Value || !token2Value) {
+      return '';
+    }
+
+    const value1 = replaceDecimals(
+      (token2Value / token1Value).toFixed(6) || '',
+    );
+
+    return `1 ${token1?.symbol} = ${value1} ${token2?.symbol}`;
+  } catch (error) {
+    console.log('getExchangeRate-error', error);
+  }
+};
+
+export const getExchangeRate2 = (token1, token2, rateValue) => {
+  try {
+    if (!token1 || !token2 || !rateValue) {
+      return '';
+    }
+    return `1 ${token1?.symbol} = ${rateValue} ${token2?.symbol}`;
+  } catch (error) {
+    console.log('getExchangeRate-error', error);
+  }
+};
+
 export const getPrincipal = ({ token1, token2, shareData }) => {
-  const {
-    maxInputShareDisplayStr,
-    maxOutputShareDisplayStr,
-  } = getShareDataValue({
-    inputToken: token1,
-    outputToken: token2,
-    shareData,
+  const { maxInputShareDisplayStr, maxOutputShareDisplayStr } =
+    getShareDataValue({
+      inputToken: token1,
+      outputToken: token2,
+      shareData,
+    });
+  const token1USD = convertToUSD({
+    amount: maxInputShareDisplayStr,
+    priceUsd: token1.priceUsd,
+    pDecimals: token1.pDecimals,
   });
-  const token1USD = convertToUSD({ amount: maxInputShareDisplayStr, priceUsd: token1.priceUsd, pDecimals: token1.pDecimals });
-  const token2USD = convertToUSD({ amount: maxOutputShareDisplayStr, priceUsd: token2.priceUsd, pDecimals: token2.pDecimals });
+  const token2USD = convertToUSD({
+    amount: maxOutputShareDisplayStr,
+    priceUsd: token2.priceUsd,
+    pDecimals: token2.pDecimals,
+  });
   const token1USDHuman = convertUtil.toHumanAmount(token1USD, token1.pDecimals);
   const token2USDHuman = convertUtil.toHumanAmount(token2USD, token2.pDecimals);
   return {

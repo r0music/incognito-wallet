@@ -24,6 +24,7 @@ export const KEY_SAVE = {
   NODECLEARED: '$node_cleared',
   SHIP_ADDRESS: '$ship_address',
   MASTER_KEY_LIST: CONSTANT_KEYS.MASTER_KEY_LIST,
+  FIREBASE_ID: '$FIREBASE_ID',
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -208,6 +209,14 @@ export default class LocalDatabase {
 
   static getDeviceId() {
     return LocalDatabase.getValue(KEY_SAVE.DEVICE_ID) || '';
+  }
+
+  static saveFirebaseId(firebaseID) {
+    return LocalDatabase.saveValue(KEY_SAVE.FIREBASE_ID, firebaseID);
+  }
+
+  static getFirebaseId() {
+    return LocalDatabase.getValue(KEY_SAVE.FIREBASE_ID) || '';
   }
 
   // For webview caching

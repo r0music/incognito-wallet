@@ -11,7 +11,10 @@ import { BtnFast } from '@src/components/Button';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { selectedPrivacySelector, childSelectedPrivacySelector } from '@src/redux/selectors';
+import {
+  selectedPrivacySelector,
+  childSelectedPrivacySelector,
+} from '@src/redux/selectors';
 import { Text } from '@components/core';
 import { styled } from './EstimateFee.styled';
 import withEstimateFee from './EstimateFee.enhance';

@@ -53,22 +53,15 @@ const SwapOrderDetail = () => {
       return [];
     }
     let ft = [];
-    if (order?.tradeID) {
-      ft.push({
-        label: 'Trade ID',
-        value: `#${order?.tradeID}`,
-        copiable: true,
-      });
-    }
     ft = ft.concat([
       {
         label: 'Request Tx',
-        value: `#${order?.requestTx}`,
+        value: `#${order?.requestBurnTxInc}`,
         copiable: true,
         openUrl: true,
         handleOpenUrl: () =>
           LinkingService.openUrlInSide(
-            `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${order?.requestTx}`,
+            `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${order?.requestBurnTxInc}`,
           ),
       },
       {
@@ -86,22 +79,13 @@ const SwapOrderDetail = () => {
       {
         label: 'Status',
         value: order?.statusStr,
+        valueStyle: { color: order.statusColor }
       },
       {
         label: 'Rate',
         value: order?.rateStr,
       },
-      {
-        label: 'Fee',
-        value: order?.tradingFeeStr,
-      },
     ]);
-    if (!order?.tradingFeeByPRV) {
-      ft.push({
-        label: 'Network fee',
-        value: order?.networkfeeAmountStr,
-      });
-    }
     if (order?.respondTxs?.length > 0) {
       ft.push({
         label: 'Response Tx',
@@ -133,10 +117,72 @@ const SwapOrderDetail = () => {
         value: order?.respondTxs.map((responseTx) => `\n${responseTx}`).join(),
       });
     }
-    ft.push({
-      label: 'Exchange',
-      value: order?.exchange,
-    });
+    ft = ft.concat([
+      {
+        label: 'Exchange',
+        value: order?.exchange,
+      },
+      {
+        label: 'Outchain Tx',
+        value: order?.outchainTx,
+        customValue: (
+          <Row
+            style={{
+              ...orderDetailStyled.rowValue,
+              marginLeft: 0,
+              flexDirection: 'column',
+            }}
+          >
+            <OrderDetailValue
+              copiable
+              openUrl
+              handleOpenUrl={() =>
+                LinkingService.openUrlInSide(
+                  `${order.exchangeScan}/tx/${order?.outchainTx}`,
+                )
+              }
+              value={`#${order?.outchainTx}`}
+            />
+          </Row>
+        )
+      },
+      // {
+      //   label: 'Outchain Status',
+      //   value: order?.outchainTxStatusStr,
+      // },
+      {
+        label: 'Exchange Status',
+        value: order?.swapExchangeStatusStr,
+      },
+      {
+        label: 'Redeposit Tx',
+        value: order?.redepositTxInc,
+        customValue: (
+          <Row
+            style={{
+              ...orderDetailStyled.rowValue,
+              marginLeft: 0,
+              flexDirection: 'column',
+            }}
+          >
+            <OrderDetailValue
+              copiable
+              openUrl
+              handleOpenUrl={() =>
+                LinkingService.openUrlInSide(
+                  `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${order?.redepositTxInc}`,
+                )
+              }
+              value={`#${order?.redepositTxInc}`}
+            />
+          </Row>
+        )
+      },
+      {
+        label: 'Redeposit Status',
+        value: order?.redepositStatusStr,
+      },
+    ]);
     if (order?.status === 'Pending') {
       ft.push({
         label: 'Estimation time',

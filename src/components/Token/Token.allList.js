@@ -31,7 +31,7 @@ const ListAllToken = (props) => {
     toggleUnVerified,
     renderItem,
     styledContainer,
-    styledCheckBox
+    styledCheckBox,
   } = props;
   return (
     <KeyboardAwareScrollView
@@ -43,7 +43,7 @@ const ListAllToken = (props) => {
         btnStyle={[
           styled.hook,
           tokensFactories[1]?.visible ? null : { marginBottom: 50 },
-          styledCheckBox
+          styledCheckBox,
         ]}
         onPress={onToggleUnVerifiedTokens}
         checked={toggleUnVerified}
@@ -56,7 +56,7 @@ const ListAllToken = (props) => {
 
 ListAllToken.defaultProps = {
   styledContainer: null,
-  styledCheckBox: null
+  styledCheckBox: null,
 };
 
 ListAllToken.propTypes = {
@@ -65,7 +65,7 @@ ListAllToken.propTypes = {
   toggleUnVerified: PropTypes.bool.isRequired,
   renderItem: PropTypes.func.isRequired,
   styledContainer: PropTypes.any,
-  styledCheckBox: PropTypes.any
+  styledCheckBox: PropTypes.any,
 };
 
 export default React.memo(ListAllToken);

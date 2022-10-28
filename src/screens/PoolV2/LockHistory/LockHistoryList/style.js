@@ -74,12 +74,6 @@ export default StyleSheet.create({
     lineHeight: 16,
     marginVertical: 2
   },
-  endTerm: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: 12,
-    lineHeight: 16,
-    marginVertical: 2
-  },
   divider: {
     marginBottom: 16,
     marginTop: 16,
