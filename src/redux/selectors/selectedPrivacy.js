@@ -11,6 +11,7 @@ import token, {
   tokensFollowedSelector,
   pTokens,
   internalTokens,
+  pTokenIdsSelector,
 } from './token';
 import { getPrice } from '../utils/selectedPrivacy';
 
@@ -39,7 +40,9 @@ export const getPrivacyDataByTokenID = createSelector(
           ) || {};
         const pTokenData = pTokens?.find((t) => t?.tokenId === tokenID);
         const followedTokenData = followed.find((t) => t?.id === tokenID) || {};
-        const isExistTokenFollowInWallet = tokenFollowWallet.some((t) => t?.id === tokenID);
+        const isExistTokenFollowInWallet = tokenFollowWallet.some(
+          (t) => t?.id === tokenID,
+        );
         if (
           !internalTokenData &&
           !pTokenData &&
@@ -53,11 +56,11 @@ export const getPrivacyDataByTokenID = createSelector(
           pTokenData,
           tokenID,
         );
-        
+
         // convert childToken data to selected privacy token data of list unified token
         let listUnifiedToken = token?.listUnifiedToken;
         let unifiedTokens = [];
-        for(let i = 0; i < listUnifiedToken?.length; i++) {
+        for (let i = 0; i < listUnifiedToken?.length; i++) {
           const childTokenId = listUnifiedToken[i]?.tokenId;
           const childTokenData = listUnifiedToken[i];
           const childTokenSelectedPrivacyData = new SelectedPrivacy(
@@ -67,7 +70,7 @@ export const getPrivacyDataByTokenID = createSelector(
             childTokenId,
           );
           unifiedTokens.push(childTokenSelectedPrivacyData);
-        } 
+        }
         token.listUnifiedToken = unifiedTokens || [];
 
         // convert childToken data to selected privacy token data of list child token
@@ -83,7 +86,7 @@ export const getPrivacyDataByTokenID = createSelector(
             childTokenId,
           );
           newListChildTokenOfPRV.push(childTokenSelectedPrivacyData);
-        } 
+        }
         token.listChildToken = newListChildTokenOfPRV || [];
 
         const tokenUSDT = pTokens.find(
@@ -160,6 +163,28 @@ export const findTokenFollowedByIdSelector = createSelector(
   (followed) => (tokenID) => followed.find((token) => token?.id === tokenID),
 );
 
+export const getAllPrivacyDataSelector = createSelector(
+  pTokenIdsSelector,
+  getPrivacyDataByTokenID,
+  (tokenIdList, getPrivacyDataByTokenIDFunction) =>
+    memoize(
+      () =>
+        tokenIdList.map((tokenId) =>
+          getPrivacyDataByTokenIDFunction(tokenId),
+        ) || [],
+    ),
+);
+
+export const getPrivacyDataFilterSelector = createSelector(
+  getAllPrivacyDataSelector,
+  (getAllPrivacyDataFunction) => {
+    const selectTokenList: SelectedPrivacy[] = getAllPrivacyDataFunction();
+    return (
+      selectTokenList.filter((token) => token.tokenId && token.isVerified) || []
+    );
+  },
+);
+
 export default {
   getPrivacyDataByTokenID,
   selectedPrivacyTokenID,
@@ -167,4 +192,6 @@ export default {
   getPrivacyDataBaseOnAccount,
   selectedPrivacyByFollowedSelector,
   findTokenFollowedByIdSelector,
+  getAllPrivacyDataSelector,
+  getPrivacyDataFilterSelector,
 };

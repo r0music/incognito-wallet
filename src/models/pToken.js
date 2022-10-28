@@ -1,3 +1,4 @@
+import { CONSTANT_COMMONS } from '@src/constants';
 import TokenModel from './token';
 
 class PToken {
@@ -33,6 +34,7 @@ class PToken {
     this.movedUnifiedToken = data?.MovedUnifiedToken;
     this.listUnifiedToken = data?.ListUnifiedToken;
     this.parentUnifiedID = data?.ParentUnifiedID;
+    this.isPUnifiedToken = this.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.UNIFIED_TOKEN;
     const tokens =
       pTokens &&
       pTokens.filter(

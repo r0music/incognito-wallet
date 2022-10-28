@@ -64,10 +64,10 @@ const Order = React.memo(({ data }) => {
   const navigation = useNavigation();
   const colors = useSelector(colorsSelector);
   const dispatch = useDispatch();
-  if (!data?.requestTx) {
+  if (!data?.requestBurnTxInc) {
     return null;
   }
-  const { statusStr, swapStr, requestTx, tradeID, exchange } = data;
+  const { statusStr, swapStr, requestBurnTxInc, exchange, color: statusColor } = data;
 
   const handleNavOrderDetail = async () => {
     await dispatch(actionFetchedOrderDetail(data));
@@ -79,7 +79,7 @@ const Order = React.memo(({ data }) => {
         <View style={styled.wrapperOrder}>
           <Row style={{ ...styled.row, marginBottom: 4 }}>
             <Text style={[styled.swap]}>{swapStr}</Text>
-            <Text style={[styled.statusStr]}>{statusStr}</Text>
+            <Text style={[styled.statusStr, { color: statusColor }]}>{statusStr}</Text>
           </Row>
           <Row style={styled.row}>
             <Text
@@ -87,7 +87,7 @@ const Order = React.memo(({ data }) => {
               numberOfLines={1}
               ellipsizeMode="middle"
             >
-              {`#${tradeID || requestTx}`}
+              {`#${requestBurnTxInc}`}
             </Text>
             <Text style={[styled.title, { color: colors.subText }]}>
               {exchange}
@@ -107,9 +107,10 @@ const OrderHistory = ({ page }) => {
     return history.slice(0, page);
   }, [page, history]);
 
+
   const renderItem = React.useCallback((item, index) => {
     return (
-      <View key={item?.tradeID || item?.requestTx}>
+      <View key={item?.requestBurnTxInc}>
         <Order data={item} visibleDivider={index !== history.length - 1} />
         {index !== history.length - 1 && <Divider />}
       </View>

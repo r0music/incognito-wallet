@@ -14,8 +14,15 @@ export const tokensFollowedSelector = createSelector(
 export const pTokensSelector = createSelector(
   (state) => state?.token?.pTokens,
   (pTokens) => {
-    return pTokens.map((token) => ({ ...token, tokenID: token?.tokenId })) || [];
+    return (
+      pTokens.map((token) => ({ ...token, tokenID: token?.tokenId })) || []
+    );
   },
+);
+
+export const pTokenIdsSelector = createSelector(
+  (state) => state?.token?.pTokens,
+  (pTokens) => pTokens.map((token) => token.tokenId) || [],
 );
 
 export const internalTokensSelector = createSelector(
