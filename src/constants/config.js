@@ -25,7 +25,8 @@ const API_BASE_URL2 = isMainnet
   : 'https://device-network-staging.incognito.org/';
 const API_BASE_URL3 = 'https://device-network.incognito.org/';
 const API_BASE_URL4 = isMainnet
-  ? 'https://api-webapp.incognito.org/'
+  ? // ? 'https://api-webapp.incognito.org/'
+    'http://51.161.117.193:8898/'
   : 'https://api-webapp-staging.incognito.org/';
 
 const ETHERSCAN_URL = isMainnet
