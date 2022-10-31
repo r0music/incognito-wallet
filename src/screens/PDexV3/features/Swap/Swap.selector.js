@@ -1357,3 +1357,8 @@ export const getExchangeDataEstimateTradeSelector = createSelector(
   platformIdSelectedSelector,
   ({ data }, platformId) => data[platformId] || undefined,
 );
+
+export const getEsimateTradeError = createSelector(
+  swapSelector,
+  ({ estimateTradeError }) => estimateTradeError,
+);

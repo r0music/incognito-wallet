@@ -13,6 +13,8 @@ export const ACTION_SET_FOCUS_TOKEN = '[pDexV3][swap] Set focus token';
 export const ACTION_SET_SELECTING_TOKEN = '[pDexV3][swap] Set selecting token';
 export const ACTION_SET_SWAPING_TOKEN = '[pDexV3][swap] Set swapingToken token';
 export const ACTION_SET_INITIING_SWAP = '[pDexV3][swap] Set initing token';
+export const ACTION_ESTIMATE_TRADE_ERROR =
+  '[pDexV3][swap] Estimate Trade Error';
 
 export const ACTION_SET_PERCENT = '[pDexV3][swap] Set percent';
 
@@ -75,7 +77,8 @@ export const ACTION_SET_BEST_RATE_EXCHANGE =
   '[pDexV3][swap] Set Best Rate Exchange';
 export const ACTION_SET_EXCHANGE_SUPPORT_LIST =
   '[pDexV3][swap] Set Exchange support list';
-export const ACTION_SET_RESET_SLIPPAGE = '[pDexV3][swap] ACTION_SET_RESET_SLIPPAGE';
+export const ACTION_SET_RESET_SLIPPAGE =
+  '[pDexV3][swap] ACTION_SET_RESET_SLIPPAGE';
 
 export const SCREENS_TO_SHOW_REWARD_HISTORY_TAB = [
   routeNames.PrivacyAppsPancake,

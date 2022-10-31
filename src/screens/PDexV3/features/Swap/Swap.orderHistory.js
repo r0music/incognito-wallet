@@ -1,11 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import {
-  Divider,
-  Text,
-  TouchableOpacity,
-  View,
-} from '@src/components/core';
+import { Divider, Text, TouchableOpacity, View } from '@src/components/core';
 import { colorsSelector } from '@src/theme';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from '@src/components';
@@ -67,19 +62,28 @@ const Order = React.memo(({ data }) => {
   if (!data?.requestBurnTxInc) {
     return null;
   }
-  const { statusStr, swapStr, requestBurnTxInc, exchange, color: statusColor } = data;
+  const {
+    statusStr,
+    swapStr,
+    requestBurnTxInc,
+    exchange,
+    color: statusColor,
+  } = data;
 
   const handleNavOrderDetail = async () => {
     await dispatch(actionFetchedOrderDetail(data));
     navigation.navigate(routeNames.OrdeSwapDetail);
   };
+
   return (
     <>
       <TouchableOpacity style={styled.order} onPress={handleNavOrderDetail}>
         <View style={styled.wrapperOrder}>
           <Row style={{ ...styled.row, marginBottom: 4 }}>
             <Text style={[styled.swap]}>{swapStr}</Text>
-            <Text style={[styled.statusStr, { color: statusColor }]}>{statusStr}</Text>
+            <Text style={[styled.statusStr, { color: statusColor }]}>
+              {statusStr}
+            </Text>
           </Row>
           <Row style={styled.row}>
             <Text
@@ -107,7 +111,6 @@ const OrderHistory = ({ page }) => {
     return history.slice(0, page);
   }, [page, history]);
 
-
   const renderItem = React.useCallback((item, index) => {
     return (
       <View key={item?.requestBurnTxInc}>
@@ -116,11 +119,7 @@ const OrderHistory = ({ page }) => {
       </View>
     );
   }, []);
-  return (
-    <View style={styled.container}>
-      {historyDisplay.map(renderItem)}
-    </View>
-  );
+  return <View style={styled.container}>{historyDisplay.map(renderItem)}</View>;
 };
 
 Order.propTypes = {

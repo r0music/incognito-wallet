@@ -12,6 +12,7 @@ import withSwap from './Swap.enhance';
 import { swapInfoSelector } from './Swap.selector';
 import SwapInputsGroup from './Swap.inputsGroup';
 import GroupSubInfo from './Swap.groupSubInfo';
+import EstimateTradeError from './Swap.estimateTradeError';
 
 const initialFormValues = {
   selltoken: '',
@@ -26,10 +27,12 @@ const Form = createForm(formConfigs.formName, {
   enableReinitialize: true,
 });
 
-const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   const paddingToBottom = 20;
-  return layoutMeasurement.height + contentOffset.y >=
-    contentSize.height - paddingToBottom;
+  return (
+    layoutMeasurement.height + contentOffset.y >=
+    contentSize.height - paddingToBottom
+  );
 };
 
 const Swap = (props) => {
@@ -41,7 +44,7 @@ const Swap = (props) => {
 
   const setLoadPage = () => {
     if (!isExpandPage) return;
-    setPage(page => page + 4);
+    setPage((page) => page + 4);
   };
 
   const _debounceLoadPage = throttle(() => {
@@ -53,21 +56,24 @@ const Swap = (props) => {
     if (!isShow) {
       return setPage(0);
     }
-    setPage(page => page + 5);
+    setPage((page) => page + 5);
   };
 
   return (
     <>
       <KeyboardAwareScrollView
         style={[styled.scrollview]}
-        refreshControl={(
+        refreshControl={
           <RefreshControl
             refreshing={swapInfo?.refreshing}
             onRefresh={initSwapForm}
           />
-        )}
-        onScroll={({nativeEvent}) => {
-          if (isCloseToBottom(nativeEvent) && typeof setLoadPage === 'function') {
+        }
+        onScroll={({ nativeEvent }) => {
+          if (
+            isCloseToBottom(nativeEvent) &&
+            typeof setLoadPage === 'function'
+          ) {
             _debounceLoadPage();
           }
         }}
@@ -77,6 +83,7 @@ const Swap = (props) => {
           {() => (
             <>
               <SwapInputsGroup />
+              <EstimateTradeError />
               <ButtonTrade
                 btnStyle={styled.btnTrade}
                 onPress={handleConfirm}
@@ -85,7 +92,11 @@ const Swap = (props) => {
             </>
           )}
         </Form>
-        <GroupSubInfo page={page} isExpandPage={isExpandPage} setShowHistory={setShowHistory} />
+        <GroupSubInfo
+          page={page}
+          isExpandPage={isExpandPage}
+          setShowHistory={setShowHistory}
+        />
       </KeyboardAwareScrollView>
       {!!swapInfo.swaping && <LoadingTx />}
     </>
