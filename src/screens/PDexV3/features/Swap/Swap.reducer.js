@@ -43,6 +43,7 @@ import {
   ACTION_SET_BEST_RATE_EXCHANGE,
   ACTION_SET_EXCHANGE_SUPPORT_LIST,
   ACTION_SET_RESET_SLIPPAGE,
+  ACTION_ESTIMATE_TRADE_ERROR,
 } from './Swap.constant';
 
 const initialState = {
@@ -125,6 +126,7 @@ const initialState = {
   bestRateExchange: null,
   exchangeSupportsList: [],
   network: null,
+  estimateTradeError: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -319,11 +321,14 @@ const reducer = (state = initialState, action) => {
       };
     }
     case ACTION_RESET: {
-      return Object.assign({}, {
-        ...initialState,
-        slippage: state.slippage,
-        resetSlippage1: state.resetSlippage1
-      });
+      return Object.assign(
+        {},
+        {
+          ...initialState,
+          slippage: state.slippage,
+          resetSlippage1: state.resetSlippage1,
+        },
+      );
     }
     case ACTION_RESET_DATA: {
       return {
@@ -429,6 +434,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         resetSlippage1: true,
+      };
+    }
+    case ACTION_ESTIMATE_TRADE_ERROR: {
+      return {
+        ...state,
+        estimateTradeError: action.payload,
       };
     }
     default:
