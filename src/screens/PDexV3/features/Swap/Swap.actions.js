@@ -898,11 +898,7 @@ export const actionEstimateTrade =
       // change sell token input when press max
       if (useMax && sellAmount) {
         dispatch(
-          change(
-            formConfigs.formName,
-            formConfigs.selltoken,
-            maxAmount,
-          ),
+          change(formConfigs.formName, formConfigs.selltoken, maxAmount),
         );
       }
 
@@ -1031,7 +1027,7 @@ export const actionEstimateTrade =
           feePrv: {
             fee: isUseTokenFee ? 0 : originalTradeFee,
             isSignificant: false,
-            maxGet: format.amountFull(amountOutPreSlippage, 0),
+            maxGet: format.numberWithNoGroupSeparator(amountOutPreSlippage, 0),
             route: routes,
             sellAmount: payload.sellamount,
             buyAmount: amountOut,
@@ -1044,7 +1040,7 @@ export const actionEstimateTrade =
             buyAmount: amountOut,
             fee: isUseTokenFee ? originalTradeFee : 0,
             isSignificant: false,
-            maxGet: format.amountFull(amountOutPreSlippage, 0),
+            maxGet: format.numberWithNoGroupSeparator(amountOutPreSlippage, 0),
             route: routes,
             impactAmount: format.amount(impactAmount, 0),
             tokenRoute: routes,
@@ -1803,7 +1799,9 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
               tradePath: exchangeData?.poolPairs || [''],
               feetoken,
               version: PrivacyVersion.ver2,
-              minAcceptableAmount: `${new BigNumber(exchangeData.amountOutRaw || 0).integerValue()}`,
+              minAcceptableAmount: `${new BigNumber(
+                exchangeData.amountOutRaw || 0,
+              ).integerValue()}`,
               sellAmountText: _sellAmountText,
               buyAmountText: _buyAmountText,
             },
@@ -2333,12 +2331,21 @@ export const actionGetMaxAmount = () => async (dispatch, getState) => {
     isUseTokenFee = feeData?.spooky?.isUseTokenFee;
   }
   const availableOriginalAmount = sellInputToken?.availableOriginalAmount;
-  if (!isUseTokenFee) return { maxAmount: availableOriginalAmount, availableAmountText: sellInputToken.availableAmountText, inputPDecimals: sellInputToken.pDecimals } ;
+  if (!isUseTokenFee)
+    return {
+      maxAmount: availableOriginalAmount,
+      availableAmountText: sellInputToken.availableAmountText,
+      inputPDecimals: sellInputToken.pDecimals,
+    };
   const fee = feeData?.minFeeOriginal;
   let maxAmount = availableOriginalAmount - fee;
   if (maxAmount < 0) {
     maxAmount = availableOriginalAmount;
   }
 
-  return { maxAmount, availableAmountText: sellInputToken.availableAmountText, inputPDecimals: sellInputToken.pDecimals };
+  return {
+    maxAmount,
+    availableAmountText: sellInputToken.availableAmountText,
+    inputPDecimals: sellInputToken.pDecimals,
+  };
 };
