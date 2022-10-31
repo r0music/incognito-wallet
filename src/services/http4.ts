@@ -36,6 +36,10 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   (res) => {
+    // logger('RESPONSE: ', {
+    //   res,
+    // });
+
     const result = res?.data?.Result;
     const error = res?.data?.Error;
     if (error) {
@@ -44,7 +48,9 @@ instance.interceptors.response.use(
     return Promise.resolve(result);
   },
   (errorData) => {
-    console.log('errorData ', errorData);
+    // logger('ERROR RESPONSE: ', {
+    //   errorData,
+    // });
     const errResponse = errorData?.response;
 
     // can not get response, alert to user
@@ -57,11 +63,17 @@ instance.interceptors.response.use(
     // get response of error
     // wrap the error with CustomError to custom error message, or logging
     const data = errResponse?.data;
-    if (data && data.Error) {
-      throw new CustomError(data.Error?.Code, {
-        name: CustomError.TYPES.API_ERROR,
-        message: data.Error?.Message,
-      });
+    const message = data.Error;
+
+    if (data && message) {
+      if (typeof message === 'string') {
+        throw new Error(message);
+      } else {
+        throw new CustomError(data.Error?.Code, {
+          name: CustomError.TYPES.API_ERROR,
+          message: data.Error?.Message,
+        });
+      }
     }
 
     return Promise.reject(errorData);

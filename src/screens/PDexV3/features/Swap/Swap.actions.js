@@ -82,6 +82,7 @@ import {
   NETWORK_NAME_SUPPORTED,
   CALL_CONTRACT,
   ACTION_SET_RESET_SLIPPAGE,
+  ACTION_ESTIMATE_TRADE_ERROR,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -135,6 +136,11 @@ import TransactionHandler, {
 } from './Swap.transactionHandler';
 
 // const logger = createLogger('LOG');
+
+export const actionEstimateTradeError = (payload) => ({
+  type: ACTION_ESTIMATE_TRADE_ERROR,
+  payload,
+});
 
 export const actionSetBestRateExchange = (payload) => ({
   type: ACTION_SET_BEST_RATE_EXCHANGE,
@@ -847,6 +853,8 @@ export const actionEstimateTrade =
     let isFetched = false;
     let state = getState();
 
+    await dispatch(actionEstimateTradeError(null));
+
     // let formErrorState = swapFormErrorSelector(state);
     // console.log('formErrorState ', formErrorState);
 
@@ -980,21 +988,33 @@ export const actionEstimateTrade =
           network = 'inc';
           break;
       }
+
       // amount:  convert.toNumber(payload.sellamount || 0, true).toFixed(inputPDecimals),
-
-      const estimateRawData = await SwapService.getEstiamteTradingFee({
-        // amount: convert
-        //   .toHumanAmount(payload.sellamount, inputPDecimals)
-        //   ?.toString(),
-        amount: payload.sellamount,
-        fromToken: payload.selltoken,
-        toToken: payload.buytoken,
-        slippage: slippagetolerance.toString(),
-        network: network,
-      });
-
-      if (!estimateRawData) {
-        throw new Error('Can not estimate trade');
+      let estimateRawData;
+      try {
+        estimateRawData = await SwapService.getEstiamteTradingFee({
+          // amount: convert
+          //   .toHumanAmount(payload.sellamount, inputPDecimals)
+          //   ?.toString(),
+          amount: payload.sellamount,
+          fromToken: payload.selltoken,
+          toToken: payload.buytoken,
+          slippage: slippagetolerance.toString(),
+          network: network,
+        });
+      } catch (error) {
+        // console.log('=> getEstiamteTradingFee! error ', {
+        //   error,
+        // });
+        await dispatch(
+          actionEstimateTradeError(error.message || error || 'No tradeable network found'),
+        );
+        return;
+      } finally {
+        if (!estimateRawData) {
+          // eslint-disable-next-line no-unsafe-finally
+          return;
+        }
       }
 
       //NEW FLOW, combine all esimate fee API in one with new Back-End (from Lam)

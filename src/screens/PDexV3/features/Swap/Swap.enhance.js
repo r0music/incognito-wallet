@@ -1,6 +1,6 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import { TradeSuccessModal } from '@src/screens/PDexV3/features/Trade';
 import { focus } from 'redux-form';
@@ -29,6 +29,7 @@ import {
   swapFormErrorSelector,
   sellInputTokenSelector,
   feetokenDataSelector,
+  getEsimateTradeError,
 } from './Swap.selector';
 
 const enhance = (WrappedComp) => (props) => {
@@ -37,6 +38,7 @@ const enhance = (WrappedComp) => (props) => {
   const formErrors = useDebounceSelector(swapFormErrorSelector);
   const sellInputToken = useDebounceSelector(sellInputTokenSelector);
   const feeTokenData = useDebounceSelector(feetokenDataSelector);
+  const estimateTradeError = useSelector(getEsimateTradeError);
   const [visibleSignificant, setVisibleSignificant] = React.useState(false);
   const [ordering, setOrdering] = React.useState(false);
   const navigation = useNavigation();
@@ -90,6 +92,9 @@ const enhance = (WrappedComp) => (props) => {
         if (formErrors[field]) {
           return dispatch(focus(formConfigs.formName, field));
         }
+      }
+      if (estimateTradeError) {
+        return;
       }
       if (
         swapInfo?.disabledBtnSwap &&
