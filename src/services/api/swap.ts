@@ -32,7 +32,10 @@ const getEstiamteTradingFee = async (payload: GetEstiamteTradingFeePayload) => {
     const exchangeSupports = data?.Networks;
     return exchangeSupports;
   } catch (error) {
-    return error;
+    // logger('[getEstiamteTradingFee]  error ', {
+    //   error,
+    // });
+    throw error;
   }
 };
 
