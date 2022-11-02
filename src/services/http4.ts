@@ -36,6 +36,10 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   (res) => {
+    logger('RESPONSE: ', {
+      res,
+    });
+
     const result = res?.data?.Result;
     const error = res?.data?.Error;
     if (error) {
@@ -44,7 +48,9 @@ instance.interceptors.response.use(
     return Promise.resolve(result);
   },
   (errorData) => {
-    console.log('errorData ', errorData);
+    logger('ERROR RESPONSE: ', {
+      errorData,
+    });
     const errResponse = errorData?.response;
 
     // can not get response, alert to user

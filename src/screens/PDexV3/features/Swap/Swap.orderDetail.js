@@ -16,8 +16,8 @@ import TradeOrderDetail, {
   OrderDetailValue,
 } from '@screens/PDexV3/features/Trade/Trade.orderDetail';
 import { Row } from '@src/components';
-import { orderDetailSelector } from './Swap.selector';
-import { actionFetchDataOrderDetail } from './Swap.actions';
+import { orderDetailSelector } from './redux/Swap.selector';
+import { actionFetchDataOrderDetail } from './redux/Swap.actions';
 
 const styled = StyleSheet.create({
   container: { flex: 1 },
@@ -79,7 +79,7 @@ const SwapOrderDetail = () => {
       {
         label: 'Status',
         value: order?.statusStr,
-        valueStyle: { color: order.statusColor }
+        valueStyle: { color: order.statusColor },
       },
       {
         label: 'Rate',
@@ -144,7 +144,7 @@ const SwapOrderDetail = () => {
               value={`#${order?.outchainTx}`}
             />
           </Row>
-        )
+        ),
       },
       // {
       //   label: 'Outchain Status',
@@ -176,7 +176,7 @@ const SwapOrderDetail = () => {
               value={`#${order?.redepositTxInc}`}
             />
           </Row>
-        )
+        ),
       },
       {
         label: 'Redeposit Status',

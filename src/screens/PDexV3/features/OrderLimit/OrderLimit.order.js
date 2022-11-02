@@ -225,11 +225,11 @@ const Order = React.memo(({ data, visibleDivider }) => {
         subTitle={withdrawData?.subTitle || ''}
         acceptStr="Yes, cancel"
         canStr="Keep it"
-        icon={(
+        icon={
           <Row center style={{ marginBottom: 7 }}>
             <CancelIcon />
           </Row>
-        )}
+        }
       />
     </TouchableOpacity>
   );

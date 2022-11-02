@@ -9,9 +9,9 @@ import capitalize from 'lodash/capitalize';
 import { formValueSelector, isValid, getFormSyncErrors } from 'redux-form';
 import convert from '@src/utils/convert';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
-import { PRV } from '@src/constants/common';
 import { sharedSelector } from '@src/redux/selectors';
 import orderBy from 'lodash/orderBy';
+import { PRV } from '@src/constants/common';
 import memoize from 'lodash/memoize';
 import {
   getExchangeRate,
@@ -27,8 +27,8 @@ import {
   KEYS_PLATFORMS_SUPPORTED,
   PLATFORMS_SUPPORTED,
   getExchangeDataWithCallContract,
-} from './Swap.constant';
-import { getInputAmount, calMintAmountExpected } from './Swap.utils';
+} from '../Swap.constant';
+import { getInputAmount, calMintAmountExpected } from '../Swap.utils';
 
 export const swapSelector = createSelector(
   (state) => state.pDexV3,

@@ -20,6 +20,7 @@ import {
   SelectOptionModal,
 } from '@src/components/SelectOption';
 import { actionToggleModal } from '@src/components/Modal';
+
 import {
   feetokenDataSelector,
   feeTypesSelector,
@@ -31,7 +32,7 @@ import {
   platformsSupportedSelector1,
   platformIdSelectedSelector,
   isPrivacyAppSelector,
-} from './Swap.selector';
+} from './redux/Swap.selector';
 import {
   actionHandleInjectEstDataForPancake,
   actionHandleInjectEstDataForPDex,
@@ -40,7 +41,7 @@ import {
   actionSwitchPlatform,
   actionChangeSlippage,
   actionEstimateTrade,
-} from './Swap.actions';
+} from './redux/Swap.actions';
 import { formConfigs, KEYS_PLATFORMS_SUPPORTED } from './Swap.constant';
 import {
   minFeeValidator,
@@ -171,6 +172,7 @@ const TabPro = React.memo(() => {
       }),
     [platforms],
   );
+
   const platformSelected = options.find((option) => !!option?.isSelected);
   let extraFactories = [
     {

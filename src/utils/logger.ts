@@ -1,4 +1,4 @@
-export const DEBUG = false;
+export const DEBUG = true;
 
 type LoggerTags = 'API' | 'LOG' | 'INFO' | 'DEBUG' | 'WARN' | 'ERROR' | string;
 

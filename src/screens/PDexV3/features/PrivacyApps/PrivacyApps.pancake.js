@@ -13,7 +13,7 @@ import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { ANALYTICS, CONSTANT_CONFIGS } from '@src/constants';
 import { useNavigationParam } from 'react-navigation-hooks';
-import { swapInfoSelector } from '../Swap/Swap.selector';
+import { swapInfoSelector } from '../Swap/redux/Swap.selector';
 
 const PrivacyAppsPancake = () => {
   const dispatch = useDispatch();

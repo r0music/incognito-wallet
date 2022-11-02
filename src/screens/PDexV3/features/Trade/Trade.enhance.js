@@ -22,7 +22,7 @@ import {
 import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
 import { LoadingContainer } from '@src/components/core';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
-import { swapInfoSelector } from '../Swap/Swap.selector';
+import { swapInfoSelector } from '../Swap/redux/Swap.selector';
 
 import {
   ROOT_TAB_TRADE,
@@ -42,27 +42,27 @@ const enhance = (WrappedComp) => (props) => {
     try {
       await setRefreshing(true);
       switch (activedTab) {
-      case TAB_SWAP_ID: {
-        await dispatch(
-          actionInitSwapForm({
-            defaultPair: swapInfo?.defaultPair,
-            refresh: true,
-            shouldFetchHistory: true,
-          })
-        );
-        break;
-      }
-      case TAB_SELL_LIMIT_ID:
-      case TAB_BUY_LIMIT_ID: {
-        await dispatch(actionInit());
-        break;
-      }
-      case TAB_MARKET_ID: {
-        await dispatch(actionFetchPools());
-        break;
-      }
-      default:
-        break;
+        case TAB_SWAP_ID: {
+          await dispatch(
+            actionInitSwapForm({
+              defaultPair: swapInfo?.defaultPair,
+              refresh: true,
+              shouldFetchHistory: true,
+            }),
+          );
+          break;
+        }
+        case TAB_SELL_LIMIT_ID:
+        case TAB_BUY_LIMIT_ID: {
+          await dispatch(actionInit());
+          break;
+        }
+        case TAB_MARKET_ID: {
+          await dispatch(actionFetchPools());
+          break;
+        }
+        default:
+          break;
       }
     } catch (error) {
       new ExHandler(error).showErrorToast();

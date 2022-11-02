@@ -14,8 +14,8 @@ import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import PropTypes from 'prop-types';
-import { actionFetchedOrderDetail } from './Swap.actions';
-import { swapHistorySelector } from './Swap.selector';
+import { actionFetchedOrderDetail } from './redux/Swap.actions';
+import { swapHistorySelector } from './redux/Swap.selector';
 
 const styled = StyleSheet.create({
   container: {

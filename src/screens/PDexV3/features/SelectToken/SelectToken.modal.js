@@ -12,7 +12,7 @@ import { delay } from '@src/utils/delay';
 import { useDispatch } from 'react-redux';
 import { change } from 'redux-form';
 import { ListAllTokenSelectable } from './SelectToken';
-import { actionResetData } from '../Swap/Swap.actions';
+import { actionResetData } from '../Swap/redux/Swap.actions';
 import { formConfigs } from '../Swap/Swap.constant';
 
 const styled = StyleSheet.create({

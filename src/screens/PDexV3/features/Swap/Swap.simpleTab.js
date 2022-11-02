@@ -11,7 +11,7 @@ import {
   swapInfoSelector,
   selltokenSelector,
   getExchangeDataEstimateTradeSelector,
-} from './Swap.selector';
+} from './redux/Swap.selector';
 // import { KEYS_PLATFORMS_SUPPORTED, platformIdSelectedSelector } from '.';
 
 const styled = StyleSheet.create({

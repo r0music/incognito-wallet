@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { ANALYTICS, CONSTANT_CONFIGS } from '@src/constants';
-import { swapInfoSelector } from '../Swap/Swap.selector';
+import { swapInfoSelector } from '../Swap/redux/Swap.selector';
 
 const PrivacyAppsUni = () => {
   const dispatch = useDispatch();

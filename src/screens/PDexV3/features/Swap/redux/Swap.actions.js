@@ -40,7 +40,7 @@ import {
 import {
   isUseTokenFeeParser,
   extractEstimateData,
-} from './Swap.estimate.helperMethods';
+} from '../Swap.estimate.helperMethods';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -82,7 +82,8 @@ import {
   NETWORK_NAME_SUPPORTED,
   CALL_CONTRACT,
   ACTION_SET_RESET_SLIPPAGE,
-} from './Swap.constant';
+  ACTION_ESTIMATE_TRADE_ERROR,
+} from '../Swap.constant';
 import {
   buytokenSelector,
   feeSelectedSelector,
@@ -120,19 +121,19 @@ import {
   getBestRateFromPancake,
   findBestRateOfMaxBuyAmount,
   findBestRateOfMinSellAmount,
-} from './Swap.utils';
+} from '../Swap.utils';
 import {
   PANCAKE_SUPPORT_NETWORK,
   UNISWAP_SUPPORT_NETWORK,
   CURVE_SUPPORT_NETWORK,
   SPOOKY_SUPPORT_NETWORK,
   ExchangeData,
-} from './Swap.types';
+} from '../Swap.types';
 
 import TransactionHandler, {
   CreateTransactionPAppsPayload,
   CreateTransactionPDexPayload,
-} from './Swap.transactionHandler';
+} from '../Swap.transactionHandler';
 
 // const logger = createLogger('LOG');
 
@@ -898,11 +899,7 @@ export const actionEstimateTrade =
       // change sell token input when press max
       if (useMax && sellAmount) {
         dispatch(
-          change(
-            formConfigs.formName,
-            formConfigs.selltoken,
-            maxAmount,
-          ),
+          change(formConfigs.formName, formConfigs.selltoken, maxAmount),
         );
       }
 
@@ -985,20 +982,33 @@ export const actionEstimateTrade =
           break;
       }
       // amount:  convert.toNumber(payload.sellamount || 0, true).toFixed(inputPDecimals),
-
-      const estimateRawData = await SwapService.getEstiamteTradingFee({
-        // amount: convert
-        //   .toHumanAmount(payload.sellamount, inputPDecimals)
-        //   ?.toString(),
-        amount: payload.sellamount,
-        fromToken: payload.selltoken,
-        toToken: payload.buytoken,
-        slippage: slippagetolerance.toString(),
-        network: network,
-      });
-
-      if (!estimateRawData) {
-        throw new Error('Can not estimate trade');
+      let estimateRawData;
+      try {
+        estimateRawData = await SwapService.getEstiamteTradingFee({
+          // amount: convert
+          //   .toHumanAmount(payload.sellamount, inputPDecimals)
+          //   ?.toString(),
+          amount: payload.sellamount,
+          fromToken: payload.selltoken,
+          toToken: payload.buytoken,
+          slippage: slippagetolerance.toString(),
+          network: network,
+        });
+      } catch (error) {
+        // console.log('=> getEstiamteTradingFee! error ', {
+        //   error,
+        // });
+        await dispatch(
+          actionEstimateTradeError(
+            error.message || error || 'No tradeable network found',
+          ),
+        );
+        return;
+      } finally {
+        if (!estimateRawData) {
+          // eslint-disable-next-line no-unsafe-finally
+          return;
+        }
       }
 
       //NEW FLOW, combine all esimate fee API in one with new Back-End (from Lam)
@@ -1803,7 +1813,9 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
               tradePath: exchangeData?.poolPairs || [''],
               feetoken,
               version: PrivacyVersion.ver2,
-              minAcceptableAmount: `${new BigNumber(exchangeData.amountOutRaw || 0).integerValue()}`,
+              minAcceptableAmount: `${new BigNumber(
+                exchangeData.amountOutRaw || 0,
+              ).integerValue()}`,
               sellAmountText: _sellAmountText,
               buyAmountText: _buyAmountText,
             },
@@ -2333,12 +2345,21 @@ export const actionGetMaxAmount = () => async (dispatch, getState) => {
     isUseTokenFee = feeData?.spooky?.isUseTokenFee;
   }
   const availableOriginalAmount = sellInputToken?.availableOriginalAmount;
-  if (!isUseTokenFee) return { maxAmount: availableOriginalAmount, availableAmountText: sellInputToken.availableAmountText, inputPDecimals: sellInputToken.pDecimals } ;
+  if (!isUseTokenFee)
+    return {
+      maxAmount: availableOriginalAmount,
+      availableAmountText: sellInputToken.availableAmountText,
+      inputPDecimals: sellInputToken.pDecimals,
+    };
   const fee = feeData?.minFeeOriginal;
   let maxAmount = availableOriginalAmount - fee;
   if (maxAmount < 0) {
     maxAmount = availableOriginalAmount;
   }
 
-  return { maxAmount, availableAmountText: sellInputToken.availableAmountText, inputPDecimals: sellInputToken.pDecimals };
+  return {
+    maxAmount,
+    availableAmountText: sellInputToken.availableAmountText,
+    inputPDecimals: sellInputToken.pDecimals,
+  };
 };

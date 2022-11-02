@@ -3,7 +3,8 @@ import TabSwap, {
   KEYS_PLATFORMS_SUPPORTED,
   actionSetDefaultExchange,
   actionInitSwapForm,
-  actionReset, NETWORK_NAME_SUPPORTED,
+  actionReset,
+  NETWORK_NAME_SUPPORTED,
 } from '@screens/PDexV3/features/Swap';
 import { withLayout_2 } from '@src/components/Layout';
 import Header from '@src/components/Header';
@@ -11,7 +12,7 @@ import { useDispatch } from 'react-redux';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { ANALYTICS } from '@src/constants';
-import { swapInfoSelector } from '../Swap/Swap.selector';
+import { swapInfoSelector } from '../Swap/redux/Swap.selector';
 
 const PrivacyAppsUni = () => {
   const dispatch = useDispatch();
@@ -21,7 +22,7 @@ const PrivacyAppsUni = () => {
       actionSetDefaultExchange({
         isPrivacyApp: true,
         exchange: KEYS_PLATFORMS_SUPPORTED.uni,
-        network: NETWORK_NAME_SUPPORTED.ETHEREUM
+        network: NETWORK_NAME_SUPPORTED.ETHEREUM,
       }),
     );
     await dispatch(
@@ -43,7 +44,11 @@ const PrivacyAppsUni = () => {
         accountSelectable
         handleSelectedAccount={handleOnRefresh}
       />
-      <TabSwap isPrivacyApp exchange={KEYS_PLATFORMS_SUPPORTED.uni} network={NETWORK_NAME_SUPPORTED.ETHEREUM} />
+      <TabSwap
+        isPrivacyApp
+        exchange={KEYS_PLATFORMS_SUPPORTED.uni}
+        network={NETWORK_NAME_SUPPORTED.ETHEREUM}
+      />
     </>
   );
 };

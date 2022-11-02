@@ -23,13 +23,14 @@ import {
   actionFetchSwap,
   actionToggleProTab,
   actionSetDefaultExchange,
-} from './Swap.actions';
+} from './redux/Swap.actions';
 import {
   swapInfoSelector,
   swapFormErrorSelector,
   sellInputTokenSelector,
   feetokenDataSelector,
-} from './Swap.selector';
+  getEsimateTradeError,
+} from './redux/Swap.selector';
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();

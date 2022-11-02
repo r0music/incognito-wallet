@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import { Hook, styled as extraStyled } from '@screens/PDexV3/features/Extra';
 import { Text } from '@src/components/core';
-import { actionFetchSwap } from './Swap.actions';
-import { swapInfoSelector } from './Swap.selector';
+import { actionFetchSwap } from './redux/Swap.actions';
+import { swapInfoSelector } from './redux/Swap.selector';
 import { useTabFactories } from './Swap.simpleTab';
 
 const Review = () => {
@@ -31,8 +31,9 @@ const Review = () => {
             data: (
               <TradeSuccessModal
                 desc={`You placed an order to sell 
-                ${swapInfo?.sellInputAmountStr ||
-                  ''} for ${swapInfo?.buyInputAmountStr || ''}.`}
+                ${swapInfo?.sellInputAmountStr || ''} for ${
+                  swapInfo?.buyInputAmountStr || ''
+                }.`}
               />
             ),
             visible: true,
