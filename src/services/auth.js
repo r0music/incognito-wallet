@@ -12,10 +12,10 @@ export const getTokenNoCache = async () => {
   try {
     firebaseToken = await getFirebaseToken();
   } catch (error) {
-    firebaseToken = DeviceInfo.getUniqueId() + new Date().getTime();
+    firebaseToken = (await LocalDatabase.getDeviceId()) || v4() + new Date().getTime();
   }
   const uniqueId =
-    (await LocalDatabase.getDeviceId()) || DeviceInfo.getUniqueId() || v4();
+    (await LocalDatabase.getDeviceId()) || v4();
   const tokenData = await getUserToken(uniqueId, firebaseToken);
   await LocalDatabase.saveDeviceId(uniqueId);
   const { token } = tokenData;

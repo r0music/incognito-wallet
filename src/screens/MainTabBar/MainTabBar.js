@@ -48,13 +48,13 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarLabel: <Text style={styled.label}>Wallet</Text>,
       },
     },
-    PrivacyApps: {
-      screen: TabPrivacyApps,
-      navigationOptions: {
-        tabBarIcon: ({ focused }) => <PrivacyAppsIcon active={focused} />,
-        tabBarLabel: <Text style={styled.label}>Apps</Text>,
-      },
-    },
+    // PrivacyApps: {
+    //   screen: TabPrivacyApps,
+    //   navigationOptions: {
+    //     tabBarIcon: ({ focused }) => <PrivacyAppsIcon active={focused} />,
+    //     tabBarLabel: <Text style={styled.label}>Apps</Text>,
+    //   },
+    // },
     More: {
       screen: More,
       navigationOptions: {

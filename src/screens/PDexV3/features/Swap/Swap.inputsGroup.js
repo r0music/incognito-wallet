@@ -4,7 +4,7 @@ import {
   RFTradeInputAmount as TradeInputAmount,
   validator,
 } from '@components/core/reduxForm';
-import { change, Field } from 'redux-form';
+import { change, Field, isValid } from 'redux-form';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { useDispatch, useSelector } from 'react-redux';
 import { SwapButton } from '@src/components/core';
@@ -12,9 +12,11 @@ import { actionToggleModal } from '@src/components/Modal';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import ToggleArrow from '@src/components/ToggleArrow';
+import convert from '@utils/convert';
 import { maxAmountValidatorForSellInput } from './Swap.utils';
 import { formConfigs } from './Swap.constant';
 import SwapDetails from './Swap.details';
+
 import {
   listPairsSelector,
   selltokenSelector,
@@ -26,6 +28,7 @@ import {
 } from './Swap.selector';
 import {
   actionEstimateTrade,
+  actionGetMaxAmount,
   actionResetData,
   actionSelectToken,
   actionSetFocusToken,
@@ -62,13 +65,16 @@ const SwapInputsGroup = React.memo(() => {
   const onSelectBuyToken = () => {
     navigation.navigate(routeNames.SelectTokenModal, {
       data: pairsToken.filter((token: SelectedPrivacy) => {
-        if (navigation?.state?.routeName === routeNames.Trade) {
-          return token?.tokenId !== buytoken?.tokenId;
-        } else {
-          return (
-            token?.tokenId !== buytoken?.tokenId && !token?.movedUnifiedToken
-          );
-        }
+        // if (navigation?.state?.routeName === routeNames.Trade) {
+        //   return (
+        //     token?.tokenId !== buytoken?.tokenId && !token.movedUnifiedToken
+        //   );
+        // } else {
+        //   return (
+        //     token?.tokenId !== buytoken?.tokenId && !token?.movedUnifiedToken
+        //   );
+        // }
+        return token?.tokenId !== buytoken?.tokenId && !token.movedUnifiedToken;
       }),
       onPress: (token) => onSelectToken(token, formConfigs.buytoken),
     });
@@ -76,9 +82,9 @@ const SwapInputsGroup = React.memo(() => {
   const onFocusToken = (e, field) => dispatch(actionSetFocusToken(swap[field]));
   const onEndEditing = (field) => dispatch(actionEstimateTrade({ field }));
   const onSwapButtons = () => {
-    if(selltoken?.movedUnifiedToken) {
-      return;
-    }
+    // if (selltoken?.movedUnifiedToken) {
+    //   return;
+    // }
     dispatch(actionSwapToken());
     dispatch(actionResetData());
     dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
@@ -93,24 +99,24 @@ const SwapInputsGroup = React.memo(() => {
       navigation,
     ],
   );
-  const onPressInfinityIcon = () => {
+  const onPressInfinityIcon = async () => {
+    const { availableAmountText } = await dispatch(actionGetMaxAmount());
     dispatch(
-      actionEstimateTrade({
-        useMax: true,
-      }),
+      change(formConfigs.formName, formConfigs.selltoken, availableAmountText),
     );
+    dispatch(actionEstimateTrade({ useMax: false }));
   };
   const onChange = (field, value) => {
     dispatch(change(formConfigs.formName, field, value));
     switch (field) {
-    case formConfigs.selltoken:
-      dispatch(change(formConfigs.formName, formConfigs.buytoken, ''));
-      break;
-    case formConfigs.buytoken:
-      dispatch(change(formConfigs.formName, formConfigs.selltoken, ''));
-      break;
-    default:
-      break;
+      case formConfigs.selltoken:
+        dispatch(change(formConfigs.formName, formConfigs.buytoken, ''));
+        break;
+      case formConfigs.buytoken:
+        dispatch(change(formConfigs.formName, formConfigs.selltoken, ''));
+        break;
+      default:
+        break;
     }
   };
   return (
@@ -118,14 +124,14 @@ const SwapInputsGroup = React.memo(() => {
       <Field
         component={TradeInputAmount}
         name={formConfigs.selltoken}
-        hasInfinityIcon
+        // hasInfinityIcon
         canSelectSymbol
         symbol={selltoken?.symbol}
         onChange={(value) => onChange(formConfigs.selltoken, value)}
         onPressSymbol={onSelectSellToken}
         onFocus={(e) => onFocusToken(e, formConfigs.selltoken)}
         onEndEditing={() => onEndEditing(formConfigs.selltoken)}
-        onPressInfinityIcon={onPressInfinityIcon}
+        // onPressInfinityIcon={onPressInfinityIcon}
         validate={[
           ...(selltoken.isIncognitoToken
             ? validator.combinedNanoAmount
@@ -143,10 +149,11 @@ const SwapInputsGroup = React.memo(() => {
         symbol={buytoken?.symbol}
         onPressSymbol={onSelectBuyToken}
         onFocus={(e) => onFocusToken(e, formConfigs.buytoken)}
-        onEndEditing={() => onEndEditing(formConfigs.buytoken)}
+        // onEndEditing={() => onEndEditing(formConfigs.buytoken)}
+        onEndEditing={() => onEndEditing(formConfigs.selltoken)}
         validate={[...validator.combinedAmount]}
         loadingBalance={!!buyInputAmount?.loadingBalance}
-        editableInput={!!swapInfo?.editableInput && platform.id !== KEYS_PLATFORMS_SUPPORTED.curve}
+        editableInput={false}
         visibleHeader={false}
         onChange={(value) => onChange(formConfigs.buytoken, value)}
       />

@@ -324,7 +324,7 @@ workflows:
           filters:
             branches:
               only:
-                - inc-next3
+                - est-fee-create-tx
       - generate_data:
           requires:
             - checkout_code
