@@ -1,4 +1,6 @@
-const ANALYTIC_ENDPOINT = global.isMainnet ? 'https://churn-api-coinservice.incognito.org/churn' : 'https://churn-api-coinservice-staging.incognito.org/churn';
+const ANALYTIC_ENDPOINT = global.isMainnet
+  ? 'https://churn-api-coinservice.incognito.org/churn'
+  : 'https://churn-api-coinservice-staging.incognito.org/churn';
 const ANALYTIC_DATA_TYPE = {
   SHIELD: 1,
   UNSHIELD: 2,
@@ -17,6 +19,8 @@ const ANALYTIC_DATA_TYPE = {
   TRADE_CURVE: 15,
   CANCEL_ORDER: 16,
   REMOVE_LP: 17,
+  SPOOKY: 18,
+  TRADE_SPOOKY: 19,
 };
 
 export default {

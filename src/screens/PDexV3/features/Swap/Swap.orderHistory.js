@@ -1,11 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import {
-  Divider,
-  Text,
-  TouchableOpacity,
-  View,
-} from '@src/components/core';
+import { Divider, Text, TouchableOpacity, View } from '@src/components/core';
 import { colorsSelector } from '@src/theme';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from '@src/components';
@@ -64,22 +59,31 @@ const Order = React.memo(({ data }) => {
   const navigation = useNavigation();
   const colors = useSelector(colorsSelector);
   const dispatch = useDispatch();
-  if (!data?.requestTx) {
+  if (!data?.requestBurnTxInc) {
     return null;
   }
-  const { statusStr, swapStr, requestTx, tradeID, exchange } = data;
+  const {
+    statusStr,
+    swapStr,
+    requestBurnTxInc,
+    exchange,
+    color: statusColor,
+  } = data;
 
   const handleNavOrderDetail = async () => {
     await dispatch(actionFetchedOrderDetail(data));
     navigation.navigate(routeNames.OrdeSwapDetail);
   };
+
   return (
     <>
       <TouchableOpacity style={styled.order} onPress={handleNavOrderDetail}>
         <View style={styled.wrapperOrder}>
           <Row style={{ ...styled.row, marginBottom: 4 }}>
             <Text style={[styled.swap]}>{swapStr}</Text>
-            <Text style={[styled.statusStr]}>{statusStr}</Text>
+            <Text style={[styled.statusStr, { color: statusColor }]}>
+              {statusStr}
+            </Text>
           </Row>
           <Row style={styled.row}>
             <Text
@@ -87,7 +91,7 @@ const Order = React.memo(({ data }) => {
               numberOfLines={1}
               ellipsizeMode="middle"
             >
-              {`#${tradeID || requestTx}`}
+              {`#${requestBurnTxInc}`}
             </Text>
             <Text style={[styled.title, { color: colors.subText }]}>
               {exchange}
@@ -109,17 +113,13 @@ const OrderHistory = ({ page }) => {
 
   const renderItem = React.useCallback((item, index) => {
     return (
-      <View key={item?.tradeID || item?.requestTx}>
+      <View key={item?.requestBurnTxInc}>
         <Order data={item} visibleDivider={index !== history.length - 1} />
         {index !== history.length - 1 && <Divider />}
       </View>
     );
   }, []);
-  return (
-    <View style={styled.container}>
-      {historyDisplay.map(renderItem)}
-    </View>
-  );
+  return <View style={styled.container}>{historyDisplay.map(renderItem)}</View>;
 };
 
 Order.propTypes = {

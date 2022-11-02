@@ -6,6 +6,8 @@ import thunkMiddleware from 'redux-thunk';
 import AsyncStorage from '@react-native-community/async-storage';
 import { persistStore, persistReducer } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
+import logger from 'redux-logger';
+import { DEBUG } from '@src/utils/logger';
 
 export default function configureStore(preloadedState) {
   const persistConfig = {
@@ -31,10 +33,9 @@ export default function configureStore(preloadedState) {
   };
   const persistedReducer = persistReducer(persistConfig, rootReducer);
   const _composedEnhancers = composeWithDevTools(
-    applyMiddleware(
-      thunkMiddleware,
-      // logger
-    ),
+    DEBUG
+      ? applyMiddleware(thunkMiddleware, logger)
+      : applyMiddleware(thunkMiddleware),
   );
   const store = createStore(
     persistedReducer,

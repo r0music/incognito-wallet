@@ -29,7 +29,7 @@ export const styled = StyleSheet.create({
   },
   labelContainer: {
     flex: 1,
-    maxWidth: '35%',
+    maxWidth: '40%',
     alignItems: 'center',
     marginRight: 5,
   },
@@ -68,7 +68,7 @@ export const Hook = React.memo((props) => {
     styledHook,
     customStyledLabel,
     labelNumberOfLine,
-    valueNumberOfLine
+    valueNumberOfLine,
   } = props;
   const colors = useSelector(colorsSelector);
   return (
