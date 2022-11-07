@@ -1844,15 +1844,31 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
           // if (!tx) {
           //   console.log('error');
           // }
-          console.log(
-            '[pDex]: RepareData create TX: ',
-            tokenBuyData,
-            exchangeData,
-          );
+          // console.log('sellInputAmount: => ', sellInputAmount);
+          // console.log('buyInputAmount: => ', buyInputAmount);
+          // console.log(
+          //   '[pDex]: RepareData create TX: ',
+          //   tokenBuyData,
+          //   exchangeData,
+          // );
           tx = await TransactionHandler.createTransactionPDex({
             pDexV3Instance: pDexV3Inst || {},
             params,
           });
+
+          try {
+            await SwapService.dexSwapMonitor({
+              txhash: tx.hash,
+              token_sell: sellInputAmount.tokenId,
+              token_buy: buyInputAmount.tokenId,
+              amount_in: sellInputAmount.amountText,
+              amount_out: buyInputAmount.amountText,
+            });
+          } catch (error) {
+            console.log('dexSwapMonitor error ', error);
+          } finally {
+            console.log('BY PASSS dexSwapMonitor');
+          }
         }
         break;
       case KEYS_PLATFORMS_SUPPORTED.pancake:
