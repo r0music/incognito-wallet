@@ -83,6 +83,7 @@ import {
   CALL_CONTRACT,
   ACTION_SET_RESET_SLIPPAGE,
   ACTION_ESTIMATE_TRADE_ERROR,
+  ACTION_NAVIGATE_FROM_MARKET,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -136,6 +137,11 @@ import TransactionHandler, {
 } from './Swap.transactionHandler';
 
 // const logger = createLogger('LOG');
+
+export const actionNavigateFormMarketTab = (payload) => ({
+  type: ACTION_NAVIGATE_FROM_MARKET,
+  payload,
+});
 
 export const actionEstimateTradeError = (payload) => ({
   type: ACTION_ESTIMATE_TRADE_ERROR,
@@ -1007,7 +1013,9 @@ export const actionEstimateTrade =
         //   error,
         // });
         await dispatch(
-          actionEstimateTradeError(error.message || error || 'No tradeable network found'),
+          actionEstimateTradeError(
+            error.message || error || 'No tradeable network found',
+          ),
         );
         return;
       } finally {
@@ -1047,7 +1055,10 @@ export const actionEstimateTrade =
           feePrv: {
             fee: isUseTokenFee ? 0 : originalTradeFee,
             isSignificant: false,
-            maxGet: format.numberWithNoGroupSeparator(amountOutPreSlippage, 0),
+            maxGet: new BigNumber(amountOutPreSlippage)
+              .toNumber()
+              .toFixed(9)
+              .slice(0, 11),
             route: routes,
             sellAmount: payload.sellamount,
             buyAmount: amountOut,
@@ -1060,7 +1071,10 @@ export const actionEstimateTrade =
             buyAmount: amountOut,
             fee: isUseTokenFee ? originalTradeFee : 0,
             isSignificant: false,
-            maxGet: format.numberWithNoGroupSeparator(amountOutPreSlippage, 0),
+            maxGet: new BigNumber(amountOutPreSlippage)
+              .toNumber()
+              .toFixed(9)
+              .slice(0, 11),
             route: routes,
             impactAmount: format.amount(impactAmount, 0),
             tokenRoute: routes,

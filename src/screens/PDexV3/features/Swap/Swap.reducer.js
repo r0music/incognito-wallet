@@ -44,6 +44,7 @@ import {
   ACTION_SET_EXCHANGE_SUPPORT_LIST,
   ACTION_SET_RESET_SLIPPAGE,
   ACTION_ESTIMATE_TRADE_ERROR,
+  ACTION_NAVIGATE_FROM_MARKET,
 } from './Swap.constant';
 
 const initialState = {
@@ -127,6 +128,7 @@ const initialState = {
   exchangeSupportsList: [],
   network: null,
   estimateTradeError: null,
+  isNavigateFromMarketTab: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -442,6 +444,14 @@ const reducer = (state = initialState, action) => {
         estimateTradeError: action.payload,
       };
     }
+
+    case ACTION_NAVIGATE_FROM_MARKET: {
+      return {
+        ...state,
+        isNavigateFromMarketTab: action.payload,
+      };
+    }
+
     default:
       return state;
   }
