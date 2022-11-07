@@ -1,4 +1,5 @@
 import http4 from '@src/services/http4';
+import http5 from '@src/services/http5';
 import createLogger from '@utils/logger';
 
 const logger = createLogger('API');
@@ -39,8 +40,34 @@ const getEstiamteTradingFee = async (payload: GetEstiamteTradingFeePayload) => {
   }
 };
 
+type DexSwapMonitorPayload = {
+  txhash: string;
+  token_sell: string;
+  token_buy: string;
+  amount_in: string;
+  amount_out: string;
+};
+
+const dexSwapMonitor = async (payload: DexSwapMonitorPayload) => {
+  try {
+    const params = {
+      ...payload,
+    };
+    logger('[dexSwapMonitor]  params ', params);
+    const data: any = await http5.post('dexswap', params);
+    logger('[dexSwapMonitor]  response ', data);
+    return data;
+  } catch (error) {
+    logger('[dexSwapMonitor]  error ', {
+      error,
+    });
+    throw error;
+  }
+};
+
 const SwapService = {
   getEstiamteTradingFee,
+  dexSwapMonitor,
 };
 
 export default SwapService;

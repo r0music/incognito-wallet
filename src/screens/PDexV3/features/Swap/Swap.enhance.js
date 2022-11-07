@@ -12,11 +12,13 @@ import withLazy from '@src/components/LazyHoc/LazyHoc';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
+
 import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
   NETWORK_NAME_SUPPORTED,
 } from './Swap.constant';
+
 import {
   actionInitSwapForm,
   actionReset,
@@ -25,6 +27,7 @@ import {
   actionSetDefaultExchange,
   actionNavigateFormMarketTab,
 } from './Swap.actions';
+
 import {
   swapInfoSelector,
   swapFormErrorSelector,
@@ -45,14 +48,17 @@ const enhance = (WrappedComp) => (props) => {
   const [visibleSignificant, setVisibleSignificant] = React.useState(false);
   const [ordering, setOrdering] = React.useState(false);
   const navigation = useNavigation();
+
   const {
     isPrivacyApp = false,
     exchange = KEYS_PLATFORMS_SUPPORTED.incognito,
     network = NETWORK_NAME_SUPPORTED.INCOGNITO,
   } = props;
+
   const unmountSwap = () => {
     dispatch(actionReset());
   };
+
   const initSwapForm = (refresh = false) =>
     dispatch(
       actionInitSwapForm({
@@ -61,8 +67,10 @@ const enhance = (WrappedComp) => (props) => {
         shouldFetchHistory: true,
       }),
     );
+
   const handleCreateSwapOrder = async () => {
     const tx = await dispatch(actionFetchSwap());
+
     if (tx) {
       setTimeout(() => {
         dispatch(

@@ -1055,10 +1055,7 @@ export const actionEstimateTrade =
           feePrv: {
             fee: isUseTokenFee ? 0 : originalTradeFee,
             isSignificant: false,
-            maxGet: new BigNumber(amountOutPreSlippage)
-              .toNumber()
-              .toFixed(9)
-              .slice(0, 11),
+            maxGet: format.numberWithNoGroupSeparator(amountOutPreSlippage, 0),
             route: routes,
             sellAmount: payload.sellamount,
             buyAmount: amountOut,
@@ -1071,10 +1068,7 @@ export const actionEstimateTrade =
             buyAmount: amountOut,
             fee: isUseTokenFee ? originalTradeFee : 0,
             isSignificant: false,
-            maxGet: new BigNumber(amountOutPreSlippage)
-              .toNumber()
-              .toFixed(9)
-              .slice(0, 11),
+            maxGet: format.numberWithNoGroupSeparator(amountOutPreSlippage, 0),
             route: routes,
             impactAmount: format.amount(impactAmount, 0),
             tokenRoute: routes,
@@ -1844,15 +1838,31 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
           // if (!tx) {
           //   console.log('error');
           // }
-          console.log(
-            '[pDex]: RepareData create TX: ',
-            tokenBuyData,
-            exchangeData,
-          );
+          // console.log('sellInputAmount: => ', sellInputAmount);
+          // console.log('buyInputAmount: => ', buyInputAmount);
+          // console.log(
+          //   '[pDex]: RepareData create TX: ',
+          //   tokenBuyData,
+          //   exchangeData,
+          // );
           tx = await TransactionHandler.createTransactionPDex({
             pDexV3Instance: pDexV3Inst || {},
             params,
           });
+
+          try {
+            await SwapService.dexSwapMonitor({
+              txhash: tx.hash,
+              token_sell: sellInputAmount.tokenId,
+              token_buy: buyInputAmount.tokenId,
+              amount_in: sellInputAmount.amountText,
+              amount_out: buyInputAmount.amountText,
+            });
+          } catch (error) {
+            console.log('dexSwapMonitor error ', error);
+          } finally {
+            console.log('BY PASSS dexSwapMonitor');
+          }
         }
         break;
       case KEYS_PLATFORMS_SUPPORTED.pancake:
