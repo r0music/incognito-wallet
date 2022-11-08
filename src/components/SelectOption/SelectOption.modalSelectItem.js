@@ -172,7 +172,7 @@ const SelectOptionModal = ({ options }) => {
   return (
     <ModalBottomSheet
       style={{
-        height: 200,
+        height: 300,
         paddingHorizontal: 0,
         paddingVertical: 0,
       }}

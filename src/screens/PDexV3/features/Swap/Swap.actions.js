@@ -83,6 +83,8 @@ import {
   CALL_CONTRACT,
   ACTION_SET_RESET_SLIPPAGE,
   ACTION_ESTIMATE_TRADE_ERROR,
+  ACTION_NAVIGATE_FROM_MARKET,
+  ACTION_RESET_EXCHANGE_SUPPORTED,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -136,6 +138,16 @@ import TransactionHandler, {
 } from './Swap.transactionHandler';
 
 // const logger = createLogger('LOG');
+
+export const actionResetExchangeSupported = (payload) => ({
+  type: ACTION_RESET_EXCHANGE_SUPPORTED,
+  payload,
+});
+
+export const actionNavigateFormMarketTab = (payload) => ({
+  type: ACTION_NAVIGATE_FROM_MARKET,
+  payload,
+});
 
 export const actionEstimateTradeError = (payload) => ({
   type: ACTION_ESTIMATE_TRADE_ERROR,
@@ -1007,7 +1019,9 @@ export const actionEstimateTrade =
         //   error,
         // });
         await dispatch(
-          actionEstimateTradeError(error.message || error || 'No tradeable network found'),
+          actionEstimateTradeError(
+            error.message || error || 'No tradeable network found',
+          ),
         );
         return;
       } finally {
@@ -1572,6 +1586,8 @@ export const actionInitSwapForm =
         dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
         dispatch(actionSetSellTokenFetched(pair?.selltoken));
         dispatch(actionSetBuyTokenFetched(pair?.buytoken));
+        dispatch(actionEstimateTradeError(undefined)); //Clear Estimate Trade Error
+        dispatch(actionResetExchangeSupported()); //Reset Exchange Supported
         if (refresh && shouldFetchHistory) {
           dispatch(actionFreeHistoryOrders());
         }
@@ -1830,15 +1846,31 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
           // if (!tx) {
           //   console.log('error');
           // }
-          console.log(
-            '[pDex]: RepareData create TX: ',
-            tokenBuyData,
-            exchangeData,
-          );
+          // console.log('sellInputAmount: => ', sellInputAmount);
+          // console.log('buyInputAmount: => ', buyInputAmount);
+          // console.log(
+          //   '[pDex]: RepareData create TX: ',
+          //   tokenBuyData,
+          //   exchangeData,
+          // );
           tx = await TransactionHandler.createTransactionPDex({
             pDexV3Instance: pDexV3Inst || {},
             params,
           });
+
+          try {
+            await SwapService.dexSwapMonitor({
+              txhash: tx.hash,
+              token_sell: sellInputAmount.tokenId,
+              token_buy: buyInputAmount.tokenId,
+              amount_in: sellInputAmount.amountText,
+              amount_out: buyInputAmount.amountText,
+            });
+          } catch (error) {
+            console.log('dexSwapMonitor error ', error);
+          } finally {
+            console.log('BY PASSS dexSwapMonitor');
+          }
         }
         break;
       case KEYS_PLATFORMS_SUPPORTED.pancake:

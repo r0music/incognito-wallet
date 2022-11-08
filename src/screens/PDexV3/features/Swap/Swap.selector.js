@@ -1362,3 +1362,8 @@ export const getEsimateTradeError = createSelector(
   swapSelector,
   ({ estimateTradeError }) => estimateTradeError,
 );
+
+export const getIsNavigateFromMarketTab = createSelector(
+  swapSelector,
+  ({ isNavigateFromMarketTab }) => isNavigateFromMarketTab,
+);
