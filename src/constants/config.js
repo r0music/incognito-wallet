@@ -27,9 +27,6 @@ const API_BASE_URL3 = 'https://device-network.incognito.org/';
 const API_BASE_URL4 = isMainnet
   ? 'https://api-webapp.incognito.org/'
   : 'https://api-webapp-staging.incognito.org/';
-const API_BASE_URL5 = isMainnet
-  ? 'http://51.161.117.193:9898/'
-  : 'http://51.161.117.193:9898/';
 
 const ETHERSCAN_URL = isMainnet
   ? 'https://etherscan.io'
@@ -144,7 +141,6 @@ export default {
   API_BASE_URL2,
   API_BASE_URL3,
   API_BASE_URL4,
-  API_BASE_URL5,
   APP_VERSION,
   HOME_CONFIG_EVENT,
   HUNT_CONFIG_QR_CODE,

@@ -1,5 +1,4 @@
 import http4 from '@src/services/http4';
-import http5 from '@src/services/http5';
 import createLogger from '@utils/logger';
 
 const logger = createLogger('API');
@@ -54,7 +53,7 @@ const dexSwapMonitor = async (payload: DexSwapMonitorPayload) => {
       ...payload,
     };
     logger('[dexSwapMonitor]  params ', params);
-    const data: any = await http5.post('dexswap', params);
+    const data: any = await http4.post('dexswap', params);
     logger('[dexSwapMonitor]  response ', data);
     return data;
   } catch (error) {
