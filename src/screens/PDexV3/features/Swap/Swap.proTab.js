@@ -215,31 +215,31 @@ const TabPro = React.memo(() => {
         />
       ),
     },
-    {
-      title: 'Trading fee',
-      titleStyle: {
-        fontSize: FONT.SIZE.small,
-      },
-      onPressQuestionIcon: () => null,
-      hooks: (
-        <Field
-          component={RFSelectFeeInput}
-          types={feeTypes}
-          onChangeTypeFee={onChangeTypeFee}
-          name={formConfigs.feetoken}
-          placeholder="0"
-          validate={[
-            ...(feetokenData.isIncognitoToken
-              ? validator.combinedNanoAmount
-              : validator.combinedAmount),
-            _minFeeValidator,
-            _maxFeeValidator,
-          ]}
-          editableInput={!!swapInfo?.editableInput}
-        />
-      ),
-      containerStyle: { marginBottom: 0 },
-    },
+    // {
+    //   title: 'Trading fee',
+    //   titleStyle: {
+    //     fontSize: FONT.SIZE.small,
+    //   },
+    //   onPressQuestionIcon: () => null,
+    //   hooks: (
+    //     <Field
+    //       component={RFSelectFeeInput}
+    //       types={feeTypes}
+    //       onChangeTypeFee={onChangeTypeFee}
+    //       name={formConfigs.feetoken}
+    //       placeholder="0"
+    //       validate={[
+    //         ...(feetokenData.isIncognitoToken
+    //           ? validator.combinedNanoAmount
+    //           : validator.combinedAmount),
+    //         _minFeeValidator,
+    //         _maxFeeValidator,
+    //       ]}
+    //       editableInput={!!swapInfo?.editableInput}
+    //     />
+    //   ),
+    //   containerStyle: { marginBottom: 0 },
+    // },
   ];
   if (!isPrivacyApp) {
     extraFactories.unshift({
