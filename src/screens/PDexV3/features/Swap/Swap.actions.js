@@ -84,6 +84,7 @@ import {
   ACTION_SET_RESET_SLIPPAGE,
   ACTION_ESTIMATE_TRADE_ERROR,
   ACTION_NAVIGATE_FROM_MARKET,
+  ACTION_RESET_EXCHANGE_SUPPORTED,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -137,6 +138,11 @@ import TransactionHandler, {
 } from './Swap.transactionHandler';
 
 // const logger = createLogger('LOG');
+
+export const actionResetExchangeSupported = (payload) => ({
+  type: ACTION_RESET_EXCHANGE_SUPPORTED,
+  payload,
+});
 
 export const actionNavigateFormMarketTab = (payload) => ({
   type: ACTION_NAVIGATE_FROM_MARKET,
@@ -1580,6 +1586,8 @@ export const actionInitSwapForm =
         dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
         dispatch(actionSetSellTokenFetched(pair?.selltoken));
         dispatch(actionSetBuyTokenFetched(pair?.buytoken));
+        dispatch(actionEstimateTradeError(undefined)); //Clear Estimate Trade Error
+        dispatch(actionResetExchangeSupported()); //Reset Exchange Supported
         if (refresh && shouldFetchHistory) {
           dispatch(actionFreeHistoryOrders());
         }

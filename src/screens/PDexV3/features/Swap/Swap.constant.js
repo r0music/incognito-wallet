@@ -3,6 +3,8 @@ import { CONSTANT_CONFIGS } from '@src/constants';
 
 export const ACTION_NAVIGATE_FROM_MARKET =
   '[pDexV3][swap] Navigate form Market Tab';
+export const ACTION_RESET_EXCHANGE_SUPPORTED =
+  '[pDexV3][swap] Reset Exchange supported';
 
 export const ACTION_FETCHING = '[pDexV3][swap] Fetching data';
 export const ACTION_FETCHED = '[pDexV3][swap] Fetched data';
