@@ -63,19 +63,32 @@ const SwapInputsGroup = React.memo(() => {
     });
   };
   const onSelectBuyToken = () => {
+    const sellChildNetworks = selltoken.isPUnifiedToken
+      ? selltoken.listUnifiedToken.map((child) => child.groupNetworkName)
+      : [selltoken.groupNetworkName];
+
+    const tokenFilters = pairsToken.filter((token: SelectedPrivacy) => {
+      if (token?.tokenId === buytoken?.tokenId) return false;
+      if (token?.movedUnifiedToken) return false; // not supported moved unified token
+      if (selltoken.defaultPoolPair && token.defaultPoolPair) return true; //Swappable on pDex
+
+      const tokenChildNetworks = token.isPUnifiedToken
+        ? token.listUnifiedToken.map((child) => child.groupNetworkName)
+        : [token.groupNetworkName];
+
+      return sellChildNetworks.some(
+        (networkName) =>
+          networkName && tokenChildNetworks.includes(networkName),
+      );
+    });
+
+    // console.log('TOKEN FILTERED FINAL ', tokenFilters.length);
+    // console.log(
+    //   'IDS ',
+    //   tokenFilters.map((i) => i.tokenId),
+    // );
     navigation.navigate(routeNames.SelectTokenModal, {
-      data: pairsToken.filter((token: SelectedPrivacy) => {
-        // if (navigation?.state?.routeName === routeNames.Trade) {
-        //   return (
-        //     token?.tokenId !== buytoken?.tokenId && !token.movedUnifiedToken
-        //   );
-        // } else {
-        //   return (
-        //     token?.tokenId !== buytoken?.tokenId && !token?.movedUnifiedToken
-        //   );
-        // }
-        return token?.tokenId !== buytoken?.tokenId && !token.movedUnifiedToken;
-      }),
+      data: tokenFilters,
       onPress: (token) => onSelectToken(token, formConfigs.buytoken),
     });
   };
