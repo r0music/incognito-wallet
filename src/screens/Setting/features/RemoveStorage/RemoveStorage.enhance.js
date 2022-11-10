@@ -13,17 +13,28 @@ import DialogLoader from '@components/DialogLoader';
 
 const REMOVE_HISTORY_KEYS = ['CustomTokenTx', 'NormalTx', 'PrivacyTokenTx'];
 const REMOVE_CACHED_KEYS = [
+  // Coins
   'TOTAL-COINS',
   'COINS_STORAGE',
   'UNSPENT-COINS',
   'SPENT_COINS_STORAGE',
   'SPENDING-COINS-STORAGE',
+
+  // History
   'SET_KEY_IMAGES',
   'SET_PUBLIC_KEY',
   'TX_HISTORY',
   'SWAP-TOKENS-IDS',
   'HISTORY',
-  'HISTORIES'
+  'HISTORIES',
+
+  // Order
+  'WITHDRAW-ORDER',
+
+  // Follow tokens
+  'FOLLOWING-TOKENS',
+  'FOLLOWED-DEFAULT-TOKENS',
+  'persist:followWallet',
 ];
 
 const enhance = WrappedComp => props => {
