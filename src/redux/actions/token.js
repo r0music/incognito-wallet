@@ -39,7 +39,7 @@ import {
 } from '@screens/Wallet/features/FollowList';
 import { batch } from 'react-redux';
 import orderBy from 'lodash/orderBy';
-import { setWallet } from './wallet';
+import uniq from 'lodash/uniq';
 
 export const setToken = (
   token = throw new Error('Token object is required'),
@@ -159,29 +159,44 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
   return balance ?? 0;
 };
 
+let LAST_TIME_GET_TOKEN = null;
+let IS_LOADING_PTOKEN = false;
+const TIME_EXPIRED_LOAD_PTOKEN = 60 * 10000;
+
 export const getPTokenList =
-  ({ expiredTime = EXPIRED_TIME } = {}) =>
+  ({ expiredTime = TIME_EXPIRED_LOAD_PTOKEN } = {}) =>
   async (dispatch, getState) => {
+  const now = new Date().getTime();
+  const inValidTime = LAST_TIME_GET_TOKEN !== null && now - LAST_TIME_GET_TOKEN <= TIME_EXPIRED_LOAD_PTOKEN;
+    if (inValidTime || IS_LOADING_PTOKEN) {
+      return;
+    }
     try {
+      IS_LOADING_PTOKEN = true;
+      LAST_TIME_GET_TOKEN = now;
       const state = getState();
       const accountWallet = accountSelector.defaultAccountWalletSelector(state);
       const keyInfo =
         (await accountWallet.getKeyInfo({ version: PrivacyVersion.ver2 })) ||
         {};
       const coinsIndex = Object.keys(keyInfo.coinindex || {}) || [];
-
-      const [coinIndexTokens, pTokens] = await Promise.all([
-        await getTokensInfo(coinsIndex),
+      const followTokens = await accountWallet.getListFollowingTokens();
+      const advanceTokens = uniq([...coinsIndex, ...followTokens]);
+      const [tokensAdvance, pTokens] = await Promise.all([
+        await getTokensInfo(advanceTokens),
         await getTokenList({ expiredTime }),
       ]);
 
       const tokens = orderBy(uniqBy(
-        [...(coinIndexTokens || []), ...pTokens],
+        [...(tokensAdvance || []), ...pTokens],
         'tokenId',
       ) || [], ['isPUnifiedToken', 'verified'], ['desc', 'desc']);
+      IS_LOADING_PTOKEN = false;
       await dispatch(setListPToken(tokens));
       return tokens;
     } catch (e) {
+      LAST_TIME_GET_TOKEN = null;
+      IS_LOADING_PTOKEN = false;
       throw e;
     }
   };

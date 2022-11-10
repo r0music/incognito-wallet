@@ -11,6 +11,8 @@ import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { delay } from '@src/utils/delay';
 import { useDispatch } from 'react-redux';
 import { change } from 'redux-form';
+import { compose } from 'recompose';
+import withLazy from '@components/LazyHoc/LazyHoc';
 import { ListAllTokenSelectable } from './SelectToken';
 import { actionResetData } from '../Swap/Swap.actions';
 import { formConfigs } from '../Swap/Swap.constant';
@@ -75,4 +77,4 @@ const SelectTokenModal = () => {
 
 SelectTokenModal.propTypes = {};
 
-export default withLayout_2(React.memo(SelectTokenModal));
+export default compose(withLazy, withLayout_2)(React.memo(SelectTokenModal));

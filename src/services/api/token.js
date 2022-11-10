@@ -18,13 +18,19 @@ const getTokenListNoCache = () => {
   //   .get('coins/tokenlist')
   return http4
     .get('tokenlist')
-    .then((res) => (res || []).map((token) => new PToken(token, res)));
+    .then((res) => {
+      const tokens = (res || []).slice(0, 200);
+      return tokens?.map((token) => new PToken(token, tokens));
+    });
 };
 
 export const getTokensInfo = (tokenIDs = []) => {
   return http4
     .post('tokeninfo', { TokenIDs: tokenIDs })
-    .then((res) => res?.map((token) => new PToken(token, res)))
+    .then((res) => {
+      const tokens = (res || []);
+      return tokens?.map((token) => new PToken(token, tokens));
+    })
     .catch((error) => {
       console.log('error', error);
       return [];
