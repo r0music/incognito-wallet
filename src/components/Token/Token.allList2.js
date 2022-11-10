@@ -34,7 +34,7 @@ const ListAllToken2 = (props) => {
   const memoizedValue = useMemo(() => renderItem, [tokensFactories]);
 
   const renderSectionHeader = (section) => {
-    console.log(section);
+    // console.log(section);
     if (section === 1 && isShowUnVerifiedTokens) {
       return (
         <View style={[styles.header]}>

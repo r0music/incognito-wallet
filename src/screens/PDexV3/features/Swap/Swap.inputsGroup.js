@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View } from 'react-native';
 import {
   RFTradeInputAmount as TradeInputAmount,
@@ -51,47 +51,39 @@ const SwapInputsGroup = React.memo(() => {
   const inputAmount = useSelector(inputAmountSelector);
   const sellInputAmount = inputAmount(formConfigs.selltoken);
   const buyInputAmount = inputAmount(formConfigs.buytoken);
-  const onSelectToken = (token, field) => {
+
+  const onSelectToken = async (token, field) => {
     dispatch(actionSelectToken(token, field));
   };
+
   const onSelectSellToken = () => {
-    navigation.navigate(routeNames.SelectTokenModal, {
-      data: pairsToken.filter(
-        (token: SelectedPrivacy) => token?.tokenId !== selltoken?.tokenId,
-      ),
+    // navigation.navigate(routeNames.SelectTokenScreen, {
+    //   data: [],
+    //   onPress: (token) => onSelectToken(token, formConfigs.selltoken),
+    // });
+    navigation.navigate(routeNames.SelectTokenScreen, {
+      data: {
+        from: 'sellToken',
+        tokenId: selltoken.tokenId,
+      },
       onPress: (token) => onSelectToken(token, formConfigs.selltoken),
     });
   };
+
   const onSelectBuyToken = () => {
-    const sellChildNetworks = selltoken.isPUnifiedToken
-      ? selltoken.listUnifiedToken.map((child) => child.groupNetworkName)
-      : [selltoken.groupNetworkName];
-
-    const tokenFilters = pairsToken.filter((token: SelectedPrivacy) => {
-      if (token?.tokenId === buytoken?.tokenId) return false;
-      if (token?.movedUnifiedToken) return false; // not supported moved unified token
-      if (selltoken.defaultPoolPair && token.defaultPoolPair) return true; //Swappable on pDex
-
-      const tokenChildNetworks = token.isPUnifiedToken
-        ? token.listUnifiedToken.map((child) => child.groupNetworkName)
-        : [token.groupNetworkName];
-
-      return sellChildNetworks.some(
-        (networkName) =>
-          networkName && tokenChildNetworks.includes(networkName),
-      );
-    });
-
-    // console.log('TOKEN FILTERED FINAL ', tokenFilters.length);
-    // console.log(
-    //   'IDS ',
-    //   tokenFilters.map((i) => i.tokenId),
-    // );
-    navigation.navigate(routeNames.SelectTokenModal, {
-      data: tokenFilters,
+    // navigation.navigate(routeNames.SelectTokenScreen, {
+    //   data: [],
+    //   onPress: (token) => onSelectToken(token, formConfigs.buytoken),
+    // });
+    navigation.navigate(routeNames.SelectTokenScreen, {
+      data: {
+        from: 'buyToken',
+        tokenId: buytoken.tokenId,
+      },
       onPress: (token) => onSelectToken(token, formConfigs.buytoken),
     });
   };
+
   const onFocusToken = (e, field) => dispatch(actionSetFocusToken(swap[field]));
   const onEndEditing = (field) => dispatch(actionEstimateTrade({ field }));
   const onSwapButtons = () => {
@@ -102,6 +94,7 @@ const SwapInputsGroup = React.memo(() => {
     dispatch(actionResetData());
     dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
   };
+
   let _maxAmountValidatorForSellInput = React.useCallback(
     () => maxAmountValidatorForSellInput(sellInputAmount, navigation),
     [
@@ -112,6 +105,7 @@ const SwapInputsGroup = React.memo(() => {
       navigation,
     ],
   );
+
   const onPressInfinityIcon = async () => {
     const { availableAmountText } = await dispatch(actionGetMaxAmount());
     dispatch(

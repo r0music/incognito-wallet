@@ -16,19 +16,17 @@ let BEP2Tokens = [];
 const getTokenListNoCache = () => {
   // return http1
   //   .get('coins/tokenlist')
-  return http4
-    .get('tokenlist')
-    .then((res) => {
-      const tokens = (res || []).slice(0, 200);
-      return tokens?.map((token) => new PToken(token, tokens));
-    });
+  return http4.get('tokenlist').then((res) => {
+    const tokens = res || [];
+    return tokens?.map((token) => new PToken(token, tokens));
+  });
 };
 
 export const getTokensInfo = (tokenIDs = []) => {
   return http4
     .post('tokeninfo', { TokenIDs: tokenIDs })
     .then((res) => {
-      const tokens = (res || []);
+      const tokens = res || [];
       return tokens?.map((token) => new PToken(token, tokens));
     })
     .catch((error) => {

@@ -166,8 +166,10 @@ const TIME_EXPIRED_LOAD_PTOKEN = 60 * 10000;
 export const getPTokenList =
   ({ expiredTime = TIME_EXPIRED_LOAD_PTOKEN } = {}) =>
   async (dispatch, getState) => {
-  const now = new Date().getTime();
-  const inValidTime = LAST_TIME_GET_TOKEN !== null && now - LAST_TIME_GET_TOKEN <= TIME_EXPIRED_LOAD_PTOKEN;
+    const now = new Date().getTime();
+    const inValidTime =
+      LAST_TIME_GET_TOKEN !== null &&
+      now - LAST_TIME_GET_TOKEN <= TIME_EXPIRED_LOAD_PTOKEN;
     if (inValidTime || IS_LOADING_PTOKEN) {
       return;
     }
@@ -187,10 +189,11 @@ export const getPTokenList =
         await getTokenList({ expiredTime }),
       ]);
 
-      const tokens = orderBy(uniqBy(
-        [...(tokensAdvance || []), ...pTokens],
-        'tokenId',
-      ) || [], ['isPUnifiedToken', 'verified'], ['desc', 'desc']);
+      const tokens = orderBy(
+        uniqBy([...(tokensAdvance || []), ...pTokens], 'tokenId') || [],
+        ['isPUnifiedToken', 'verified'],
+        ['desc', 'desc'],
+      );
       IS_LOADING_PTOKEN = false;
       await dispatch(setListPToken(tokens));
       return tokens;
