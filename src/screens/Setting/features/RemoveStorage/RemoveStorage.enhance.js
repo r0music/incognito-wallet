@@ -12,6 +12,19 @@ import RemoveDialog from '@screens/Setting/features/RemoveStorage/RemoveStorage.
 import DialogLoader from '@components/DialogLoader';
 
 const REMOVE_HISTORY_KEYS = ['CustomTokenTx', 'NormalTx', 'PrivacyTokenTx'];
+const REMOVE_CACHED_KEYS = [
+  'TOTAL-COINS',
+  'COINS_STORAGE',
+  'UNSPENT-COINS',
+  'SPENT_COINS_STORAGE',
+  'SPENDING-COINS-STORAGE',
+  'SET_KEY_IMAGES',
+  'SET_PUBLIC_KEY',
+  'TX_HISTORY',
+  'SWAP-TOKENS-IDS',
+  'HISTORY',
+  'HISTORIES'
+];
 
 const enhance = WrappedComp => props => {
   const dispatch = useDispatch();
@@ -22,26 +35,32 @@ const enhance = WrappedComp => props => {
     const keys = await AsyncStorage.getAllKeys();
     const UTXOCacheds = [];
     const walletCacheds = [];
+    const storageCacheds = [];
     for (const key of keys) {
-      const data = await AsyncStorage.getItem(key);
-      if (data?.length) {
-        const splitResults = split(key, '-');
-        if (key.includes(FAKE_FULL_DISK_KEY) ||
-          (splitResults
-            && splitResults.length >= 2
-            && splitResults.length <= 3
-            && splitResults[splitResults.length - 1] === 'cached'))
-        {
-          UTXOCacheds.push(key);
-        }
-        if (key === 'Wallet' ||
-          key === '$testnet-master-masterless' ||
-          key === '$mainnet-master-masterless') {
-          walletCacheds.push(key);
-        }
+      const isExist = REMOVE_CACHED_KEYS.some(unUseKey => (key || '').toLowerCase().includes(unUseKey.toLowerCase()));
+      if (isExist) {
+        storageCacheds.push(key);
+      } else {
+        // const data = await AsyncStorage.getItem(key);
+        // if (data?.length) {
+        //   const splitResults = split(key, '-');
+        //   if (key.includes(FAKE_FULL_DISK_KEY) ||
+        //     (splitResults
+        //       && splitResults.length >= 2
+        //       && splitResults.length <= 3
+        //       && splitResults[splitResults.length - 1] === 'cached'))
+        //   {
+        //     UTXOCacheds.push(key);
+        //   }
+        //   if (key === 'Wallet' ||
+        //     key === '$testnet-master-masterless' ||
+        //     key === '$mainnet-master-masterless') {
+        //     walletCacheds.push(key);
+        //   }
+        // }
       }
     }
-    return { UTXOCacheds, walletCacheds };
+    return { UTXOCacheds, walletCacheds, storageCacheds };
   };
 
   const restartApp = () => {
@@ -55,32 +74,38 @@ const enhance = WrappedComp => props => {
   const handleRemoveStorage = async () => {
     try {
       setRemoving(true);
-      const { UTXOCacheds, walletCacheds } = await loadRemoveKeys();
-      if (UTXOCacheds.length === 0 && walletCacheds.length === 0) return;
-
-      /** handle clear account cached */
-      UTXOCacheds.forEach(accountKey => {
-        dispatch(actionLogEvent({ desc: 'START REMOVE WITH ACCOUNT: ' + accountKey}));
-        AsyncStorage.removeItem(accountKey);
-      });
-
-      /** handle clear wallet history*/
-      for (const walletName of walletCacheds) {
-        const wallet = await loadWallet(PASSPHRASE_WALLET_DEFAULT, walletName) || {};
-        if (wallet && wallet.MasterAccount && wallet.MasterAccount.child) {
-          dispatch(actionLogEvent({ desc: 'START REMOVE WITH WALLET: ' + walletName}));
-          wallet.MasterAccount.child.forEach((child) => {
-            const txHistory = child.txHistory;
-            REMOVE_HISTORY_KEYS.forEach(removeKey => {
-              txHistory[removeKey] = [];
-            });
-          });
-          /** Update wallet after clear */
-          await saveWallet(wallet);
+      const { UTXOCacheds, walletCacheds, storageCacheds } = await loadRemoveKeys();
+      if (storageCacheds && storageCacheds.length > 0) {
+        for (const key of storageCacheds) {
+          await AsyncStorage.removeItem(key);
         }
       }
+
+      // if (UTXOCacheds.length === 0 && walletCacheds.length === 0) return;
+      //
+      // /** handle clear account cached */
+      // UTXOCacheds.forEach(accountKey => {
+      //   dispatch(actionLogEvent({ desc: 'START REMOVE WITH ACCOUNT: ' + accountKey}));
+      //   AsyncStorage.removeItem(accountKey);
+      // });
+      //
+      // /** handle clear wallet history*/
+      // for (const walletName of walletCacheds) {
+      //   const wallet = await loadWallet(PASSPHRASE_WALLET_DEFAULT, walletName) || {};
+      //   if (wallet && wallet.MasterAccount && wallet.MasterAccount.child) {
+      //     dispatch(actionLogEvent({ desc: 'START REMOVE WITH WALLET: ' + walletName}));
+      //     wallet.MasterAccount.child.forEach((child) => {
+      //       const txHistory = child.txHistory;
+      //       REMOVE_HISTORY_KEYS.forEach(removeKey => {
+      //         txHistory[removeKey] = [];
+      //       });
+      //     });
+      //     /** Update wallet after clear */
+      //     await saveWallet(wallet);
+      //   }
+      // }
     } catch (e) {
-      dispatch(actionLogEvent({ desc: 'ERROR REMOVE DATA: ' + JSON.stringify(e) }));
+      // dispatch(actionLogEvent({ desc: 'ERROR REMOVE DATA: ' + JSON.stringify(e) }));
     } finally {
       restartApp();
     }
