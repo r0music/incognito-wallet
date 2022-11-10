@@ -131,10 +131,11 @@ export const findTokenTrisolarisByIdSelector = createSelector(
   trisolarisPairsSelector,
   (trisolarisTokens) =>
     memoize((tokenID) =>
-    trisolarisTokens.find((t) => t?.tokenID === tokenID || t?.tokenId === tokenID),
+      trisolarisTokens.find(
+        (t) => t?.tokenID === tokenID || t?.tokenId === tokenID,
+      ),
     ),
 );
-
 
 export const hashmapContractIDsSelector = createSelector(
   pancakePairsSelector,
@@ -1551,12 +1552,12 @@ export const getSearchTokenListByField = createSelector(
       //   field,
       //   tokenId,
       // });
+      let tokensFilter = [];
       if (field === 'sellToken') {
-        const tokenFilters =
+        tokensFilter =
           pairsToken.filter(
             (token: SelectedPrivacy) => token.tokenId !== tokenId,
           ) || [];
-        return tokenFilters;
       } else {
         // const sellChildNetworks = selltoken.isPUnifiedToken
         //   ? selltoken.listUnifiedToken.map((child) => child.groupNetworkName)
@@ -1584,5 +1585,6 @@ export const getSearchTokenListByField = createSelector(
           ) || [];
         return tokenFilters;
       }
+      return tokensFilter;
     }),
 );

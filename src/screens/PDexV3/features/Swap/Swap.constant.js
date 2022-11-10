@@ -239,3 +239,10 @@ export const getExchangeDataWithCallContract = ({ callContract }) => {
   }
   return { name, exchangeScan };
 };
+
+export const RULE_SORT = {
+  key: ['isPRV', 'isPUnifiedToken', 'network', 'symbol'],
+  value: ['desc', 'desc', 'asc', 'asc'],
+};
+
+export const RULE_SEARCH = ['displayName', 'name', 'symbol', 'pSymbol'];
