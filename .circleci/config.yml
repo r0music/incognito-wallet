@@ -308,7 +308,7 @@ workflows:
           filters:
             branches:
               only:
-                - features/compliance
+                - inc-next2
       - generate_data:
           requires:
             - checkout_code
@@ -324,7 +324,7 @@ workflows:
           filters:
             branches:
               only:
-                - est-fee-create-tx
+                - inc-next3
       - generate_data:
           requires:
             - checkout_code

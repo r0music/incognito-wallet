@@ -216,4 +216,5 @@ export default {
   Tutorial: 'Tutorial',
   LiquidityVer1: 'LiquidityVer1',
   ShieldRefund: 'ShieldRefund',
+  SelectTokenScreen: 'SelectTokenScreen',
 };

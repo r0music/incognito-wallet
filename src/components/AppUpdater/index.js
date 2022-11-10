@@ -203,10 +203,6 @@
 //     const { downloading, updating, news, appVersion } = this.state;
 //     const { isToggleBackupAllKeys, colors } = this.props;
 //     const disabled = !(updating || downloading || !!news) && !news;
-//     console.log('SANG TEST::: ', {
-//       isToggleBackupAllKeys,
-//       disabled
-//     });
 //     if (!isToggleBackupAllKeys) return null;
 //     return (
 //       <View>
