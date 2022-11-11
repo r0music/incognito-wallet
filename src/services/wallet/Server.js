@@ -48,6 +48,7 @@ const MAIN_NET_SERVER = {
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
   uniConfigs: UNI_CONSTANTS.UNI_MAINNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
+  webAppService: 'https://api-webapp.incognito.org/',
 };
 const BETA_SERVER = {
   id: 'beta',
@@ -94,6 +95,7 @@ const TEST_NET_SERVER = {
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,
   uniConfigs: UNI_CONSTANTS.UNI_TESTNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
+  webAppService: 'https://api-webapp-staging.incognito.org/',
 };
 
 const LOCAL_SERVER = {
@@ -122,6 +124,7 @@ const TEST_NET_1_SERVER = {
   explorer: 'https://testnet1.incognito.org',
   tradeServices: 'https://api-coinservice-staging2.incognito.org',
   portalServices: 'http://139.162.55.124:8010',
+  webAppService: 'https://api-webapp-staging.incognito.org/',
 };
 
 export const DEV_TEST_SERVER = {
@@ -146,6 +149,7 @@ export const DEV_TEST_SERVER = {
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,
   uniConfigs: UNI_CONSTANTS.UNI_TESTNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
+  webAppService: 'https://api-webapp-staging.incognito.org/',
 };
 
 export const DEV_TEST_AVAX_AURORA = {
@@ -170,6 +174,7 @@ export const DEV_TEST_AVAX_AURORA = {
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,
   uniConfigs: UNI_CONSTANTS.UNI_TESTNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
+  webAppService: 'https://api-webapp-staging.incognito.org/',
 };
 
 const PORTAL_SERVER = {
@@ -189,6 +194,7 @@ const PORTAL_SERVER = {
   IncBSCContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   explorer: 'https://testnet.incognito.org',
   webviewChartServices: 'https://chart-webview-staging.incognito.org',
+  webAppService: 'https://api-webapp-staging.incognito.org/',
 };
 
 const BETA_66 = {
@@ -213,6 +219,7 @@ const BETA_66 = {
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
   uniConfigs: UNI_CONSTANTS.UNI_MAINNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
+  webAppService: 'https://api-webapp-staging.incognito.org/',
 };
 
 const BETA_2 = {
@@ -237,6 +244,7 @@ const BETA_2 = {
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
   uniConfigs: UNI_CONSTANTS.UNI_MAINNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
+  webAppService: 'https://api-webapp-staging.incognito.org/',
 };
 
 const DEFAULT_LIST_SERVER = [
@@ -328,6 +336,7 @@ export default class Server {
               web3Configs: server?.web3Configs || '',
               pancakeConfigs: server?.pancakeConfigs || '',
               uniConfigs: server?.uniConfigs || '',
+              webAppService: server?.webAppService || '',
             };
           }
         }

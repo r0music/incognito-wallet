@@ -204,7 +204,9 @@ export default {
   SelectOptionModal: 'SelectOptionModal',
   PrivacyAppsPancake: 'PrivacyAppsPancake',
   PrivacyAppsUni: 'PrivacyAppsUni',
+  PrivacyAppsUniEther: 'PrivacyAppsUniEther',
   PrivacyAppsCurve: 'PrivacyAppsCurve',
+  PrivacyAppsSpooky: 'PrivacyAppsSpooky',
   MarketSearchCoins: 'MarketSearchCoins',
   HomeLP: 'TabHomeLP',
   ConvertToUnifiedToken: 'ConvertToUnifiedToken',
@@ -214,4 +216,5 @@ export default {
   Tutorial: 'Tutorial',
   LiquidityVer1: 'LiquidityVer1',
   ShieldRefund: 'ShieldRefund',
+  SelectTokenScreen: 'SelectTokenScreen',
 };

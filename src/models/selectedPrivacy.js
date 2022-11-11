@@ -89,6 +89,63 @@ function getNetworkName() {
   };
 }
 
+function getGroupNetworkName() {
+  switch (this.currencyType) {
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH:
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.ETHEREUM;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB:
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.BSC;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC:
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.POLYGON;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM:
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FANTOM_ERC20:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.FANTOM;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.UNIFIED_TOKEN:
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.PRV:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.INCOGNITO;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BTC:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.BTC;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.DASH:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.DASH;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.DOGE:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.DOGE;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.DOT:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.DOT;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.LTC:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.LTC;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEO:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.NEO;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.TOMO:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.TOMO;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.XMR:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.XMR;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ZEC:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.ZEC;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ZIL:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.ZIL;
+
+    default:
+      return '';
+  }
+}
+
 function combineData(pData, incognitoData, defaultData) {
   if (this.isPToken) {
     return pData || incognitoData;
@@ -287,9 +344,12 @@ class SelectedPrivacy {
     this.hasSameSymbol = pTokenData.hasSameSymbol;
 
     // Unified Token
-    this.listUnifiedToken = pTokenData?.listUnifiedToken;
+    this.listUnifiedToken = pTokenData?.listUnifiedToken || [];
     this.movedUnifiedToken = pTokenData?.movedUnifiedToken;
     this.parentUnifiedID = pTokenData?.parentUnifiedID;
+    this.listUnifiedTokenCurrencyType = this.isPUnifiedToken
+      ? this.listUnifiedToken.map((token) => token.currencyType)
+      : [];
 
     // Native Token of Network
     this.isETH =
@@ -309,6 +369,9 @@ class SelectedPrivacy {
       this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH;
     this.isNEAR =
       this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR;
+
+    // groupByNetwork
+    this.groupNetworkName = getGroupNetworkName.call(this);
   }
 }
 

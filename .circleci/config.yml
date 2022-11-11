@@ -308,7 +308,7 @@ workflows:
           filters:
             branches:
               only:
-                - features/avax-bridge
+                - inc-next2
       - generate_data:
           requires:
             - checkout_code

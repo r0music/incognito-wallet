@@ -7,7 +7,7 @@ import http from '@src/services/http';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import axios from 'axios';
 import { cachePromise, EXPIRED_TIME, KEYS } from '@services/cache';
-import http1 from '@services/http1';
+import http4 from '@services/http4';
 import PolygonToken from '@src/models/polygonToken';
 import FantomToken from '@src/models/fantomToken';
 import AvaxToken from '@src/models/avaxToken';
@@ -17,15 +17,21 @@ import NearToken from '@src/models/nearToken';
 let BEP2Tokens = [];
 
 const getTokenListNoCache = () => {
-  return http1
-    .get('coins/tokenlist')
-    .then((res) => res.map((token) => new PToken(token, res)));
+  // return http1
+  //   .get('coins/tokenlist')
+  return http4.get('defaulttokenlist').then((res) => {
+    const tokens = res || [];
+    return tokens?.map((token) => new PToken(token, tokens));
+  });
 };
 
 export const getTokensInfo = (tokenIDs = []) => {
-  return http1
-    .post('coins/tokeninfo', { TokenIDs: tokenIDs })
-    .then((res) => res?.map((token) => new PToken(token, res)))
+  return http4
+    .post('tokeninfo', { TokenIDs: tokenIDs })
+    .then((res) => {
+      const tokens = res || [];
+      return tokens?.map((token) => new PToken(token, tokens));
+    })
     .catch((error) => {
       console.log('error', error);
       return [];
@@ -363,16 +369,16 @@ export const addTokenInfo = ({
 
 const getTokenInfoNoCache =
   ({ tokenId } = {}) =>
-    () => {
-      const endpoint = tokenId ? 'pcustomtoken/get' : 'pcustomtoken/list';
-      return http
-        .get(endpoint, tokenId ? { params: { TokenID: tokenId } } : undefined)
-        .then((res) => {
-          return tokenId
-            ? new IncognitoCoinInfo(res)
-            : res.map((token) => new IncognitoCoinInfo(token));
-        });
-    };
+  () => {
+    const endpoint = tokenId ? 'pcustomtoken/get' : 'pcustomtoken/list';
+    return http
+      .get(endpoint, tokenId ? { params: { TokenID: tokenId } } : undefined)
+      .then((res) => {
+        return tokenId
+          ? new IncognitoCoinInfo(res)
+          : res.map((token) => new IncognitoCoinInfo(token));
+      });
+  };
 
 /**
  * get incognito token info from backend, if `tokenId` is not passed in then get info for all tokens

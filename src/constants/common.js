@@ -147,6 +147,7 @@ const FACTORIES_EVM_NETWORK = [
 ];
 
 const PRIVATE_TOKEN_CURRENCY_TYPE = {
+  PRV: 0,
   ETH: 1,
   BTC: 2,
   ERC20: 3,
@@ -187,7 +188,7 @@ const PRIVATE_TOKEN_CURRENCY_TYPE = {
 
   // Aurora bridge
   AURORA_ETH: 30,   //30
-  AURORA_ERC20: 31 //31 
+  AURORA_ERC20: 31, //31
 };
 
 const PRIVATE_TOKEN_CURRENCY_NAME = {
@@ -201,6 +202,28 @@ const PRIVATE_TOKEN_CURRENCY_NAME = {
 };
 
 const RESPONSE_PRV_TYPES = [271, 273];
+
+const MAIN_NETWORK_NAME = {
+  PRV: 'Privacy',
+  ETHEREUM: 'Ethereum',
+  BSC: 'BSC',
+  POLYGON: 'Polygon',
+  FANTOM: 'Fantom',
+  INCOGNITO: 'Incognito',
+  TOMO: 'TomoChain',
+  ZIL: 'Zilliqua',
+  XMR: 'Monero',
+  NEO: 'NEO',
+  DASH: 'DASH',
+  DOT: 'DOT',
+  LTC: 'Litecoin',
+  DOGE: 'DOGE',
+  ZEC: 'Zcash',
+  BTC: 'Bitcoin',
+  NEAR: 'Near',
+  AVAX: 'Avax',
+  AURORA: 'Aurora',
+};
 
 export default {
   // old varibles, maybe remove later
@@ -336,4 +359,5 @@ export default {
     PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20,
   ],
   RESPONSE_PRV_TYPES,
+  MAIN_NETWORK_NAME,
 };

@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {
   ActivityIndicator,
-  RoundCornerButton,
+  RoundCornerButton, ScrollViewBorder,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
 } from '@src/components/core';
 import knownCode from '@src/services/exception/customError/code/knownCode';
 import NodeService from '@src/services/NodeService';
@@ -20,7 +20,6 @@ import { Icon } from 'react-native-elements';
 import { COLORS } from '@src/styles';
 import LogManager from '@src/services/LogManager';
 import { ScreenHeight, ScreenWidth } from '@src/utils/devices';
-import { LineView } from '@src/components/Line';
 import theme from '@src/styles/theme';
 import styles from './styles';
 
@@ -118,7 +117,7 @@ class WifiRepairSetup extends PureComponent {
           .catch(error => this.addStep({ name: 'Authenticate firebase error ', detail: error?.message, isSuccess: false }));
         if (!resultFbUID) {
           this.setState({ loading: false });
-          this.addStep({ name: 'Unable to authenticate firebase', detail: resultFbUID, isSuccess: false });
+          this.addStep({ name: 'Unable to authenticate firebase, please go to system setting wifi and connect to your previous wifi network', detail: resultFbUID, isSuccess: false });
           throw new CustomError(knownCode.node_auth_firebase_fail);
         } else {
           this.addStep({ name: 'Success! Authenticated firebase', detail: resultFbUID, isSuccess: true });
@@ -129,7 +128,7 @@ class WifiRepairSetup extends PureComponent {
       return authFirebase;
     } catch (err) {
       this.setState({ loading: false });
-      this.addStep({ name: 'Unable to authenticate firebase', detail: '', isSuccess: false });
+      this.addStep({ name: 'Unable to authenticate firebase, please go to system setting wifi and connect to your previous wifi network', detail: '', isSuccess: false });
       throw err;
     }
   };
@@ -301,7 +300,7 @@ class WifiRepairSetup extends PureComponent {
         {isLastStep && loading ? <ActivityIndicator style={styles.logIcon} size="small" /> : (
           <Icon
             containerStyle={styles.logIcon}
-            color={step?.isSuccess ? COLORS.colorPrimary : COLORS.red}
+            color={step?.isSuccess ? COLORS.colorGreyMedium : COLORS.red}
             size={15}
             name="checkbox-blank-circle"
             type="material-community"
@@ -346,8 +345,8 @@ class WifiRepairSetup extends PureComponent {
     const rootCauseMessage = this.getErrorMessage();
 
     return (
-      <ScrollView style={{ marginTop: 42 }}>
-        <Text style={styles.title2}>
+      <ScrollViewBorder>
+        <Text style={[styles.title2, { color: 'white' }]}>
           {
             steps.length > 0 ?
               'Connecting Node\n to your home Wi-Fi' :
@@ -357,7 +356,7 @@ class WifiRepairSetup extends PureComponent {
         {steps.length > 0 && this.renderLogs()}
         <Text style={styles.errorText}>{rootCauseMessage}</Text>
         {this.renderFooter()}
-      </ScrollView>
+      </ScrollViewBorder>
     );
   }
 }

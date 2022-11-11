@@ -1,6 +1,6 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import { TradeSuccessModal } from '@src/screens/PDexV3/features/Trade';
 import { focus } from 'redux-form';
@@ -12,19 +12,29 @@ import withLazy from '@src/components/LazyHoc/LazyHoc';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { formConfigs, KEYS_PLATFORMS_SUPPORTED } from './Swap.constant';
+
+import {
+  formConfigs,
+  KEYS_PLATFORMS_SUPPORTED,
+  NETWORK_NAME_SUPPORTED,
+} from './Swap.constant';
+
 import {
   actionInitSwapForm,
   actionReset,
   actionFetchSwap,
   actionToggleProTab,
   actionSetDefaultExchange,
+  actionNavigateFormMarketTab,
 } from './Swap.actions';
+
 import {
   swapInfoSelector,
   swapFormErrorSelector,
   sellInputTokenSelector,
   feetokenDataSelector,
+  getEsimateTradeError,
+  getIsNavigateFromMarketTab,
 } from './Swap.selector';
 
 const enhance = (WrappedComp) => (props) => {
@@ -33,16 +43,22 @@ const enhance = (WrappedComp) => (props) => {
   const formErrors = useDebounceSelector(swapFormErrorSelector);
   const sellInputToken = useDebounceSelector(sellInputTokenSelector);
   const feeTokenData = useDebounceSelector(feetokenDataSelector);
+  const estimateTradeError = useSelector(getEsimateTradeError);
+  const isNavigateFromMarketTab = useSelector(getIsNavigateFromMarketTab);
   const [visibleSignificant, setVisibleSignificant] = React.useState(false);
   const [ordering, setOrdering] = React.useState(false);
   const navigation = useNavigation();
+
   const {
     isPrivacyApp = false,
     exchange = KEYS_PLATFORMS_SUPPORTED.incognito,
+    network = NETWORK_NAME_SUPPORTED.INCOGNITO,
   } = props;
+
   const unmountSwap = () => {
     dispatch(actionReset());
   };
+
   const initSwapForm = (refresh = false) =>
     dispatch(
       actionInitSwapForm({
@@ -51,8 +67,10 @@ const enhance = (WrappedComp) => (props) => {
         shouldFetchHistory: true,
       }),
     );
+
   const handleCreateSwapOrder = async () => {
     const tx = await dispatch(actionFetchSwap());
+
     if (tx) {
       setTimeout(() => {
         dispatch(
@@ -85,6 +103,9 @@ const enhance = (WrappedComp) => (props) => {
         if (formErrors[field]) {
           return dispatch(focus(formConfigs.formName, field));
         }
+      }
+      if (estimateTradeError) {
+        return;
       }
       if (
         swapInfo?.disabledBtnSwap &&
@@ -120,10 +141,31 @@ const enhance = (WrappedComp) => (props) => {
   };
   const handleInitSwapForm = async () => {
     if (isPrivacyApp) {
-      await dispatch(actionSetDefaultExchange({ isPrivacyApp, exchange }));
+      await dispatch(
+        actionSetDefaultExchange({
+          isPrivacyApp,
+          exchange,
+          network,
+        }),
+      );
+    } else {
+      if (!isNavigateFromMarketTab) {
+        await dispatch(
+          actionInitSwapForm({
+            defaultPair: {
+              selltoken:
+                'b832e5d3b1f01a4f0623f7fe91d6673461e1f5d37d91fe78c5c2e6183ff39696', //BTC
+              buytoken:
+                '0000000000000000000000000000000000000000000000000000000000000004', //PRV
+            },
+            refresh: true,
+            shouldFetchHistory: false,
+          }),
+        );
+      }
     }
-    initSwapForm(true);
   };
+
   React.useEffect(() => {
     handleInitSwapForm();
     if (navigation?.state?.routeName !== routeNames.Trade) {
@@ -131,6 +173,7 @@ const enhance = (WrappedComp) => (props) => {
         unmountSwap();
       };
     }
+    dispatch(actionNavigateFormMarketTab(false));
   }, []);
 
   return (

@@ -4,13 +4,14 @@ import TabSwap, {
   actionSetDefaultExchange,
   actionInitSwapForm,
   actionReset,
+  NETWORK_NAME_SUPPORTED,
 } from '@screens/PDexV3/features/Swap';
 import { withLayout_2 } from '@src/components/Layout';
 import Header from '@src/components/Header';
 import { useDispatch } from 'react-redux';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
-import { ANALYTICS } from '@src/constants';
+import { ANALYTICS, CONSTANT_CONFIGS } from '@src/constants';
 import { swapInfoSelector } from '../Swap/Swap.selector';
 
 const PrivacyAppsCurve = () => {
@@ -21,6 +22,7 @@ const PrivacyAppsCurve = () => {
       actionSetDefaultExchange({
         isPrivacyApp: true,
         exchange: KEYS_PLATFORMS_SUPPORTED.curve,
+        network: NETWORK_NAME_SUPPORTED.POLYGON,
       }),
     );
     await dispatch(
@@ -34,6 +36,19 @@ const PrivacyAppsCurve = () => {
   React.useEffect(() => {
     dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CURVE));
     dispatch(actionReset());
+    CONSTANT_CONFIGS.isMainnet &&
+      dispatch(
+        actionInitSwapForm({
+          defaultPair: {
+            selltoken:
+              '545ef6e26d4d428b16117523935b6be85ec0a63e8c2afeb0162315eb0ce3d151', //USDC (UT)
+            buytoken:
+              '076a4423fa20922526bd50b0d7b0dc1c593ce16e15ba141ede5fb5a28aa3f229', //ETH (UT)
+          },
+          refresh: true,
+          shouldFetchHistory: false,
+        }),
+      );
   }, []);
   return (
     <>
@@ -42,7 +57,11 @@ const PrivacyAppsCurve = () => {
         accountSelectable
         handleSelectedAccount={handleOnRefresh}
       />
-      <TabSwap isPrivacyApp exchange={KEYS_PLATFORMS_SUPPORTED.curve} />
+      <TabSwap
+        isPrivacyApp
+        exchange={KEYS_PLATFORMS_SUPPORTED.curve}
+        network={NETWORK_NAME_SUPPORTED.POLYGON}
+      />
     </>
   );
 };

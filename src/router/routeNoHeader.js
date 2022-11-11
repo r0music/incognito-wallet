@@ -153,11 +153,14 @@ import {
   PrivacyAppsPancake,
   PrivacyAppsUni,
   PrivacyAppsCurve,
+  PrivacyAppsUniEther,
+  PrivacyAppsSpooky,
 } from '@screens/PDexV3/features/PrivacyApps';
 import MarketSearchCoins from '@screens/MainTabBar/features/Market/Market.searchCoins';
 import HomeLP from '@screens/MainTabBar/features/HomeLP';
 import Tutorial from '@screens/Turotial/Tutorial';
 import LiquidityVer1 from '@screens/Dex/Liquidity';
+import SelectionTokenScreen from '@src/screens/PDexV3/features/Swap/SelectToken';
 
 const masterKeyRoutes = [
   {
@@ -357,6 +360,14 @@ const pDexV3Routes = [
   {
     screen: PrivacyAppsCurve,
     name: routeNames.PrivacyAppsCurve,
+  },
+  {
+    screen: PrivacyAppsUniEther,
+    name: routeNames.PrivacyAppsUniEther,
+  },
+  {
+    screen: PrivacyAppsSpooky,
+    name: routeNames.PrivacyAppsSpooky,
   },
   {
     screen: MarketSearchCoins,
@@ -767,6 +778,10 @@ const routes = [
   {
     screen: LiquidityVer1,
     name: routeNames.LiquidityVer1,
+  },
+  {
+    screen: SelectionTokenScreen,
+    name: routeNames.SelectTokenScreen,
   },
   ...masterKeyRoutes,
   ...devRoutes,
