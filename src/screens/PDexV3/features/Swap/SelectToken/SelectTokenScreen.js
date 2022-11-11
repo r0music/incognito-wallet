@@ -4,9 +4,9 @@ import { View } from '@src/components/core';
 import { View2 } from '@src/components/core/View';
 import Header from '@src/components/Header';
 // import { withLayout_2 } from '@src/components/Layout';
-import { ListAllToken2, TokenTrade } from '@src/components/Token';
+import { ListAllToken3, TokenTrade1 } from '@src/components/Token';
 import { FONT } from '@src/styles';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { compose } from 'recompose';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
@@ -23,25 +23,29 @@ const SelectTokenList = React.memo(() => {
   const data = useNavigationParam('data');
   const onPress = useNavigationParam('onPress');
   const { goBack } = useNavigation();
-
   const { from, tokenId } = data;
 
   if (!from || !tokenId) return null;
 
-  let _availableTokens = useSelector(getSearchTokenListByField)(from, tokenId);
-
-  _availableTokens = useMemo(
-    () => orderBy(_availableTokens, RULE_SORT.key, RULE_SORT.value),
-    [],
-  );
-
-  const _verifiedTokens = _availableTokens?.filter(
-    (token) => token?.isVerified,
-  );
-
-  const _unVerifiedTokens = _availableTokens?.filter(
-    (token) => !token.isVerified,
-  );
+  let availableTokens = useSelector(getSearchTokenListByField)(from, tokenId);
+  const { verifiedTokensDefault, unVerifiedTokensDefault } = useMemo(() => {
+    let result = {
+      verifiedTokensDefault: [],
+      unVerifiedTokensDefault: [],
+      availableTokensSorted: [],
+    };
+    result.availableTokensSorted =
+      orderBy(availableTokens, RULE_SORT.key, RULE_SORT.value) || [];
+    result.availableTokensSorted.reduce((currentResult, token) => {
+      if (token.isVerified) {
+        currentResult.verifiedTokensDefault.push(token);
+      } else {
+        currentResult.unVerifiedTokensDefault.push(token);
+      }
+      return currentResult;
+    }, result);
+    return result;
+  }, [availableTokens]);
 
   const [showUnVerifiedTokens, setShowUnVerifiedTokens] = useState(false);
 
@@ -49,22 +53,25 @@ const SelectTokenList = React.memo(() => {
     setShowUnVerifiedTokens(!showUnVerifiedTokens);
   };
 
-  const [verifiedTokens, onSearchVerifiedTokens] = useFuse(_verifiedTokens, {
-    keys: RULE_SEARCH,
-    matchAllOnEmptyQuery: true,
-    isCaseSensitive: false,
-    findAllMatches: true,
-    includeMatches: false,
-    includeScore: true,
-    useExtendedSearch: false,
-    threshold: 0,
-    location: 0,
-    distance: 2,
-    maxPatternLength: 32,
-  });
+  const [verifiedTokens, onSearchVerifiedTokens] = useFuse(
+    verifiedTokensDefault,
+    {
+      keys: RULE_SEARCH,
+      matchAllOnEmptyQuery: true,
+      isCaseSensitive: false,
+      findAllMatches: true,
+      includeMatches: false,
+      includeScore: true,
+      useExtendedSearch: false,
+      threshold: 0,
+      location: 0,
+      distance: 2,
+      maxPatternLength: 32,
+    },
+  );
 
   const [unVerifiedTokens, onSearchUnVerifiedTokens] = useFuse(
-    _unVerifiedTokens,
+    unVerifiedTokensDefault,
     {
       keys: RULE_SEARCH,
       matchAllOnEmptyQuery: true,
@@ -85,6 +92,24 @@ const SelectTokenList = React.memo(() => {
     tokens = [verifiedTokens, unVerifiedTokens];
   }
 
+  const renderItem = useCallback(
+    ({ item }) => (
+      <TokenTrade1
+        onPress={async () => {
+          goBack();
+          dispatch(actionResetData());
+          dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
+          await delay(0);
+          if (typeof onPress === 'function') {
+            onPress(item);
+          }
+        }}
+        tokenId={item?.tokenId}
+      />
+    ),
+    [],
+  );
+
   return (
     <View2 style={styled.container}>
       <Header
@@ -98,26 +123,11 @@ const SelectTokenList = React.memo(() => {
         }}
       />
       <View borderTop style={[{ flex: 1 }]}>
-        <ListAllToken2
+        <ListAllToken3
           tokensFactories={tokens}
           isShowUnVerifiedTokens={showUnVerifiedTokens}
           setShowUnVerifiedTokens={onSetShowUnVerifiedTokens}
-          renderItem={({ item }) => (
-            <TokenTrade
-              onPress={async () => {
-                goBack();
-                dispatch(actionResetData());
-                dispatch(
-                  change(formConfigs.formName, formConfigs.feetoken, ''),
-                );
-                await delay(0);
-                if (typeof onPress === 'function') {
-                  onPress(item);
-                }
-              }}
-              tokenId={item?.tokenId}
-            />
-          )}
+          renderItem={renderItem}
         />
       </View>
     </View2>

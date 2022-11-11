@@ -1,17 +1,17 @@
-import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { useDispatch, useSelector } from 'react-redux';
-import { actionToggleModal } from '@src/components/Modal';
-import { TradeSuccessModal } from '@src/screens/PDexV3/features/Trade';
-import { focus } from 'redux-form';
-import { actionCheckNeedFaucetPRV } from '@src/redux/actions/token';
-import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
-import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/RemoveStorage.Dialog';
-import { compose } from 'recompose';
 import withLazy from '@src/components/LazyHoc/LazyHoc';
-import useDebounceSelector from '@src/shared/hooks/debounceSelector';
-import { useNavigation } from 'react-navigation-hooks';
+import { actionToggleModal } from '@src/components/Modal';
+import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
+import { actionCheckNeedFaucetPRV } from '@src/redux/actions/token';
 import routeNames from '@src/router/routeNames';
+import { TradeSuccessModal } from '@src/screens/PDexV3/features/Trade';
+import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/RemoveStorage.Dialog';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import React, { useEffect, useState } from 'react';
+import { useNavigation } from 'react-navigation-hooks';
+import { useDispatch, useSelector } from 'react-redux';
+import { compose } from 'recompose';
+import { focus } from 'redux-form';
 
 import {
   formConfigs,
@@ -20,21 +20,21 @@ import {
 } from './Swap.constant';
 
 import {
-  actionInitSwapForm,
-  actionReset,
   actionFetchSwap,
-  actionToggleProTab,
-  actionSetDefaultExchange,
+  actionInitSwapForm,
   actionNavigateFormMarketTab,
+  actionReset,
+  actionSetDefaultExchange,
+  actionToggleProTab,
 } from './Swap.actions';
 
 import {
-  swapInfoSelector,
-  swapFormErrorSelector,
-  sellInputTokenSelector,
   feetokenDataSelector,
   getEsimateTradeError,
   getIsNavigateFromMarketTab,
+  sellInputTokenSelector,
+  swapFormErrorSelector,
+  swapInfoSelector,
 } from './Swap.selector';
 
 const enhance = (WrappedComp) => (props) => {
@@ -45,8 +45,8 @@ const enhance = (WrappedComp) => (props) => {
   const feeTokenData = useDebounceSelector(feetokenDataSelector);
   const estimateTradeError = useSelector(getEsimateTradeError);
   const isNavigateFromMarketTab = useSelector(getIsNavigateFromMarketTab);
-  const [visibleSignificant, setVisibleSignificant] = React.useState(false);
-  const [ordering, setOrdering] = React.useState(false);
+  const [visibleSignificant, setVisibleSignificant] = useState(false);
+  const [ordering, setOrdering] = useState(false);
   const navigation = useNavigation();
 
   const {
@@ -166,7 +166,7 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     handleInitSwapForm();
     if (navigation?.state?.routeName !== routeNames.Trade) {
       return () => {
