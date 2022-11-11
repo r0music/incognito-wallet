@@ -324,7 +324,7 @@ workflows:
           filters:
             branches:
               only:
-                - inc-next3
+                - features/avax-aurora-near-bridge
       - generate_data:
           requires:
             - checkout_code
