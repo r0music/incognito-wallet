@@ -6,12 +6,10 @@ import withMarket from '@screens/MainTabBar/features/Market/Market.enhance';
 import Header, {
   MarketTabs,
 } from '@screens/MainTabBar/features/Market/Market.header';
-import {
-  actionSetPoolSelected,
-} from '@screens/PDexV3/features/OrderLimit';
+import { actionSetPoolSelected } from '@screens/PDexV3/features/OrderLimit';
 import {
   ROOT_TAB_TRADE,
-  TAB_SWAP_ID
+  TAB_SWAP_ID,
 } from '@screens/PDexV3/features/Trade/Trade.constant';
 import { marketTabSelector } from '@screens/Setting';
 import {
@@ -23,6 +21,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useNavigation } from 'react-navigation-hooks';
 import { batch, useDispatch, useSelector } from 'react-redux';
+import {
+  actionInitSwapForm,
+  actionNavigateFormMarketTab,
+} from '@screens/PDexV3/features/Swap/Swap.actions';
 
 const Market = React.memo((props) => {
   const { keySearch, onFilter, ...rest } = props;
@@ -44,6 +46,13 @@ const Market = React.memo((props) => {
         );
       });
     }
+    dispatch(actionNavigateFormMarketTab(true));
+    dispatch(
+      actionInitSwapForm({
+        refresh: true,
+        shouldFetchHistory: true,
+      }),
+    );
   };
 
   const handleToggleFollowToken = async (token) => {

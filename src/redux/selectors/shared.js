@@ -79,7 +79,7 @@ export const marketTokens = createSelector(
       const token = getPrivacyDataByTokenID(tokenId);
       if (token?.name && token?.symbol && token.tokenId) {
         let _token = { ...token };
-        if (followedTokenIds.includes(token.tokenId)) {
+        if (followedTokenIds.includes(token.tokenId) && !token.movedUnifiedToken) {
           _token.isFollowed = true;
         }
         tokens.push(_token);

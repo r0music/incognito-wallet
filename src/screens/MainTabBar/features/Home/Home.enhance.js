@@ -15,6 +15,7 @@ import DialogUpdateApp from '@screens/Home/features/DialogUpdateApp';
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const { outdatedVersion, Link: link } = useSelector(homeSelector)?.appVersion;
+  const refFirstTime = React.useRef(true);
   console.log('outdatedVersion::: ', outdatedVersion);
   const onUpdateApp = async () => {
     try {
@@ -35,6 +36,10 @@ const enhance = (WrappedComp) => (props) => {
   };
   const fetchData = async () => {
     try {
+      if (refFirstTime && refFirstTime.current) {
+        refFirstTime.current = false;
+        return;
+      }
       dispatch(getPTokenList());
       // dispatch(getInternalTokenList());
     } catch (error) {

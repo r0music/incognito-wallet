@@ -103,7 +103,10 @@ const PoolsListContainer = (props) => {
 const PoolsTab = () => {
   const onPressPoolParam = useNavigationParam('onPressPool');
   const dispatch = useDispatch();
-  const listPools = useSelector(listPoolsSelector);
+  const listPools = (useSelector(listPoolsSelector) || []).filter(({
+    token1,
+    token2,
+  }) => !token1.movedUnifiedToken && !token2.movedUnifiedToken);
   const navigation = useNavigation();
   const onPressPool = (poolId) => {
     if (typeof onPressPoolParam === 'function') {

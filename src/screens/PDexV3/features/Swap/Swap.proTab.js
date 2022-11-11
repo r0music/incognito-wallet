@@ -28,6 +28,7 @@ import {
   swapInfoSelector,
   swapSelector,
   platformsSupportedSelector,
+  platformsSupportedSelector1,
   platformIdSelectedSelector,
   isPrivacyAppSelector,
 } from './Swap.selector';
@@ -38,6 +39,7 @@ import {
   actionSetFeeToken,
   actionSwitchPlatform,
   actionChangeSlippage,
+  actionEstimateTrade,
 } from './Swap.actions';
 import { formConfigs, KEYS_PLATFORMS_SUPPORTED } from './Swap.constant';
 import {
@@ -77,33 +79,43 @@ const TabPro = React.memo(() => {
     const { tokenId } = type;
     await dispatch(actionSetFeeToken(tokenId));
     switch (platformId) {
-    case KEYS_PLATFORMS_SUPPORTED.incognito:
-      await dispatch(actionHandleInjectEstDataForPDex());
-      break;
-    case KEYS_PLATFORMS_SUPPORTED.pancake:
-      await dispatch(actionHandleInjectEstDataForPancake());
-      break;
-    case KEYS_PLATFORMS_SUPPORTED.uni:
-      await dispatch(actionHandleInjectEstDataForUni());
-      break;
-    default:
-      break;
+      case KEYS_PLATFORMS_SUPPORTED.incognito:
+        await dispatch(actionHandleInjectEstDataForPDex());
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.pancake:
+        await dispatch(actionHandleInjectEstDataForPancake());
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.uni:
+      case KEYS_PLATFORMS_SUPPORTED.uniEther:
+        await dispatch(actionHandleInjectEstDataForUni(platformId));
+        break;
+      default:
+        break;
     }
   };
   const onEndEditing = () => {
     if (Number(slippagetolerance) > 100 || slippagetolerance < 0) {
       return;
     }
-    const minAmount = calMintAmountExpected({
-      maxGet: feetokenData?.maxGet,
-      slippagetolerance,
-    });
-    const amount = format.toFixed(
-      convert.toHumanAmount(minAmount, buyInputAmount.pDecimals),
-      buyInputAmount.pDecimals,
-    );
-    dispatch(change(formConfigs.formName, formConfigs.buytoken, amount));
+    if (!sellinputAmount.amount || sellinputAmount.amount < 0) {
+      return;
+    }
+
+    dispatch(actionEstimateTrade());
+
+    // const minAmount = calMintAmountExpected({
+    //   maxGet: feetokenData?.maxGet,
+    //   slippagetolerance,
+    // });
+
+    // const amount = format.toFixed(
+    //   convert.toHumanAmount(minAmount, buyInputAmount.pDecimals),
+    //   buyInputAmount.pDecimals
+    // );
+
+    // dispatch(change(formConfigs.formName, formConfigs.buytoken, amount));
   };
+
   let _minFeeValidator = React.useCallback(
     () => minFeeValidator(feetokenData, isFetching),
     [
@@ -140,7 +152,8 @@ const TabPro = React.memo(() => {
     () => maxAmountValidatorForSlippageTolerance(slippagetolerance),
     [slippagetolerance],
   );
-  const platforms = useSelector(platformsSupportedSelector);
+  // const platforms = useSelector(platformsSupportedSelector);
+  const platforms = useSelector(platformsSupportedSelector1);
   const options = React.useMemo(
     () =>
       platforms.map((platform) => {
@@ -159,7 +172,6 @@ const TabPro = React.memo(() => {
     [platforms],
   );
   const platformSelected = options.find((option) => !!option?.isSelected);
-
   let extraFactories = [
     {
       title: 'Slippage tolerance',
@@ -203,31 +215,31 @@ const TabPro = React.memo(() => {
         />
       ),
     },
-    {
-      title: 'Trading fee',
-      titleStyle: {
-        fontSize: FONT.SIZE.small,
-      },
-      onPressQuestionIcon: () => null,
-      hooks: (
-        <Field
-          component={RFSelectFeeInput}
-          types={feeTypes}
-          onChangeTypeFee={onChangeTypeFee}
-          name={formConfigs.feetoken}
-          placeholder="0"
-          validate={[
-            ...(feetokenData.isIncognitoToken
-              ? validator.combinedNanoAmount
-              : validator.combinedAmount),
-            _minFeeValidator,
-            _maxFeeValidator,
-          ]}
-          editableInput={!!swapInfo?.editableInput}
-        />
-      ),
-      containerStyle: { marginBottom: 0 },
-    },
+    // {
+    //   title: 'Trading fee',
+    //   titleStyle: {
+    //     fontSize: FONT.SIZE.small,
+    //   },
+    //   onPressQuestionIcon: () => null,
+    //   hooks: (
+    //     <Field
+    //       component={RFSelectFeeInput}
+    //       types={feeTypes}
+    //       onChangeTypeFee={onChangeTypeFee}
+    //       name={formConfigs.feetoken}
+    //       placeholder="0"
+    //       validate={[
+    //         ...(feetokenData.isIncognitoToken
+    //           ? validator.combinedNanoAmount
+    //           : validator.combinedAmount),
+    //         _minFeeValidator,
+    //         _maxFeeValidator,
+    //       ]}
+    //       editableInput={!!swapInfo?.editableInput}
+    //     />
+    //   ),
+    //   containerStyle: { marginBottom: 0 },
+    // },
   ];
   if (!isPrivacyApp) {
     extraFactories.unshift({
