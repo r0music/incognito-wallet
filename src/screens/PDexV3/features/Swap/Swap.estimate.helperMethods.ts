@@ -1,5 +1,4 @@
 import { PRV_ID } from '@src/constants/common';
-import { replaceDecimals } from '@src/utils/convert';
 
 import {
   NETWORK_NAME_SUPPORTED,
@@ -122,9 +121,13 @@ const convertAppNameToPlatformSupported = (
       return 'curve';
     case 'spooky':
       return 'spooky';
+    case 'joe':
+      return 'joe';
+    case 'trisolaris':
+      return 'trisolaris';
     default:
-      console.error(
-        `[convertAppNameToPlatformName] appName NOT FOUND, appName = ${appName}. Return default: incognito `,
+      console.log(
+        `[convertAppNameToPlatformSupported] appName NOT FOUND, appName = ${appName}. Return default: incognito `,
       );
       return 'incognito';
   }

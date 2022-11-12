@@ -79,6 +79,16 @@ export const spoonkyPairsSelector = createSelector(
   ({ spookyTokens }) => spookyTokens,
 );
 
+export const joePairsSelector = createSelector(
+  swapSelector,
+  ({ joeTokens }) => joeTokens,
+);
+
+export const trisolarisPairsSelector = createSelector(
+  swapSelector,
+  ({ trisolarisTokens }) => trisolarisTokens,
+);
+
 export const findTokenPancakeByIdSelector = createSelector(
   pancakePairsSelector,
   (pancakeTokens) =>
@@ -108,6 +118,23 @@ export const findTokenSpookyByIdSelector = createSelector(
       ),
     ),
 );
+
+export const findTokenJoeByIdSelector = createSelector(
+  joePairsSelector,
+  (joeTokens) =>
+    memoize((tokenID) =>
+      joeTokens.find((t) => t?.tokenID === tokenID || t?.tokenId === tokenID),
+    ),
+);
+
+export const findTokenTrisolarisByIdSelector = createSelector(
+  trisolarisPairsSelector,
+  (trisolarisTokens) =>
+    memoize((tokenID) =>
+    trisolarisTokens.find((t) => t?.tokenID === tokenID || t?.tokenId === tokenID),
+    ),
+);
+
 
 export const hashmapContractIDsSelector = createSelector(
   pancakePairsSelector,
@@ -251,6 +278,68 @@ export const getTokenIdBySpoonkyContractIdSelector = createSelector(
     }),
 );
 
+export const getTokenIdByTrisolarisContractIdSelector = createSelector(
+  trisolarisPairsSelector,
+  (trisolarisTokens) =>
+    memoize((contractIdGetRate) => {
+      let tokenID = '';
+      const foundToken = trisolarisTokens.find((token) => {
+        if (
+          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
+        ) {
+          tokenID = token.tokenID;
+          return true;
+        } else {
+          token.listUnifiedToken.find((tokenChild) => {
+            if (
+              isEqual(
+                toLower(contractIdGetRate),
+                toLower(tokenChild?.contractId),
+              )
+            ) {
+              tokenID = tokenChild.tokenId;
+              return true;
+            }
+          });
+        }
+        return false;
+      });
+
+      return tokenID;
+    }),
+);
+
+export const getTokenIdByJoeContractIdSelector = createSelector(
+  joePairsSelector,
+  (joeTokens) =>
+    memoize((contractIdGetRate) => {
+      let tokenID = '';
+      const foundToken = joeTokens.find((token) => {
+        if (
+          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
+        ) {
+          tokenID = token.tokenID;
+          return true;
+        } else {
+          token.listUnifiedToken.find((tokenChild) => {
+            if (
+              isEqual(
+                toLower(contractIdGetRate),
+                toLower(tokenChild?.contractId),
+              )
+            ) {
+              tokenID = tokenChild.tokenId;
+              return true;
+            }
+          });
+        }
+        return false;
+      });
+
+      return tokenID;
+    }),
+);
+
 export const purePairsSelector = createSelector(
   swapSelector,
   ({ pairs }) => pairs || [],
@@ -268,6 +357,8 @@ export const listPairsSelector = createSelector(
       uniTokens,
       curveTokens,
       spookyTokens,
+      joeTokens,
+      trisolarisTokens,
     },
     getPrivacyDataByTokenID,
   ) => {
@@ -352,6 +443,45 @@ export const listPairsSelector = createSelector(
           });
           break;
         }
+
+        case KEYS_PLATFORMS_SUPPORTED.joe: {
+          list = list.map((token: SelectedPrivacy) => {
+            let { priority, isVerified } = token;
+            const foundedToken = joeTokens.find(
+              (pt) => pt?.tokenID === token?.tokenId,
+            );
+            if (foundedToken) {
+              priority = foundedToken?.priority;
+              isVerified = foundedToken?.verify;
+            }
+            return {
+              ...token,
+              isVerified,
+              priority,
+            };
+          });
+          break;
+        }
+
+        case KEYS_PLATFORMS_SUPPORTED.trisolaris: {
+          list = list.map((token: SelectedPrivacy) => {
+            let { priority, isVerified } = token;
+            const foundedToken = trisolarisTokens.find(
+              (pt) => pt?.tokenID === token?.tokenId,
+            );
+            if (foundedToken) {
+              priority = foundedToken?.priority;
+              isVerified = foundedToken?.verify;
+            }
+            return {
+              ...token,
+              isVerified,
+              priority,
+            };
+          });
+          break;
+        }
+
         default:
           break;
       }
@@ -650,6 +780,8 @@ export const feetokenDataSelector = createSelector(
   getTokenIdByUniContractIdGetRateSelector,
   slippagetoleranceSelector,
   getTokenIdBySpoonkyContractIdSelector,
+  getTokenIdByJoeContractIdSelector,
+  getTokenIdByTrisolarisContractIdSelector,
   (
     state,
     { data, networkfee, selltoken, buytoken },
@@ -661,6 +793,8 @@ export const feetokenDataSelector = createSelector(
     getTokenIdByUniContractIdGetRate,
     slippagetolerance,
     getTokenIdBySpoonkyContractId,
+    getTokenIdByJoeContractId,
+    getTokenIdByTrisolarisContractId,
   ) => {
     try {
       const feeTokenData: SelectedPrivacy = getPrivacyDataByTokenID(feetoken);
@@ -856,6 +990,20 @@ export const feetokenDataSelector = createSelector(
               break;
             }
 
+            case KEYS_PLATFORMS_SUPPORTED.joe: {
+              tradePathArr = tokenRoute.map((contractId) =>
+                getTokenIdByJoeContractId(contractId),
+              );
+              break;
+            }
+
+            case KEYS_PLATFORMS_SUPPORTED.trisolaris: {
+              tradePathArr = tokenRoute.map((contractId) =>
+                getTokenIdByTrisolarisContractId(contractId),
+              );
+              break;
+            }
+
             default:
               break;
           }
@@ -868,6 +1016,8 @@ export const feetokenDataSelector = createSelector(
           case KEYS_PLATFORMS_SUPPORTED.uniEther:
           case KEYS_PLATFORMS_SUPPORTED.curve:
           case KEYS_PLATFORMS_SUPPORTED.spooky:
+          case KEYS_PLATFORMS_SUPPORTED.joe:
+          case KEYS_PLATFORMS_SUPPORTED.trisolaris:
             tradePathStr = tradePathArr
               .map((tokenID, index, arr) => {
                 const token: SelectedPrivacy = getPrivacyDataByTokenID(tokenID);
@@ -1001,6 +1151,28 @@ export const feeTypesSelector = createSelector(
       }
 
       case KEYS_PLATFORMS_SUPPORTED.spooky: {
+        types = [
+          {
+            tokenId: feeToken.tokenId,
+            symbol: feeToken.symbol,
+            actived: feetoken === feetoken,
+          },
+        ];
+        break;
+      }
+
+      case KEYS_PLATFORMS_SUPPORTED.joe: {
+        types = [
+          {
+            tokenId: feeToken.tokenId,
+            symbol: feeToken.symbol,
+            actived: feetoken === feetoken,
+          },
+        ];
+        break;
+      }
+
+      case KEYS_PLATFORMS_SUPPORTED.trisolaris: {
         types = [
           {
             tokenId: feeToken.tokenId,
@@ -1386,25 +1558,30 @@ export const getSearchTokenListByField = createSelector(
           ) || [];
         return tokenFilters;
       } else {
-        const sellChildNetworks = selltoken.isPUnifiedToken
-          ? selltoken.listUnifiedToken.map((child) => child.groupNetworkName)
-          : [selltoken.groupNetworkName];
+        // const sellChildNetworks = selltoken.isPUnifiedToken
+        //   ? selltoken.listUnifiedToken.map((child) => child.groupNetworkName)
+        //   : [selltoken.groupNetworkName];
+        // const tokenFilters =
+        //   pairsToken.filter((token: SelectedPrivacy) => {
+        //     if (token?.tokenId === buytoken?.tokenId) return false;
+        //     if (token?.movedUnifiedToken) return false; // not supported moved unified token
+        //     if (selltoken.defaultPoolPair && token.defaultPoolPair) return true; //Swappable on pDex
+
+        //     const tokenChildNetworks = token.isPUnifiedToken
+        //       ? token.listUnifiedToken.map((child) => child.groupNetworkName)
+        //       : [token.groupNetworkName];
+
+        //     return sellChildNetworks.some(
+        //       (networkName) =>
+        //         networkName && tokenChildNetworks.includes(networkName),
+        //     );
+        //   }) || [];
+
+        // return tokenFilters;
         const tokenFilters =
-          pairsToken.filter((token: SelectedPrivacy) => {
-            if (token?.tokenId === buytoken?.tokenId) return false;
-            if (token?.movedUnifiedToken) return false; // not supported moved unified token
-            if (selltoken.defaultPoolPair && token.defaultPoolPair) return true; //Swappable on pDex
-
-            const tokenChildNetworks = token.isPUnifiedToken
-              ? token.listUnifiedToken.map((child) => child.groupNetworkName)
-              : [token.groupNetworkName];
-
-            return sellChildNetworks.some(
-              (networkName) =>
-                networkName && tokenChildNetworks.includes(networkName),
-            );
-          }) || [];
-
+          pairsToken.filter(
+            (token: SelectedPrivacy) => token.tokenId !== tokenId,
+          ) || [];
         return tokenFilters;
       }
     }),

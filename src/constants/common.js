@@ -187,7 +187,7 @@ const PRIVATE_TOKEN_CURRENCY_TYPE = {
   AVAX_ERC20: 29,
 
   // Aurora bridge
-  AURORA_ETH: 30,   //30
+  AURORA_ETH: 30, //30
   AURORA_ERC20: 31, //31
 };
 
