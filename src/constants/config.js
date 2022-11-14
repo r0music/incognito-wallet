@@ -41,14 +41,14 @@ const FANTOMSCAN_URL = isMainnet
   ? 'https://ftmscan.com'
   : 'https://testnet.ftmscan.com';
 const AVAXSCAN_URL = isMainnet
-  ? 'https://avascan.info'
-  : 'https://testnet.avascan.info';
-const AURORASCAN_URL = isMainnet
   ? 'https://snowtrace.io'
   : 'https://testnet.snowtrace.io';
+const AURORASCAN_URL = isMainnet
+  ? 'https://aurorascan.dev'
+  : 'https://testnet.aurorascan.dev';
 const NEARSCAN_URL = isMainnet
   ? 'https://explorer.near.org'
-  : 'https://testnet.nearblocks.io';
+  : 'https://explorer.testnet.near.org';
 const BTC_EXPLORER_URL = isMainnet
   ? 'https://live.blockcypher.com/btc'
   : 'https://live.blockcypher.com/btc-testnet';
