@@ -95,7 +95,8 @@ const TEST_NET_SERVER = {
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,
   uniConfigs: UNI_CONSTANTS.UNI_TESTNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
-  webAppService: 'https://api-webapp-staging.incognito.org/',
+  // webAppService: 'https://api-webapp-staging.incognito.org/',
+  webAppService: 'http://51.161.117.193:8898/',
 };
 
 const LOCAL_SERVER = {

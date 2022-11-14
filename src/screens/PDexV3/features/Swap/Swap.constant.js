@@ -107,6 +107,8 @@ export const KEYS_PLATFORMS_SUPPORTED = {
   curve: 'curve',
   spooky: 'spooky',
   uniEther: 'uniEther',
+  joe: 'joe',
+  trisolaris: 'trisolaris',
 };
 
 export const KEYS_PLATFORMS_SUPPORTED_NETWORKS = {
@@ -122,6 +124,9 @@ export const NETWORK_NAME_SUPPORTED = {
   POLYGON: 'plg',
   FANTOM: 'ftm',
   BINANCE_SMART_CHAIN: 'bsc',
+  AURORA: 'aurora',
+  AVALANCHE: 'avax',
+  NEAR: 'near',
 };
 
 export const SwapExchange = {
@@ -169,6 +174,22 @@ export const PLATFORMS_SUPPORTED = [
   {
     id: KEYS_PLATFORMS_SUPPORTED.spooky,
     title: 'Spooky',
+    desc: '',
+    visible: true,
+    isSelected: false,
+  },
+
+  {
+    id: KEYS_PLATFORMS_SUPPORTED.joe,
+    title: 'Joe',
+    desc: '',
+    visible: true,
+    isSelected: false,
+  },
+
+  {
+    id: KEYS_PLATFORMS_SUPPORTED.trisolaris,
+    title: 'Trisolaris',
     desc: '',
     visible: true,
     isSelected: false,

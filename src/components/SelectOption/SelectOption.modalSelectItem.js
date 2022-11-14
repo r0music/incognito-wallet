@@ -13,6 +13,8 @@ import {
   UniIcon,
   CurveIcon,
   SpoonkyIcon,
+  JoeIcon,
+  TrisolarisIcon,
 } from '@src/components/Icons';
 import { KEYS_PLATFORMS_SUPPORTED } from '@src/screens/PDexV3/features/Swap';
 import { isEmpty } from 'lodash';
@@ -96,6 +98,12 @@ export const SelectItem = React.memo(
         break;
       case KEYS_PLATFORMS_SUPPORTED.spooky:
         icon = <SpoonkyIcon style={styled.icon} />;
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.joe:
+        icon = <JoeIcon style={styled.icon} />; //TO DO, CHANGE ICON
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.trisolaris:
+        icon = <TrisolarisIcon style={styled.icon} />; //TO DO, CHANGE ICON
         break;
       default:
         break;

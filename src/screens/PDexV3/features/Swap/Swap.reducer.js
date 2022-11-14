@@ -88,6 +88,18 @@ const initialState = {
       feeToken: {},
       error: null,
     },
+    [KEYS_PLATFORMS_SUPPORTED.joe]: {
+      // spooky
+      feePrv: {},
+      feeToken: {},
+      error: null,
+    },
+    [KEYS_PLATFORMS_SUPPORTED.trisolaris]: {
+      // spooky
+      feePrv: {},
+      feeToken: {},
+      error: null,
+    },
   },
   buytoken: '',
   selltoken: '',
@@ -300,6 +312,8 @@ const reducer = (state = initialState, action) => {
         uniTokens,
         curveTokens,
         spookyTokens,
+        joeTokens,
+        trisolarisTokens,
       } = action.payload;
       return {
         ...state,
@@ -309,6 +323,8 @@ const reducer = (state = initialState, action) => {
         uniTokens,
         curveTokens,
         spookyTokens,
+        joeTokens,
+        trisolarisTokens,
       };
     }
     case ACTION_FETCH_SWAP: {
