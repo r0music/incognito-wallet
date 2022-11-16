@@ -1409,3 +1409,36 @@ export const getSearchTokenListByField = createSelector(
       }
     }),
 );
+
+export const feeErorSelector = createSelector(
+  [feetokenDataSelector, inputAmountSelector, getPrivacyDataByTokenIDSelector],
+  (feetokenData, inputAmount, getPrivacyDataByTokenID) => {
+    const sellinputAmount = inputAmount(formConfigs.selltoken);
+    const buyinputAmount = inputAmount(formConfigs.buytoken);
+    const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
+
+    const sellTokenIsPRV = sellinputAmount?.tokenId === PRV.id;
+    const payFeeByPRV = feetokenData?.feetoken === PRV.id;
+    const prvBalance = prv?.amount || 0;
+
+    if (sellTokenIsPRV) return undefined;
+    if (!payFeeByPRV) return undefined;
+    if (
+      !buyinputAmount ||
+      !buyinputAmount.amountText ||
+      buyinputAmount.amountText.length < 1
+    )
+      return undefined;
+
+    // console.log('prvBalance ', prvBalance);
+    // console.log('feetokenData ', feetokenData);
+
+    let availableOriginalPRVFeeAmount = new BigNumber(prvBalance).minus(
+      feetokenData?.minFeeOriginal,
+    );
+    if (availableOriginalPRVFeeAmount.lt(0)) {
+      return true;
+    }
+    return undefined;
+  },
+);
