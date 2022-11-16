@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { compose } from 'recompose';
 import { focus } from 'redux-form';
 
+import enchanUnifiedAlert from './Swap.enhanceUnifiedAlert';
 import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
@@ -197,4 +198,4 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default compose(withLazy, enhance);
+export default compose(withLazy, enhance, enchanUnifiedAlert);
