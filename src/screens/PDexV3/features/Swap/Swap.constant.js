@@ -216,6 +216,16 @@ export const CALL_CONTRACT = {
   SPOOKY_FTM: isMainnet
     ? '0x6e6Cc30856eB766557418d58af6ED8eaB767940d'
     : '0x14D0cf3bC307aA15DA40Aa4c8cc2A2a81eF96B3a',
+
+  JOE_AVAX: isMainnet
+    ? '0xb247b4ae0a267f30e5de9548ca7bf7ad64f70ed0'
+    : // : '0xd17E836453f7DaF2F2d6F8dFdd56449bc97446F4',
+      '0xb247b4ae0a267f30e5de9548ca7bf7ad64f70ed0',
+
+  TRISOLARIS_AURORA: isMainnet
+    ? '0x6e6Cc30856eB766557418d58af6ED8eaB767940d'
+    : // : '0xA17b90be4A5F79076c770384332515359D2F6A88',
+      '0x6e6Cc30856eB766557418d58af6ED8eaB767940d',
 };
 
 export const getExchangeDataWithCallContract = ({ callContract }) => {
@@ -236,6 +246,12 @@ export const getExchangeDataWithCallContract = ({ callContract }) => {
   } else if (CALL_CONTRACT.CURVE_PLG.includes(callContract)) {
     name = 'Curve';
     exchangeScan = CONSTANT_CONFIGS.POLYGONSCAN_URL;
+  } else if (CALL_CONTRACT.JOE_AVAX.includes(callContract)) {
+    name = 'Joe';
+    exchangeScan = CONSTANT_CONFIGS.AVAXSCAN_URL;
+  } else if (CALL_CONTRACT.TRISOLARIS_AURORA.includes(callContract)) {
+    name = 'Trisolaris';
+    exchangeScan = CONSTANT_CONFIGS.AURORASCAN_URL;
   }
   return { name, exchangeScan };
 };

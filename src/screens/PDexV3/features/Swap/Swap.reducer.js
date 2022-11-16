@@ -89,13 +89,13 @@ const initialState = {
       error: null,
     },
     [KEYS_PLATFORMS_SUPPORTED.joe]: {
-      // spooky
+      // joe
       feePrv: {},
       feeToken: {},
       error: null,
     },
     [KEYS_PLATFORMS_SUPPORTED.trisolaris]: {
-      // spooky
+      // trisolaris
       feePrv: {},
       feeToken: {},
       error: null,

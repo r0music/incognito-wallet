@@ -35,6 +35,7 @@ import {
   sellInputTokenSelector,
   swapFormErrorSelector,
   swapInfoSelector,
+  feeErorSelector,
 } from './Swap.selector';
 
 const enhance = (WrappedComp) => (props) => {
@@ -44,6 +45,8 @@ const enhance = (WrappedComp) => (props) => {
   const sellInputToken = useDebounceSelector(sellInputTokenSelector);
   const feeTokenData = useDebounceSelector(feetokenDataSelector);
   const estimateTradeError = useSelector(getEsimateTradeError);
+  const prvFeeError = useSelector(feeErorSelector);
+
   const isNavigateFromMarketTab = useSelector(getIsNavigateFromMarketTab);
   const [visibleSignificant, setVisibleSignificant] = useState(false);
   const [ordering, setOrdering] = useState(false);
@@ -104,7 +107,7 @@ const enhance = (WrappedComp) => (props) => {
           return dispatch(focus(formConfigs.formName, field));
         }
       }
-      if (estimateTradeError) {
+      if (estimateTradeError || prvFeeError) {
         return;
       }
       if (

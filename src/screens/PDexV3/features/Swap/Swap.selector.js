@@ -1559,31 +1559,31 @@ export const getSearchTokenListByField = createSelector(
             (token: SelectedPrivacy) => token.tokenId !== tokenId,
           ) || [];
       } else {
-        // const sellChildNetworks = selltoken.isPUnifiedToken
-        //   ? selltoken.listUnifiedToken.map((child) => child.groupNetworkName)
-        //   : [selltoken.groupNetworkName];
-        // const tokenFilters =
-        //   pairsToken.filter((token: SelectedPrivacy) => {
-        //     if (token?.tokenId === buytoken?.tokenId) return false;
-        //     if (token?.movedUnifiedToken) return false; // not supported moved unified token
-        //     if (selltoken.defaultPoolPair && token.defaultPoolPair) return true; //Swappable on pDex
-
-        //     const tokenChildNetworks = token.isPUnifiedToken
-        //       ? token.listUnifiedToken.map((child) => child.groupNetworkName)
-        //       : [token.groupNetworkName];
-
-        //     return sellChildNetworks.some(
-        //       (networkName) =>
-        //         networkName && tokenChildNetworks.includes(networkName),
-        //     );
-        //   }) || [];
-
-        // return tokenFilters;
+        const sellChildNetworks = selltoken.isPUnifiedToken
+          ? selltoken.listUnifiedToken.map((child) => child.groupNetworkName)
+          : [selltoken.groupNetworkName];
         const tokenFilters =
-          pairsToken.filter(
-            (token: SelectedPrivacy) => token.tokenId !== tokenId,
-          ) || [];
+          pairsToken.filter((token: SelectedPrivacy) => {
+            if (token?.tokenId === buytoken?.tokenId) return false;
+            if (token?.movedUnifiedToken) return false; // not supported moved unified token
+            if (selltoken.defaultPoolPair && token.defaultPoolPair) return true; //Swappable on pDex
+
+            const tokenChildNetworks = token.isPUnifiedToken
+              ? token.listUnifiedToken.map((child) => child.groupNetworkName)
+              : [token.groupNetworkName];
+
+            return sellChildNetworks.some(
+              (networkName) =>
+                networkName && tokenChildNetworks.includes(networkName),
+            );
+          }) || [];
+
         return tokenFilters;
+        // const tokenFilters =
+        //   pairsToken.filter(
+        //     (token: SelectedPrivacy) => token.tokenId !== tokenId,
+        //   ) || [];
+        // return tokenFilters;
       }
       return tokensFilter;
     }),

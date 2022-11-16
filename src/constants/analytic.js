@@ -21,6 +21,10 @@ const ANALYTIC_DATA_TYPE = {
   REMOVE_LP: 17,
   SPOOKY: 18,
   TRADE_SPOOKY: 19,
+  JOE: 20,
+  TRADE_JOE: 21,
+  TRISOLARIS: 22,
+  TRADE_TRISOLARIS: 23,
 };
 
 export default {
