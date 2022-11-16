@@ -21,6 +21,9 @@ export const ACTION_SET_INITIING_SWAP = '[pDexV3][swap] Set initing token';
 export const ACTION_ESTIMATE_TRADE_ERROR =
   '[pDexV3][swap] Estimate Trade Error';
 
+export const ACTION_SAVE_UNIFIED_ALERT_STATE_BY_ID =
+  '[pDexV3] Save Unified alert state by id';
+
 export const ACTION_SET_PERCENT = '[pDexV3][swap] Set percent';
 
 export const ACTION_RESET = '[pDexV3][swap] Reset';
@@ -218,3 +221,7 @@ export const getExchangeDataWithCallContract = ({ callContract }) => {
   }
   return { name, exchangeScan };
 };
+
+// milliseconds * seconds * minutes * hours = 1 day
+export const ONE_DAY = 24 * 60 * 60 * 1000;
+// export const ONE_DAY = 1 * 60 * 1000;

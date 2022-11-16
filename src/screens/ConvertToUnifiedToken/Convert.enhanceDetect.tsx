@@ -27,7 +27,7 @@ const enhance = (WrappedComp) => (props) => {
       {isConvert && !switchingAccount && (
         <BottomBar
           onPress={navigateConvert}
-          text="Unify your coins to enhance your cross-chain trading experience"
+          text="You can maximize swap flexibility by unifying your privacy coins."
           autoscroll
         />
       )}

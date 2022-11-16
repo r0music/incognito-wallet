@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import autoMergeLevel1 from 'redux-persist/es/stateReconciler/autoMergeLevel1';
+import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
 import { persistReducer } from 'redux-persist';
 import { PRV_ID } from '@src/constants/common';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
@@ -46,6 +47,7 @@ import {
   ACTION_ESTIMATE_TRADE_ERROR,
   ACTION_NAVIGATE_FROM_MARKET,
   ACTION_RESET_EXCHANGE_SUPPORTED,
+  ACTION_SAVE_UNIFIED_ALERT_STATE_BY_ID,
 } from './Swap.constant';
 
 const initialState = {
@@ -130,6 +132,7 @@ const initialState = {
   network: null,
   estimateTradeError: null,
   isNavigateFromMarketTab: false,
+  unifiedInforAlertHash: {},
 };
 
 const reducer = (state = initialState, action) => {
@@ -460,6 +463,18 @@ const reducer = (state = initialState, action) => {
       };
     }
 
+    case ACTION_SAVE_UNIFIED_ALERT_STATE_BY_ID: {
+      const { paymentAddress, timeStamp, answer } = action.payload;
+      const newUnifiedInforAlertHash = { ...state.unifiedInforAlertHash };
+      newUnifiedInforAlertHash[paymentAddress] = {
+        timeStamp,
+        answer,
+      };
+      return {
+        ...state,
+        unifiedInforAlertHash: newUnifiedInforAlertHash,
+      };
+    }
     default:
       return state;
   }
@@ -468,8 +483,8 @@ const reducer = (state = initialState, action) => {
 const persistConfig = {
   key: 'swap',
   storage: AsyncStorage,
-  whitelist: ['slippage', 'resetSlippage1'],
-  stateReconciler: autoMergeLevel1,
+  whitelist: ['slippage', 'resetSlippage1', 'unifiedInforAlertHash'],
+  stateReconciler: autoMergeLevel2,
 };
 
 export default persistReducer(persistConfig, reducer);

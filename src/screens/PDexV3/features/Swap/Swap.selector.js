@@ -23,10 +23,17 @@ import {
 import BigNumber from 'bignumber.js';
 import isEqual from 'lodash/isEqual';
 import {
+  getCurrentPaymentAddressSelector,
+  switchAccountSelector,
+} from '@src/redux/selectors/account';
+import { checkConvertSelector } from '@src/screens/ConvertToUnifiedToken/state/selectors';
+
+import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
   PLATFORMS_SUPPORTED,
   getExchangeDataWithCallContract,
+  ONE_DAY,
 } from './Swap.constant';
 import { getInputAmount, calMintAmountExpected } from './Swap.utils';
 
@@ -1440,5 +1447,55 @@ export const feeErorSelector = createSelector(
       return true;
     }
     return undefined;
+  },
+);
+
+export const unifiedInforAlertHashSelector = createSelector(
+  swapSelector,
+  ({ unifiedInforAlertHash }) => unifiedInforAlertHash,
+);
+
+export const isToggleUnifiedInforSelector = createSelector(
+  [
+    (state) => state.navigation,
+    unifiedInforAlertHashSelector,
+    getCurrentPaymentAddressSelector,
+    checkConvertSelector,
+    switchAccountSelector,
+  ],
+  (
+    navigation,
+    unifiedInforAlertHash,
+    currentPaymentAddress,
+    isExistUnUnifiedToken,
+    isSwitchingAccount,
+  ) => {
+    console.log({
+      navigation,
+      unifiedInforAlertHash,
+      currentPaymentAddress,
+      isExistUnUnifiedToken,
+      isSwitchingAccount,
+      dataHash: unifiedInforAlertHash[currentPaymentAddress],
+    });
+
+    if (navigation.currentScreen !== 'Trade') return false;
+    if (isSwitchingAccount || !isExistUnUnifiedToken) return false;
+    if (!currentPaymentAddress || !unifiedInforAlertHash) return false;
+    if (!unifiedInforAlertHash[currentPaymentAddress]) return true; //The first time
+    if (unifiedInforAlertHash[currentPaymentAddress]) {
+      const { timeStamp, answer } =
+        unifiedInforAlertHash[currentPaymentAddress];
+      const isMoreThanADay = new Date().getTime() - timeStamp > ONE_DAY;
+
+      // console.log('isMoreThanADay ', isMoreThanADay);
+
+      if (isMoreThanADay) return true;
+      // if (!answer) {
+      //   const isMoreThanADay = new Date().getTime() - timeStamp > ONE_DAY;
+      //   if (isMoreThanADay) return true;
+      // }
+    }
+    return false;
   },
 );

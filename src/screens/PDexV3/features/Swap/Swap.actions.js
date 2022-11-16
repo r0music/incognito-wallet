@@ -85,6 +85,7 @@ import {
   ACTION_ESTIMATE_TRADE_ERROR,
   ACTION_NAVIGATE_FROM_MARKET,
   ACTION_RESET_EXCHANGE_SUPPORTED,
+  ACTION_SAVE_UNIFIED_ALERT_STATE_BY_ID,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -2401,3 +2402,8 @@ export const actionGetMaxAmount = () => async (dispatch, getState) => {
     inputPDecimals: sellInputToken.pDecimals,
   };
 };
+
+export const actionSaveUnifiedAlertStateById = (payload) => ({
+  type: ACTION_SAVE_UNIFIED_ALERT_STATE_BY_ID,
+  payload,
+});

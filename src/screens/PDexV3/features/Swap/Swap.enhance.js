@@ -13,6 +13,7 @@ import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 
+import enchanUnifiedAlert from './Swap.enhanceUnifiedAlert';
 import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
@@ -194,4 +195,4 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default compose(withLazy, enhance);
+export default compose(withLazy, enhance, enchanUnifiedAlert);
