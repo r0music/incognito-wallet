@@ -16,6 +16,7 @@ import convert from '@utils/convert';
 import { maxAmountValidatorForSellInput } from './Swap.utils';
 import { formConfigs } from './Swap.constant';
 import SwapDetails from './Swap.details';
+import FeeError from './Swap.feeError';
 
 import {
   listPairsSelector,
@@ -25,6 +26,7 @@ import {
   inputAmountSelector,
   swapInfoSelector,
   platformSelectedSelector,
+  feetokenDataSelector,
 } from './Swap.selector';
 import {
   actionEstimateTrade,
@@ -47,6 +49,7 @@ const SwapInputsGroup = React.memo(() => {
   const pairsToken = useSelector(listPairsSelector);
   const selltoken: SelectedPrivacy = useSelector(selltokenSelector);
   const buytoken: SelectedPrivacy = useSelector(buytokenSelector);
+  const feetokenData: SelectedPrivacy = useSelector(feetokenDataSelector);
   const platform = useSelector(platformSelectedSelector);
   const inputAmount = useSelector(inputAmountSelector);
   const sellInputAmount = inputAmount(formConfigs.selltoken);
@@ -96,13 +99,23 @@ const SwapInputsGroup = React.memo(() => {
   };
 
   let _maxAmountValidatorForSellInput = React.useCallback(
-    () => maxAmountValidatorForSellInput(sellInputAmount, navigation),
+    () =>
+      maxAmountValidatorForSellInput(
+        sellInputAmount,
+        buyInputAmount,
+        feetokenData,
+        navigation,
+      ),
     [
       sellInputAmount?.originalAmount,
       sellInputAmount?.availableOriginalAmount,
       sellInputAmount?.availableAmountText,
       sellInputAmount?.symbol,
+      feetokenData?.minFeeOriginalToken,
+      feetokenData?.minFeeOriginal,
       navigation,
+      buyInputAmount?.originalAmount,
+      buyInputAmount?.availableOriginalAmount,
     ],
   );
 
@@ -174,6 +187,7 @@ const SwapInputsGroup = React.memo(() => {
       />
       <SwapProTab />
       <SwapDetails />
+      <FeeError />
     </View>
   );
 });
