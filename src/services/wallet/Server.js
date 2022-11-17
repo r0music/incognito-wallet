@@ -48,8 +48,8 @@ const MAIN_NET_SERVER = {
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
   uniConfigs: UNI_CONSTANTS.UNI_MAINNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
-  // webAppService: 'https://api-webapp.incognito.org/',
-  webAppService: 'https://api-webapp-staging.incognito.org/',
+  webAppService: 'https://api-webapp.incognito.org/',
+  // webAppService: 'https://api-webapp-staging.incognito.org/',
 };
 const BETA_SERVER = {
   id: 'beta',
