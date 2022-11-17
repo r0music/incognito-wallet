@@ -65,6 +65,15 @@ const enhance = (WrappedComp) => (props) => {
     if (tokenInfo?.isFantomErc20Token || tokenInfo?.isFTM) {
       return `${CONSTANT_CONFIGS.FANTOMSCAN_URL}/token/${tokenInfo?.contractId}`;
     }
+    if (tokenInfo?.isAvaxErc20Token || tokenInfo?.isAVAX) {
+      return `${CONSTANT_CONFIGS.AVAXSCAN_URL}/token/${tokenInfo?.contractId}`;
+    }
+    if (tokenInfo?.isAuroraErc20Token || tokenInfo?.isAURORA_ETH) {
+      return `${CONSTANT_CONFIGS.AURORASCAN_URL}/token/${tokenInfo?.contractId}`;
+    }
+    if (tokenInfo?.isNearToken || tokenInfo?.isNEAR) {
+      return `${CONSTANT_CONFIGS.NEARSCAN_URL}/token/${tokenInfo?.contractId}`;
+    }
     return '';
   };
 

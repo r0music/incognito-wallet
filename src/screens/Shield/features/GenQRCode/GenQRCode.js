@@ -102,7 +102,18 @@ const Extra = (props) => {
     if (selectedPrivacy?.isFTM || selectedPrivacy?.isFantomErc20Token) {
       shieldingTimeText = '3 mins';
     }
+    if (selectedPrivacy?.isAVAX || selectedPrivacy?.isAvaxErc20Token) {
+      shieldingTimeText = '3 mins';
+    }
 
+    if (selectedPrivacy?.isAURORA_ETH || selectedPrivacy?.isAuroraErc20Token) {
+      shieldingTimeText = '3 mins';
+    }
+
+    if (selectedPrivacy?.isNEAR || selectedPrivacy?.isNearToken) {
+      shieldingTimeText = '3 mins';
+    }
+    
     if (isEmpty(shieldingTimeText)) {
       return null;
     }
@@ -131,7 +142,13 @@ const Extra = (props) => {
       selectedPrivacy?.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
       selectedPrivacy?.currencyType ===
-        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM ||
+      selectedPrivacy?.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX ||
+      selectedPrivacy?.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH ||
+      selectedPrivacy?.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR;
     let humanFee = convert.toNumber(
       (isNativeToken ? defaultFee?.estimateFee : defaultFee?.tokenFee) || 0,
       true,

@@ -200,6 +200,12 @@ export const isToggleModalMintMoreNFTSelector = createSelector(
   ({ toggleModalMintMoreNFT }) => toggleModalMintMoreNFT,
 );
 
+export const getCurrentPaymentAddressSelector = createSelector(
+  defaultAccountSelector,
+  (currentAccount) =>
+    currentAccount.PaymentAddress || currentAccount.paymentAddress || undefined,
+);
+
 export default {
   defaultAccountName,
   listAccount,
@@ -224,4 +230,5 @@ export default {
   getValidRealAmountNFTSelector,
   getValidAmountNFTSelector,
   isFetchingNFTSelector,
+  getCurrentPaymentAddressSelector,
 };

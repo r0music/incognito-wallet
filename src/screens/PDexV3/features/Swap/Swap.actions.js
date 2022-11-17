@@ -85,6 +85,7 @@ import {
   ACTION_ESTIMATE_TRADE_ERROR,
   ACTION_NAVIGATE_FROM_MARKET,
   ACTION_RESET_EXCHANGE_SUPPORTED,
+  ACTION_SAVE_UNIFIED_ALERT_STATE_BY_ID,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -117,6 +118,8 @@ import {
   exchangeNetworkSelector,
   swapFormErrorSelector,
   getSlippageSelector,
+  findTokenJoeByIdSelector,
+  findTokenTrisolarisByIdSelector,
 } from './Swap.selector';
 import {
   calMintAmountExpected,
@@ -130,6 +133,8 @@ import {
   CURVE_SUPPORT_NETWORK,
   SPOOKY_SUPPORT_NETWORK,
   ExchangeData,
+  JOE_SUPPORT_NETWORK,
+  TRISOLARIS_SUPPORT_NETWORK,
 } from './Swap.types';
 
 import TransactionHandler, {
@@ -859,6 +864,200 @@ export const actionHandleInjectEstDataForSpooky =
     }
   };
 
+export const actionHandleInjectEstDataForJoe =
+  () => async (dispatch, getState) => {
+    try {
+      const state = getState();
+      let feeData = feetokenDataSelector(state);
+      const isUseTokenFee = feeData?.joe?.isUseTokenFee;
+      const inputAmount = inputAmountSelector(state);
+      let sellInputToken, buyInputToken, inputToken, inputPDecimals;
+      sellInputToken = inputAmount(formConfigs.selltoken);
+      buyInputToken = inputAmount(formConfigs.buytoken);
+      const { tokenId: selltoken } = sellInputToken;
+      const { tokenId: buytoken } = buyInputToken;
+      if (isUseTokenFee) {
+        await dispatch(actionSetFeeToken(selltoken));
+      } else {
+        await dispatch(actionSetFeeToken(PRV.id));
+      }
+      const { field, useMax } = feeData;
+      const getJoeTokenParamReq = findTokenJoeByIdSelector(state);
+      const tokenSellJoe = getJoeTokenParamReq(selltoken);
+      const tokenBuyJoe = getJoeTokenParamReq(buytoken);
+      if (tokenSellJoe == null || tokenBuyJoe == null) {
+        throw 'This pair is not existed  on joe';
+      }
+      switch (field) {
+        case formConfigs.selltoken: {
+          inputPDecimals = tokenBuyJoe.pDecimals;
+          inputToken = formConfigs.buytoken;
+          break;
+        }
+        case formConfigs.buytoken: {
+          inputPDecimals = tokenSellJoe.pDecimals;
+          inputToken = formConfigs.selltoken;
+          break;
+        }
+        default:
+          break;
+      }
+      const {
+        maxGet,
+        minFeePRVFixed,
+        availableFixedSellAmountPRV,
+        minFeeTokenFixed,
+      } = feetokenDataSelector(state);
+      const slippagetolerance = slippagetoleranceSelector(state);
+
+      const originalMinAmountExpected =
+        field === formConfigs.buytoken
+          ? maxGet
+          : calMintAmountExpected({
+              maxGet,
+              slippagetolerance,
+            });
+
+      const minAmountExpectedToHumanAmount = convert.toHumanAmount(
+        originalMinAmountExpected,
+        inputPDecimals,
+      );
+
+      const minAmountExpectedToFixed = format.toFixed(
+        minAmountExpectedToHumanAmount,
+        inputPDecimals,
+      );
+
+      batch(() => {
+        if (useMax) {
+          dispatch(
+            change(
+              formConfigs.formName,
+              formConfigs.selltoken,
+              availableFixedSellAmountPRV,
+            ),
+          );
+        }
+        // dispatch(
+        //   change(formConfigs.formName, inputToken, minAmountExpectedToFixed)
+        // );
+        dispatch(
+          change(
+            formConfigs.formName,
+            inputToken,
+            maxGet ? maxGet.toString() : '',
+          ),
+        );
+        dispatch(
+          change(
+            formConfigs.formName,
+            formConfigs.feetoken,
+            isUseTokenFee ? minFeeTokenFixed : minFeePRVFixed,
+          ),
+        );
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+export const actionHandleInjectEstDataForTrisolaris =
+  () => async (dispatch, getState) => {
+    try {
+      const state = getState();
+      let feeData = feetokenDataSelector(state);
+      const isUseTokenFee = feeData?.trisolaris?.isUseTokenFee;
+      const inputAmount = inputAmountSelector(state);
+      let sellInputToken, buyInputToken, inputToken, inputPDecimals;
+      sellInputToken = inputAmount(formConfigs.selltoken);
+      buyInputToken = inputAmount(formConfigs.buytoken);
+      const { tokenId: selltoken } = sellInputToken;
+      const { tokenId: buytoken } = buyInputToken;
+      if (isUseTokenFee) {
+        await dispatch(actionSetFeeToken(selltoken));
+      } else {
+        await dispatch(actionSetFeeToken(PRV.id));
+      }
+      const { field, useMax } = feeData;
+      const getTrisolarisTokenParamReq = findTokenTrisolarisByIdSelector(state);
+      const tokenSellTrisolaris = getTrisolarisTokenParamReq(selltoken);
+      const tokenBuyTrisolaris = getTrisolarisTokenParamReq(buytoken);
+      if (tokenSellTrisolaris == null || tokenBuyTrisolaris == null) {
+        throw 'This pair is not existed  on Trisolaris';
+      }
+      switch (field) {
+        case formConfigs.selltoken: {
+          inputPDecimals = tokenBuyTrisolaris.pDecimals;
+          inputToken = formConfigs.buytoken;
+          break;
+        }
+        case formConfigs.buytoken: {
+          inputPDecimals = tokenSellTrisolaris.pDecimals;
+          inputToken = formConfigs.selltoken;
+          break;
+        }
+        default:
+          break;
+      }
+      const {
+        maxGet,
+        minFeePRVFixed,
+        availableFixedSellAmountPRV,
+        minFeeTokenFixed,
+      } = feetokenDataSelector(state);
+      const slippagetolerance = slippagetoleranceSelector(state);
+
+      const originalMinAmountExpected =
+        field === formConfigs.buytoken
+          ? maxGet
+          : calMintAmountExpected({
+              maxGet,
+              slippagetolerance,
+            });
+
+      const minAmountExpectedToHumanAmount = convert.toHumanAmount(
+        originalMinAmountExpected,
+        inputPDecimals,
+      );
+
+      const minAmountExpectedToFixed = format.toFixed(
+        minAmountExpectedToHumanAmount,
+        inputPDecimals,
+      );
+
+      batch(() => {
+        if (useMax) {
+          dispatch(
+            change(
+              formConfigs.formName,
+              formConfigs.selltoken,
+              availableFixedSellAmountPRV,
+            ),
+          );
+        }
+        // dispatch(
+        //   change(formConfigs.formName, inputToken, minAmountExpectedToFixed)
+        // );
+        dispatch(
+          change(
+            formConfigs.formName,
+            inputToken,
+            maxGet ? maxGet.toString() : '',
+          ),
+        );
+        dispatch(
+          change(
+            formConfigs.formName,
+            formConfigs.feetoken,
+            isUseTokenFee ? minFeeTokenFixed : minFeePRVFixed,
+          ),
+        );
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
 export const actionEstimateTrade =
   ({ field = formConfigs.selltoken, useMax = false } = {}) =>
   async (dispatch, getState) => {
@@ -995,6 +1194,12 @@ export const actionEstimateTrade =
           break;
         case KEYS_PLATFORMS_SUPPORTED.spooky:
           network = 'ftm';
+          break;
+        case KEYS_PLATFORMS_SUPPORTED.joe:
+          network = 'avax';
+          break;
+        case KEYS_PLATFORMS_SUPPORTED.trisolaris:
+          network = 'aurora';
           break;
         default:
           network = 'inc';
@@ -1145,6 +1350,24 @@ export const actionEstimateTrade =
               );
             }
             break;
+          case 'joe':
+            {
+              await dispatch(
+                actionChangeEstimateData({
+                  [KEYS_PLATFORMS_SUPPORTED.joe]: platformData,
+                }),
+              );
+            }
+            break;
+          case 'trisolaris':
+            {
+              await dispatch(
+                actionChangeEstimateData({
+                  [KEYS_PLATFORMS_SUPPORTED.trisolaris]: platformData,
+                }),
+              );
+            }
+            break;
           default:
             {
               await dispatch(
@@ -1290,6 +1513,8 @@ export const actionFetchPairs1 = (refresh) => async (dispatch, getState) => {
   let uniTokens = [];
   let curveTokens = [];
   let spookyTokens = [];
+  let joeTokens = [];
+  let trisolarisTokens = [];
 
   const state = getState();
   // const selectedTokenList: SelectedPrivacy[] =
@@ -1312,6 +1537,8 @@ export const actionFetchPairs1 = (refresh) => async (dispatch, getState) => {
     uniTokens = uniswapFilterToken(privacyDataFilterList);
     curveTokens = curveFilterToken(privacyDataFilterList);
     spookyTokens = spoonkyFilterToken(privacyDataFilterList);
+    joeTokens = joeFilterToken(privacyDataFilterList);
+    trisolarisTokens = trisolarisFilterToken(privacyDataFilterList);
 
     // curveTokens = privacyDataFilterList.filter((token) =>
     //   CURVE_SUPPORT_NETWORK.includes(token.currencyType),
@@ -1383,6 +1610,24 @@ export const actionFetchPairs1 = (refresh) => async (dispatch, getState) => {
           }
           break;
 
+        case KEYS_PLATFORMS_SUPPORTED.joe:
+          {
+            // curveTokens = await pDexV3Inst.getCurveTokens();
+            // pairs = [...curveTokens.map((t) => t?.tokenID)];
+            // spookyTokens = spoonkyFilterToken(privacyDataFilterList);
+            pairs = [...joeTokens.map((token) => token.tokenId)];
+          }
+          break;
+
+        case KEYS_PLATFORMS_SUPPORTED.trisolaris:
+          {
+            // curveTokens = await pDexV3Inst.getCurveTokens();
+            // pairs = [...curveTokens.map((t) => t?.tokenID)];
+            // spookyTokens = spoonkyFilterToken(privacyDataFilterList);
+            pairs = [...trisolarisTokens.map((token) => token.tokenId)];
+          }
+          break;
+
         default:
           break;
       }
@@ -1399,6 +1644,8 @@ export const actionFetchPairs1 = (refresh) => async (dispatch, getState) => {
       uniTokens,
       curveTokens,
       spookyTokens,
+      joeTokens,
+      trisolarisTokens,
     }),
   );
   return pairs;
@@ -1563,6 +1810,78 @@ const spoonkyFilterToken = (privacyDataFilterList) => {
     };
   });
   return spookyTokens;
+};
+
+const trisolarisFilterToken = (privacyDataFilterList) => {
+  let trisolarisTokens = privacyDataFilterList.filter((token) => {
+    let isSupport = TRISOLARIS_SUPPORT_NETWORK.includes(token.currencyType);
+    let isSupportUnified = TRISOLARIS_SUPPORT_NETWORK.some((currencyType) =>
+      token.listUnifiedTokenCurrencyType.includes(currencyType),
+    );
+    return isSupport || isSupportUnified;
+  });
+
+  trisolarisTokens = trisolarisTokens.map((token) => {
+    return {
+      ...token,
+      id: token.tokenId,
+      tokenId: token.tokenId,
+      tokenID: token.tokenId,
+      contractId: token.contractId,
+      contractIdGetRate: token.contractId,
+      name: token.name,
+      symbol: token.symbol,
+      decimals: token.decimals,
+      pDecimals: token.pDecimals,
+      protocol: 'trisolaris',
+      pricePrv: token.pricePrv,
+      verify: token.verify || true,
+      isPopular: token.isPopular || true,
+      priority: token.priority || -1,
+      dappId: token.dappId || 0,
+      currencyType: token.currencyType,
+      networkName: token.networkName,
+      networkId: token.networkId,
+      movedUnifiedToken: token.movedUnifiedToken,
+    };
+  });
+  return trisolarisTokens;
+};
+
+const joeFilterToken = (privacyDataFilterList) => {
+  let joeTokens = privacyDataFilterList.filter((token) => {
+    let isSupport = JOE_SUPPORT_NETWORK.includes(token.currencyType);
+    let isSupportUnified = JOE_SUPPORT_NETWORK.some((currencyType) =>
+      token.listUnifiedTokenCurrencyType.includes(currencyType),
+    );
+    return isSupport || isSupportUnified;
+  });
+
+  joeTokens = joeTokens.map((token) => {
+    return {
+      ...token,
+      id: token.tokenId,
+      tokenId: token.tokenId,
+      tokenID: token.tokenId,
+      contractId: token.contractId,
+      contractIdGetRate: token.contractId,
+      name: token.name,
+      symbol: token.symbol,
+      decimals: token.decimals,
+      pDecimals: token.pDecimals,
+      protocol: 'joe',
+      pricePrv: token.pricePrv,
+      verify: token.verify || true,
+      isPopular: token.isPopular || true,
+      priority: token.priority || -1,
+      dappId: token.dappId || 0,
+      currencyType: token.currencyType,
+      networkName: token.networkName,
+      networkId: token.networkId,
+      movedUnifiedToken: token.movedUnifiedToken,
+    };
+  });
+  return joeTokens;
 };
 
 export const actionFreeHistoryOrders = () => ({
@@ -1786,6 +2105,12 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
         case KEYS_PLATFORMS_SUPPORTED.spooky:
           analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_SPOOKY;
           break;
+        case KEYS_PLATFORMS_SUPPORTED.joe:
+          analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_JOE;
+          break;
+        case KEYS_PLATFORMS_SUPPORTED.trisolaris:
+          analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRISOLARIS;
+          break;
       }
       dispatch(requestUpdateMetrics(analytic, params));
     }, 300);
@@ -1878,6 +2203,8 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       case KEYS_PLATFORMS_SUPPORTED.uniEther:
       case KEYS_PLATFORMS_SUPPORTED.curve:
       case KEYS_PLATFORMS_SUPPORTED.spooky:
+      case KEYS_PLATFORMS_SUPPORTED.joe:
+      case KEYS_PLATFORMS_SUPPORTED.trisolaris:
         {
           console.log(
             `[pApps - ${platform.id}]: RepareData create TX: `,
@@ -2170,6 +2497,12 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
       case KEYS_PLATFORMS_SUPPORTED.curve:
         callContracts.push(CALL_CONTRACT.CURVE_PLG);
         break;
+      case KEYS_PLATFORMS_SUPPORTED.joe:
+        callContracts.push(CALL_CONTRACT.JOE_AVAX);
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.trisolaris:
+        callContracts.push(CALL_CONTRACT.TRISOLARIS_AURORA);
+        break;
       default:
         callContracts = [];
         break;
@@ -2353,6 +2686,12 @@ export const actionSwitchPlatform =
         case KEYS_PLATFORMS_SUPPORTED.spooky:
           await dispatch(actionHandleInjectEstDataForSpooky());
           break;
+        case KEYS_PLATFORMS_SUPPORTED.joe:
+          await dispatch(actionHandleInjectEstDataForJoe());
+          break;
+        case KEYS_PLATFORMS_SUPPORTED.trisolaris:
+          await dispatch(actionHandleInjectEstDataForTrisolaris());
+          break;
         default:
           break;
       }
@@ -2381,6 +2720,10 @@ export const actionGetMaxAmount = () => async (dispatch, getState) => {
     isUseTokenFee = feeData?.curve?.isUseTokenFee;
   } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.spooky) {
     isUseTokenFee = feeData?.spooky?.isUseTokenFee;
+  } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.joe) {
+    isUseTokenFee = feeData?.joe?.isUseTokenFee;
+  } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.trisolaris) {
+    isUseTokenFee = feeData?.trisolaris?.isUseTokenFee;
   }
   const availableOriginalAmount = sellInputToken?.availableOriginalAmount;
   if (!isUseTokenFee)
@@ -2401,3 +2744,8 @@ export const actionGetMaxAmount = () => async (dispatch, getState) => {
     inputPDecimals: sellInputToken.pDecimals,
   };
 };
+
+export const actionSaveUnifiedAlertStateById = (payload) => ({
+  type: ACTION_SAVE_UNIFIED_ALERT_STATE_BY_ID,
+  payload,
+});

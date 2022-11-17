@@ -23,10 +23,17 @@ import {
 import BigNumber from 'bignumber.js';
 import isEqual from 'lodash/isEqual';
 import {
+  getCurrentPaymentAddressSelector,
+  switchAccountSelector,
+} from '@src/redux/selectors/account';
+import { checkConvertSelector } from '@src/screens/ConvertToUnifiedToken/state/selectors';
+
+import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
   PLATFORMS_SUPPORTED,
   getExchangeDataWithCallContract,
+  ONE_DAY,
 } from './Swap.constant';
 import { getInputAmount, calMintAmountExpected } from './Swap.utils';
 
@@ -79,6 +86,16 @@ export const spoonkyPairsSelector = createSelector(
   ({ spookyTokens }) => spookyTokens,
 );
 
+export const joePairsSelector = createSelector(
+  swapSelector,
+  ({ joeTokens }) => joeTokens,
+);
+
+export const trisolarisPairsSelector = createSelector(
+  swapSelector,
+  ({ trisolarisTokens }) => trisolarisTokens,
+);
+
 export const findTokenPancakeByIdSelector = createSelector(
   pancakePairsSelector,
   (pancakeTokens) =>
@@ -104,6 +121,24 @@ export const findTokenSpookyByIdSelector = createSelector(
   (spookyTokens) =>
     memoize((tokenID) =>
       spookyTokens.find(
+        (t) => t?.tokenID === tokenID || t?.tokenId === tokenID,
+      ),
+    ),
+);
+
+export const findTokenJoeByIdSelector = createSelector(
+  joePairsSelector,
+  (joeTokens) =>
+    memoize((tokenID) =>
+      joeTokens.find((t) => t?.tokenID === tokenID || t?.tokenId === tokenID),
+    ),
+);
+
+export const findTokenTrisolarisByIdSelector = createSelector(
+  trisolarisPairsSelector,
+  (trisolarisTokens) =>
+    memoize((tokenID) =>
+      trisolarisTokens.find(
         (t) => t?.tokenID === tokenID || t?.tokenId === tokenID,
       ),
     ),
@@ -251,6 +286,68 @@ export const getTokenIdBySpoonkyContractIdSelector = createSelector(
     }),
 );
 
+export const getTokenIdByTrisolarisContractIdSelector = createSelector(
+  trisolarisPairsSelector,
+  (trisolarisTokens) =>
+    memoize((contractIdGetRate) => {
+      let tokenID = '';
+      const foundToken = trisolarisTokens.find((token) => {
+        if (
+          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
+        ) {
+          tokenID = token.tokenID;
+          return true;
+        } else {
+          token.listUnifiedToken.find((tokenChild) => {
+            if (
+              isEqual(
+                toLower(contractIdGetRate),
+                toLower(tokenChild?.contractId),
+              )
+            ) {
+              tokenID = tokenChild.tokenId;
+              return true;
+            }
+          });
+        }
+        return false;
+      });
+
+      return tokenID;
+    }),
+);
+
+export const getTokenIdByJoeContractIdSelector = createSelector(
+  joePairsSelector,
+  (joeTokens) =>
+    memoize((contractIdGetRate) => {
+      let tokenID = '';
+      const foundToken = joeTokens.find((token) => {
+        if (
+          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
+        ) {
+          tokenID = token.tokenID;
+          return true;
+        } else {
+          token.listUnifiedToken.find((tokenChild) => {
+            if (
+              isEqual(
+                toLower(contractIdGetRate),
+                toLower(tokenChild?.contractId),
+              )
+            ) {
+              tokenID = tokenChild.tokenId;
+              return true;
+            }
+          });
+        }
+        return false;
+      });
+
+      return tokenID;
+    }),
+);
+
 export const purePairsSelector = createSelector(
   swapSelector,
   ({ pairs }) => pairs || [],
@@ -268,6 +365,8 @@ export const listPairsSelector = createSelector(
       uniTokens,
       curveTokens,
       spookyTokens,
+      joeTokens,
+      trisolarisTokens,
     },
     getPrivacyDataByTokenID,
   ) => {
@@ -352,6 +451,45 @@ export const listPairsSelector = createSelector(
           });
           break;
         }
+
+        case KEYS_PLATFORMS_SUPPORTED.joe: {
+          list = list.map((token: SelectedPrivacy) => {
+            let { priority, isVerified } = token;
+            const foundedToken = joeTokens.find(
+              (pt) => pt?.tokenID === token?.tokenId,
+            );
+            if (foundedToken) {
+              priority = foundedToken?.priority;
+              isVerified = foundedToken?.verify;
+            }
+            return {
+              ...token,
+              isVerified,
+              priority,
+            };
+          });
+          break;
+        }
+
+        case KEYS_PLATFORMS_SUPPORTED.trisolaris: {
+          list = list.map((token: SelectedPrivacy) => {
+            let { priority, isVerified } = token;
+            const foundedToken = trisolarisTokens.find(
+              (pt) => pt?.tokenID === token?.tokenId,
+            );
+            if (foundedToken) {
+              priority = foundedToken?.priority;
+              isVerified = foundedToken?.verify;
+            }
+            return {
+              ...token,
+              isVerified,
+              priority,
+            };
+          });
+          break;
+        }
+
         default:
           break;
       }
@@ -650,6 +788,8 @@ export const feetokenDataSelector = createSelector(
   getTokenIdByUniContractIdGetRateSelector,
   slippagetoleranceSelector,
   getTokenIdBySpoonkyContractIdSelector,
+  getTokenIdByJoeContractIdSelector,
+  getTokenIdByTrisolarisContractIdSelector,
   (
     state,
     { data, networkfee, selltoken, buytoken },
@@ -661,6 +801,8 @@ export const feetokenDataSelector = createSelector(
     getTokenIdByUniContractIdGetRate,
     slippagetolerance,
     getTokenIdBySpoonkyContractId,
+    getTokenIdByJoeContractId,
+    getTokenIdByTrisolarisContractId,
   ) => {
     try {
       const feeTokenData: SelectedPrivacy = getPrivacyDataByTokenID(feetoken);
@@ -856,6 +998,20 @@ export const feetokenDataSelector = createSelector(
               break;
             }
 
+            case KEYS_PLATFORMS_SUPPORTED.joe: {
+              tradePathArr = tokenRoute.map((contractId) =>
+                getTokenIdByJoeContractId(contractId),
+              );
+              break;
+            }
+
+            case KEYS_PLATFORMS_SUPPORTED.trisolaris: {
+              tradePathArr = tokenRoute.map((contractId) =>
+                getTokenIdByTrisolarisContractId(contractId),
+              );
+              break;
+            }
+
             default:
               break;
           }
@@ -868,6 +1024,8 @@ export const feetokenDataSelector = createSelector(
           case KEYS_PLATFORMS_SUPPORTED.uniEther:
           case KEYS_PLATFORMS_SUPPORTED.curve:
           case KEYS_PLATFORMS_SUPPORTED.spooky:
+          case KEYS_PLATFORMS_SUPPORTED.joe:
+          case KEYS_PLATFORMS_SUPPORTED.trisolaris:
             tradePathStr = tradePathArr
               .map((tokenID, index, arr) => {
                 const token: SelectedPrivacy = getPrivacyDataByTokenID(tokenID);
@@ -1001,6 +1159,28 @@ export const feeTypesSelector = createSelector(
       }
 
       case KEYS_PLATFORMS_SUPPORTED.spooky: {
+        types = [
+          {
+            tokenId: feeToken.tokenId,
+            symbol: feeToken.symbol,
+            actived: feetoken === feetoken,
+          },
+        ];
+        break;
+      }
+
+      case KEYS_PLATFORMS_SUPPORTED.joe: {
+        types = [
+          {
+            tokenId: feeToken.tokenId,
+            symbol: feeToken.symbol,
+            actived: feetoken === feetoken,
+          },
+        ];
+        break;
+      }
+
+      case KEYS_PLATFORMS_SUPPORTED.trisolaris: {
         types = [
           {
             tokenId: feeToken.tokenId,
@@ -1379,12 +1559,12 @@ export const getSearchTokenListByField = createSelector(
       //   field,
       //   tokenId,
       // });
+      let tokensFilter = [];
       if (field === 'sellToken') {
-        const tokenFilters =
+        tokensFilter =
           pairsToken.filter(
             (token: SelectedPrivacy) => token.tokenId !== tokenId,
           ) || [];
-        return tokenFilters;
       } else {
         const sellChildNetworks = selltoken.isPUnifiedToken
           ? selltoken.listUnifiedToken.map((child) => child.groupNetworkName)
@@ -1406,7 +1586,13 @@ export const getSearchTokenListByField = createSelector(
           }) || [];
 
         return tokenFilters;
+        // const tokenFilters =
+        //   pairsToken.filter(
+        //     (token: SelectedPrivacy) => token.tokenId !== tokenId,
+        //   ) || [];
+        // return tokenFilters;
       }
+      return tokensFilter;
     }),
 );
 
@@ -1440,5 +1626,56 @@ export const feeErorSelector = createSelector(
       return true;
     }
     return undefined;
+  },
+);
+
+
+export const unifiedInforAlertHashSelector = createSelector(
+  swapSelector,
+  ({ unifiedInforAlertHash }) => unifiedInforAlertHash,
+);
+
+export const isToggleUnifiedInforSelector = createSelector(
+  [
+    (state) => state.navigation,
+    unifiedInforAlertHashSelector,
+    getCurrentPaymentAddressSelector,
+    checkConvertSelector,
+    switchAccountSelector,
+  ],
+  (
+    navigation,
+    unifiedInforAlertHash,
+    currentPaymentAddress,
+    isExistUnUnifiedToken,
+    isSwitchingAccount,
+  ) => {
+    // console.log({
+    //   navigation,
+    //   unifiedInforAlertHash,
+    //   currentPaymentAddress,
+    //   isExistUnUnifiedToken,
+    //   isSwitchingAccount,
+    //   dataHash: unifiedInforAlertHash[currentPaymentAddress],
+    // });
+
+    if (navigation.currentScreen !== 'Trade') return false;
+    if (isSwitchingAccount || !isExistUnUnifiedToken) return false;
+    if (!currentPaymentAddress || !unifiedInforAlertHash) return false;
+    if (!unifiedInforAlertHash[currentPaymentAddress]) return true; //The first time
+    if (unifiedInforAlertHash[currentPaymentAddress]) {
+      const { timeStamp, answer } =
+        unifiedInforAlertHash[currentPaymentAddress];
+      const isMoreThanADay = new Date().getTime() - timeStamp > ONE_DAY;
+
+      // console.log('isMoreThanADay ', isMoreThanADay);
+
+      if (isMoreThanADay) return true;
+      // if (!answer) {
+      //   const isMoreThanADay = new Date().getTime() - timeStamp > ONE_DAY;
+      //   if (isMoreThanADay) return true;
+      // }
+    }
+    return false;
   },
 );

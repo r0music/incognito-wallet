@@ -24,6 +24,9 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     isBep20Token,
     isPolygonErc20Token,
     isFantomErc20Token,
+    isAvaxErc20Token,
+    isAuroraErc20Token,
+    isNearToken,
     currencyType,
     isDecentralized,
   } =
@@ -64,10 +67,34 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
       currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
   }, [isFantomErc20Token, currencyType]);
 
+  const isAvax = React.useMemo(() => {
+    return (
+      isAvaxErc20Token ||
+      currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX
+    );
+  }, [isAvaxErc20Token, currencyType]);
+
+  const isAurora = React.useMemo(() => {
+    return (
+      isAuroraErc20Token ||
+      currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH
+    );
+  }, [isAuroraErc20Token, currencyType]);
+
+  const isNear = React.useMemo(() => {
+    return (
+      isNearToken ||
+      currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR
+    );
+  }, [isNearToken, currencyType]);
+
   const getExternalAddressValidator = () => {
     if (!isAddressValidated) {
       return [validator.invalidAddress(`Invalid ${externalSymbol} address`)];
     }
+
+    if (isNear) return validator.combinedNearAddress;
+    
     // if (!isValidETHAddress) {
     //   return [
     //     validator.invalidAddress(
@@ -181,6 +208,15 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     }
     if (isExternalAddress && isFantom) {
       return 'You are exiting Incognito and going to Fantom network.';
+    }
+    if (isExternalAddress && isAvax) {
+      return 'You are exiting Incognito and going to Avax network.';
+    }
+    if (isExternalAddress && isAurora) {
+      return 'You are exiting Incognito and going to Aurora network.';
+    }
+    if (isExternalAddress && isNear) {
+      return 'You are exiting Incognito and going to Near network.';
     }
     if (isExternalAddress) {
       return 'You are exiting Incognito and going public.';

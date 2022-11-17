@@ -1,21 +1,19 @@
-import React, { useMemo } from 'react';
-import { View } from 'react-native';
 import {
   RFTradeInputAmount as TradeInputAmount,
   validator,
 } from '@components/core/reduxForm';
-import { change, Field, isValid } from 'redux-form';
-import SelectedPrivacy from '@src/models/selectedPrivacy';
-import { useDispatch, useSelector } from 'react-redux';
 import { SwapButton } from '@src/components/core';
-import { actionToggleModal } from '@src/components/Modal';
-import { useNavigation } from 'react-navigation-hooks';
-import routeNames from '@src/router/routeNames';
 import ToggleArrow from '@src/components/ToggleArrow';
-import convert from '@utils/convert';
-import { maxAmountValidatorForSellInput } from './Swap.utils';
+import SelectedPrivacy from '@src/models/selectedPrivacy';
+import routeNames from '@src/router/routeNames';
+import React from 'react';
+import { View } from 'react-native';
+import { useNavigation } from 'react-navigation-hooks';
+import { useDispatch, useSelector } from 'react-redux';
+import { change, Field } from 'redux-form';
 import { formConfigs } from './Swap.constant';
 import SwapDetails from './Swap.details';
+import { maxAmountValidatorForSellInput } from './Swap.utils';
 import FeeError from './Swap.feeError';
 
 import {
@@ -37,16 +35,14 @@ import {
   actionSwapToken,
   actionToggleProTab,
 } from './Swap.actions';
-import { inputGroupStyled as styled } from './Swap.styled';
 import SwapProTab from './Swap.proTab';
-import { KEYS_PLATFORMS_SUPPORTED } from '.';
+import { inputGroupStyled as styled } from './Swap.styled';
 
 const SwapInputsGroup = React.memo(() => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const swapInfo = useSelector(swapInfoSelector);
   const swap = useSelector(swapSelector);
-  const pairsToken = useSelector(listPairsSelector);
   const selltoken: SelectedPrivacy = useSelector(selltokenSelector);
   const buytoken: SelectedPrivacy = useSelector(buytokenSelector);
   const feetokenData: SelectedPrivacy = useSelector(feetokenDataSelector);
