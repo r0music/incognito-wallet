@@ -100,10 +100,10 @@ export const SelectItem = React.memo(
         icon = <SpoonkyIcon style={styled.icon} />;
         break;
       case KEYS_PLATFORMS_SUPPORTED.joe:
-        icon = <JoeIcon style={styled.icon} />; //TO DO, CHANGE ICON
+        icon = <JoeIcon style={styled.icon} />;
         break;
       case KEYS_PLATFORMS_SUPPORTED.trisolaris:
-        icon = <TrisolarisIcon style={styled.icon} />; //TO DO, CHANGE ICON
+        icon = <TrisolarisIcon style={styled.icon} />;
         break;
       default:
         break;
