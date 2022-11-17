@@ -464,6 +464,38 @@ export const historyDetailFactoriesSelector = createSelector(
           ) {
             estimationShieldingTime = '3 mins';
           }
+          if (
+            selectedPrivacy?.isAVAX ||
+            selectedPrivacy?.isAvaxErc20Token ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX_ERC20
+          ) {
+            estimationShieldingTime = '3 mins';
+          }
+
+          if (
+            selectedPrivacy?.isAURORA_ETH ||
+            selectedPrivacy?.isAuroraErc20Token ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ERC20
+          ) {
+            estimationShieldingTime = '3 mins';
+          }
+          
+          if (
+            selectedPrivacy?.isNEAR ||
+            selectedPrivacy?.isNearToken ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR_TOKEN
+          ) {
+            estimationShieldingTime = '3 mins';
+          }
         }
         const rewardAmountStr = renderAmount({
           amount: unifiedReward?.reward || 0,

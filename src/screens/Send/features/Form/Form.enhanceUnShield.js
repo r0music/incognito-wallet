@@ -21,7 +21,17 @@ import convert from '@src/utils/convert';
 import format from '@src/utils/format';
 import Utils from '@src/utils/Util';
 import {
-  ACCOUNT_CONSTANT, BurningFantomRequestMeta, BurningPBSCRequestMeta, BurningPLGRequestMeta, BurningPRVBEP20RequestMeta, BurningPRVERC20RequestMeta, BurningRequestMeta, PrivacyVersion
+  ACCOUNT_CONSTANT,
+  BurningFantomRequestMeta,
+  BurningAvaxRequestMeta,
+  BurningAuroraRequestMeta,
+  BurningPBSCRequestMeta,
+  BurningPLGRequestMeta,
+  BurningPRVBEP20RequestMeta,
+  BurningPRVERC20RequestMeta,
+  BurningRequestMeta,
+  BurningNearRequestMeta,
+  PrivacyVersion,
 } from 'incognito-chain-web-js/build/wallet';
 import { floor, toString } from 'lodash';
 import React from 'react';
@@ -63,6 +73,9 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     isBep20Token,
     isPolygonErc20Token,
     isFantomErc20Token,
+    isAvaxErc20Token,
+    isAuroraErc20Token,
+    isNearToken,
     externalSymbol,
     paymentAddress: walletAddress,
     isDecentralized,
@@ -101,6 +114,9 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         isBSC,
         isPolygon,
         isFantom,
+        isAvax,
+        isAurora,
+        isNear
       } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
 
@@ -110,7 +126,9 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       if (isBSC) burningRequestMeta = BurningPBSCRequestMeta;
       if (isPolygon) burningRequestMeta = BurningPLGRequestMeta;
       if (isFantom) burningRequestMeta = BurningFantomRequestMeta;
-
+      if (isAvax) burningRequestMeta = BurningAvaxRequestMeta;
+      if (isAurora) burningRequestMeta = BurningAuroraRequestMeta;
+      if (isNear) burningRequestMeta = BurningNearRequestMeta;
 
       /**--> Get payment info <--*/
       const paymentInfo = [{
@@ -266,6 +284,9 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         isBep20Token: isBep20Token,
         isPolygonErc20Token: isPolygonErc20Token,
         isFantomErc20Token: isFantomErc20Token,
+        isAvaxErc20Token: isAvaxErc20Token,
+        isAuroraErc20Token: isAuroraErc20Token,
+        isNearToken: isNearToken,
         externalSymbol: externalSymbol,
         isUsedPRVFee,
         userFeesData,
@@ -455,6 +476,16 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         isFantom:
           isFantomErc20Token ||
           currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM,
+        isAvax:
+          isAvaxErc20Token ||
+          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX,
+        isAurora:
+          isAuroraErc20Token ||
+          currencyType ===
+            CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH,
+        isNear:
+          isNearToken ||
+          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR,
       };
       let res;
       if (isDecentralized) {

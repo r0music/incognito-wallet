@@ -2,12 +2,12 @@ import { MAX_FEE_PER_TX } from '@components/EstimateFee/EstimateFee.utils';
 import accountService from '@services/wallet/accountService';
 import { COINS, CONSTANT_COMMONS } from '@src/constants';
 import PToken from '@src/models/pToken';
+import { actionAddFollowToken } from '@src/redux/actions/token';
 import { accountSelector } from '@src/redux/selectors';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 import { pTokensSelector } from '@src/redux/selectors/token';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import { ExHandler } from '@src/services/exception';
-import { actionAddFollowToken } from '@src/redux/actions/token';
 import {
   ACCOUNT_CONSTANT,
   constants,
@@ -16,15 +16,15 @@ import {
 import { chunk } from 'lodash';
 import { actions } from '.';
 import {
-  PTokenConvert,
   ConvertStatus,
+  PTokenConvert,
   TokenConvert,
   TRANSACTION_CONVERT_STATUS,
 } from './models';
 import {
   listTokenConvertSelector,
-  listUnifiedTokenSelector,
   listUnifiedTokenSelectedSelector,
+  listUnifiedTokenSelector,
 } from './selectors';
 import { MINIMUM_PRV_UTXO_TO_CREATE_TRANSACTION } from './utils';
 
@@ -111,138 +111,142 @@ const updateConvertStatus =
   };
 
 const createTransactionConvert = () => async (dispatch, getState) => {
-  const state = getState();
-  const account = accountSelector?.defaultAccountSelector(state);
-  const wallet = walletSelector(state);
-  const accountWallet = getDefaultAccountWalletSelector(state);
-  const listPTokenConvert: PTokenConvert[] = listTokenConvertSelector(state);
-  if (!listPTokenConvert?.length) return;
-  for (var i = 0; i < listPTokenConvert.length; i++) {
-    const pTokenData: PTokenConvert = listPTokenConvert[i];
-    let unspentCoinsOfPToken: any[] =
-      (await accountWallet.getUnspentCoinsExcludeSpendingCoins({
-        tokenID: pTokenData?.tokenId,
-        version: PrivacyVersion.ver2,
-      })) || [];
-    // sort unspentCoins of pToken by price value in ascending order:
-    unspentCoinsOfPToken = unspentCoinsOfPToken.sort(
-      (a: { Value: any }, b: { Value: any }) =>
-        parseFloat(b.Value) - parseFloat(a.Value),
-    );
-    // calculate number of transaction to convert 1 pToken to unifiedToken
-    const numberOfTransactionToConvert =
-      (unspentCoinsOfPToken?.length -
-        (unspentCoinsOfPToken?.length % constants.MAX_INPUT_PER_TX)) /
-        constants.MAX_INPUT_PER_TX +
-      1;
-    // convert unspentCoins from One-Dimensional array to Two-Dimensional array
-    let unspentCoinsOfPTokenToConvert: any = chunk(
-      unspentCoinsOfPToken,
-      constants.MAX_INPUT_PER_TX,
-    );
+  try {
+    const state = getState();
+    const account = accountSelector?.defaultAccountSelector(state);
+    const wallet = walletSelector(state);
+    const accountWallet = getDefaultAccountWalletSelector(state);
+    const listPTokenConvert: PTokenConvert[] = listTokenConvertSelector(state);
+    if (!listPTokenConvert?.length) return;
+    for (var i = 0; i < listPTokenConvert.length; i++) {
+      const pTokenData: PTokenConvert = listPTokenConvert[i];
+      let unspentCoinsOfPToken: any[] =
+        (await accountWallet.getUnspentCoinsExcludeSpendingCoins({
+          tokenID: pTokenData?.tokenId,
+          version: PrivacyVersion.ver2,
+        })) || [];
+      // sort unspentCoins of pToken by price value in ascending order:
+      unspentCoinsOfPToken = unspentCoinsOfPToken.sort(
+        (a: { Value: any }, b: { Value: any }) =>
+          parseFloat(b.Value) - parseFloat(a.Value),
+      );
+      // calculate number of transaction to convert 1 pToken to unifiedToken
+      const numberOfTransactionToConvert =
+        (unspentCoinsOfPToken?.length -
+          (unspentCoinsOfPToken?.length % constants.MAX_INPUT_PER_TX)) /
+          constants.MAX_INPUT_PER_TX +
+        1;
+      // convert unspentCoins from One-Dimensional array to Two-Dimensional array
+      let unspentCoinsOfPTokenToConvert: any = chunk(
+        unspentCoinsOfPToken,
+        constants.MAX_INPUT_PER_TX,
+      );
 
-    // update convert status for pToken to Processing
-    await dispatch(
-      updateConvertStatus(
-        pTokenData?.parentUnifiedTokenId,
-        pTokenData?.tokenId,
-        'PROCESSING',
-      ),
-    );
+      // update convert status for pToken to Processing
+      await dispatch(
+        updateConvertStatus(
+          pTokenData?.parentUnifiedTokenId,
+          pTokenData?.tokenId,
+          'PROCESSING',
+        ),
+      );
 
-    const sleep = (milliseconds) => {
-      return new Promise((resolve) => setTimeout(resolve, milliseconds));
-    };
-
-    // create burning request
-    let transactionStatusArray: any[] = [];
-    for (var j = 0; j < unspentCoinsOfPTokenToConvert?.length; j++) {
-      let convertAmount = unspentCoinsOfPTokenToConvert[j]
-        .map((item) => parseFloat(item.Value))
-        .reduce((prevValue, nextValue) => prevValue + nextValue);
-      const data: any = {
-        wallet,
-        account,
-        fee: MAX_FEE_PER_TX,
-        tokenId: pTokenData?.tokenId,
-        prvPayments: [],
-        info: '',
-        txHashHandler: null,
-        pUnifiedTokenID: pTokenData?.parentUnifiedTokenId,
-        convertAmount: convertAmount,
-        networkId: pTokenData?.networkId,
+      const sleep = (milliseconds) => {
+        return new Promise((resolve) => setTimeout(resolve, milliseconds));
       };
 
-      let numberOfTimeToWait = 0;
-      while (true) {
-        const unspentCoinsOfPRV =
-          (await accountWallet.getUnspentCoinsExcludeSpendingCoins({
-            tokenID: COINS.PRV_ID,
-            version: PrivacyVersion.ver2,
-          })) || [];
-        let prvBalance = 0;
-        if (unspentCoinsOfPRV?.length > 0) {
-          prvBalance = unspentCoinsOfPRV
-            ?.map((item) => parseFloat(item.Value))
-            ?.reduce((prevValue, nextValue) => prevValue + nextValue);
-        }
+      // create burning request
+      let transactionStatusArray: any[] = [];
+      for (var j = 0; j < unspentCoinsOfPTokenToConvert?.length; j++) {
+        let convertAmount = unspentCoinsOfPTokenToConvert[j]
+          .map((item) => parseFloat(item.Value))
+          .reduce((prevValue, nextValue) => prevValue + nextValue);
+        const data: any = {
+          wallet,
+          account,
+          fee: MAX_FEE_PER_TX,
+          tokenId: pTokenData?.tokenId,
+          prvPayments: [],
+          info: '',
+          txHashHandler: null,
+          pUnifiedTokenID: pTokenData?.parentUnifiedTokenId,
+          convertAmount: convertAmount,
+          networkId: pTokenData?.networkId,
+        };
 
-        if (prvBalance >= MAX_FEE_PER_TX) {
-          try {
-            const result =
-              await accountService.createBurningRequestForConvertUnifiedToken(
-                data,
-              );
-            console.log(
-              'createBurningRequestForConvertUnifiedTokenResult:',
-              result,
-            );
-            transactionStatusArray.push(
-              TRANSACTION_CONVERT_STATUS.SUCCESSFULLY,
-            );
-          } catch (error) {
-            transactionStatusArray.push(TRANSACTION_CONVERT_STATUS.FAILED);
-            console.log('error', error);
+        let numberOfTimeToWait = 0;
+        while (true) {
+          const unspentCoinsOfPRV =
+            (await accountWallet.getUnspentCoinsExcludeSpendingCoins({
+              tokenID: COINS.PRV_ID,
+              version: PrivacyVersion.ver2,
+            })) || [];
+          let prvBalance = 0;
+          if (unspentCoinsOfPRV?.length > 0) {
+            prvBalance = unspentCoinsOfPRV
+              ?.map((item) => parseFloat(item.Value))
+              ?.reduce((prevValue, nextValue) => prevValue + nextValue);
           }
-          break;
-        } else {
-          await sleep(20000);
-          numberOfTimeToWait = numberOfTimeToWait + 1;
-          if (
-            numberOfTimeToWait === 6 &&
-            transactionStatusArray.length < numberOfTransactionToConvert
-          ) {
-            transactionStatusArray.push(TRANSACTION_CONVERT_STATUS.FAILED);
+
+          if (prvBalance >= MAX_FEE_PER_TX) {
+            try {
+              const result =
+                await accountService.createBurningRequestForConvertUnifiedToken(
+                  data,
+                );
+              console.log(
+                'createBurningRequestForConvertUnifiedTokenResult:',
+                result,
+              );
+              transactionStatusArray.push(
+                TRANSACTION_CONVERT_STATUS.SUCCESSFULLY,
+              );
+            } catch (error) {
+              transactionStatusArray.push(TRANSACTION_CONVERT_STATUS.FAILED);
+              console.log('error', error);
+            }
             break;
+          } else {
+            await sleep(20000);
+            numberOfTimeToWait = numberOfTimeToWait + 1;
+            if (
+              numberOfTimeToWait === 6 &&
+              transactionStatusArray.length < numberOfTransactionToConvert
+            ) {
+              transactionStatusArray.push(TRANSACTION_CONVERT_STATUS.FAILED);
+              break;
+            }
           }
         }
       }
-    }
-    // Check if all transactions have been processed (when transactionStatusArray.length === numberOfTransactionToConvert => Done)
-    if (transactionStatusArray.length === numberOfTransactionToConvert) {
-      const transactionSuccessArray = transactionStatusArray.filter(
-        (status) => status === TRANSACTION_CONVERT_STATUS.SUCCESSFULLY,
-      );
-      if (transactionSuccessArray?.length === numberOfTransactionToConvert) {
-        // only update status is Successfully when all transaction successfully
-        await dispatch(
-          updateConvertStatus(
-            pTokenData?.parentUnifiedTokenId,
-            pTokenData?.tokenId,
-            'SUCCESSFULLY',
-          ),
+      // Check if all transactions have been processed (when transactionStatusArray.length === numberOfTransactionToConvert => Done)
+      if (transactionStatusArray.length === numberOfTransactionToConvert) {
+        const transactionSuccessArray = transactionStatusArray.filter(
+          (status) => status === TRANSACTION_CONVERT_STATUS.SUCCESSFULLY,
         );
-      } else {
-        // if one of transaction failed => update status fail
-        await dispatch(
-          updateConvertStatus(
-            pTokenData?.parentUnifiedTokenId,
-            pTokenData?.tokenId,
-            'FAILED',
-          ),
-        );
+        if (transactionSuccessArray?.length === numberOfTransactionToConvert) {
+          // only update status is Successfully when all transaction successfully
+          await dispatch(
+            updateConvertStatus(
+              pTokenData?.parentUnifiedTokenId,
+              pTokenData?.tokenId,
+              'SUCCESSFULLY',
+            ),
+          );
+        } else {
+          // if one of transaction failed => update status fail
+          await dispatch(
+            updateConvertStatus(
+              pTokenData?.parentUnifiedTokenId,
+              pTokenData?.tokenId,
+              'FAILED',
+            ),
+          );
+        }
       }
     }
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -319,27 +323,31 @@ const convertToUnifiedToken = () => async (dispatch, getState) => {
 };
 
 const splitPRVUTXOs = (numberUTXO: number) => async (dispatch, getState) => {
-  let state = getState();
-  const account: any = accountSelector?.defaultAccountSelector(state);
-  const wallet: any = walletSelector(state);
-  let tokenPaymentInfo: any = [];
-  for (var i = 0; i < numberUTXO; i++) {
-    tokenPaymentInfo.push({
-      PaymentAddress: account?.PaymentAddress,
-      Amount: MAX_FEE_PER_TX,
-      Message: '',
+  try {
+    let state = getState();
+    const account: any = accountSelector?.defaultAccountSelector(state);
+    const wallet: any = walletSelector(state);
+    let tokenPaymentInfo: any = [];
+    for (var i = 0; i < numberUTXO; i++) {
+      tokenPaymentInfo.push({
+        PaymentAddress: account?.PaymentAddress,
+        Amount: MAX_FEE_PER_TX,
+        Message: '',
+      });
+    }
+    const res = await accountService.createAndSendNativeToken({
+      wallet,
+      account,
+      fee: MAX_FEE_PER_TX,
+      info: '',
+      prvPayments: tokenPaymentInfo,
+      txType: ACCOUNT_CONSTANT.TX_TYPE.SEND,
+      version: PrivacyVersion.ver2,
     });
+    return res;
+  } catch (error) {
+    console.log(error);
   }
-  const res = await accountService.createAndSendNativeToken({
-    wallet,
-    account,
-    fee: MAX_FEE_PER_TX,
-    info: '',
-    prvPayments: tokenPaymentInfo,
-    txType: ACCOUNT_CONSTANT.TX_TYPE.SEND,
-    version: PrivacyVersion.ver2,
-  });
-  return res;
 };
 
 const updateSelectedTokenToConvert =

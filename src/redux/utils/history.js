@@ -45,7 +45,7 @@ export const TX_STATUS_COLOR = {
 };
 
 export const CENTRALIZED_ARRAY = [0];
-export const DECENTRALIZE_ARRAY = [1, 2, 3, 4, 5];
+export const DECENTRALIZE_ARRAY = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 export const getStatusColorShield = (history) => {
   let statusColor = '';
