@@ -49,7 +49,6 @@ const MAIN_NET_SERVER = {
   uniConfigs: UNI_CONSTANTS.UNI_MAINNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
   webAppService: 'https://api-webapp.incognito.org/',
-  // webAppService: 'https://api-webapp-staging.incognito.org/',
 };
 const BETA_SERVER = {
   id: 'beta',
@@ -154,31 +153,6 @@ export const DEV_TEST_SERVER = {
   webAppService: 'https://api-webapp-staging.incognito.org/',
 };
 
-export const DEV_TEST_AVAX_AURORA = {
-  id: 'devTestAvaxAurora',
-  default: false,
-  address: DEV_TEST_FULLNODE,
-  username: '',
-  password: '',
-  name: 'Dev test avax aurora near',
-  coinServices: 'http://51.161.117.193:6002',
-  pubsubServices: 'http://51.161.117.193:6004',
-  requestServices: 'http://51.161.117.193:6002',
-  apiServices: 'https://dev-api-service.incognito.org',
-  shardNumber: 2,
-  IncContractAddress: '0xf90860014c7e13dE4A86B81c54dDE797820c72bE',
-  IncBSCContractAddress: '0x9ee4E8FE2D977c8869F2e29736b21e8fc6FF830E',
-  explorer: 'https://testnet1.incognito.org',
-  portalServices: 'http://139.162.55.124:8010',
-  tradeServices: 'http://51.161.117.193:6002',
-  webviewChartServices: 'https://chart-webview-staging.incognito.org',
-  bscConfigs: BSC_CONSTANT.BSC_TESTNET_CONFIGS,
-  pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,
-  uniConfigs: UNI_CONSTANTS.UNI_TESTNET_CONFIGS,
-  web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
-  webAppService: 'https://api-webapp-staging.incognito.org/',
-};
-
 const PORTAL_SERVER = {
   id: 'portal',
   default: false,
@@ -260,7 +234,6 @@ const DEFAULT_LIST_SERVER = [
   PORTAL_SERVER,
   BETA_66,
   BETA_2,
-  DEV_TEST_AVAX_AURORA,
 ];
 
 export const KEY = {
