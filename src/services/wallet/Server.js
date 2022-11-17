@@ -48,7 +48,8 @@ const MAIN_NET_SERVER = {
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
   uniConfigs: UNI_CONSTANTS.UNI_MAINNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
-  webAppService: 'https://api-webapp.incognito.org/',
+  // webAppService: 'https://api-webapp.incognito.org/',
+  webAppService: 'https://api-webapp-staging.incognito.org/',
 };
 const BETA_SERVER = {
   id: 'beta',
@@ -95,8 +96,8 @@ const TEST_NET_SERVER = {
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,
   uniConfigs: UNI_CONSTANTS.UNI_TESTNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
-  // webAppService: 'https://api-webapp-staging.incognito.org/',
-  webAppService: 'http://51.161.117.193:8898/',
+  webAppService: 'https://api-webapp-staging.incognito.org/',
+  //  webAppService: 'http://51.161.117.193:8898/',
 };
 
 const LOCAL_SERVER = {

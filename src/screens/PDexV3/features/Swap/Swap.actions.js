@@ -85,6 +85,7 @@ import {
   ACTION_ESTIMATE_TRADE_ERROR,
   ACTION_NAVIGATE_FROM_MARKET,
   ACTION_RESET_EXCHANGE_SUPPORTED,
+  ACTION_SAVE_UNIFIED_ALERT_STATE_BY_ID,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -2104,6 +2105,12 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
         case KEYS_PLATFORMS_SUPPORTED.spooky:
           analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_SPOOKY;
           break;
+        case KEYS_PLATFORMS_SUPPORTED.joe:
+          analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_JOE;
+          break;
+        case KEYS_PLATFORMS_SUPPORTED.trisolaris:
+          analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRISOLARIS;
+          break;
       }
       dispatch(requestUpdateMetrics(analytic, params));
     }, 300);
@@ -2196,6 +2203,8 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       case KEYS_PLATFORMS_SUPPORTED.uniEther:
       case KEYS_PLATFORMS_SUPPORTED.curve:
       case KEYS_PLATFORMS_SUPPORTED.spooky:
+      case KEYS_PLATFORMS_SUPPORTED.joe:
+      case KEYS_PLATFORMS_SUPPORTED.trisolaris:
         {
           console.log(
             `[pApps - ${platform.id}]: RepareData create TX: `,
@@ -2488,6 +2497,12 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
       case KEYS_PLATFORMS_SUPPORTED.curve:
         callContracts.push(CALL_CONTRACT.CURVE_PLG);
         break;
+      case KEYS_PLATFORMS_SUPPORTED.joe:
+        callContracts.push(CALL_CONTRACT.JOE_AVAX);
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.trisolaris:
+        callContracts.push(CALL_CONTRACT.TRISOLARIS_AURORA);
+        break;
       default:
         callContracts = [];
         break;
@@ -2705,6 +2720,10 @@ export const actionGetMaxAmount = () => async (dispatch, getState) => {
     isUseTokenFee = feeData?.curve?.isUseTokenFee;
   } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.spooky) {
     isUseTokenFee = feeData?.spooky?.isUseTokenFee;
+  } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.joe) {
+    isUseTokenFee = feeData?.joe?.isUseTokenFee;
+  } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.trisolaris) {
+    isUseTokenFee = feeData?.trisolaris?.isUseTokenFee;
   }
   const availableOriginalAmount = sellInputToken?.availableOriginalAmount;
   if (!isUseTokenFee)
@@ -2725,3 +2744,8 @@ export const actionGetMaxAmount = () => async (dispatch, getState) => {
     inputPDecimals: sellInputToken.pDecimals,
   };
 };
+
+export const actionSaveUnifiedAlertStateById = (payload) => ({
+  type: ACTION_SAVE_UNIFIED_ALERT_STATE_BY_ID,
+  payload,
+});

@@ -23,10 +23,17 @@ import {
 import BigNumber from 'bignumber.js';
 import isEqual from 'lodash/isEqual';
 import {
+  getCurrentPaymentAddressSelector,
+  switchAccountSelector,
+} from '@src/redux/selectors/account';
+import { checkConvertSelector } from '@src/screens/ConvertToUnifiedToken/state/selectors';
+
+import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
   PLATFORMS_SUPPORTED,
   getExchangeDataWithCallContract,
+  ONE_DAY,
 } from './Swap.constant';
 import { getInputAmount, calMintAmountExpected } from './Swap.utils';
 
@@ -131,10 +138,11 @@ export const findTokenTrisolarisByIdSelector = createSelector(
   trisolarisPairsSelector,
   (trisolarisTokens) =>
     memoize((tokenID) =>
-    trisolarisTokens.find((t) => t?.tokenID === tokenID || t?.tokenId === tokenID),
+      trisolarisTokens.find(
+        (t) => t?.tokenID === tokenID || t?.tokenId === tokenID,
+      ),
     ),
 );
-
 
 export const hashmapContractIDsSelector = createSelector(
   pancakePairsSelector,
@@ -1551,38 +1559,122 @@ export const getSearchTokenListByField = createSelector(
       //   field,
       //   tokenId,
       // });
+      let tokensFilter = [];
       if (field === 'sellToken') {
-        const tokenFilters =
+        tokensFilter =
           pairsToken.filter(
             (token: SelectedPrivacy) => token.tokenId !== tokenId,
           ) || [];
-        return tokenFilters;
       } else {
-        // const sellChildNetworks = selltoken.isPUnifiedToken
-        //   ? selltoken.listUnifiedToken.map((child) => child.groupNetworkName)
-        //   : [selltoken.groupNetworkName];
-        // const tokenFilters =
-        //   pairsToken.filter((token: SelectedPrivacy) => {
-        //     if (token?.tokenId === buytoken?.tokenId) return false;
-        //     if (token?.movedUnifiedToken) return false; // not supported moved unified token
-        //     if (selltoken.defaultPoolPair && token.defaultPoolPair) return true; //Swappable on pDex
-
-        //     const tokenChildNetworks = token.isPUnifiedToken
-        //       ? token.listUnifiedToken.map((child) => child.groupNetworkName)
-        //       : [token.groupNetworkName];
-
-        //     return sellChildNetworks.some(
-        //       (networkName) =>
-        //         networkName && tokenChildNetworks.includes(networkName),
-        //     );
-        //   }) || [];
-
-        // return tokenFilters;
+        const sellChildNetworks = selltoken.isPUnifiedToken
+          ? selltoken.listUnifiedToken.map((child) => child.groupNetworkName)
+          : [selltoken.groupNetworkName];
         const tokenFilters =
-          pairsToken.filter(
-            (token: SelectedPrivacy) => token.tokenId !== tokenId,
-          ) || [];
+          pairsToken.filter((token: SelectedPrivacy) => {
+            if (token?.tokenId === buytoken?.tokenId) return false;
+            if (token?.movedUnifiedToken) return false; // not supported moved unified token
+            if (selltoken.defaultPoolPair && token.defaultPoolPair) return true; //Swappable on pDex
+
+            const tokenChildNetworks = token.isPUnifiedToken
+              ? token.listUnifiedToken.map((child) => child.groupNetworkName)
+              : [token.groupNetworkName];
+
+            return sellChildNetworks.some(
+              (networkName) =>
+                networkName && tokenChildNetworks.includes(networkName),
+            );
+          }) || [];
+
         return tokenFilters;
+        // const tokenFilters =
+        //   pairsToken.filter(
+        //     (token: SelectedPrivacy) => token.tokenId !== tokenId,
+        //   ) || [];
+        // return tokenFilters;
       }
+      return tokensFilter;
     }),
+);
+
+export const feeErorSelector = createSelector(
+  [feetokenDataSelector, inputAmountSelector, getPrivacyDataByTokenIDSelector],
+  (feetokenData, inputAmount, getPrivacyDataByTokenID) => {
+    const sellinputAmount = inputAmount(formConfigs.selltoken);
+    const buyinputAmount = inputAmount(formConfigs.buytoken);
+    const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
+
+    const sellTokenIsPRV = sellinputAmount?.tokenId === PRV.id;
+    const payFeeByPRV = feetokenData?.feetoken === PRV.id;
+    const prvBalance = prv?.amount || 0;
+
+    if (sellTokenIsPRV) return undefined;
+    if (!payFeeByPRV) return undefined;
+    if (
+      !buyinputAmount ||
+      !buyinputAmount.amountText ||
+      buyinputAmount.amountText.length < 1
+    )
+      return undefined;
+
+    // console.log('prvBalance ', prvBalance);
+    // console.log('feetokenData ', feetokenData);
+
+    let availableOriginalPRVFeeAmount = new BigNumber(prvBalance).minus(
+      feetokenData?.minFeeOriginal,
+    );
+    if (availableOriginalPRVFeeAmount.lt(0)) {
+      return true;
+    }
+    return undefined;
+  },
+);
+
+export const unifiedInforAlertHashSelector = createSelector(
+  swapSelector,
+  ({ unifiedInforAlertHash }) => unifiedInforAlertHash,
+);
+
+export const isToggleUnifiedInforSelector = createSelector(
+  [
+    (state) => state.navigation,
+    unifiedInforAlertHashSelector,
+    getCurrentPaymentAddressSelector,
+    checkConvertSelector,
+    switchAccountSelector,
+  ],
+  (
+    navigation,
+    unifiedInforAlertHash,
+    currentPaymentAddress,
+    isExistUnUnifiedToken,
+    isSwitchingAccount,
+  ) => {
+    // console.log({
+    //   navigation,
+    //   unifiedInforAlertHash,
+    //   currentPaymentAddress,
+    //   isExistUnUnifiedToken,
+    //   isSwitchingAccount,
+    //   dataHash: unifiedInforAlertHash[currentPaymentAddress],
+    // });
+
+    if (navigation.currentScreen !== 'Trade') return false;
+    if (isSwitchingAccount || !isExistUnUnifiedToken) return false;
+    if (!currentPaymentAddress || !unifiedInforAlertHash) return false;
+    if (!unifiedInforAlertHash[currentPaymentAddress]) return true; //The first time
+    if (unifiedInforAlertHash[currentPaymentAddress]) {
+      const { timeStamp, answer } =
+        unifiedInforAlertHash[currentPaymentAddress];
+      const isMoreThanADay = new Date().getTime() - timeStamp > ONE_DAY;
+
+      // console.log('isMoreThanADay ', isMoreThanADay);
+
+      if (isMoreThanADay) return true;
+      // if (!answer) {
+      //   const isMoreThanADay = new Date().getTime() - timeStamp > ONE_DAY;
+      //   if (isMoreThanADay) return true;
+      // }
+    }
+    return false;
+  },
 );
