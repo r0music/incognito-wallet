@@ -179,7 +179,16 @@ export const getPrivacyDataFilterSelector = createSelector(
   getAllPrivacyDataSelector,
   (getAllPrivacyDataFunction) => {
     const selectTokenList: SelectedPrivacy[] = getAllPrivacyDataFunction();
-    return selectTokenList.filter((token) => token.tokenId) || [];
+    return (
+      selectTokenList.filter(
+        (token) =>
+          token.tokenId &&
+          token.currencyType !==
+            CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR &&
+          token.currencyType !==
+            CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR_TOKEN,
+      ) || []
+    );
   },
 );
 
