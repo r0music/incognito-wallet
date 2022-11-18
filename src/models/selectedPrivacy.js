@@ -377,7 +377,10 @@ class SelectedPrivacy {
       this?.currencyType ===
       CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH;
     this.isNEAR =
-      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR;
+      this?.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR ||
+      this?.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR_TOKEN;
 
     // groupByNetwork
     this.groupNetworkName = getGroupNetworkName.call(this);

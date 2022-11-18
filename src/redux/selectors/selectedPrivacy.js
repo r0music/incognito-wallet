@@ -179,7 +179,9 @@ export const getPrivacyDataFilterSelector = createSelector(
   getAllPrivacyDataSelector,
   (getAllPrivacyDataFunction) => {
     const selectTokenList: SelectedPrivacy[] = getAllPrivacyDataFunction();
-    return selectTokenList.filter((token) => token.tokenId) || [];
+    return (
+      selectTokenList.filter((token) => token.tokenId && !token.isNEAR) || []
+    );
   },
 );
 
