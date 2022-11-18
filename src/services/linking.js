@@ -8,11 +8,11 @@ const LinkingService = {
   openUrl(url) {
     try {
       if (url && typeof url === 'string') {
-        Linking.canOpenURL(url).then(supported => {
+        Linking.canOpenURL(url).then((supported) => {
           if (supported) {
             Linking.openURL(url);
           } else {
-            throw new Error('This URL is not supported');
+            NavigationService.navigate(routeNames.WebView, { url: url });
           }
         });
       } else {
