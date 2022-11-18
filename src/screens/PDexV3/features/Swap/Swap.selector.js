@@ -3,9 +3,7 @@ import isNaN from 'lodash/isNaN';
 import toLower from 'lodash/toLower';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import format from '@src/utils/format';
-import {
-  ACCOUNT_CONSTANT,
-} from 'incognito-chain-web-js/build/wallet';
+import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { HISTORY_STATUS_CODE } from '@src/constants/trading';
 import capitalize from 'lodash/capitalize';
 import { formValueSelector, isValid, getFormSyncErrors } from 'redux-form';
@@ -15,19 +13,43 @@ import { PRV } from '@src/constants/common';
 import { sharedSelector } from '@src/redux/selectors';
 import orderBy from 'lodash/orderBy';
 import memoize from 'lodash/memoize';
-import { getExchangeRate, getPairRate, getPoolSize } from '@screens/PDexV3';
+import {
+  getExchangeRate,
+  getExchangeRate1,
+  getExchangeRate2,
+  getPairRate,
+  getPoolSize,
+} from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
 import isEqual from 'lodash/isEqual';
+import {
+  getCurrentPaymentAddressSelector,
+  switchAccountSelector,
+} from '@src/redux/selectors/account';
+import { checkConvertSelector } from '@src/screens/ConvertToUnifiedToken/state/selectors';
+
 import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
   PLATFORMS_SUPPORTED,
+  getExchangeDataWithCallContract,
+  ONE_DAY,
 } from './Swap.constant';
 import { getInputAmount, calMintAmountExpected } from './Swap.utils';
 
 export const swapSelector = createSelector(
   (state) => state.pDexV3,
   ({ swap }) => swap,
+);
+
+export const getSlippageSelector = createSelector(
+  swapSelector,
+  ({ slippage }) => slippage,
+);
+
+export const exchangeSupportsListSelector = createSelector(
+  swapSelector,
+  ({ exchangeSupportsList }) => exchangeSupportsList,
 );
 
 export const slippagetoleranceSelector = createSelector(
@@ -42,11 +64,6 @@ export const slippagetoleranceSelector = createSelector(
     }
     return slippagetolerance;
   },
-);
-
-export const pDexPairsSelector = createSelector(
-  swapSelector,
-  ({ pDEXPairs }) => pDEXPairs,
 );
 
 export const pancakePairsSelector = createSelector(
@@ -64,20 +81,67 @@ export const curvePairsSelector = createSelector(
   ({ curveTokens }) => curveTokens || [],
 );
 
+export const spoonkyPairsSelector = createSelector(
+  swapSelector,
+  ({ spookyTokens }) => spookyTokens,
+);
+
+export const joePairsSelector = createSelector(
+  swapSelector,
+  ({ joeTokens }) => joeTokens,
+);
+
+export const trisolarisPairsSelector = createSelector(
+  swapSelector,
+  ({ trisolarisTokens }) => trisolarisTokens,
+);
+
 export const findTokenPancakeByIdSelector = createSelector(
   pancakePairsSelector,
   (pancakeTokens) =>
     memoize((tokenID) => pancakeTokens.find((t) => t?.tokenID === tokenID)),
 );
 
-export const findTokenUniByIdSelector = createSelector(uniPairsSelector, (uniTokens) =>
-  memoize((tokenID) => uniTokens.find((t) => t?.tokenID === tokenID)),
+export const findTokenUniByIdSelector = createSelector(
+  uniPairsSelector,
+  (uniTokens) =>
+    memoize((tokenID) => uniTokens.find((t) => t?.tokenID === tokenID)),
 );
 
 export const findTokenCurveByIdSelector = createSelector(
   curvePairsSelector,
   (curveTokens) =>
-    memoize((tokenID) => curveTokens.find((t) => t?.tokenID === tokenID)),
+    memoize((tokenID) =>
+      curveTokens.find((t) => t?.tokenID === tokenID || t?.tokenId === tokenID),
+    ),
+);
+
+export const findTokenSpookyByIdSelector = createSelector(
+  spoonkyPairsSelector,
+  (spookyTokens) =>
+    memoize((tokenID) =>
+      spookyTokens.find(
+        (t) => t?.tokenID === tokenID || t?.tokenId === tokenID,
+      ),
+    ),
+);
+
+export const findTokenJoeByIdSelector = createSelector(
+  joePairsSelector,
+  (joeTokens) =>
+    memoize((tokenID) =>
+      joeTokens.find((t) => t?.tokenID === tokenID || t?.tokenId === tokenID),
+    ),
+);
+
+export const findTokenTrisolarisByIdSelector = createSelector(
+  trisolarisPairsSelector,
+  (trisolarisTokens) =>
+    memoize((tokenID) =>
+      trisolarisTokens.find(
+        (t) => t?.tokenID === tokenID || t?.tokenId === tokenID,
+      ),
+    ),
 );
 
 export const hashmapContractIDsSelector = createSelector(
@@ -98,35 +162,33 @@ export const hashmapContractIDsSelector = createSelector(
       }, {}),
 );
 
-export const hashmapUniContractIDsSelector = createSelector(
-  uniPairsSelector,
-  (uniTokens) =>
-    uniTokens
-      .filter((token) => token?.isPopular === true)
-      .reduce((curr, token) => {
-        const { symbol, contractIdGetRate, decimals } = token;
-        curr = {
-          ...curr,
-          [toLower(contractIdGetRate)]: {
-            symbol: toLower(symbol),
-            decimals,
-          },
-        };
-        return curr;
-      }, {}),
-);
-
 export const getTokenIdByContractIdGetRateSelector = createSelector(
   pancakePairsSelector,
   (pancakeTokens) =>
     memoize((contractIdGetRate) => {
       let tokenID = '';
-      const foundToken = pancakeTokens.find((token) =>
-        isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate)),
-      );
-      if (foundToken) {
-        tokenID = foundToken?.tokenID;
-      }
+      pancakeTokens.forEach((token) => {
+        if (
+          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
+        ) {
+          tokenID = token.tokenID;
+          return true;
+        } else {
+          token.listUnifiedToken.find((tokenChild) => {
+            if (
+              isEqual(
+                toLower(contractIdGetRate),
+                toLower(tokenChild?.contractId),
+              )
+            ) {
+              tokenID = tokenChild.tokenId;
+              return true;
+            }
+          });
+        }
+        return false;
+      });
+
       return tokenID;
     }),
 );
@@ -136,12 +198,28 @@ export const getTokenIdByUniContractIdGetRateSelector = createSelector(
   (uniTokens) =>
     memoize((contractIdGetRate) => {
       let tokenID = '';
-      const foundToken = uniTokens.find((token) =>
-        isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate)),
-      );
-      if (foundToken) {
-        tokenID = foundToken?.tokenID;
-      }
+      const foundToken = uniTokens.find((token) => {
+        if (
+          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
+        ) {
+          tokenID = token.tokenID;
+          return true;
+        } else {
+          token.listUnifiedToken.find((tokenChild) => {
+            if (
+              isEqual(
+                toLower(contractIdGetRate),
+                toLower(tokenChild?.contractId),
+              )
+            ) {
+              tokenID = tokenChild.tokenId;
+              return true;
+            }
+          });
+        }
+        return false;
+      });
+
       return tokenID;
     }),
 );
@@ -149,14 +227,123 @@ export const getTokenIdByUniContractIdGetRateSelector = createSelector(
 export const getTokenIdByCurveContractIdSelector = createSelector(
   curvePairsSelector,
   (curveTokens) =>
-    memoize((contractId) => {
+    memoize((contractIdGetRate) => {
       let tokenID = '';
-      const foundToken = curveTokens.find((token) =>
-        isEqual(toLower(contractId), toLower(token?.contractId)),
-      );
-      if (foundToken) {
-        tokenID = foundToken?.tokenID;
-      }
+      const foundToken = curveTokens.find((token) => {
+        if (
+          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
+        ) {
+          tokenID = token.tokenID;
+          return true;
+        } else {
+          token.listUnifiedToken.find((tokenChild) => {
+            if (
+              isEqual(
+                toLower(contractIdGetRate),
+                toLower(tokenChild?.contractId),
+              )
+            ) {
+              tokenID = tokenChild.tokenId;
+              return true;
+            }
+          });
+        }
+        return false;
+      });
+
+      return tokenID;
+    }),
+);
+
+export const getTokenIdBySpoonkyContractIdSelector = createSelector(
+  spoonkyPairsSelector,
+  (spookyTokens) =>
+    memoize((contractIdGetRate) => {
+      let tokenID = '';
+      const foundToken = spookyTokens.find((token) => {
+        if (
+          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
+        ) {
+          tokenID = token.tokenID;
+          return true;
+        } else {
+          token.listUnifiedToken.find((tokenChild) => {
+            if (
+              isEqual(
+                toLower(contractIdGetRate),
+                toLower(tokenChild?.contractId),
+              )
+            ) {
+              tokenID = tokenChild.tokenId;
+              return true;
+            }
+          });
+        }
+        return false;
+      });
+
+      return tokenID;
+    }),
+);
+
+export const getTokenIdByTrisolarisContractIdSelector = createSelector(
+  trisolarisPairsSelector,
+  (trisolarisTokens) =>
+    memoize((contractIdGetRate) => {
+      let tokenID = '';
+      const foundToken = trisolarisTokens.find((token) => {
+        if (
+          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
+        ) {
+          tokenID = token.tokenID;
+          return true;
+        } else {
+          token.listUnifiedToken.find((tokenChild) => {
+            if (
+              isEqual(
+                toLower(contractIdGetRate),
+                toLower(tokenChild?.contractId),
+              )
+            ) {
+              tokenID = tokenChild.tokenId;
+              return true;
+            }
+          });
+        }
+        return false;
+      });
+
+      return tokenID;
+    }),
+);
+
+export const getTokenIdByJoeContractIdSelector = createSelector(
+  joePairsSelector,
+  (joeTokens) =>
+    memoize((contractIdGetRate) => {
+      let tokenID = '';
+      const foundToken = joeTokens.find((token) => {
+        if (
+          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
+        ) {
+          tokenID = token.tokenID;
+          return true;
+        } else {
+          token.listUnifiedToken.find((tokenChild) => {
+            if (
+              isEqual(
+                toLower(contractIdGetRate),
+                toLower(tokenChild?.contractId),
+              )
+            ) {
+              tokenID = tokenChild.tokenId;
+              return true;
+            }
+          });
+        }
+        return false;
+      });
+
       return tokenID;
     }),
 );
@@ -170,7 +357,17 @@ export const listPairsSelector = createSelector(
   swapSelector,
   getPrivacyDataByTokenIDSelector,
   (
-    { pairs, isPrivacyApp, defaultExchange, pancakeTokens, uniTokens, curveTokens },
+    {
+      pairs,
+      isPrivacyApp,
+      defaultExchange,
+      pancakeTokens,
+      uniTokens,
+      curveTokens,
+      spookyTokens,
+      joeTokens,
+      trisolarisTokens,
+    },
     getPrivacyDataByTokenID,
   ) => {
     if (!pairs) {
@@ -180,62 +377,121 @@ export const listPairsSelector = createSelector(
     let result = [];
     if (isPrivacyApp) {
       switch (defaultExchange) {
-      case KEYS_PLATFORMS_SUPPORTED.pancake: {
-        list = list.map((token: SelectedPrivacy) => {
-          let { priority, isVerified } = token;
-          const foundedToken = pancakeTokens.find(
-            (pt) => pt?.tokenID === token?.tokenId,
-          );
-          if (foundedToken) {
-            priority = foundedToken?.priority;
-            isVerified = foundedToken?.verify;
-          }
-          return {
-            ...token,
-            isVerified,
-            priority,
-          };
-        });
-        break;
-      }
-      case KEYS_PLATFORMS_SUPPORTED.uni: {
-        list = list.map((token: SelectedPrivacy) => {
-          let { priority, isVerified } = token;
-          const foundedToken = uniTokens.find(
-            (pt) => pt?.tokenID === token?.tokenId,
-          );
-          if (foundedToken) {
-            priority = foundedToken?.priority;
-            isVerified = foundedToken?.verify;
-          }
-          return {
-            ...token,
-            isVerified,
-            priority,
-          };
-        });
-        break;
-      }
-      case KEYS_PLATFORMS_SUPPORTED.curve: {
-        list = list.map((token: SelectedPrivacy) => {
-          let { priority, isVerified } = token;
-          const foundedToken = curveTokens.find(
-            (pt) => pt?.tokenID === token?.tokenId,
-          );
-          if (foundedToken) {
-            priority = foundedToken?.priority;
-            isVerified = foundedToken?.verify;
-          }
-          return {
-            ...token,
-            isVerified,
-            priority,
-          };
-        });
-        break;
-      }
-      default:
-        break;
+        case KEYS_PLATFORMS_SUPPORTED.pancake: {
+          list = list.map((token: SelectedPrivacy) => {
+            let { priority, isVerified } = token;
+            const foundedToken = pancakeTokens.find(
+              (pt) => pt?.tokenID === token?.tokenId,
+            );
+            if (foundedToken) {
+              priority = foundedToken?.priority;
+              isVerified = foundedToken?.verify;
+            }
+            return {
+              ...token,
+              isVerified,
+              priority,
+            };
+          });
+          break;
+        }
+        case KEYS_PLATFORMS_SUPPORTED.uni:
+        case KEYS_PLATFORMS_SUPPORTED.uniEther: {
+          list = list.map((token: SelectedPrivacy) => {
+            let { priority, isVerified } = token;
+            const foundedToken = uniTokens.find(
+              (pt) => pt?.tokenID === token?.tokenId,
+            );
+            if (foundedToken) {
+              priority = foundedToken?.priority;
+              isVerified = foundedToken?.verify;
+            }
+            return {
+              ...token,
+              isVerified,
+              priority,
+            };
+          });
+          break;
+        }
+        case KEYS_PLATFORMS_SUPPORTED.curve: {
+          list = list.map((token: SelectedPrivacy) => {
+            let { priority, isVerified } = token;
+            const foundedToken = curveTokens.find(
+              (pt) => pt?.tokenID === token?.tokenId,
+            );
+            if (foundedToken) {
+              priority = foundedToken?.priority;
+              isVerified = foundedToken?.verify;
+            }
+            return {
+              ...token,
+              isVerified,
+              priority,
+            };
+          });
+          break;
+        }
+
+        case KEYS_PLATFORMS_SUPPORTED.spooky: {
+          list = list.map((token: SelectedPrivacy) => {
+            let { priority, isVerified } = token;
+            const foundedToken = spookyTokens.find(
+              (pt) => pt?.tokenID === token?.tokenId,
+            );
+            if (foundedToken) {
+              priority = foundedToken?.priority;
+              isVerified = foundedToken?.verify;
+            }
+            return {
+              ...token,
+              isVerified,
+              priority,
+            };
+          });
+          break;
+        }
+
+        case KEYS_PLATFORMS_SUPPORTED.joe: {
+          list = list.map((token: SelectedPrivacy) => {
+            let { priority, isVerified } = token;
+            const foundedToken = joeTokens.find(
+              (pt) => pt?.tokenID === token?.tokenId,
+            );
+            if (foundedToken) {
+              priority = foundedToken?.priority;
+              isVerified = foundedToken?.verify;
+            }
+            return {
+              ...token,
+              isVerified,
+              priority,
+            };
+          });
+          break;
+        }
+
+        case KEYS_PLATFORMS_SUPPORTED.trisolaris: {
+          list = list.map((token: SelectedPrivacy) => {
+            let { priority, isVerified } = token;
+            const foundedToken = trisolarisTokens.find(
+              (pt) => pt?.tokenID === token?.tokenId,
+            );
+            if (foundedToken) {
+              priority = foundedToken?.priority;
+              isVerified = foundedToken?.verify;
+            }
+            return {
+              ...token,
+              isVerified,
+              priority,
+            };
+          });
+          break;
+        }
+
+        default:
+          break;
       }
     }
     result = orderBy(list, ['priority'], ['asc']);
@@ -257,10 +513,7 @@ export const listPairsIDBuyTokenVerifiedSelector = createSelector(
   listPairsSelector,
   (pairs) => {
     const result = pairs
-      .filter(
-        (token: SelectedPrivacy) =>
-          !!token?.isVerified && !token?.movedUnifiedToken,
-      )
+      .filter((token: SelectedPrivacy) => !!token?.isVerified)
       .map((token) => token?.tokenId);
     return result;
   },
@@ -424,11 +677,11 @@ export const platformsSupportedSelector = createSelector(
           _platforms = platforms.filter(
             (platform) => platform.id === KEYS_PLATFORMS_SUPPORTED.pancake,
           );
-        } else if(isPairSupportedTradeOnUni) {
+        } else if (isPairSupportedTradeOnUni) {
           _platforms = platforms.filter(
             (platform) => platform.id === KEYS_PLATFORMS_SUPPORTED.uni,
           );
-        } else if(isPairSupportedTradeOnCurve) {
+        } else if (isPairSupportedTradeOnCurve) {
           _platforms = platforms.filter(
             (platform) => platform.id === KEYS_PLATFORMS_SUPPORTED.curve,
           );
@@ -445,8 +698,51 @@ export const platformsSupportedSelector = createSelector(
   },
 );
 
+export const platformsSupportedSelector1 = createSelector(
+  platformsSelector,
+  exchangeSupportsListSelector,
+  (platforms, exchangeSupportsList) => {
+    let _platforms = [...platforms];
+    try {
+      if (!exchangeSupportsList || exchangeSupportsList.length === 0) {
+        _platforms = [PLATFORMS_SUPPORTED[0]];
+      } else {
+        const platformNameSupportedList = exchangeSupportsList.map(
+          (exchange) => exchange.platformNameSupported,
+        );
+        _platforms = _platforms.filter((platform) =>
+          platformNameSupportedList.includes(platform.id),
+        );
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+    return _platforms;
+  },
+);
+
+export const getExchangeSupportByPlatformId = createSelector(
+  exchangeSupportsListSelector,
+  (exchangeSupportsList) => (platformSelectedId) => {
+    try {
+      const exchangeFounded = exchangeSupportsList.find(
+        (ex) => ex.platformNameSupported === platformSelectedId,
+      );
+      if (!exchangeFounded) {
+        console.error(
+          `[getExchangeSupportByPlatformId] NOT FOUND , platformSelectedId = ${platformSelectedId}`,
+        );
+        return;
+      }
+      return exchangeFounded;
+    } catch (error) {
+      console.log('error', error);
+    }
+  },
+);
+
 export const platformSelectedSelector = createSelector(
-  platformsSupportedSelector,
+  platformsSupportedSelector1,
   (platforms) =>
     platforms.find((platform) => !!platform.isSelected) ||
     PLATFORMS_SUPPORTED[0],
@@ -491,6 +787,9 @@ export const feetokenDataSelector = createSelector(
   getTokenIdByCurveContractIdSelector,
   getTokenIdByUniContractIdGetRateSelector,
   slippagetoleranceSelector,
+  getTokenIdBySpoonkyContractIdSelector,
+  getTokenIdByJoeContractIdSelector,
+  getTokenIdByTrisolarisContractIdSelector,
   (
     state,
     { data, networkfee, selltoken, buytoken },
@@ -501,6 +800,9 @@ export const feetokenDataSelector = createSelector(
     getTokenIdByCurveContractId, // get TokenId by ContractId Curve
     getTokenIdByUniContractIdGetRate,
     slippagetolerance,
+    getTokenIdBySpoonkyContractId,
+    getTokenIdByJoeContractId,
+    getTokenIdByTrisolarisContractId,
   ) => {
     try {
       const feeTokenData: SelectedPrivacy = getPrivacyDataByTokenID(feetoken);
@@ -510,8 +812,11 @@ export const feetokenDataSelector = createSelector(
       const fee = selector(state, formConfigs.feetoken);
       const { id: platformID } = platform;
       const feeDataByPlatform = data[platformID];
-      const { feePrv: feePrvEst = {}, feeToken: feeTokenEst = {} } =
-        feeDataByPlatform;
+      const {
+        feePrv: feePrvEst = {},
+        feeToken: feeTokenEst = {},
+        rateValue = 0,
+      } = feeDataByPlatform;
       const {
         fee: feePrv,
         sellAmount: sellAmountPRV,
@@ -626,7 +931,7 @@ export const feetokenDataSelector = createSelector(
       } catch {
         //
       }
-      const tradePath = payFeeByPRV ? tradePathPRV : tradePathToken;
+      let tradePath = payFeeByPRV ? tradePathPRV : tradePathToken;
       const tokenRoute = payFeeByPRV ? tokenRoutePRV : tokenRouteToken;
       const impactAmount = payFeeByPRV ? impactAmountPRV : impactAmountToken;
       const impactOriginalAmount = convert.toOriginalAmount(impactAmount, 2);
@@ -637,126 +942,107 @@ export const feetokenDataSelector = createSelector(
         maxGet: buyAmountToken,
         slippagetolerance,
       });
-      const rateStr = getExchangeRate(
-        sellTokenData,
-        buyTokenData,
-        sellAmountToken,
-        buyAmountToken,
-      );
 
-      if (
-        platformID === KEYS_PLATFORMS_SUPPORTED.uni ||
-        platformID === KEYS_PLATFORMS_SUPPORTED.curve
-      ) {
-        // Calculate price impact for pUniswap
-        const sellTokenPriceUSD = sellTokenData?.externalPriceUSD;
-        const buyTokenPriceUSD = buyTokenData?.externalPriceUSD;
+      // const rateStr = getExchangeRate(
+      //   sellTokenData,
+      //   buyTokenData,
+      //   sellAmountToken,
+      //   buyAmountToken
+      // );
 
-        const sellHumanAmount = convert.toHumanAmount(
-          sellAmountToken,
-          sellTokenData?.pDecimals,
-        );
-        const buyHumanAmount = convert.toHumanAmount(
-          buyAmountToken,
-          buyTokenData?.pDecimals,
-        );
+      // const rateStr = getExchangeRate1(
+      //   sellTokenData,
+      //   buyTokenData,
+      //   convert.toHumanAmount(sellAmountToken, sellTokenData?.pDecimals),
+      //   maxGet ? parseFloat(maxGet) : buyAmountToken,
+      // );
 
-        impactAmountStr =
-          sellTokenPriceUSD === 0 ||
-          buyTokenPriceUSD === 0 ||
-          sellHumanAmount === 0 ||
-          buyHumanAmount === 0
-            ? 0
-            : (
-                (1 -
-                  (buyHumanAmount * buyTokenPriceUSD) /
-                    (sellHumanAmount * sellTokenPriceUSD)) *
-                100
-              )?.toFixed(2);
-      }
+      const rateStr = getExchangeRate2(sellTokenData, buyTokenData, rateValue);
 
       let tradePathStr = '';
       let tradePathArr = [];
 
-      // get trade path array by platform 
       try {
         if (tokenRoute?.length > 0) {
           switch (platformID) {
-          case KEYS_PLATFORMS_SUPPORTED.incognito: {
-            tradePathArr = tokenRoute;
-            break;
-          }
-          case KEYS_PLATFORMS_SUPPORTED.pancake: {
-            tradePathArr = tokenRoute.map((contractId) =>
-              getTokenIdByContractIdGetRate(contractId),
-            );
-            break;
-          }
-          case KEYS_PLATFORMS_SUPPORTED.uni: {
-            let tokenIdArr = [];
-            if (!feeDataByPlatform?.multiRouter) {
-              tokenIdArr = [
-                tokenRoute.map((contractId) =>
-                  getTokenIdByUniContractIdGetRate(contractId),
-                ),
-              ];
-            } else {
-              tokenIdArr = tokenRoute.map((item) =>
-                item?.map((contractId) =>
-                  getTokenIdByUniContractIdGetRate(contractId),
-                ),
+            case KEYS_PLATFORMS_SUPPORTED.incognito: {
+              tradePathArr = tokenRoute;
+              tradePath = [tokenRoute.join('-')];
+              break;
+            }
+            case KEYS_PLATFORMS_SUPPORTED.pancake: {
+              tradePathArr = tokenRoute.map((contractId) =>
+                getTokenIdByContractIdGetRate(contractId),
               );
+              // tradePathArr = tokenRoute;
+              break;
+            }
+            case KEYS_PLATFORMS_SUPPORTED.uni:
+            case KEYS_PLATFORMS_SUPPORTED.uniEther: {
+              tradePathArr = tokenRoute.map((contractId) =>
+                getTokenIdByUniContractIdGetRate(contractId),
+              );
+              break;
+            }
+            case KEYS_PLATFORMS_SUPPORTED.curve: {
+              tradePathArr = tokenRoute.map((contractId) =>
+                getTokenIdByCurveContractId(contractId),
+              );
+              break;
             }
 
-            tradePathArr = tokenIdArr?.map((tradePathArrChild) => {
-              return tradePathArrChild
-                ?.map((tokenID, index, arr) => {
-                  const token: SelectedPrivacy =
-                    getPrivacyDataByTokenID(tokenID);
-                  return (
-                    `${token?.symbol}${
-                      index === arr?.length - 1 ? '' : ' > '
-                    }` || ''
-                  );
-                })
-                .filter((symbol) => !!symbol)
-                .join('');
-            });
-            break;
+            case KEYS_PLATFORMS_SUPPORTED.spooky: {
+              tradePathArr = tokenRoute.map((contractId) =>
+                getTokenIdBySpoonkyContractId(contractId),
+              );
+              break;
+            }
+
+            case KEYS_PLATFORMS_SUPPORTED.joe: {
+              tradePathArr = tokenRoute.map((contractId) =>
+                getTokenIdByJoeContractId(contractId),
+              );
+              break;
+            }
+
+            case KEYS_PLATFORMS_SUPPORTED.trisolaris: {
+              tradePathArr = tokenRoute.map((contractId) =>
+                getTokenIdByTrisolarisContractId(contractId),
+              );
+              break;
+            }
+
+            default:
+              break;
           }
-          case KEYS_PLATFORMS_SUPPORTED.curve: {
-            tradePathArr = tokenRoute.map((contractId) =>
-              getTokenIdByCurveContractId(contractId),
-            );
+        }
+
+        switch (platformID) {
+          case KEYS_PLATFORMS_SUPPORTED.incognito:
+          case KEYS_PLATFORMS_SUPPORTED.pancake:
+          case KEYS_PLATFORMS_SUPPORTED.uni:
+          case KEYS_PLATFORMS_SUPPORTED.uniEther:
+          case KEYS_PLATFORMS_SUPPORTED.curve:
+          case KEYS_PLATFORMS_SUPPORTED.spooky:
+          case KEYS_PLATFORMS_SUPPORTED.joe:
+          case KEYS_PLATFORMS_SUPPORTED.trisolaris:
+            tradePathStr = tradePathArr
+              .map((tokenID, index, arr) => {
+                const token: SelectedPrivacy = getPrivacyDataByTokenID(tokenID);
+                return (
+                  `${token?.symbol}${index === arr?.length - 1 ? '' : ' > '}` ||
+                  ''
+                );
+              })
+              .filter((symbol) => !!symbol)
+              .join('');
             break;
-          }
+          // case KEYS_PLATFORMS_SUPPORTED.uni:
+          // tradePathStr = feeDataByPlatform.routerString;
+          // break;
           default:
             break;
-          }
         }
-
-        // get trade path string by platform
-        switch (platformID) {
-        case KEYS_PLATFORMS_SUPPORTED.pancake:
-        case KEYS_PLATFORMS_SUPPORTED.curve:
-          tradePathStr = tradePathArr
-            .map((tokenID, index, arr) => {
-              const token: SelectedPrivacy = getPrivacyDataByTokenID(tokenID);
-              return (
-                `${token?.symbol}${index === arr?.length - 1 ? '' : ' > '}` ||
-                  ''
-              );
-            })
-            .filter((symbol) => !!symbol)
-            .join('');
-          break;
-        case KEYS_PLATFORMS_SUPPORTED.uni:
-          tradePathStr = feeDataByPlatform.routerString;
-          break;
-        default:
-          break;
-        }
-
       } catch (error) {
         console.log('GET TRADE PATH ERROR', error);
       }
@@ -797,6 +1083,7 @@ export const feetokenDataSelector = createSelector(
         tradePathStr,
         tradePathArr,
         impactAmountStr,
+        impactAmount,
       };
     } catch (error) {
       console.log('feetokenDataSelector-error', error);
@@ -849,7 +1136,8 @@ export const feeTypesSelector = createSelector(
         ];
         break;
       }
-      case KEYS_PLATFORMS_SUPPORTED.uni: {
+      case KEYS_PLATFORMS_SUPPORTED.uni:
+      case KEYS_PLATFORMS_SUPPORTED.uniEther: {
         types = [
           {
             tokenId: feeToken.tokenId,
@@ -869,6 +1157,40 @@ export const feeTypesSelector = createSelector(
         ];
         break;
       }
+
+      case KEYS_PLATFORMS_SUPPORTED.spooky: {
+        types = [
+          {
+            tokenId: feeToken.tokenId,
+            symbol: feeToken.symbol,
+            actived: feetoken === feetoken,
+          },
+        ];
+        break;
+      }
+
+      case KEYS_PLATFORMS_SUPPORTED.joe: {
+        types = [
+          {
+            tokenId: feeToken.tokenId,
+            symbol: feeToken.symbol,
+            actived: feetoken === feetoken,
+          },
+        ];
+        break;
+      }
+
+      case KEYS_PLATFORMS_SUPPORTED.trisolaris: {
+        types = [
+          {
+            tokenId: feeToken.tokenId,
+            symbol: feeToken.symbol,
+            actived: feetoken === feetoken,
+          },
+        ];
+        break;
+      }
+
       default:
         break;
     }
@@ -994,90 +1316,151 @@ export const mappingOrderHistorySelector = createSelector(
       if (!order) {
         return {};
       }
-      let {
-        sellTokenId,
-        amount,
-        buyTokenId,
-        requestime,
+      // let {
+      //   sellTokenId,
+      //   amount,
+      //   buyTokenId,
+      //   requestime,
+      //   status,
+      //   fee,
+      //   feeToken: feeTokenId,
+      //   fromStorage,
+      //   amountOut,
+      //   statusCode,
+      //   minAccept,
+      // } = order;
+      // let statusStr = capitalize(status);
+      // amountOut = parseInt(amountOut);
+      // minAccept = parseInt(minAccept);
+      // if (fromStorage) {
+      //   switch (statusCode) {
+      //     case ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_CANCELED:
+      //     case ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_FAILED: {
+      //       statusStr = 'Failed';
+      //       break;
+      //     }
+      //     default:
+      //       statusStr = 'Processing';
+      //       break;
+      //   }
+      // }
+      // const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
+      // const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
+      // const feeToken: SelectedPrivacy = getPrivacyDataByTokenID(feeTokenId);
+      // const amountStr = format.amountVer2(amount, sellToken.pDecimals);
+      // const buyAmountStr = format.amountVer2(
+      //   amountOut || minAccept,
+      //   buyToken.pDecimals,
+      // );
+      // const sellStr = `${amountStr} ${sellToken.symbol}`;
+      // const buyStr = `${buyAmountStr} ${buyToken.symbol}`;
+      // const timeStr = format.formatDateTime(requestime, 'DD MMM HH:mm');
+      // const rate = getPairRate({
+      //   token1Value: amount,
+      //   token2Value: amountOut || minAccept,
+      //   token1: sellToken,
+      //   token2: buyToken,
+      // });
+      // let rateStr = '';
+      // if (statusCode !== HISTORY_STATUS_CODE.REJECTED) {
+      //   rateStr = getExchangeRate(
+      //     sellToken,
+      //     buyToken,
+      //     amount,
+      //     amountOut || minAccept,
+      //   );
+      // }
+      //
+      // let totalFee = fee;
+      // let networkFee = ACCOUNT_CONSTANT.MAX_FEE_PER_TX;
+      // if (feeToken.isMainCrypto) {
+      //   totalFee = new BigNumber(totalFee).plus(networkFee).toNumber();
+      // }
+      // const tradingFeeStr = `${format.amountFull(
+      //   totalFee,
+      //   feeToken.pDecimals,
+      //   false,
+      // )} ${feeToken.symbol}`;
+      // let swapStr = '';
+      // if (statusCode !== HISTORY_STATUS_CODE.REJECTED) {
+      //   swapStr = amountOut || minAccept ? `${sellStr} = ${buyStr}` : '';
+      // }
+      // const result = {
+      //   ...order,
+      //   sellStr,
+      //   buyStr,
+      //   sellTokenNetwork: sellToken?.network,
+      //   buyTokenNetwork: buyToken?.network,
+      //   rateStr,
+      //   timeStr,
+      //   rate,
+      //   networkfeeAmountStr: `${format.amountVer2(networkFee, PRV.pDecimals)} ${
+      //     PRV.symbol
+      //   }`,
+      //   tradingFeeStr,
+      //   statusStr,
+      //   swapStr,
+      //   tradingFeeByPRV: feeToken.isMainCrypto,
+      // };
+      // return result;
+      const {
+        buyTokenID,
+        sellTokenID,
         status,
-        fee,
-        feeToken: feeTokenId,
-        fromStorage,
-        amountOut,
-        statusCode,
-        minAccept,
+        color,
+        callContract,
+        sellAmountText,
+        buyAmountText,
+        time,
+        outchainTxStatus,
+        swapExchangeStatus,
+        redepositStatus,
       } = order;
-      let statusStr = capitalize(status);
-      amountOut = parseInt(amountOut);
-      minAccept = parseInt(minAccept);
-      if (fromStorage) {
-        switch (statusCode) {
-        case ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_CANCELED:
-        case ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_FAILED: {
-          statusStr = 'Failed';
-          break;
-        }
-        default:
-          statusStr = 'Processing';
-          break;
-        }
-      }
-      const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
-      const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
-      const feeToken: SelectedPrivacy = getPrivacyDataByTokenID(feeTokenId);
-      const amountStr = format.amountVer2(amount, sellToken.pDecimals);
-      const buyAmountStr = format.amountVer2(amountOut || minAccept, buyToken.pDecimals);
-      const sellStr = `${amountStr} ${sellToken.symbol}`;
-      const buyStr = `${buyAmountStr} ${buyToken.symbol}`;
-      const timeStr = format.formatDateTime(requestime, 'DD MMM HH:mm');
-      const rate = getPairRate({
-        token1Value: amount,
-        token2Value: amountOut || minAccept,
-        token1: sellToken,
-        token2: buyToken,
+      const sellToken = getPrivacyDataByTokenID(sellTokenID);
+      const buyToken = getPrivacyDataByTokenID(buyTokenID);
+      const { name: exchange, exchangeScan } = getExchangeDataWithCallContract({
+        callContract,
       });
-      let rateStr = '';
-      if (statusCode !== HISTORY_STATUS_CODE.REJECTED) {
-        rateStr = getExchangeRate(
-          sellToken,
-          buyToken,
-          amount,
-          amountOut || minAccept,
-        );
-      }
-        
-      let totalFee = fee;
-      let networkFee = ACCOUNT_CONSTANT.MAX_FEE_PER_TX;
-      if (feeToken.isMainCrypto) {
-        totalFee = new BigNumber(totalFee).plus(networkFee).toNumber();
-      }
-      const tradingFeeStr = `${format.amountFull(
-        totalFee,
-        feeToken.pDecimals,
-        false,
-      )} ${feeToken.symbol}`;
-      let swapStr = '';
-      if (statusCode !== HISTORY_STATUS_CODE.REJECTED) {
-        swapStr = amountOut || minAccept ? `${sellStr} = ${buyStr}` : '';
-      }
-      const result = {
+      const sellAmountStr = format.amountVer2(sellAmountText, 0);
+      const sellStr = `${sellAmountStr} ${sellToken.symbol}`;
+      const buyAmountStr = format.amountVer2(buyAmountText, 0);
+      const buyStr = `${buyAmountStr} ${buyToken.symbol}`;
+      const swapStr = `${sellStr} = ${buyStr}`;
+      const rateStr = `1 ${sellToken.symbol} = ${format.amountVer2(
+        new BigNumber(buyAmountText || 0).div(sellAmountText) || 0,
+        0,
+      )} ${buyToken.symbol}`;
+      const timeStr = format.formatDateTime(time, 'DD MMM HH:mm');
+      const statusStr = status
+        ? status.charAt(0).toUpperCase() + status.slice(1)
+        : '';
+      const outchainTxStatusStr = outchainTxStatus
+        ? outchainTxStatus.charAt(0).toUpperCase() + outchainTxStatus.slice(1)
+        : '';
+      const swapExchangeStatusStr = swapExchangeStatus
+        ? swapExchangeStatus.charAt(0).toUpperCase() +
+          swapExchangeStatus.slice(1)
+        : '';
+      const redepositStatusStr = redepositStatus
+        ? redepositStatus.charAt(0).toUpperCase() + redepositStatus.slice(1)
+        : '';
+      return {
         ...order,
+        statusStr,
+        statusColor: color,
+        exchange,
+        swapStr,
+        timeStr,
         sellStr,
         buyStr,
-        sellTokenNetwork: sellToken?.network,
-        buyTokenNetwork: buyToken?.network,
+        sellTokenNetwork: sellToken.network,
+        buyTokenNetwork: buyToken.network,
+        outchainTxStatusStr,
+        swapExchangeStatusStr,
+        redepositStatusStr,
+        exchangeScan,
         rateStr,
-        timeStr,
-        rate,
-        networkfeeAmountStr: `${format.amountVer2(networkFee, PRV.pDecimals)} ${
-          PRV.symbol
-        }`,
-        tradingFeeStr,
-        statusStr,
-        swapStr,
-        tradingFeeByPRV: feeToken.isMainCrypto,
       };
-      return result;
     } catch (error) {
       console.log('mappingOrderHistorySelector1-error', error);
     }
@@ -1093,15 +1476,16 @@ export const swapHistorySelector = createSelector(
       // selltoken, buytoken
     },
     mappingOrderHistory,
-  ) => memoize(() => {
-    const history = swapHistory?.data?.map((order) =>
-      mappingOrderHistory(order),
-    );
-    return {
-      ...swapHistory,
-      history,
-    };
-  }),
+  ) =>
+    memoize(() => {
+      const history = swapHistory?.data?.map((order) =>
+        mappingOrderHistory(order),
+      );
+      return {
+        ...swapHistory,
+        history,
+      };
+    }),
 );
 
 export const orderDetailSelector = createSelector(
@@ -1141,4 +1525,157 @@ export const errorEstimateTradeSelector = createSelector(
   swapSelector,
   platformIdSelectedSelector,
   ({ data }, platformId) => data[platformId]?.error || '',
+);
+
+export const exchangeNetworkSelector = createSelector(
+  swapSelector,
+  ({ network }) => network,
+);
+
+export const getExchangeDataEstimateTradeSelector = createSelector(
+  swapSelector,
+  platformIdSelectedSelector,
+  ({ data }, platformId) => data[platformId] || undefined,
+);
+
+export const getEsimateTradeError = createSelector(
+  swapSelector,
+  ({ estimateTradeError }) => estimateTradeError,
+);
+
+export const getIsNavigateFromMarketTab = createSelector(
+  swapSelector,
+  ({ isNavigateFromMarketTab }) => isNavigateFromMarketTab,
+);
+
+export const getSearchTokenListByField = createSelector(
+  [listPairsSelector, selltokenSelector, buytokenSelector],
+  (pairsToken, selltoken, buytoken) =>
+    memoize((field, tokenId) => {
+      // console.log('[getSearchTokenListByField] : ', {
+      //   pairsToken,
+      //   selltoken,
+      //   buytoken,
+      //   field,
+      //   tokenId,
+      // });
+      let tokensFilter = [];
+      if (field === 'sellToken') {
+        tokensFilter =
+          pairsToken.filter(
+            (token: SelectedPrivacy) => token.tokenId !== tokenId,
+          ) || [];
+      } else {
+        const sellChildNetworks = selltoken.isPUnifiedToken
+          ? selltoken.listUnifiedToken.map((child) => child.groupNetworkName)
+          : [selltoken.groupNetworkName];
+        const tokenFilters =
+          pairsToken.filter((token: SelectedPrivacy) => {
+            if (token?.tokenId === buytoken?.tokenId) return false;
+            if (token?.movedUnifiedToken) return false; // not supported moved unified token
+            if (selltoken.defaultPoolPair && token.defaultPoolPair) return true; //Swappable on pDex
+
+            const tokenChildNetworks = token.isPUnifiedToken
+              ? token.listUnifiedToken.map((child) => child.groupNetworkName)
+              : [token.groupNetworkName];
+
+            return sellChildNetworks.some(
+              (networkName) =>
+                networkName && tokenChildNetworks.includes(networkName),
+            );
+          }) || [];
+
+        return tokenFilters;
+        // const tokenFilters =
+        //   pairsToken.filter(
+        //     (token: SelectedPrivacy) => token.tokenId !== tokenId,
+        //   ) || [];
+        // return tokenFilters;
+      }
+      return tokensFilter;
+    }),
+);
+
+export const feeErorSelector = createSelector(
+  [feetokenDataSelector, inputAmountSelector, getPrivacyDataByTokenIDSelector],
+  (feetokenData, inputAmount, getPrivacyDataByTokenID) => {
+    const sellinputAmount = inputAmount(formConfigs.selltoken);
+    const buyinputAmount = inputAmount(formConfigs.buytoken);
+    const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
+
+    const sellTokenIsPRV = sellinputAmount?.tokenId === PRV.id;
+    const payFeeByPRV = feetokenData?.feetoken === PRV.id;
+    const prvBalance = prv?.amount || 0;
+
+    if (sellTokenIsPRV) return undefined;
+    if (!payFeeByPRV) return undefined;
+    if (
+      !buyinputAmount ||
+      !buyinputAmount.amountText ||
+      buyinputAmount.amountText.length < 1
+    )
+      return undefined;
+
+    // console.log('prvBalance ', prvBalance);
+    // console.log('feetokenData ', feetokenData);
+
+    let availableOriginalPRVFeeAmount = new BigNumber(prvBalance).minus(
+      feetokenData?.minFeeOriginal,
+    );
+    if (availableOriginalPRVFeeAmount.lt(0)) {
+      return true;
+    }
+    return undefined;
+  },
+);
+
+
+export const unifiedInforAlertHashSelector = createSelector(
+  swapSelector,
+  ({ unifiedInforAlertHash }) => unifiedInforAlertHash,
+);
+
+export const isToggleUnifiedInforSelector = createSelector(
+  [
+    (state) => state.navigation,
+    unifiedInforAlertHashSelector,
+    getCurrentPaymentAddressSelector,
+    checkConvertSelector,
+    switchAccountSelector,
+  ],
+  (
+    navigation,
+    unifiedInforAlertHash,
+    currentPaymentAddress,
+    isExistUnUnifiedToken,
+    isSwitchingAccount,
+  ) => {
+    // console.log({
+    //   navigation,
+    //   unifiedInforAlertHash,
+    //   currentPaymentAddress,
+    //   isExistUnUnifiedToken,
+    //   isSwitchingAccount,
+    //   dataHash: unifiedInforAlertHash[currentPaymentAddress],
+    // });
+
+    if (navigation.currentScreen !== 'Trade') return false;
+    if (isSwitchingAccount || !isExistUnUnifiedToken) return false;
+    if (!currentPaymentAddress || !unifiedInforAlertHash) return false;
+    if (!unifiedInforAlertHash[currentPaymentAddress]) return true; //The first time
+    if (unifiedInforAlertHash[currentPaymentAddress]) {
+      const { timeStamp, answer } =
+        unifiedInforAlertHash[currentPaymentAddress];
+      const isMoreThanADay = new Date().getTime() - timeStamp > ONE_DAY;
+
+      // console.log('isMoreThanADay ', isMoreThanADay);
+
+      if (isMoreThanADay) return true;
+      // if (!answer) {
+      //   const isMoreThanADay = new Date().getTime() - timeStamp > ONE_DAY;
+      //   if (isMoreThanADay) return true;
+      // }
+    }
+    return false;
+  },
 );

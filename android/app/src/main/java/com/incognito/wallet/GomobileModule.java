@@ -317,4 +317,19 @@ public class GomobileModule extends ReactContextBaseJavaModule {
             }
         });
     }
+
+    @ReactMethod
+    public void createOTAReceiverWithCfg(String data, Callback successCallback) {
+        executorService.execute(new Runnable() {
+            public void run() {
+                try {
+                    Log.d(TAG, "createOTAReceiverWithCfg: begin");
+                    successCallback.invoke(null, Gomobile.createOTAReceiverWithCfg(data));
+                } catch (Exception e) {
+                    Log.d(TAG, "createOTAReceiverWithCfg: error");
+                    successCallback.invoke(e.getMessage(), null);
+                }
+            }
+        });
+    }
 }

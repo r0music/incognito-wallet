@@ -117,6 +117,9 @@ const NETWORK_NAME = {
   PRV: 'Privacy',
   POLYGON: 'Polygon',
   FANTOM: 'Fantom',
+  NEAR: 'Near',
+  AVAX: 'Avax',
+  AURORA: 'Aurora',
 };
 
 export const PRV = {
@@ -138,9 +141,13 @@ const FACTORIES_EVM_NETWORK = [
   NETWORK_NAME.PRV,
   NETWORK_NAME.POLYGON,
   NETWORK_NAME.FANTOM,
+  NETWORK_NAME.NEAR,
+  NETWORK_NAME.AVAX,
+  NETWORK_NAME.AURORA,
 ];
 
 const PRIVATE_TOKEN_CURRENCY_TYPE = {
+  PRV: 0,
   ETH: 1,
   BTC: 2,
   ERC20: 3,
@@ -159,11 +166,29 @@ const PRIVATE_TOKEN_CURRENCY_TYPE = {
   ZEC: 16,
   DOT: 17,
   INCOGNITO: 'INCOGNITO',
+
+  // Polygon bridge
   MATIC: 19,
   POLYGON_ERC20: 20,
+
+  // Fantom bridge
   FTM: 21,
   FANTOM_ERC20: 22,
-  UNIFIED_TOKEN: 25
+
+  // Unified token
+  UNIFIED_TOKEN: 25,
+
+  // Near bridge
+  NEAR: 26,
+  NEAR_TOKEN: 27,
+
+  // Avax bridge
+  AVAX: 28,
+  AVAX_ERC20: 29,
+
+  // Aurora bridge
+  AURORA_ETH: 30, //30
+  AURORA_ERC20: 31, //31
 };
 
 const PRIVATE_TOKEN_CURRENCY_NAME = {
@@ -171,9 +196,34 @@ const PRIVATE_TOKEN_CURRENCY_NAME = {
   [PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20]: 'BEP20 Smart Chain',
   [PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20]: 'ERC20 Polygon',
   [PRIVATE_TOKEN_CURRENCY_TYPE.FANTOM_ERC20]: 'ERC20 Fantom',
+  [PRIVATE_TOKEN_CURRENCY_TYPE.AVAX_ERC20]: 'ERC20 Avax',
+  [PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ERC20]: 'ERC20 Aurora',
+  [PRIVATE_TOKEN_CURRENCY_TYPE.NEAR_TOKEN]: 'Near',
 };
 
 const RESPONSE_PRV_TYPES = [271, 273];
+
+const MAIN_NETWORK_NAME = {
+  PRV: 'Privacy',
+  ETHEREUM: 'Ethereum',
+  BSC: 'BSC',
+  POLYGON: 'Polygon',
+  FANTOM: 'Fantom',
+  INCOGNITO: 'Incognito',
+  TOMO: 'TomoChain',
+  ZIL: 'Zilliqua',
+  XMR: 'Monero',
+  NEO: 'NEO',
+  DASH: 'DASH',
+  DOT: 'DOT',
+  LTC: 'Litecoin',
+  DOGE: 'DOGE',
+  ZEC: 'Zcash',
+  BTC: 'Bitcoin',
+  NEAR: 'Near',
+  AVAX: 'Avax',
+  AURORA: 'Aurora',
+};
 
 export default {
   // old varibles, maybe remove later
@@ -309,4 +359,5 @@ export default {
     PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20,
   ],
   RESPONSE_PRV_TYPES,
+  MAIN_NETWORK_NAME,
 };

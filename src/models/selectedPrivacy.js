@@ -22,12 +22,26 @@ function getNetworkName() {
   // Native token of Fantom network
   const isFTM =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
-  
+
+  const isAVAX =
+    this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX;
+
+  const isAURORA_ETH =
+    this?.currencyType ===
+    CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH;
+
+  // Native token of Near network
+  const isNEAR =
+    this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR;
   if (isBSC) {
-    name ='BSC';
+    name = 'BSC';
   } else if (isBNB) {
-    name ='BNB Chain';
-  } else if (this.isIncognitoToken || this.isMainCrypto || this.isPUnifiedToken) {
+    name = 'BNB Chain';
+  } else if (
+    this.isIncognitoToken ||
+    this.isMainCrypto ||
+    this.isPUnifiedToken
+  ) {
     name = 'Incognito';
   } else if (this.isPrivateCoin) {
     name = `${this.name}`;
@@ -41,6 +55,12 @@ function getNetworkName() {
     name = 'Polygon ERC20';
   } else if (this.isFantomErc20Token) {
     name = 'Fantom ERC20';
+  } else if (this.isAvaxErc20Token) {
+    name = 'Avax ERC20';
+  } else if (this.isAuroraErc20Token) {
+    name = 'Aurora ERC20';
+  } else if (this.isNearToken) {
+    name = 'NEAR TOKEN';
   } else if (this.isIncognitoToken || this.isMainCrypto) {
     name = 'Incognito';
   }
@@ -56,11 +76,82 @@ function getNetworkName() {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.POLYGON;
   } else if (isFTM || this?.isFantomErc20Token) {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.FANTOM;
+  } else if (isAVAX || this?.isAvaxErc20Token) {
+    rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.AVAX;
+  } else if (isAURORA_ETH || this?.isAuroraErc20Token) {
+    rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.AURORA;
+  } else if (isNEAR || this?.isNearToken) {
+    rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.NEAR;
   }
   return {
     networkName: name,
     rootNetworkName,
   };
+}
+
+function getGroupNetworkName() {
+  switch (this.currencyType) {
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH:
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.ETHEREUM;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB:
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.BSC;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC:
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.POLYGON;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM:
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FANTOM_ERC20:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.FANTOM;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.UNIFIED_TOKEN:
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.PRV:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.INCOGNITO;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH:
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ERC20:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.AURORA;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX:
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX_ERC20:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.AVAX;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BTC:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.BTC;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.DASH:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.DASH;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.DOGE:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.DOGE;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.DOT:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.DOT;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.LTC:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.LTC;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEO:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.NEO;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.TOMO:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.TOMO;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.XMR:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.XMR;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ZEC:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.ZEC;
+
+    case CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ZIL:
+      return CONSTANT_COMMONS.MAIN_NETWORK_NAME.ZIL;
+
+    default:
+      return '';
+  }
 }
 
 function combineData(pData, incognitoData, defaultData) {
@@ -129,6 +220,18 @@ class SelectedPrivacy {
       this.isPrivateToken &&
       this.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FANTOM_ERC20;
+    this.isNearToken =
+      this.isPrivateToken &&
+      this.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR_TOKEN;
+    this.isAvaxErc20Token =
+      this.isPrivateToken &&
+      this.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX_ERC20;
+    this.isAuroraErc20Token =
+      this.isPrivateToken &&
+      this.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ERC20;
     this.isBep20Token =
       this.isPrivateToken &&
       this.currencyType ===
@@ -165,8 +268,8 @@ class SelectedPrivacy {
     this.tokenId = _tokenID
       ? _tokenID
       : this.isMainCrypto
-        ? CONSTANT_COMMONS.PRV_TOKEN_ID
-        : tokenId;
+      ? CONSTANT_COMMONS.PRV_TOKEN_ID
+      : tokenId;
     this.contractId = pTokenData.contractId;
     this.decimals = this.isMainCrypto
       ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
@@ -194,7 +297,20 @@ class SelectedPrivacy {
           CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC) ||
       this.isFantomErc20Token ||
       (this.isToken &&
-        this.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM);
+        this.currencyType ===
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM) ||
+      this.isNearToken ||
+      (this.isToken &&
+        this.currencyType ===
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR) ||
+      this.isAvaxErc20Token ||
+      (this.isToken &&
+        this.currencyType ===
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX) ||
+      this.isAuroraErc20Token ||
+      (this.isToken &&
+        this.currencyType ===
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH);
     this.isCentralized = this.isToken && !this.isDecentralized;
     this.incognitoTotalSupply =
       (this.isIncognitoToken && Number(token?.totalSupply)) || 0;
@@ -236,16 +352,35 @@ class SelectedPrivacy {
     this.hasSameSymbol = pTokenData.hasSameSymbol;
 
     // Unified Token
-    this.listUnifiedToken = pTokenData?.listUnifiedToken;
+    this.listUnifiedToken = pTokenData?.listUnifiedToken || [];
     this.movedUnifiedToken = pTokenData?.movedUnifiedToken;
     this.parentUnifiedID = pTokenData?.parentUnifiedID;
+    this.listUnifiedTokenCurrencyType = this.isPUnifiedToken
+      ? this.listUnifiedToken.map((token) => token.currencyType)
+      : [];
 
     // Native Token of Network
-    this.isETH = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
-    this.isBSC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
-    this.isBNB = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
-    this.isMATIC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
-    this.isFTM = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
+    this.isETH =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
+    this.isBSC =
+      this?.currencyType ===
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
+    this.isBNB =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
+    this.isMATIC =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
+    this.isFTM =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
+    this.isAVAX =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX;
+    this.isAURORA_ETH =
+      this?.currencyType ===
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AURORA_ETH;
+    this.isNEAR =
+      this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR;
+
+    // groupByNetwork
+    this.groupNetworkName = getGroupNetworkName.call(this);
   }
 }
 

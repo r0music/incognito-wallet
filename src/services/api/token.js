@@ -7,22 +7,31 @@ import http from '@src/services/http';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import axios from 'axios';
 import { cachePromise, EXPIRED_TIME, KEYS } from '@services/cache';
-import http1 from '@services/http1';
+import http4 from '@services/http4';
 import PolygonToken from '@src/models/polygonToken';
 import FantomToken from '@src/models/fantomToken';
+import AvaxToken from '@src/models/avaxToken';
+import AuroraToken from '@src/models/auroraToken';
+import NearToken from '@src/models/nearToken';
 
 let BEP2Tokens = [];
 
 const getTokenListNoCache = () => {
-  return http1
-    .get('coins/tokenlist')
-    .then((res) => res.map((token) => new PToken(token, res)));
+  // return http1
+  //   .get('coins/tokenlist')
+  return http4.get('defaulttokenlist').then((res) => {
+    const tokens = res || [];
+    return tokens?.map((token) => new PToken(token, tokens));
+  });
 };
 
 export const getTokensInfo = (tokenIDs = []) => {
-  return http1
-    .post('coins/tokeninfo', { TokenIDs: tokenIDs })
-    .then((res) => res?.map((token) => new PToken(token, res)))
+  return http4
+    .post('tokeninfo', { TokenIDs: tokenIDs })
+    .then((res) => {
+      const tokens = res || [];
+      return tokens?.map((token) => new PToken(token, tokens));
+    })
     .catch((error) => {
       console.log('error', error);
       return [];
@@ -94,28 +103,115 @@ export const addFantomToken = ({ symbol, name, contractId, decimals }) => {
     .then((res) => new PToken(res));
 };
 
+export const detectAvaxToken = (avaxToken) => {
+  if (!avaxToken) throw new Error('Missing avaxAddress to detect');
+  return http
+    .post('avax/detect-erc20', {
+      Address: avaxToken,
+    })
+    .then((res) => new AvaxToken(res))
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const addAvaxToken = ({ symbol, name, contractId, decimals }) => {
+  const parseDecimals = Number(decimals);
+
+  if (!symbol) throw new Error('Missing symbol');
+  if (!name) throw new Error('Missing name');
+  if (!contractId) throw new Error('Missing contractId');
+  if (!Number.isInteger(parseDecimals)) throw new Error('Invalid decimals');
+  return http
+    .post('avax/erc20/add', {
+      ContractID: contractId,
+    })
+    .then((res) => new PToken(res));
+};
+
+export const detectAuroraToken = (auroraToken) => {
+  if (!auroraToken) throw new Error('Missing auroraAddress to detect');
+  return http
+    .post('aurora/detect-erc20', {
+      Address: auroraToken,
+    })
+    .then((res) => new AuroraToken(res))
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const addAuroraToken = ({ symbol, name, contractId, decimals }) => {
+  const parseDecimals = Number(decimals);
+
+  if (!symbol) throw new Error('Missing symbol');
+  if (!name) throw new Error('Missing name');
+  if (!contractId) throw new Error('Missing contractId');
+  if (!Number.isInteger(parseDecimals)) throw new Error('Invalid decimals');
+  return http
+    .post('aurora/erc20/add', {
+      ContractID: contractId,
+    })
+    .then((res) => new PToken(res));
+};
+
+export const detectNearToken = (nearToken) => {
+  if (!nearToken) throw new Error('Missing auroraAddress to detect');
+  return http
+    .post('near/detect-near-token', {
+      Address: nearToken,
+    })
+    .then((res) => new NearToken(res))
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const addNearToken = ({ symbol, name, contractId, decimals }) => {
+  const parseDecimals = Number(decimals);
+
+  if (!symbol) throw new Error('Missing symbol');
+  if (!name) throw new Error('Missing name');
+  if (!contractId) throw new Error('Missing contractId');
+  if (!Number.isInteger(parseDecimals)) throw new Error('Invalid decimals');
+  return http
+    .post('near/near-token/add', {
+      ContractID: contractId,
+    })
+    .then((res) => new PToken(res));
+};
+
 export const detectTokenInNetwork = ({ address, network }) => {
   if (!address) throw new Error(`Missing ${network} address to detect`);
   if (!network) throw new Error('Missing network');
   let fn;
   switch (network) {
-  case 'ERC20':
-    fn = detectERC20Token(address);
-    break;
-  case 'BEP2':
-    fn = detectBEP2Token(address);
-    break;
-  case 'BEP20':
-    fn = detectBEP20Token(address);
-    break;
-  case 'POLYGON':
-    fn = detectPolygonToken(address);
-    break;
-  case 'FANTOM':
-    fn = detectFantomToken(address);
-    break;
-  default:
-    break;
+    case 'ERC20':
+      fn = detectERC20Token(address);
+      break;
+    case 'BEP2':
+      fn = detectBEP2Token(address);
+      break;
+    case 'BEP20':
+      fn = detectBEP20Token(address);
+      break;
+    case 'POLYGON':
+      fn = detectPolygonToken(address);
+      break;
+    case 'FANTOM':
+      fn = detectFantomToken(address);
+      break;
+    case 'AVAX':
+      fn = detectAvaxToken(address);
+      break;
+    case 'AURORA':
+      fn = detectAuroraToken(address);
+      break;
+    case 'NEAR':
+      fn = detectNearToken(address);
+      break;
+    default:
+      break;
   }
   return fn;
 };
@@ -184,23 +280,32 @@ export const addManuallyToken = ({
   let fn;
   console.log('data: ', network);
   switch (network) {
-  case 'ERC20':
-    fn = addERC20Token({ symbol, name, contractId, decimals });
-    break;
-  case 'BEP2':
-    fn = addBEP2Token({ symbol, name, contractId, decimals });
-    break;
-  case 'BEP20':
-    fn = addBEP20Token({ symbol, name, contractId, decimals });
-    break;
-  case 'POLYGON':
-    fn = addPolygonToken({ symbol, name, contractId, decimals });
-    break;
-  case 'FANTOM':
-    fn = addFantomToken({ symbol, name, contractId, decimals });
-    break;
-  default:
-    break;
+    case 'ERC20':
+      fn = addERC20Token({ symbol, name, contractId, decimals });
+      break;
+    case 'BEP2':
+      fn = addBEP2Token({ symbol, name, contractId, decimals });
+      break;
+    case 'BEP20':
+      fn = addBEP20Token({ symbol, name, contractId, decimals });
+      break;
+    case 'POLYGON':
+      fn = addPolygonToken({ symbol, name, contractId, decimals });
+      break;
+    case 'FANTOM':
+      fn = addFantomToken({ symbol, name, contractId, decimals });
+      break;
+    case 'AVAX':
+      fn = addAvaxToken({ symbol, name, contractId, decimals });
+      break;
+    case 'AURORA':
+      fn = addAuroraToken({ symbol, name, contractId, decimals });
+      break;
+    case 'NEAR':
+      fn = addNearToken({ symbol, name, contractId, decimals });
+      break;
+    default:
+      break;
   }
   return fn;
 };
@@ -264,16 +369,16 @@ export const addTokenInfo = ({
 
 const getTokenInfoNoCache =
   ({ tokenId } = {}) =>
-    () => {
-      const endpoint = tokenId ? 'pcustomtoken/get' : 'pcustomtoken/list';
-      return http
-        .get(endpoint, tokenId ? { params: { TokenID: tokenId } } : undefined)
-        .then((res) => {
-          return tokenId
-            ? new IncognitoCoinInfo(res)
-            : res.map((token) => new IncognitoCoinInfo(token));
-        });
-    };
+  () => {
+    const endpoint = tokenId ? 'pcustomtoken/get' : 'pcustomtoken/list';
+    return http
+      .get(endpoint, tokenId ? { params: { TokenID: tokenId } } : undefined)
+      .then((res) => {
+        return tokenId
+          ? new IncognitoCoinInfo(res)
+          : res.map((token) => new IncognitoCoinInfo(token));
+      });
+  };
 
 /**
  * get incognito token info from backend, if `tokenId` is not passed in then get info for all tokens

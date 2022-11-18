@@ -308,7 +308,7 @@ workflows:
           filters:
             branches:
               only:
-                - features/compliance
+                - inc-next2
       - generate_data:
           requires:
             - checkout_code

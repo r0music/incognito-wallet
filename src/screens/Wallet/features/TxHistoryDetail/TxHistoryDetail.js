@@ -236,26 +236,23 @@ const TxHistoryDetail = (props) => {
 
   const historyShieldDecentralizeFactories =
     history?.addressType === CONSTANT_COMMONS.HISTORY.TYPE.SHIELD &&
-    (history?.decentralized === 2 ||
-      history?.decentralized === 3 ||
-      history?.decentralized === 4 ||
-      history?.decentralized === 5)
+    history?.decentralized > 1
       ? [
-        {
-          label: 'Received funds',
-          valueText: receiveFund,
-        },
-        {
-          label: 'Shielding fees',
-          valueText: shieldingFee,
-        },
-        {
-          label: 'Received TxID',
-          valueText: history?.receivedTx,
-          openUrl: true,
-          disabled: !history?.receivedTx,
-        },
-      ]
+          {
+            label: 'Received funds',
+            valueText: receiveFund,
+          },
+          {
+            label: 'Shielding fees',
+            valueText: shieldingFee,
+          },
+          {
+            label: 'Received TxID',
+            valueText: history?.receivedTx,
+            openUrl: true,
+            disabled: !history?.receivedTx,
+          },
+        ]
       : [];
 
   const historyFactories = [
@@ -268,8 +265,8 @@ const TxHistoryDetail = (props) => {
       handleOpenLink: () =>
         history?.isIncognitoTx
           ? linkingService.openUrl(
-            `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${history?.id}`,
-          )
+              `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${history?.id}`,
+            )
           : null,
     },
     {
@@ -281,12 +278,7 @@ const TxHistoryDetail = (props) => {
     {
       label: 'Fee',
       valueText: `${formatFee} ${feeUnit}`,
-      disabled:
-        !fee ||
-        history?.decentralized === 2 ||
-        history?.decentralized === 3 ||
-        history?.decentralized === 4 ||
-        history?.decentralized === 5,
+      disabled: !fee || history?.decentralized > 1,
     },
     {
       label: 'Status',

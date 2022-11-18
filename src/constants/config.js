@@ -10,19 +10,24 @@ const isMainnet = global.isMainnet ?? true;
 
 export const MAIN_WEBSITE = 'https://we.incognito.org';
 
-const TOKENS_URL = (global && global.severDefault && global.severDefault.coinServices)
-  ? global.severDefault.coinServices
-  : 'https://api-coinservice.incognito.org';
+const TOKENS_URL =
+  global && global.severDefault && global.severDefault.coinServices
+    ? global.severDefault.coinServices
+    : 'https://api-coinservice.incognito.org';
 
 const API_BASE_URL = isMainnet
   ? 'https://api-service.incognito.org'
   : global.severDefault
-    ? global.severDefault.apiServices
-    : 'https://staging-api-service.incognito.org';
+  ? global.severDefault.apiServices
+  : 'https://staging-api-service.incognito.org';
 const API_BASE_URL2 = isMainnet
   ? 'https://device-network.incognito.org/'
   : 'https://device-network-staging.incognito.org/';
 const API_BASE_URL3 = 'https://device-network.incognito.org/';
+const API_BASE_URL4 = isMainnet
+  ? 'https://api-webapp.incognito.org/'
+  : 'https://api-webapp-staging.incognito.org/';
+
 const ETHERSCAN_URL = isMainnet
   ? 'https://etherscan.io'
   : 'https://kovan.etherscan.io';
@@ -35,6 +40,15 @@ const POLYGONSCAN_URL = isMainnet
 const FANTOMSCAN_URL = isMainnet
   ? 'https://ftmscan.com'
   : 'https://testnet.ftmscan.com';
+const AVAXSCAN_URL = isMainnet
+  ? 'https://snowtrace.io'
+  : 'https://testnet.snowtrace.io';
+const AURORASCAN_URL = isMainnet
+  ? 'https://aurorascan.dev'
+  : 'https://testnet.aurorascan.dev';
+const NEARSCAN_URL = isMainnet
+  ? 'https://explorer.near.org'
+  : 'https://explorer.testnet.near.org';
 const BTC_EXPLORER_URL = isMainnet
   ? 'https://live.blockcypher.com/btc'
   : 'https://live.blockcypher.com/btc-testnet';
@@ -51,8 +65,8 @@ const BUILD_VERSION = pkg.version;
 const EXPLORER_CONSTANT_CHAIN_URL = isMainnet
   ? 'https://explorer.incognito.org'
   : global.severDefault
-    ? global.severDefault.explorer
-    : 'https://testnet.incognito.org'; // Change explorer
+  ? global.severDefault.explorer
+  : 'https://testnet.incognito.org'; // Change explorer
 const MASTER_NODE_ADDRESS = isMainnet ? MAINNET_FULLNODE : TESTNET_FULLNODE;
 const NODE_URL = 'https://node.incognito.org/node.html';
 const USDT_TOKEN_ID = isMainnet
@@ -64,8 +78,7 @@ const ETH_TOKEN_ID = isMainnet
   ? 'ffd8d42dc40a8d166ea4848baf8b5f6e912ad79875f4373070b59392b1756c8f'
   : 'ffd8d42dc40a8d166ea4848baf8b5f6e9fe0e9c30d60062eb7d44a8df9e00854';
 
-const CRYPTO_ICON_URL =
-  'https://statics.incognito.org/cmc/symbols/128x128';
+const CRYPTO_ICON_URL = 'https://statics.incognito.org/cmc/symbols/128x128';
 
 const HOME_CONFIG_DATA =
   global.homeConfig !== 'staging'
@@ -98,11 +111,11 @@ const HUNT_CONFIG_QR_CODE = () => {
 
 const APP_VERSION = isMainnet
   ? `https://api-service.incognito.org/system/${
-    isIOS() ? 'ios' : 'android'
-  }/last-version`
+      isIOS() ? 'ios' : 'android'
+    }/last-version`
   : `https://staging-api-service.incognito.org/system/${
-    isIOS() ? 'ios' : 'android'
-  }/last-version`;
+      isIOS() ? 'ios' : 'android'
+    }/last-version`;
 
 const URL_SERVICE_UPDATE_FIRMWARE = `https://${
   global.isMainnet ? '' : 'staging-'
@@ -124,6 +137,9 @@ export default {
   BSCSCAN_URL,
   POLYGONSCAN_URL,
   FANTOMSCAN_URL,
+  AVAXSCAN_URL,
+  AURORASCAN_URL,
+  NEARSCAN_URL,
   BTC_EXPLORER_URL,
   BINANCE_EXPLORER_URL,
   USDT_TOKEN_ID,
@@ -136,6 +152,7 @@ export default {
   HOME_CONFIG_DATA,
   API_BASE_URL2,
   API_BASE_URL3,
+  API_BASE_URL4,
   APP_VERSION,
   HOME_CONFIG_EVENT,
   HUNT_CONFIG_QR_CODE,
@@ -143,5 +160,5 @@ export default {
   NODE_MONITOR_URL,
   NODE_MONITOR_DETAIL_URL,
   FAUCET_URL,
-  TOKENS_URL
+  TOKENS_URL,
 };

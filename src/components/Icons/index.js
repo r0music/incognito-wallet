@@ -110,3 +110,11 @@ export { default as CirclePlusIcon } from './icon.circlePlus';
 export { default as IconReward } from './icon.reward';
 export { default as CheckedBlueIcon } from './icon.checkedBlue';
 export { default as MailIcon } from './icon.mail';
+export { default as SpoonkyIcon } from './icon.spooky';
+export { default as SpoonkyIcon2 } from './icon.spooky2';
+
+export { default as JoeIcon } from './icon.joe';
+export { default as JoeIcon2 } from './icon.joe2';
+
+export { default as TrisolarisIcon } from './icon.trisolaris';
+export { default as TrisolarisIcon2 } from './icon.trisolaris2';

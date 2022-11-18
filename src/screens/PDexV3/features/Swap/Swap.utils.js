@@ -21,7 +21,6 @@ import { Text } from 'react-native';
 import routeNames from '@routers/routeNames';
 import { formConfigs } from './Swap.constant';
 
-
 export const minFeeValidator = (feetokenData, isFetching) => {
   if (!feetokenData || isFetching) {
     return undefined;
@@ -108,17 +107,25 @@ export const availablePayFeeByPRVValidator = ({
   return undefined;
 };
 
-export const maxAmountValidatorForSellInput = (sellInputAmount, navigation) => {
+export const maxAmountValidatorForSellInput = (
+  sellInputAmount,
+  buyInputAmount,
+  feetokenData,
+  navigation,
+) => {
   try {
-    if (!sellInputAmount) {
+    if (!sellInputAmount || !buyInputAmount) {
       return undefined;
     }
+
     const {
       originalAmount,
       availableOriginalAmount,
       symbol,
       availableAmountText,
-      tokenData
+      tokenData,
+      tokenId,
+      pDecimals,
     } = sellInputAmount || {};
     const onMessagePress = () => {
       navigation.navigate(routeNames.ChooseNetworkForShield, {
@@ -128,22 +135,78 @@ export const maxAmountValidatorForSellInput = (sellInputAmount, navigation) => {
     if (navigation && !availableOriginalAmount) {
       return (
         <Text onPress={onMessagePress}>
-          Insufficient balance. <Text style={{ textDecorationLine: 'underline' }}>Add funds</Text>.
+          Insufficient balance.{' '}
+          <Text style={{ textDecorationLine: 'underline' }}>Add funds</Text>.
         </Text>
       );
     }
     if (!availableOriginalAmount) {
       return 'Insufficient balance.';
     }
-    if (
-      new BigNumber(originalAmount).gt(new BigNumber(availableOriginalAmount))
-    ) {
-      return (
-        <Text onPress={onMessagePress}>
-          {`Max amount you can convert is ${availableAmountText} ${symbol}.`}&nbsp;
-          <Text style={{ textDecorationLine: 'underline' }}>Add funds</Text>.
-        </Text>
-      );
+
+    if (!buyInputAmount.amountText || buyInputAmount.amountText.length < 1) {
+      if (
+        new BigNumber(originalAmount).gt(new BigNumber(availableOriginalAmount))
+      ) {
+        return (
+          <Text onPress={onMessagePress}>
+            {`Max amount you can convert is ${availableAmountText} ${symbol}.`}
+            &nbsp;
+            <Text style={{ textDecorationLine: 'underline' }}>Add funds</Text>.
+          </Text>
+        );
+      }
+    } else {
+      if (tokenId === feetokenData.tokenId) {
+        const fee = feetokenData.minFeeOriginal;
+        if (
+          new BigNumber(originalAmount)
+            .plus(fee)
+            .gt(new BigNumber(availableOriginalAmount))
+        ) {
+          let availableAmountNumber = convert.toHumanAmount(
+            availableOriginalAmount - fee,
+            pDecimals,
+          );
+          if (new BigNumber(availableAmountNumber).lt(0)) {
+            return (
+              <Text onPress={onMessagePress}>
+                Your balance is insufficient.{' '}
+                <Text style={{ textDecorationLine: 'underline' }}>
+                  Add funds
+                </Text>
+              </Text>
+            );
+          }
+          let availableAmountTextAfterMinusFee = format.toFixed(
+            availableAmountNumber,
+            pDecimals,
+          );
+          return (
+            <Text onPress={onMessagePress}>
+              {`Max amount you can convert is ${availableAmountTextAfterMinusFee} ${symbol}.`}
+              &nbsp;
+              <Text style={{ textDecorationLine: 'underline' }}>Add funds</Text>
+              .
+            </Text>
+          );
+        }
+      } else {
+        if (
+          new BigNumber(originalAmount).gt(
+            new BigNumber(availableOriginalAmount),
+          )
+        ) {
+          return (
+            <Text onPress={onMessagePress}>
+              {`Max amount you can convert is ${availableAmountText} ${symbol}.`}
+              &nbsp;
+              <Text style={{ textDecorationLine: 'underline' }}>Add funds</Text>
+              .
+            </Text>
+          );
+        }
+      }
     }
   } catch (error) {
     console.log('maxAmountValidatorForSellInput-error', error);
@@ -475,7 +538,13 @@ export const findBestRateOfMinSellAmount = (arr) =>
     (platform) => platform?.amount,
   );
 
-export const getMaxAmount = ({ amount,isMainCrypto, pDecimals, isUseTokenFee, totalFee }) => {
+export const getMaxAmount = ({
+  amount,
+  isMainCrypto,
+  pDecimals,
+  isUseTokenFee,
+  totalFee,
+}) => {
   let amountNumber = amount;
   if (isUseTokenFee || isMainCrypto) {
     const newAmount = amountNumber - totalFee;
