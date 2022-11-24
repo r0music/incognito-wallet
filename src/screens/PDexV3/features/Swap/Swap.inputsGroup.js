@@ -6,18 +6,18 @@ import { SwapButton } from '@src/components/core';
 import ToggleArrow from '@src/components/ToggleArrow';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import routeNames from '@src/router/routeNames';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { change, Field } from 'redux-form';
+import { throttle } from 'lodash';
 import { formConfigs } from './Swap.constant';
 import SwapDetails from './Swap.details';
 import { maxAmountValidatorForSellInput } from './Swap.utils';
 import FeeError from './Swap.feeError';
 
 import {
-  listPairsSelector,
   selltokenSelector,
   buytokenSelector,
   swapSelector,
@@ -56,10 +56,6 @@ const SwapInputsGroup = React.memo(() => {
   };
 
   const onSelectSellToken = () => {
-    // navigation.navigate(routeNames.SelectTokenScreen, {
-    //   data: [],
-    //   onPress: (token) => onSelectToken(token, formConfigs.selltoken),
-    // });
     navigation.navigate(routeNames.SelectTokenScreen, {
       data: {
         from: 'sellToken',
@@ -70,10 +66,6 @@ const SwapInputsGroup = React.memo(() => {
   };
 
   const onSelectBuyToken = () => {
-    // navigation.navigate(routeNames.SelectTokenScreen, {
-    //   data: [],
-    //   onPress: (token) => onSelectToken(token, formConfigs.buytoken),
-    // });
     navigation.navigate(routeNames.SelectTokenScreen, {
       data: {
         from: 'buyToken',
@@ -115,13 +107,38 @@ const SwapInputsGroup = React.memo(() => {
     ],
   );
 
-  const onPressInfinityIcon = async () => {
-    const { availableAmountText } = await dispatch(actionGetMaxAmount());
-    dispatch(
-      change(formConfigs.formName, formConfigs.selltoken, availableAmountText),
-    );
-    dispatch(actionEstimateTrade({ useMax: false }));
-  };
+  const onPressInfinityIcon = useCallback(
+    throttle(
+      async () => {
+        const { availableAmountText, maxAmount } = await dispatch(
+          actionGetMaxAmount(),
+        );
+        dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
+        dispatch(change(formConfigs.formName, formConfigs.buytoken, ''));
+
+        await dispatch(
+          change(
+            formConfigs.formName,
+            formConfigs.selltoken,
+            availableAmountText,
+          ),
+        );
+        if (maxAmount > 0) {
+          dispatch(
+            actionEstimateTrade({ field: formConfigs.selltoken, useMax: true }),
+          );
+        } else {
+          dispatch(actionResetData());
+        }
+      },
+      3500,
+      {
+        leading: true,
+        trailing: false,
+      },
+    ),
+    [],
+  );
   const onChange = (field, value) => {
     dispatch(change(formConfigs.formName, field, value));
     switch (field) {
@@ -140,14 +157,14 @@ const SwapInputsGroup = React.memo(() => {
       <Field
         component={TradeInputAmount}
         name={formConfigs.selltoken}
-        // hasInfinityIcon
+        hasInfinityIcon
         canSelectSymbol
         symbol={selltoken?.symbol}
         onChange={(value) => onChange(formConfigs.selltoken, value)}
         onPressSymbol={onSelectSellToken}
         onFocus={(e) => onFocusToken(e, formConfigs.selltoken)}
         onEndEditing={() => onEndEditing(formConfigs.selltoken)}
-        // onPressInfinityIcon={onPressInfinityIcon}
+        onPressInfinityIcon={onPressInfinityIcon}
         validate={[
           ...(selltoken.isIncognitoToken
             ? validator.combinedNanoAmount

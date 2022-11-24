@@ -46,38 +46,8 @@ const styled = StyleSheet.create({
 export const useTabFactories = () => {
   const swapInfo = useSelector(swapInfoSelector);
   const selltoken: SelectedPrivacy = useSelector(selltokenSelector);
-  // const platformId = useSelector(platformIdSelectedSelector);
   const feeTokenData = useSelector(feetokenDataSelector);
-  // const tradePathArr = feeTokenData?.tradePathArr || [];
   const currentExchangeData = useSelector(getExchangeDataEstimateTradeSelector);
-
-  // const renderTradePath = () => {
-  //   const percents = feeTokenData?.uni?.percents || [];
-  //   return (
-  //     <View style={styled.tradePathRightContainer}>
-  //       {tradePathArr?.map((tradePath, tradePathIndex) => {
-  //         return (
-  //           <View
-  //             key={tradePathIndex}
-  //             style={[
-  //               styled.tradePathItem,
-  //               { marginTop: tradePathIndex === 0 ? 0 : 4 },
-  //             ]}
-  //           >
-  //             <View>
-  //               <Text style={styled.text}>{tradePath}</Text>
-  //             </View>
-  //             {percents[tradePathIndex] && (
-  //               <View style={styled.percentContainer}>
-  //                 <Text style={styled.text}>{percents[tradePathIndex]}%</Text>
-  //               </View>
-  //             )}
-  //           </View>
-  //         );
-  //       })}
-  //     </View>
-  //   );
-  // };
 
   const priceImpactDecorator = (priceImpactValue) => {
     if (priceImpactValue >= 15) return COLORS.red;

@@ -27,7 +27,6 @@ import {
   slippagetoleranceSelector,
   swapInfoSelector,
   swapSelector,
-  platformsSupportedSelector,
   platformsSupportedSelector1,
   platformIdSelectedSelector,
   isPrivacyAppSelector,
@@ -152,7 +151,6 @@ const TabPro = React.memo(() => {
     () => maxAmountValidatorForSlippageTolerance(slippagetolerance),
     [slippagetolerance],
   );
-  // const platforms = useSelector(platformsSupportedSelector);
   const platforms = useSelector(platformsSupportedSelector1);
   const options = React.useMemo(
     () =>
