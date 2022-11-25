@@ -76,7 +76,7 @@ export type ExchangeData = {
     tokenid: string;
     amountInBuyToken: string;
   }[];
-  routes: string[];
+  routes: string[] | string;
   incTokenID: string;
   feeAddress: string;
   callContract: string;
@@ -105,7 +105,7 @@ export type ExchangeRawDetail = {
   }[];
   FeeAddress: string;
   FeeAddressShardID: number;
-  Paths: string[];
+  Paths: string[] | string;
   CallContract: string;
   Calldata: string;
   PoolPairs?: string;

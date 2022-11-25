@@ -13,6 +13,8 @@ import FantomToken from '@src/models/fantomToken';
 import AvaxToken from '@src/models/avaxToken';
 import AuroraToken from '@src/models/auroraToken';
 import NearToken from '@src/models/nearToken';
+// eslint-disable-next-line import/no-cycle
+import SelectedPrivacy from '@src/models/selectedPrivacy';
 
 let BEP2Tokens = [];
 
@@ -281,32 +283,73 @@ export const addManuallyToken = ({
   console.log('data: ', network);
   switch (network) {
     case 'ERC20':
-      fn = addERC20Token({ symbol, name, contractId, decimals });
+      fn = addERC20Token({
+        symbol,
+        name,
+        contractId,
+        decimals,
+      });
       break;
     case 'BEP2':
-      fn = addBEP2Token({ symbol, name, contractId, decimals });
+      fn = addBEP2Token({
+        symbol,
+        name,
+        contractId,
+        decimals,
+      });
       break;
     case 'BEP20':
-      fn = addBEP20Token({ symbol, name, contractId, decimals });
+      fn = addBEP20Token({
+        symbol,
+        name,
+        contractId,
+        decimals,
+      });
       break;
     case 'POLYGON':
-      fn = addPolygonToken({ symbol, name, contractId, decimals });
+      fn = addPolygonToken({
+        symbol,
+        name,
+        contractId,
+        decimals,
+      });
       break;
     case 'FANTOM':
-      fn = addFantomToken({ symbol, name, contractId, decimals });
+      fn = addFantomToken({
+        symbol,
+        name,
+        contractId,
+        decimals,
+      });
       break;
     case 'AVAX':
-      fn = addAvaxToken({ symbol, name, contractId, decimals });
+      fn = addAvaxToken({
+        symbol,
+        name,
+        contractId,
+        decimals,
+      });
       break;
     case 'AURORA':
-      fn = addAuroraToken({ symbol, name, contractId, decimals });
+      fn = addAuroraToken({
+        symbol,
+        name,
+        contractId,
+        decimals,
+      });
       break;
     case 'NEAR':
-      fn = addNearToken({ symbol, name, contractId, decimals });
+      fn = addNearToken({
+        symbol,
+        name,
+        contractId,
+        decimals,
+      });
       break;
     default:
       break;
   }
+
   return fn;
 };
 
@@ -372,7 +415,16 @@ const getTokenInfoNoCache =
   () => {
     const endpoint = tokenId ? 'pcustomtoken/get' : 'pcustomtoken/list';
     return http
-      .get(endpoint, tokenId ? { params: { TokenID: tokenId } } : undefined)
+      .get(
+        endpoint,
+        tokenId
+          ? {
+              params: {
+                TokenID: tokenId,
+              },
+            }
+          : undefined,
+      )
       .then((res) => {
         return tokenId
           ? new IncognitoCoinInfo(res)
@@ -414,4 +466,23 @@ export const countUnfollowToken = (tokenId, accountPublicKey) => {
     TokenID: tokenId,
     PublicKey: accountPublicKey,
   });
+};
+
+export const searchToken = (keySearch) => {
+  // return http1
+  //   .get('coins/tokenlist')
+  return http4
+    .get(`/searchtoken?token=${keySearch}`)
+    .then((res) => {
+      console.log('result search ', res);
+      const tokens = res || [];
+      return tokens?.map(
+        (token) =>
+          new SelectedPrivacy({}, {}, new PToken(token, tokens), token.TokenID),
+      );
+    })
+    .catch((e) => {
+      // console.log('Search Token ERROR: ', e);
+      return [];
+    });
 };

@@ -184,8 +184,6 @@ export const getPrivacyDataFilterSelector = createSelector(
         (token) =>
           token.tokenId &&
           token.currencyType !==
-            CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR &&
-          token.currencyType !==
             CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR_TOKEN,
       ) || []
     );

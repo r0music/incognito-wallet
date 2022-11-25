@@ -204,6 +204,41 @@ export const getPTokenList =
     }
   };
 
+export const getPTokenListNoCache =
+  ({ expiredTime = TIME_EXPIRED_LOAD_PTOKEN } = {}) =>
+  async (dispatch, getState) => {
+    const now = new Date().getTime();
+    try {
+      IS_LOADING_PTOKEN = true;
+      LAST_TIME_GET_TOKEN = now;
+      const state = getState();
+      const accountWallet = accountSelector.defaultAccountWalletSelector(state);
+      const keyInfo =
+        (await accountWallet.getKeyInfo({ version: PrivacyVersion.ver2 })) ||
+        {};
+      const coinsIndex = Object.keys(keyInfo.coinindex || {}) || [];
+      const followTokens = await accountWallet.getListFollowingTokens();
+      const advanceTokens = uniq([...coinsIndex, ...followTokens]);
+      const [tokensAdvance, pTokens] = await Promise.all([
+        await getTokensInfo(advanceTokens),
+        await getTokenList({ expiredTime }),
+      ]);
+
+      const tokens = orderBy(
+        uniqBy([...(tokensAdvance || []), ...pTokens], 'tokenId') || [],
+        ['isPUnifiedToken', 'verified'],
+        ['desc', 'desc'],
+      );
+      IS_LOADING_PTOKEN = false;
+      await dispatch(setListPToken(tokens));
+      return tokens;
+    } catch (e) {
+      LAST_TIME_GET_TOKEN = null;
+      IS_LOADING_PTOKEN = false;
+      throw e;
+    }
+  };
+
 export const getInternalTokenList =
   ({ expiredTime = EXPIRED_TIME } = {}) =>
   async (dispatch) => {
