@@ -20,6 +20,7 @@ export const ACTION_SET_SWAPING_TOKEN = '[pDexV3][swap] Set swapingToken token';
 export const ACTION_SET_INITIING_SWAP = '[pDexV3][swap] Set initing token';
 export const ACTION_ESTIMATE_TRADE_ERROR =
   '[pDexV3][swap] Estimate Trade Error';
+export const ACTION_ESTIMATE_COUNT = '[pDexV3][swap] Estimate Count';
 
 export const ACTION_SAVE_UNIFIED_ALERT_STATE_BY_ID =
   '[pDexV3] Save Unified alert state by id';
@@ -266,3 +267,5 @@ export const RULE_SEARCH = ['displayName', 'name', 'symbol', 'pSymbol'];
 // milliseconds * seconds * minutes * hours = 1 day
 export const ONE_DAY = 24 * 60 * 60 * 1000; // 1 day
 // export const ONE_DAY = 1 * 60 * 1000; //1 minute
+
+export const ESTIMATE_COUNT_MAX = 2;

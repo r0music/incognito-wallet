@@ -19,7 +19,7 @@ import { formValueSelector } from 'redux-form';
 import floor from 'lodash/floor';
 import { Text } from 'react-native';
 import routeNames from '@routers/routeNames';
-import { formConfigs } from './Swap.constant';
+import { formConfigs, KEYS_PLATFORMS_SUPPORTED } from './Swap.constant';
 
 export const minFeeValidator = (feetokenData, isFetching) => {
   if (!feetokenData || isFetching) {
@@ -559,4 +559,33 @@ export const getMaxAmount = ({
     maxAmount,
     maxAmountText,
   };
+};
+
+export const getNetworkByExchange = (exchange) => {
+  let network;
+  switch (exchange) {
+    case KEYS_PLATFORMS_SUPPORTED.pancake:
+      network = 'bsc';
+      break;
+    case KEYS_PLATFORMS_SUPPORTED.curve:
+      network = 'plg';
+      break;
+    case KEYS_PLATFORMS_SUPPORTED.uni:
+    case KEYS_PLATFORMS_SUPPORTED.uniEther:
+      network = 'inc';
+      break;
+    case KEYS_PLATFORMS_SUPPORTED.spooky:
+      network = 'ftm';
+      break;
+    case KEYS_PLATFORMS_SUPPORTED.joe:
+      network = 'avax';
+      break;
+    case KEYS_PLATFORMS_SUPPORTED.trisolaris:
+      network = 'aurora';
+      break;
+    default:
+      network = 'inc';
+      break;
+  }
+  return network;
 };

@@ -12,16 +12,20 @@ import {
 import {
   actionAddFollowToken,
   actionRemoveFollowToken,
+  getPTokenListNoCache,
 } from '@src/redux/actions/token';
 import { availableTokensSelector } from '@src/redux/selectors/shared';
 import routeNames from '@src/router/routeNames';
 import { FONT } from '@src/styles';
 import globalStyled from '@src/theme/theme.styled';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigation } from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { withLayout_2 } from '@src/components/Layout';
 import { compose } from 'recompose';
+import { debounce, orderBy } from 'lodash';
+import { RULE_SORT } from '@screens/PDexV3/features/Swap/Swap.constant';
+import { searchToken } from '@services/api/token';
 import { styled } from './FollowToken.styled';
 
 const AddManually = () => {
@@ -60,56 +64,72 @@ export const Item = ({ item, handleToggleFollowToken }) =>
 
 const FollowTokenList = React.memo((props) => {
   const dispatch = useDispatch();
+  const availableTokensOriginal = useSelector(availableTokensSelector);
 
-  const _availableTokens = useSelector(availableTokensSelector);
-
-  const [availableTokens, setAvailableTokens] = useState(_availableTokens);
-
-  // Get list verifiedToken list unVerifiedTokens from list all token
-  const _verifiedTokens = availableTokens?.filter((token) => token?.isVerified);
-  const _unVerifiedTokens = availableTokens?.filter(
-    (token) => !token.isVerified,
+  const [availableTokens, setAvailableTokens] = useState(
+    availableTokensOriginal,
   );
-
   const [showUnVerifiedTokens, setShowUnVerifiedTokens] = useState(false);
+  let tokensFollowedDic = useMemo(() => {
+    let dicHash = {};
+    availableTokensOriginal
+      .filter((token) => token.isFollowed)
+      .map((token) => {
+        dicHash[token.tokenId] = token;
+      });
+    return dicHash;
+  }, []);
+
+  const debounceSearch = debounce(async (nextValue) => {
+    setShowUnVerifiedTokens(false);
+    if (!nextValue || nextValue.length < 1) {
+      setAvailableTokens(availableTokensOriginal);
+    } else {
+      let result = (await searchToken(nextValue)) || [];
+      if (result && result.length < 1) {
+        setAvailableTokens([]);
+      } else {
+        result = result.map((token) => {
+          token.isFollowed = !!tokensFollowedDic[token.tokenId];
+          return token;
+        });
+      }
+      setAvailableTokens(orderBy(result, RULE_SORT.key, RULE_SORT.value));
+    }
+  }, 500);
+
+  const [verifiedTokens, unVerifiedTokens] = useMemo(() => {
+    const resultFiltered = availableTokens.reduce(
+      (result, token) => {
+        token?.isVerified
+          ? result.verifiedTokens.push(token)
+          : result.unVerifiedTokens.push(token);
+        return result;
+      },
+      {
+        verifiedTokens: [],
+        unVerifiedTokens: [],
+      },
+    );
+    return [resultFiltered.verifiedTokens, resultFiltered.unVerifiedTokens];
+  }, availableTokens);
+
+  console.log('');
 
   const onSetShowUnVerifiedTokens = () => {
     setShowUnVerifiedTokens(!showUnVerifiedTokens);
   };
-  
-  const [verifiedTokens, onSearchVerifiedTokens] = useFuse(_verifiedTokens, {
-    keys: ['displayName', 'name', 'symbol', 'pSymbol'],
-    matchAllOnEmptyQuery: true,
-    isCaseSensitive: false,
-    findAllMatches: true,
-    includeMatches: false,
-    includeScore: true,
-    useExtendedSearch: false,
-    threshold: 0,
-    location: 0,
-    distance: 2,
-    maxPatternLength: 32,
-  });
+  let tokens = [];
 
-  const [unVerifiedTokens, onSearchUnVerifiedTokens] = useFuse(
-    _unVerifiedTokens,
-    {
-      keys: ['displayName', 'name', 'symbol', 'pSymbol'],
-      matchAllOnEmptyQuery: true,
-      isCaseSensitive: false,
-      findAllMatches: true,
-      includeMatches: false,
-      includeScore: true,
-      useExtendedSearch: false,
-      threshold: 0,
-      location: 0,
-      distance: 2,
-      maxPatternLength: 32,
-    },
-  );
-
-  let tokens = [verifiedTokens];
-  if (showUnVerifiedTokens) {
+  if (!verifiedTokens && !unVerifiedTokens) {
+    tokens = [];
+  } else if (verifiedTokens && verifiedTokens.length < 1) {
+    tokens = [unVerifiedTokens];
+  } else if (unVerifiedTokens && unVerifiedTokens.length < 1) {
+    tokens = [verifiedTokens];
+  } else if (!showUnVerifiedTokens) {
+    tokens = [verifiedTokens];
+  } else if (showUnVerifiedTokens) {
     tokens = [verifiedTokens, unVerifiedTokens];
   }
 
@@ -122,11 +142,16 @@ const FollowTokenList = React.memo((props) => {
       if (!token?.isFollowed) {
         tokens[tokenIndex].isFollowed = true;
         setAvailableTokens(tokens);
-        dispatch(actionAddFollowToken(token?.tokenId));
+        await dispatch(actionAddFollowToken(token?.tokenId));
+        setTimeout(() => {
+          dispatch(getPTokenListNoCache());
+        }, 300);
+        tokensFollowedDic[token.tokenId] = token;
       } else {
         tokens[tokenIndex].isFollowed = false;
         setAvailableTokens(tokens);
         dispatch(actionRemoveFollowToken(token?.tokenId));
+        delete tokensFollowedDic[token.tokenId];
       }
     } catch (error) {
       console.log(error);
@@ -141,8 +166,7 @@ const FollowTokenList = React.memo((props) => {
         titleStyled={FONT.TEXT.incognitoH4}
         isNormalSearch
         onTextSearchChange={(value) => {
-          onSearchVerifiedTokens(value);
-          onSearchUnVerifiedTokens(value);
+          debounceSearch(value);
         }}
       />
       <View borderTop style={[{ flex: 1 }]}>

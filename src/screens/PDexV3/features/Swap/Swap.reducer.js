@@ -29,7 +29,6 @@ import {
   PLATFORMS_SUPPORTED,
   KEYS_PLATFORMS_SUPPORTED,
   ACTION_CHANGE_SELECTED_PLATFORM,
-  ACTION_CHANGE_STATUS_VISIBLE_PLATFORM,
   ACTION_SAVE_LAST_FIELD,
   ACTION_CHANGE_ESTIMATE_DATA,
   ACTION_SET_DEFAULT_EXCHANGE,
@@ -48,6 +47,7 @@ import {
   ACTION_NAVIGATE_FROM_MARKET,
   ACTION_RESET_EXCHANGE_SUPPORTED,
   ACTION_SAVE_UNIFIED_ALERT_STATE_BY_ID,
+  ACTION_ESTIMATE_COUNT,
 } from './Swap.constant';
 
 const initialState = {
@@ -145,6 +145,7 @@ const initialState = {
   estimateTradeError: null,
   isNavigateFromMarketTab: false,
   unifiedInforAlertHash: {},
+  estimateCount: 1,
 };
 
 const reducer = (state = initialState, action) => {
@@ -206,15 +207,6 @@ const reducer = (state = initialState, action) => {
         field: action.payload,
       };
     }
-    // case ACTION_CHANGE_STATUS_VISIBLE_PLATFORM: {
-    //   const platformID = action.payload;
-    //   return {
-    //     ...state,
-    //     platforms: [...state.platforms].map((platform) =>
-    //       platform.id === platformID ? { ...platform, visible: true } : platform
-    //     ),
-    //   };
-    // }
     case ACTION_CHANGE_SELECTED_PLATFORM: {
       const platformID = action.payload;
       let feetoken = state.feetoken;
@@ -489,6 +481,14 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         unifiedInforAlertHash: newUnifiedInforAlertHash,
+      };
+    }
+    case ACTION_ESTIMATE_COUNT: {
+      const { estimateCount } = state;
+      const count = action.payload;
+      return {
+        ...state,
+        estimateCount: count ? count : estimateCount + 1,
       };
     }
     default:

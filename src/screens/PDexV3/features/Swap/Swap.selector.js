@@ -1,27 +1,15 @@
 import { createSelector } from 'reselect';
 import isNaN from 'lodash/isNaN';
-import toLower from 'lodash/toLower';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import format from '@src/utils/format';
-import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
-import { HISTORY_STATUS_CODE } from '@src/constants/trading';
-import capitalize from 'lodash/capitalize';
 import { formValueSelector, isValid, getFormSyncErrors } from 'redux-form';
 import convert from '@src/utils/convert';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { PRV } from '@src/constants/common';
 import { sharedSelector } from '@src/redux/selectors';
-import orderBy from 'lodash/orderBy';
 import memoize from 'lodash/memoize';
-import {
-  getExchangeRate,
-  getExchangeRate1,
-  getExchangeRate2,
-  getPairRate,
-  getPoolSize,
-} from '@screens/PDexV3';
+import { getExchangeRate2, getPoolSize } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
-import isEqual from 'lodash/isEqual';
 import {
   getCurrentPaymentAddressSelector,
   switchAccountSelector,
@@ -45,6 +33,11 @@ export const swapSelector = createSelector(
 export const getSlippageSelector = createSelector(
   swapSelector,
   ({ slippage }) => slippage,
+);
+
+export const getEsimateCountSelector = createSelector(
+  swapSelector,
+  ({ estimateCount }) => estimateCount,
 );
 
 export const exchangeSupportsListSelector = createSelector(
@@ -99,13 +92,19 @@ export const trisolarisPairsSelector = createSelector(
 export const findTokenPancakeByIdSelector = createSelector(
   pancakePairsSelector,
   (pancakeTokens) =>
-    memoize((tokenID) => pancakeTokens.find((t) => t?.tokenID === tokenID)),
+    memoize((tokenID) =>
+      pancakeTokens.find(
+        (t) => t?.tokenID === tokenID || t?.tokenId === tokenID,
+      ),
+    ),
 );
 
 export const findTokenUniByIdSelector = createSelector(
   uniPairsSelector,
   (uniTokens) =>
-    memoize((tokenID) => uniTokens.find((t) => t?.tokenID === tokenID)),
+    memoize((tokenID) =>
+      uniTokens.find((t) => t?.tokenID === tokenID || t?.tokenId === tokenID),
+    ),
 );
 
 export const findTokenCurveByIdSelector = createSelector(
@@ -144,210 +143,6 @@ export const findTokenTrisolarisByIdSelector = createSelector(
     ),
 );
 
-export const hashmapContractIDsSelector = createSelector(
-  pancakePairsSelector,
-  (pancakeTokens) =>
-    pancakeTokens
-      .filter((token) => token?.isPopular === true)
-      .reduce((curr, token) => {
-        const { symbol, contractIdGetRate, decimals } = token;
-        curr = {
-          ...curr,
-          [toLower(contractIdGetRate)]: {
-            symbol: toLower(symbol),
-            decimals,
-          },
-        };
-        return curr;
-      }, {}),
-);
-
-export const getTokenIdByContractIdGetRateSelector = createSelector(
-  pancakePairsSelector,
-  (pancakeTokens) =>
-    memoize((contractIdGetRate) => {
-      let tokenID = '';
-      pancakeTokens.forEach((token) => {
-        if (
-          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
-        ) {
-          tokenID = token.tokenID;
-          return true;
-        } else {
-          token.listUnifiedToken.find((tokenChild) => {
-            if (
-              isEqual(
-                toLower(contractIdGetRate),
-                toLower(tokenChild?.contractId),
-              )
-            ) {
-              tokenID = tokenChild.tokenId;
-              return true;
-            }
-          });
-        }
-        return false;
-      });
-
-      return tokenID;
-    }),
-);
-
-export const getTokenIdByUniContractIdGetRateSelector = createSelector(
-  uniPairsSelector,
-  (uniTokens) =>
-    memoize((contractIdGetRate) => {
-      let tokenID = '';
-      const foundToken = uniTokens.find((token) => {
-        if (
-          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
-        ) {
-          tokenID = token.tokenID;
-          return true;
-        } else {
-          token.listUnifiedToken.find((tokenChild) => {
-            if (
-              isEqual(
-                toLower(contractIdGetRate),
-                toLower(tokenChild?.contractId),
-              )
-            ) {
-              tokenID = tokenChild.tokenId;
-              return true;
-            }
-          });
-        }
-        return false;
-      });
-
-      return tokenID;
-    }),
-);
-
-export const getTokenIdByCurveContractIdSelector = createSelector(
-  curvePairsSelector,
-  (curveTokens) =>
-    memoize((contractIdGetRate) => {
-      let tokenID = '';
-      const foundToken = curveTokens.find((token) => {
-        if (
-          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
-        ) {
-          tokenID = token.tokenID;
-          return true;
-        } else {
-          token.listUnifiedToken.find((tokenChild) => {
-            if (
-              isEqual(
-                toLower(contractIdGetRate),
-                toLower(tokenChild?.contractId),
-              )
-            ) {
-              tokenID = tokenChild.tokenId;
-              return true;
-            }
-          });
-        }
-        return false;
-      });
-
-      return tokenID;
-    }),
-);
-
-export const getTokenIdBySpoonkyContractIdSelector = createSelector(
-  spoonkyPairsSelector,
-  (spookyTokens) =>
-    memoize((contractIdGetRate) => {
-      let tokenID = '';
-      const foundToken = spookyTokens.find((token) => {
-        if (
-          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
-        ) {
-          tokenID = token.tokenID;
-          return true;
-        } else {
-          token.listUnifiedToken.find((tokenChild) => {
-            if (
-              isEqual(
-                toLower(contractIdGetRate),
-                toLower(tokenChild?.contractId),
-              )
-            ) {
-              tokenID = tokenChild.tokenId;
-              return true;
-            }
-          });
-        }
-        return false;
-      });
-
-      return tokenID;
-    }),
-);
-
-export const getTokenIdByTrisolarisContractIdSelector = createSelector(
-  trisolarisPairsSelector,
-  (trisolarisTokens) =>
-    memoize((contractIdGetRate) => {
-      let tokenID = '';
-      const foundToken = trisolarisTokens.find((token) => {
-        if (
-          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
-        ) {
-          tokenID = token.tokenID;
-          return true;
-        } else {
-          token.listUnifiedToken.find((tokenChild) => {
-            if (
-              isEqual(
-                toLower(contractIdGetRate),
-                toLower(tokenChild?.contractId),
-              )
-            ) {
-              tokenID = tokenChild.tokenId;
-              return true;
-            }
-          });
-        }
-        return false;
-      });
-
-      return tokenID;
-    }),
-);
-
-export const getTokenIdByJoeContractIdSelector = createSelector(
-  joePairsSelector,
-  (joeTokens) =>
-    memoize((contractIdGetRate) => {
-      let tokenID = '';
-      const foundToken = joeTokens.find((token) => {
-        if (
-          isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate))
-        ) {
-          tokenID = token.tokenID;
-          return true;
-        } else {
-          token.listUnifiedToken.find((tokenChild) => {
-            if (
-              isEqual(
-                toLower(contractIdGetRate),
-                toLower(tokenChild?.contractId),
-              )
-            ) {
-              tokenID = tokenChild.tokenId;
-              return true;
-            }
-          });
-        }
-        return false;
-      });
-
-      return tokenID;
-    }),
-);
-
 export const purePairsSelector = createSelector(
   swapSelector,
   ({ pairs }) => pairs || [],
@@ -356,146 +151,12 @@ export const purePairsSelector = createSelector(
 export const listPairsSelector = createSelector(
   swapSelector,
   getPrivacyDataByTokenIDSelector,
-  (
-    {
-      pairs,
-      isPrivacyApp,
-      defaultExchange,
-      pancakeTokens,
-      uniTokens,
-      curveTokens,
-      spookyTokens,
-      joeTokens,
-      trisolarisTokens,
-    },
-    getPrivacyDataByTokenID,
-  ) => {
+  ({ pairs }, getPrivacyDataByTokenID) => {
     if (!pairs) {
       return [];
     }
     let list = pairs.map((tokenID) => getPrivacyDataByTokenID(tokenID));
-    let result = [];
-    if (isPrivacyApp) {
-      switch (defaultExchange) {
-        case KEYS_PLATFORMS_SUPPORTED.pancake: {
-          list = list.map((token: SelectedPrivacy) => {
-            let { priority, isVerified } = token;
-            const foundedToken = pancakeTokens.find(
-              (pt) => pt?.tokenID === token?.tokenId,
-            );
-            if (foundedToken) {
-              priority = foundedToken?.priority;
-              isVerified = foundedToken?.verify;
-            }
-            return {
-              ...token,
-              isVerified,
-              priority,
-            };
-          });
-          break;
-        }
-        case KEYS_PLATFORMS_SUPPORTED.uni:
-        case KEYS_PLATFORMS_SUPPORTED.uniEther: {
-          list = list.map((token: SelectedPrivacy) => {
-            let { priority, isVerified } = token;
-            const foundedToken = uniTokens.find(
-              (pt) => pt?.tokenID === token?.tokenId,
-            );
-            if (foundedToken) {
-              priority = foundedToken?.priority;
-              isVerified = foundedToken?.verify;
-            }
-            return {
-              ...token,
-              isVerified,
-              priority,
-            };
-          });
-          break;
-        }
-        case KEYS_PLATFORMS_SUPPORTED.curve: {
-          list = list.map((token: SelectedPrivacy) => {
-            let { priority, isVerified } = token;
-            const foundedToken = curveTokens.find(
-              (pt) => pt?.tokenID === token?.tokenId,
-            );
-            if (foundedToken) {
-              priority = foundedToken?.priority;
-              isVerified = foundedToken?.verify;
-            }
-            return {
-              ...token,
-              isVerified,
-              priority,
-            };
-          });
-          break;
-        }
-
-        case KEYS_PLATFORMS_SUPPORTED.spooky: {
-          list = list.map((token: SelectedPrivacy) => {
-            let { priority, isVerified } = token;
-            const foundedToken = spookyTokens.find(
-              (pt) => pt?.tokenID === token?.tokenId,
-            );
-            if (foundedToken) {
-              priority = foundedToken?.priority;
-              isVerified = foundedToken?.verify;
-            }
-            return {
-              ...token,
-              isVerified,
-              priority,
-            };
-          });
-          break;
-        }
-
-        case KEYS_PLATFORMS_SUPPORTED.joe: {
-          list = list.map((token: SelectedPrivacy) => {
-            let { priority, isVerified } = token;
-            const foundedToken = joeTokens.find(
-              (pt) => pt?.tokenID === token?.tokenId,
-            );
-            if (foundedToken) {
-              priority = foundedToken?.priority;
-              isVerified = foundedToken?.verify;
-            }
-            return {
-              ...token,
-              isVerified,
-              priority,
-            };
-          });
-          break;
-        }
-
-        case KEYS_PLATFORMS_SUPPORTED.trisolaris: {
-          list = list.map((token: SelectedPrivacy) => {
-            let { priority, isVerified } = token;
-            const foundedToken = trisolarisTokens.find(
-              (pt) => pt?.tokenID === token?.tokenId,
-            );
-            if (foundedToken) {
-              priority = foundedToken?.priority;
-              isVerified = foundedToken?.verify;
-            }
-            return {
-              ...token,
-              isVerified,
-              priority,
-            };
-          });
-          break;
-        }
-
-        default:
-          break;
-      }
-    }
-    result = orderBy(list, ['priority'], ['asc']);
-    return result;
+    return list;
   },
 );
 
@@ -636,68 +297,6 @@ export const platformsVisibleSelector = createSelector(
   (platforms) => platforms.filter((platform) => !!platform?.visible),
 );
 
-export const platformsSupportedSelector = createSelector(
-  swapSelector,
-  platformsVisibleSelector,
-  isPairSupportedTradeOnPancakeSelector,
-  isPairSupportedTradeOnUniSelector,
-  isPairSupportedTradeOnCurveSelector,
-  (
-    { data },
-    platforms,
-    isPairSupportedTradeOnPancake,
-    isPairSupportedTradeOnUni,
-    isPairSupportedTradeOnCurve,
-  ) => {
-    let _platforms = [...platforms];
-    try {
-      if (!isPairSupportedTradeOnPancake) {
-        _platforms = _platforms.filter(
-          (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.pancake,
-        );
-      }
-      if (!isPairSupportedTradeOnUni) {
-        _platforms = _platforms.filter(
-          (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.uni,
-        );
-      }
-      if (!isPairSupportedTradeOnCurve) {
-        _platforms = _platforms.filter(
-          (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.curve,
-        );
-      }
-      _platforms = _platforms.filter(({ id: platformId }) => {
-        const hasError = !data[platformId]?.error;
-        return hasError;
-      });
-
-      // if don't have platforms supported => set default platforms
-      if (_platforms.length === 0 || !_platforms) {
-        if (isPairSupportedTradeOnPancake) {
-          _platforms = platforms.filter(
-            (platform) => platform.id === KEYS_PLATFORMS_SUPPORTED.pancake,
-          );
-        } else if (isPairSupportedTradeOnUni) {
-          _platforms = platforms.filter(
-            (platform) => platform.id === KEYS_PLATFORMS_SUPPORTED.uni,
-          );
-        } else if (isPairSupportedTradeOnCurve) {
-          _platforms = platforms.filter(
-            (platform) => platform.id === KEYS_PLATFORMS_SUPPORTED.curve,
-          );
-        } else {
-          _platforms = platforms.filter(
-            (platform) => platform.id === KEYS_PLATFORMS_SUPPORTED.incognito,
-          );
-        }
-      }
-    } catch (error) {
-      console.log('error', error);
-    }
-    return _platforms;
-  },
-);
-
 export const platformsSupportedSelector1 = createSelector(
   platformsSelector,
   exchangeSupportsListSelector,
@@ -783,26 +382,14 @@ export const feetokenDataSelector = createSelector(
   feeSelectedSelector,
   getPrivacyDataByTokenIDSelector,
   platformSelectedSelector,
-  getTokenIdByContractIdGetRateSelector,
-  getTokenIdByCurveContractIdSelector,
-  getTokenIdByUniContractIdGetRateSelector,
   slippagetoleranceSelector,
-  getTokenIdBySpoonkyContractIdSelector,
-  getTokenIdByJoeContractIdSelector,
-  getTokenIdByTrisolarisContractIdSelector,
   (
     state,
     { data, networkfee, selltoken, buytoken },
     feetoken,
     getPrivacyDataByTokenID,
     platform,
-    getTokenIdByContractIdGetRate, // get TokenId by ContractId PancakeSwap
-    getTokenIdByCurveContractId, // get TokenId by ContractId Curve
-    getTokenIdByUniContractIdGetRate,
     slippagetolerance,
-    getTokenIdBySpoonkyContractId,
-    getTokenIdByJoeContractId,
-    getTokenIdByTrisolarisContractId,
   ) => {
     try {
       const feeTokenData: SelectedPrivacy = getPrivacyDataByTokenID(feetoken);
@@ -960,65 +547,33 @@ export const feetokenDataSelector = createSelector(
       const rateStr = getExchangeRate2(sellTokenData, buyTokenData, rateValue);
 
       let tradePathStr = '';
-      let tradePathArr = [];
 
       try {
         if (tokenRoute?.length > 0) {
           switch (platformID) {
             case KEYS_PLATFORMS_SUPPORTED.incognito: {
-              tradePathArr = tokenRoute;
               tradePath = [tokenRoute.join('-')];
               break;
             }
-            case KEYS_PLATFORMS_SUPPORTED.pancake: {
-              tradePathArr = tokenRoute.map((contractId) =>
-                getTokenIdByContractIdGetRate(contractId),
-              );
-              // tradePathArr = tokenRoute;
-              break;
-            }
-            case KEYS_PLATFORMS_SUPPORTED.uni:
-            case KEYS_PLATFORMS_SUPPORTED.uniEther: {
-              tradePathArr = tokenRoute.map((contractId) =>
-                getTokenIdByUniContractIdGetRate(contractId),
-              );
-              break;
-            }
-            case KEYS_PLATFORMS_SUPPORTED.curve: {
-              tradePathArr = tokenRoute.map((contractId) =>
-                getTokenIdByCurveContractId(contractId),
-              );
-              break;
-            }
-
-            case KEYS_PLATFORMS_SUPPORTED.spooky: {
-              tradePathArr = tokenRoute.map((contractId) =>
-                getTokenIdBySpoonkyContractId(contractId),
-              );
-              break;
-            }
-
-            case KEYS_PLATFORMS_SUPPORTED.joe: {
-              tradePathArr = tokenRoute.map((contractId) =>
-                getTokenIdByJoeContractId(contractId),
-              );
-              break;
-            }
-
-            case KEYS_PLATFORMS_SUPPORTED.trisolaris: {
-              tradePathArr = tokenRoute.map((contractId) =>
-                getTokenIdByTrisolarisContractId(contractId),
-              );
-              break;
-            }
-
-            default:
-              break;
           }
         }
-
         switch (platformID) {
           case KEYS_PLATFORMS_SUPPORTED.incognito:
+            {
+              tradePathStr = tokenRoute
+                ?.map((tokenID, index, arr) => {
+                  const token: SelectedPrivacy =
+                    getPrivacyDataByTokenID(tokenID);
+                  return (
+                    `${token?.symbol}${
+                      index === arr?.length - 1 ? '' : ' > '
+                    }` || ''
+                  );
+                })
+                .filter((symbol) => !!symbol)
+                .join('');
+            }
+            break;
           case KEYS_PLATFORMS_SUPPORTED.pancake:
           case KEYS_PLATFORMS_SUPPORTED.uni:
           case KEYS_PLATFORMS_SUPPORTED.uniEther:
@@ -1026,20 +581,8 @@ export const feetokenDataSelector = createSelector(
           case KEYS_PLATFORMS_SUPPORTED.spooky:
           case KEYS_PLATFORMS_SUPPORTED.joe:
           case KEYS_PLATFORMS_SUPPORTED.trisolaris:
-            tradePathStr = tradePathArr
-              .map((tokenID, index, arr) => {
-                const token: SelectedPrivacy = getPrivacyDataByTokenID(tokenID);
-                return (
-                  `${token?.symbol}${index === arr?.length - 1 ? '' : ' > '}` ||
-                  ''
-                );
-              })
-              .filter((symbol) => !!symbol)
-              .join('');
+            tradePathStr = tokenRoute || '';
             break;
-          // case KEYS_PLATFORMS_SUPPORTED.uni:
-          // tradePathStr = feeDataByPlatform.routerString;
-          // break;
           default:
             break;
         }
@@ -1081,7 +624,6 @@ export const feetokenDataSelector = createSelector(
         buyOriginalAmount,
         rateStr,
         tradePathStr,
-        tradePathArr,
         impactAmountStr,
         impactAmount,
       };
@@ -1552,13 +1094,6 @@ export const getSearchTokenListByField = createSelector(
   [listPairsSelector, selltokenSelector, buytokenSelector],
   (pairsToken, selltoken, buytoken) =>
     memoize((field, tokenId) => {
-      // console.log('[getSearchTokenListByField] : ', {
-      //   pairsToken,
-      //   selltoken,
-      //   buytoken,
-      //   field,
-      //   tokenId,
-      // });
       let tokensFilter = [];
       if (field === 'sellToken') {
         tokensFilter =
@@ -1628,7 +1163,6 @@ export const feeErorSelector = createSelector(
     return undefined;
   },
 );
-
 
 export const unifiedInforAlertHashSelector = createSelector(
   swapSelector,
