@@ -14,7 +14,10 @@ import isEmpty from 'lodash/isEmpty';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { batch } from 'react-redux';
 import { PRV, PRV_ID } from '@src/constants/common';
-import convert, { replaceDecimals } from '@src/utils/convert';
+import convert, {
+  replaceDecimals,
+  replaceDecimalsWithFormatPoint,
+} from '@src/utils/convert';
 import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
 import { currentScreenSelector } from '@screens/Navigation';
@@ -935,8 +938,18 @@ export const actionEstimateTrade =
 
       // let sellAmount = useMax ? maxAmount : sellOriginalAmount;
       let sellAmount = useMax ? maxAmount : sellAmountEx;
-      let sellAmountStr = String(sellAmount);
+      let sellAmountStr;
+      if (typeof sellAmount === 'string') {
+        sellAmountStr = replaceDecimalsWithFormatPoint(String(sellAmount));
+      }
 
+      if (typeof sellAmount === 'number') {
+        sellAmountStr = replaceDecimalsWithFormatPoint(
+          new BigNumber(sellAmount).toString(),
+        );
+      }
+
+      // console.log('sellAmountStr ', sellAmountStr);
       const slippagetolerance = slippagetoleranceSelector(state);
 
       await dispatch(actionChangeEstimateData({ field, useMax }));
