@@ -1,20 +1,18 @@
-import {createSelector} from 'reselect';
-import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
-import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/redux/selectors/selectedPrivacy';
-import {
-  getDataByShareIdSelector,
-} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
-import {sharedSelector} from '@src/redux/selectors';
-import {getInputShareAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
+import { createSelector } from 'reselect';
+import { liquiditySelector } from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
+import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
+import { getDataByShareIdSelector } from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
+import { sharedSelector } from '@src/redux/selectors';
+import { getInputShareAmount } from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import BigNumber from 'bignumber.js';
 import format from '@utils/format';
 import convert from '@utils/convert';
-import {formConfigsRemovePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
-import {getValidRealAmountNFTSelector} from '@src/redux/selectors/account';
+import { formConfigsRemovePool } from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
+import { getValidRealAmountNFTSelector } from '@src/redux/selectors/account';
 
 const removePoolSelector = createSelector(
   liquiditySelector,
-  ({ removePool }) => removePool
+  ({ removePool }) => removePool,
 );
 
 const isFetchingSelector = createSelector(
@@ -29,7 +27,12 @@ export const feeAmountSelector = createSelector(
     const token = getPrivacyDataByTokenID(feeToken);
     const tokenAmount = token.amount;
     const showFaucet = tokenAmount < feeAmount;
-    return { feeAmount, feeToken, token, feeAmountStr: format.amountFull(feeAmount, token.pDecimals, showFaucet) };
+    return {
+      feeAmount,
+      feeToken,
+      token,
+      feeAmountStr: format.amountFull(feeAmount, token.pDecimals, showFaucet),
+    };
   },
 );
 
@@ -53,7 +56,7 @@ export const shareDataSelector = createSelector(
   ({ shareId }, getDataByShareId) => {
     const dataShare = getDataByShareId(shareId);
     return dataShare || {};
-  }
+  },
 );
 
 export const poolIDSelector = createSelector(
@@ -66,23 +69,39 @@ export const maxShareAmountSelector = createSelector(
   shareDataSelector,
   tokenSelector,
   (poolId, shareData, { inputToken, outputToken }) => {
-    if (!shareData) return {
-      share: 0,
-      totalShare: 0,
-      sharePercent: 0,
-      maxInputShare: 0,
-      maxInputShareStr: '',
-      maxOutputShare: 0,
-      maxOutputShareStr: '',
-    };
+    if (!shareData)
+      return {
+        share: 0,
+        totalShare: 0,
+        sharePercent: 0,
+        maxInputShare: 0,
+        maxInputShareStr: '',
+        maxOutputShare: 0,
+        maxOutputShareStr: '',
+      };
     const { share, totalShare, token1PoolValue, token2PoolValue } = shareData;
     const sharePercent = new BigNumber(share).dividedBy(totalShare).toNumber();
-    const maxInputShare = new BigNumber(sharePercent).multipliedBy(token1PoolValue).toNumber() || 0;
-    const maxOutputShare = new BigNumber(sharePercent).multipliedBy(token2PoolValue).toNumber() || 0;
-    const maxInputHuman = convert.toHumanAmount(maxInputShare, inputToken.pDecimals);
-    const maxInputShareStr = format.toFixed(maxInputHuman, inputToken.pDecimals);
-    const maxOutputHuman = convert.toHumanAmount(maxOutputShare, outputToken.pDecimals);
-    const maxOutputShareStr = format.toFixed(maxOutputHuman, outputToken.pDecimals);
+    const maxInputShare =
+      new BigNumber(sharePercent).multipliedBy(token1PoolValue).toNumber() || 0;
+    const maxOutputShare =
+      new BigNumber(sharePercent).multipliedBy(token2PoolValue).toNumber() || 0;
+    const maxInputHuman = convert.toHumanAmount(
+      maxInputShare,
+      inputToken.pDecimals,
+    );
+    const maxInputShareStr = format.toFixed(
+      maxInputHuman,
+      inputToken.pDecimals,
+    );
+    const maxOutputHuman = convert.toHumanAmount(
+      maxOutputShare,
+      outputToken.pDecimals,
+    );
+    const maxOutputShareStr = format.toFixed(
+      maxOutputHuman,
+      outputToken.pDecimals,
+    );
+
     return {
       maxInputShare,
       maxOutputShare,
@@ -94,7 +113,7 @@ export const maxShareAmountSelector = createSelector(
       maxInputHuman,
       maxOutputHuman,
     };
-  }
+  },
 );
 
 export const inputAmountSelector = createSelector(
@@ -116,23 +135,76 @@ export const nftTokenSelector = createSelector(
       _nftToken = nftToken;
     }
     return _nftToken;
-  }
+  },
 );
 
 export const disableRemovePool = createSelector(
   isFetchingSelector,
   inputAmountSelector,
   nftTokenSelector,
-  ( isFetching, inputAmount, nftToken ) => {
-    const { error: inputError, originalInputAmount: amount1 } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken);
-    const { error: outputError, originalInputAmount: amount2 } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
-    const disabled = !!inputError || !!outputError || !amount1 || !amount2 || !nftToken || isFetching;
+  (isFetching, inputAmount, nftToken) => {
+    let {
+      error: inputError,
+      originalInputAmount: amount1,
+      inputAmountStr: inputAmountStr,
+    } = inputAmount(
+      formConfigsRemovePool.formName,
+      formConfigsRemovePool.inputToken,
+    );
+    let {
+      error: outputError,
+      originalInputAmount: amount2,
+      inputAmountStr: outputAmountStr,
+    } = inputAmount(
+      formConfigsRemovePool.formName,
+      formConfigsRemovePool.outputToken,
+    );
+
+    let disabled = false;
+    if (isFetching) {
+      // console.log('CASE 0: isFetching = true: ');
+      disabled = true;
+    } else if (inputError) {
+      // console.log(`CASE 1: inputError = ${inputError}`);
+      disabled = true;
+    } else if (outputError) {
+      // console.log(`CASE 2: outputError = ${outputError}`);
+      disabled = true;
+    } else if (amount1 === undefined || amount1 === null) {
+      // console.log('CASE 3: amount1 === undefined || amount1 === null: ');
+      disabled = true;
+    } else if (
+      inputAmountStr === undefined ||
+      inputAmountStr === null ||
+      inputAmountStr === ''
+    ) {
+      // console.log("CASE 5: inputAmountStr = { undefined, null, '' } ");
+      disabled = true;
+    } else if (amount2 === undefined || amount2 === null) {
+      // console.log('CASE 6: amount2 === undefined || amount2 === null ');
+      disabled = true;
+    } else if (
+      outputAmountStr === undefined ||
+      outputAmountStr === null ||
+      outputAmountStr === ''
+    ) {
+      // console.log(
+      //   'CASE 7: outputAmountStr = { undefined, null, empty string } ',
+      // );
+      disabled = true;
+    } else if (amount1 === 0 && amount2 === 0) {
+      // console.log('CASE 8: amount1 === 0 && amount2 === 0 ');
+      disabled = true;
+    } else if (!nftToken) {
+      // console.log('CASE 9: nftToken = { undefined, null, 0 } ');
+      disabled = true;
+    }
+
     return { disabled };
-  }
+  },
 );
 
-
-export default ({
+export default {
   isFetchingSelector,
   feeAmountSelector,
   poolIDSelector,
@@ -142,4 +214,4 @@ export default ({
   maxShareAmountSelector,
   disableRemovePool,
   nftTokenSelector,
-});
+};

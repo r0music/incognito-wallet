@@ -78,7 +78,7 @@ const InputsGroup = () => {
         <Field
           component={TradeInputAmount}
           name={formConfigsRemovePool.inputToken}
-          validate={[_validateInput, ...validator.combinedAmount]}
+          validate={[_validateInput, ...validator.combinedNumber]}
           editableInput={!inputToken.loadingBalance}
           srcIcon={inputToken && inputToken?.iconUrl}
           symbol={inputToken && inputToken?.symbol}
@@ -90,7 +90,7 @@ const InputsGroup = () => {
         <Field
           component={TradeInputAmount}
           name={formConfigsRemovePool.outputToken}
-          validate={[_validateOutput, ...validator.combinedAmount]}
+          validate={[_validateOutput, ...validator.combinedNumber]}
           symbol={outputToken && outputToken?.symbol}
           srcIcon={outputToken && outputToken?.iconUrl}
           editableInput={!outputToken.loadingBalance}
@@ -119,6 +119,7 @@ const RemoveLPButton = React.memo(({ onSubmit }) => {
     formConfigsRemovePool.outputToken,
   );
   const handleSubmit = () => {
+    // console.log('[handleSubmit] disabled ', disabled);
     if (disabled) return;
     const params = {
       fee: feeAmount,
@@ -150,7 +151,9 @@ const RemovePool = ({
 }) => {
   const navigation = useNavigation();
   const isFetching = useSelector(removePoolSelector.isFetchingSelector);
-  const { feeAmountStr, showFaucet } = useSelector(removePoolSelector.feeAmountSelector);
+  const { feeAmountStr, showFaucet } = useSelector(
+    removePoolSelector.feeAmountSelector,
+  );
   const onSubmit = (params) => {
     typeof onRemoveContribute === 'function' && onRemoveContribute(params);
   };
@@ -181,12 +184,12 @@ const RemovePool = ({
       <Header style={styled.padding} />
       <View borderTop style={styled.container}>
         <ScrollView
-          refreshControl={(
+          refreshControl={
             <RefreshControl
               refreshing={isFetching}
               onRefresh={onInitRemovePool}
             />
-          )}
+          }
           showsVerticalScrollIndicator={false}
         >
           <Form>{renderContent()}</Form>
