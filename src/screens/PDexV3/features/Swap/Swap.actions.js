@@ -112,6 +112,7 @@ import {
   findTokenJoeByIdSelector,
   findTokenTrisolarisByIdSelector,
   getEsimateCountSelector,
+  swapFormErrorSelector,
 } from './Swap.selector';
 import {
   PANCAKE_SUPPORT_NETWORK,
@@ -897,8 +898,10 @@ export const actionEstimateTrade =
   ({ field = formConfigs.selltoken, useMax = false } = {}) =>
   async (dispatch, getState) => {
     let state = getState();
+
     const inputAmount = inputAmountSelector(state);
     const estimateCount = getEsimateCountSelector(state);
+    const formErrors = swapFormErrorSelector(state);
 
     let feeData = feetokenDataSelector(state);
     const prvData: SelectedPrivacy = getPrivacyDataByTokenID(state)(PRV.id);
@@ -909,6 +912,12 @@ export const actionEstimateTrade =
 
     const defaultExchange = defaultExchangeSelector(state);
 
+    if (
+      formErrors &&
+      formErrors[formConfigs.selltoken] === 'Must be a number'
+    ) {
+      return;
+    }
     if (isEmpty(sellInputToken) || isEmpty(buyInputToken)) {
       return;
     }
