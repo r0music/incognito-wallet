@@ -31,6 +31,38 @@ export const replaceDecimals = (text, autoCorrect = false) => {
   return text;
 };
 
+export const replaceDecimalsWithFormatPoint = (text) => {
+  if (typeof text !== 'string') {
+    return text;
+  }
+
+  let currentFormat = getDecimalSeparator();
+  // let currentFormat = ','; /TEST
+
+  if (
+    currentFormat === ',' &&
+    !text?.includes?.('e+') &&
+    !text?.includes?.('e-')
+  ) {
+    if (text?.includes?.(',')) {
+      text = text.replace(/\./g, '_');
+      text = text.replace(/,/g, '.');
+      text = text.replace(/_/g, '');
+    }
+  }
+
+  if (
+    currentFormat === '.' &&
+    !text?.includes?.('e+') &&
+    !text?.includes?.('e-')
+  ) {
+    text = text.replace(/,/g, '_');
+    text = text.replace(/_/g, '');
+  }
+
+  return text;
+};
+
 const toNumber = (text, autoCorrect = false) => {
   const number = replaceDecimals(text, autoCorrect);
   return _.toNumber(number);

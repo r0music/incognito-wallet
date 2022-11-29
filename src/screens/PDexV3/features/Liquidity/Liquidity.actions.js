@@ -5,25 +5,30 @@ import {
   formConfigsCreatePool,
   removePoolSelector,
   formConfigsRemovePool,
-  createPoolSelector
+  createPoolSelector,
 } from '@screens/PDexV3/features/Liquidity';
-import {batch} from 'react-redux';
-import {getBalance} from '@src/redux/actions/token';
-import {ExHandler} from '@services/exception';
+import { batch } from 'react-redux';
+import { getBalance } from '@src/redux/actions/token';
+import { ExHandler } from '@services/exception';
 import uniq from 'lodash/uniq';
-import {mappingDataSelector} from '@screens/PDexV3/features/Liquidity/Liquidity.contributeSelector';
-import {actionGetPDexV3Inst, calculateContributeValue, getPDexV3Instance, parseInputWithText} from '@screens/PDexV3';
-import {change} from 'redux-form';
-import {allTokensIDsSelector} from '@src/redux/selectors/token';
-import {actionFetch as actionFetchPortfolio} from '@screens/PDexV3/features/Portfolio';
+import { mappingDataSelector } from '@screens/PDexV3/features/Liquidity/Liquidity.contributeSelector';
+import {
+  actionGetPDexV3Inst,
+  calculateContributeValue,
+  getPDexV3Instance,
+  parseInputWithText,
+} from '@screens/PDexV3';
+import { change } from 'redux-form';
+import { allTokensIDsSelector } from '@src/redux/selectors/token';
+import { actionFetch as actionFetchPortfolio } from '@screens/PDexV3/features/Portfolio';
 import BigNumber from 'bignumber.js';
 import format from '@utils/format';
 import convertUtil from '@utils/convert';
-import {defaultAccountWalletSelector} from '@src/redux/selectors/account';
-import {actionSetNFTTokenData} from '@src/redux/actions/account';
-import {filterTokenList} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
-import {listPoolsPureSelector} from '@screens/PDexV3/features/Pools';
-import {debounce} from 'lodash';
+import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
+import { actionSetNFTTokenData } from '@src/redux/actions/account';
+import { filterTokenList } from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
+import { listPoolsPureSelector } from '@screens/PDexV3/features/Pools';
+import { debounce } from 'lodash';
 
 /***
  *================================================================
@@ -32,7 +37,7 @@ import {debounce} from 'lodash';
  **/
 const actionFetchingContribute = ({ isFetching }) => ({
   type: TYPES.ACTION_FETCHING_CONTRIBUTE_DATA,
-  payload: { isFetching }
+  payload: { isFetching },
 });
 
 const actionSetContributeID = ({ poolId, nftId }) => ({
@@ -45,16 +50,18 @@ const actionSetContributePoolData = ({ data, inputToken, outputToken }) => ({
   payload: { data, inputToken, outputToken },
 });
 
-const actionGetBalance = (tokenIDs = []) => async (dispatch) => {
-  try {
-    tokenIDs = uniq(tokenIDs);
-    tokenIDs.forEach((tokenID) => {
-      dispatch(getBalance(tokenID));
-    });
-  } catch (error) {
-    new ExHandler(error).showErrorToast();
-  }
-};
+const actionGetBalance =
+  (tokenIDs = []) =>
+  async (dispatch) => {
+    try {
+      tokenIDs = uniq(tokenIDs);
+      tokenIDs.forEach((tokenID) => {
+        dispatch(getBalance(tokenID));
+      });
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    }
+  };
 
 const actionInitContribute = () => async (dispatch, getState) => {
   try {
@@ -74,11 +81,13 @@ const actionInitContribute = () => async (dispatch, getState) => {
       if (!contributePool) return;
       const { token1Id, token2Id } = contributePool;
       batch(() => {
-        dispatch(actionSetContributePoolData({
-          data: contributePool,
-          inputToken: token1Id,
-          outputToken: token2Id
-        }));
+        dispatch(
+          actionSetContributePoolData({
+            data: contributePool,
+            inputToken: token1Id,
+            outputToken: token2Id,
+          }),
+        );
         dispatch(actionGetBalance([token1Id, token2Id]));
       });
     }
@@ -89,47 +98,81 @@ const actionInitContribute = () => async (dispatch, getState) => {
   }
 };
 
-const actionChangeInputContribute = (newInput) => async (dispatch, getState) => {
-  try {
-    const state = getState();
-    const { inputToken, outputToken, token1PoolValue, token2PoolValue } = mappingDataSelector(state);
-    const inputValue = parseInputWithText({ text: newInput, token: inputToken });
-    const outputText = calculateContributeValue({
-      inputValue,
-      outputToken,
-      inputToken,
-      inputPool: token1PoolValue,
-      outputPool: token2PoolValue,
-    });
-    batch(() => {
-      dispatch(change(formConfigsContribute.formName, formConfigsContribute.inputToken, newInput));
-      dispatch(change(formConfigsContribute.formName, formConfigsContribute.outputToken, outputText));
-    });
-  } catch (error) {
-    new ExHandler(error).showErrorToast();
-  }
-};
+const actionChangeInputContribute =
+  (newInput) => async (dispatch, getState) => {
+    try {
+      const state = getState();
+      const { inputToken, outputToken, token1PoolValue, token2PoolValue } =
+        mappingDataSelector(state);
+      const inputValue = parseInputWithText({
+        text: newInput,
+        token: inputToken,
+      });
+      const outputText = calculateContributeValue({
+        inputValue,
+        outputToken,
+        inputToken,
+        inputPool: token1PoolValue,
+        outputPool: token2PoolValue,
+      });
+      batch(() => {
+        dispatch(
+          change(
+            formConfigsContribute.formName,
+            formConfigsContribute.inputToken,
+            newInput,
+          ),
+        );
+        dispatch(
+          change(
+            formConfigsContribute.formName,
+            formConfigsContribute.outputToken,
+            outputText,
+          ),
+        );
+      });
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    }
+  };
 
-const actionChangeOutputContribute = (newOutput) => async (dispatch, getState) => {
-  try {
-    const state = getState();
-    const { inputToken, outputToken, token1PoolValue, token2PoolValue } = mappingDataSelector(state);
-    const outputValue = parseInputWithText({ text: newOutput, token: outputToken });
-    const inputText = calculateContributeValue({
-      inputValue: outputValue,
-      outputToken: inputToken,
-      inputToken: outputToken,
-      inputPool: token2PoolValue,
-      outputPool: token1PoolValue,
-    });
-    batch(() => {
-      dispatch(change(formConfigsContribute.formName, formConfigsContribute.inputToken, inputText));
-      dispatch(change(formConfigsContribute.formName, formConfigsContribute.outputToken, newOutput));
-    });
-  } catch (error) {
-    new ExHandler(error).showErrorToast();
-  }
-};
+const actionChangeOutputContribute =
+  (newOutput) => async (dispatch, getState) => {
+    try {
+      const state = getState();
+      const { inputToken, outputToken, token1PoolValue, token2PoolValue } =
+        mappingDataSelector(state);
+      const outputValue = parseInputWithText({
+        text: newOutput,
+        token: outputToken,
+      });
+      const inputText = calculateContributeValue({
+        inputValue: outputValue,
+        outputToken: inputToken,
+        inputToken: outputToken,
+        inputPool: token2PoolValue,
+        outputPool: token1PoolValue,
+      });
+      batch(() => {
+        dispatch(
+          change(
+            formConfigsContribute.formName,
+            formConfigsContribute.inputToken,
+            inputText,
+          ),
+        );
+        dispatch(
+          change(
+            formConfigsContribute.formName,
+            formConfigsContribute.outputToken,
+            newOutput,
+          ),
+        );
+      });
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    }
+  };
 
 /***
  *================================================================
@@ -147,32 +190,27 @@ const actionFeeCreatePool = () => ({
 
 const actionSetFetchingCreatePool = ({ isFetching }) => ({
   type: TYPES.ACTION_SET_FETCHING_CREATE_POOL,
-  payload: { isFetching }
+  payload: { isFetching },
 });
 
 const actionSetTypingCreatePool = ({ isTyping }) => ({
   type: TYPES.ACTION_SET_TYPING_CREATE_POOL,
-  payload: { isTyping }
+  payload: { isTyping },
 });
 
 const actionSetFocusCreatePool = ({ focusField }) => ({
   type: TYPES.ACTION_SET_FOCUS_CREATE_POOL,
-  payload: { focusField }
+  payload: { focusField },
 });
 
 const actionSetRateCreatePool = ({ rate, amp }) => ({
   type: TYPES.ACTION_SET_RATE_CREATE_POOL,
-  payload: { rate, amp }
+  payload: { rate, amp },
 });
 
 const debouncedGetCreatePoolRate = debounce(async (dispatch, _, payload) => {
   try {
-    const {
-      inputToken,
-      inputAmount,
-      outputToken,
-      outputAmount
-    } = payload;
+    const { inputToken, inputAmount, outputToken, outputAmount } = payload;
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const data = await pDexV3Inst.rpcTradeService.apiCheckRate({
       token1: inputToken,
@@ -191,9 +229,8 @@ const debouncedGetCreatePoolRate = debounce(async (dispatch, _, payload) => {
   }
 }, 1000);
 
-const asyncActionDebounced = (payload, closure) => (dispatch, getState) => (
-  closure(dispatch, getState, payload)
-);
+const asyncActionDebounced = (payload, closure) => (dispatch, getState) =>
+  closure(dispatch, getState, payload);
 
 const actionSetCreatePoolText = (text) => async (dispatch, getState) => {
   try {
@@ -205,67 +242,77 @@ const actionSetCreatePoolText = (text) => async (dispatch, getState) => {
   }
 };
 
-const actionUpdateCreatePoolInputToken = (tokenId) => async (dispatch, getState) => {
-  try {
-    const state = getState();
-    const isFetching = createPoolSelector.isFetchingSelector(state);
-    if (isFetching) return;
-    dispatch(actionSetFetchingCreatePool({ isFetching: true }));
-    const tokenIds = allTokensIDsSelector(state);
-    const { inputToken, outputToken } = createPoolSelector.tokenSelector(state);
-    const pools = listPoolsPureSelector(state);
-    const newInputToken = tokenId;
-    let newOutputToken = outputToken.tokenId;
-    if (newInputToken === outputToken.tokenId) {
-      newOutputToken = inputToken.tokenId;
+const actionUpdateCreatePoolInputToken =
+  (tokenId) => async (dispatch, getState) => {
+    try {
+      const state = getState();
+      const isFetching = createPoolSelector.isFetchingSelector(state);
+      if (isFetching) return;
+      dispatch(actionSetFetchingCreatePool({ isFetching: true }));
+      const tokenIds = allTokensIDsSelector(state);
+      const { inputToken, outputToken } =
+        createPoolSelector.tokenSelector(state);
+      const pools = listPoolsPureSelector(state);
+      const newInputToken = tokenId;
+      let newOutputToken = outputToken.tokenId;
+      if (newInputToken === outputToken.tokenId) {
+        newOutputToken = inputToken.tokenId;
+      }
+      const outputTokens = filterTokenList({
+        tokenId: newInputToken,
+        pools,
+        tokenIds,
+        ignoreTokens: [newInputToken],
+      });
+      const isExist = outputTokens.some(
+        (tokenId) => tokenId === newOutputToken,
+      );
+      if (!isExist) newOutputToken = outputTokens[0];
+      await Promise.all([
+        dispatch(
+          actionSetCreatePoolToken({
+            inputToken: newInputToken,
+            outputToken: newOutputToken,
+          }),
+        ),
+        dispatch(actionGetBalance([newInputToken, newOutputToken])),
+      ]);
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    } finally {
+      dispatch(actionSetFetchingCreatePool({ isFetching: false }));
     }
-    const outputTokens = filterTokenList({
-      tokenId: newInputToken,
-      pools,
-      tokenIds,
-      ignoreTokens: [newInputToken]
-    });
-    const isExist = outputTokens.some(tokenId => tokenId === newOutputToken);
-    if (!isExist) newOutputToken = outputTokens[0];
-    await Promise.all([
-      dispatch(actionSetCreatePoolToken({
-        inputToken: newInputToken,
-        outputToken: newOutputToken,
-      })),
-      dispatch(actionGetBalance([newInputToken, newOutputToken])),
-    ]);
-  } catch (error) {
-    new ExHandler(error).showErrorToast();
-  } finally {
-    dispatch(actionSetFetchingCreatePool({ isFetching: false }));
-  }
-};
+  };
 
-const actionUpdateCreatePoolOutputToken = (tokenId) => async (dispatch, getState) => {
-  try {
-    const state = getState();
-    const isFetching = createPoolSelector.isFetchingSelector(state);
-    if (isFetching) return;
-    dispatch(actionSetFetchingCreatePool({ isFetching: true }));
-    const { inputToken, outputToken } = createPoolSelector.tokenSelector(state);
-    const newOutputToken = tokenId;
-    let newInputToken = inputToken.tokenId;
-    if (newInputToken === outputToken.tokenId) {
-      newInputToken = outputToken.tokenId;
+const actionUpdateCreatePoolOutputToken =
+  (tokenId) => async (dispatch, getState) => {
+    try {
+      const state = getState();
+      const isFetching = createPoolSelector.isFetchingSelector(state);
+      if (isFetching) return;
+      dispatch(actionSetFetchingCreatePool({ isFetching: true }));
+      const { inputToken, outputToken } =
+        createPoolSelector.tokenSelector(state);
+      const newOutputToken = tokenId;
+      let newInputToken = inputToken.tokenId;
+      if (newInputToken === outputToken.tokenId) {
+        newInputToken = outputToken.tokenId;
+      }
+      batch(() => {
+        dispatch(
+          actionSetCreatePoolToken({
+            inputToken: newInputToken,
+            outputToken: newOutputToken,
+          }),
+        );
+        dispatch(actionGetBalance([newInputToken, newOutputToken]));
+      });
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    } finally {
+      dispatch(actionSetFetchingCreatePool({ isFetching: false }));
     }
-    batch(() => {
-      dispatch(actionSetCreatePoolToken({
-        inputToken: newInputToken,
-        outputToken: newOutputToken,
-      }));
-      dispatch(actionGetBalance([newInputToken, newOutputToken]));
-    });
-  } catch (error) {
-    new ExHandler(error).showErrorToast();
-  } finally {
-    dispatch(actionSetFetchingCreatePool({ isFetching: false }));
-  }
-};
+  };
 
 const actionInitCreatePool = () => async (dispatch, getState) => {
   try {
@@ -279,14 +326,24 @@ const actionInitCreatePool = () => async (dispatch, getState) => {
     let newInputToken, newOutputToken;
     if (!inputToken && !outputToken) {
       newInputToken = tokenIDs[0];
-      const outputTokens = filterTokenList({ tokenId: newInputToken, pools: listPools, tokenIds: tokenIDs, ignoreTokens: [newInputToken] });
+      const outputTokens = filterTokenList({
+        tokenId: newInputToken,
+        pools: listPools,
+        tokenIds: tokenIDs,
+        ignoreTokens: [newInputToken],
+      });
       newOutputToken = outputTokens[0];
     } else {
       newInputToken = inputToken.tokenId;
       newOutputToken = outputToken.tokenId;
     }
     await Promise.all([
-      dispatch(actionSetCreatePoolToken({ inputToken: newInputToken, outputToken: newOutputToken })),
+      dispatch(
+        actionSetCreatePoolToken({
+          inputToken: newInputToken,
+          outputToken: newOutputToken,
+        }),
+      ),
       dispatch(actionGetBalance([newInputToken, newOutputToken])),
       dispatch(actionSetNFTTokenData()),
     ]);
@@ -341,91 +398,153 @@ const actionChangeInputRemovePool = (newText) => async (dispatch, getState) => {
     const state = getState();
     const { inputToken, outputToken } = removePoolSelector.tokenSelector(state);
     const maxShareData = removePoolSelector.maxShareAmountSelector(state);
-    const {
-      maxInputShare,
-      maxOutputShare,
-    } = maxShareData;
+    const { maxInputShare, maxOutputShare } = maxShareData;
     const inputValue = parseInputWithText({ text: newText, token: inputToken });
-    const outputValue = new BigNumber(inputValue).multipliedBy(maxOutputShare).dividedBy(maxInputShare).toNumber();
-    const outputHumanValue = convertUtil.toHumanAmount(outputValue, outputToken.pDecimals);
+    const outputValue = new BigNumber(inputValue)
+      .multipliedBy(maxOutputShare)
+      .dividedBy(maxInputShare)
+      .toNumber();
+    const outputHumanValue = convertUtil.toHumanAmount(
+      outputValue,
+      outputToken.pDecimals,
+    );
     const outputText = format.toFixed(outputHumanValue, outputToken.pDecimals);
     batch(() => {
-      dispatch(change(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken, newText));
-      dispatch(change(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken, outputText));
+      dispatch(
+        change(
+          formConfigsRemovePool.formName,
+          formConfigsRemovePool.inputToken,
+          newText,
+        ),
+      );
+      dispatch(
+        change(
+          formConfigsRemovePool.formName,
+          formConfigsRemovePool.outputToken,
+          outputText,
+        ),
+      );
     });
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
 };
 
-const actionChangeOutputRemovePool = (newText) => async (dispatch, getState) => {
-  try {
-    const state = getState();
-    const { inputToken, outputToken } = removePoolSelector.tokenSelector(state);
-    const maxShareData = removePoolSelector.maxShareAmountSelector(state);
-    const {
-      maxInputShare,
-      maxOutputShare,
-    } = maxShareData;
-    const outputValue = parseInputWithText({ text: newText, token: outputToken });
-    const inputValue = new BigNumber(outputValue).multipliedBy(maxInputShare).dividedBy(maxOutputShare).toNumber();
-    const inputHumanValue = convertUtil.toHumanAmount(inputValue, inputToken.pDecimals);
-    const inputText = format.toFixed(inputHumanValue, inputToken.pDecimals);
-    batch(() => {
-      dispatch(change(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken, inputText));
-      dispatch(change(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken, newText));
-    });
-  } catch (error) {
-    new ExHandler(error).showErrorToast();
-  }
-};
+const actionChangeOutputRemovePool =
+  (newText) => async (dispatch, getState) => {
+    try {
+      const state = getState();
+      const { inputToken, outputToken } =
+        removePoolSelector.tokenSelector(state);
+      const maxShareData = removePoolSelector.maxShareAmountSelector(state);
+      const { maxInputShare, maxOutputShare } = maxShareData;
+      const outputValue = parseInputWithText({
+        text: newText,
+        token: outputToken,
+      });
+      const inputValue = new BigNumber(outputValue)
+        .multipliedBy(maxInputShare)
+        .dividedBy(maxOutputShare)
+        .toNumber();
+      const inputHumanValue = convertUtil.toHumanAmount(
+        inputValue,
+        inputToken.pDecimals,
+      );
+      const inputText = format.toFixed(inputHumanValue, inputToken.pDecimals);
+      batch(() => {
+        dispatch(
+          change(
+            formConfigsRemovePool.formName,
+            formConfigsRemovePool.inputToken,
+            inputText,
+          ),
+        );
+        dispatch(
+          change(
+            formConfigsRemovePool.formName,
+            formConfigsRemovePool.outputToken,
+            newText,
+          ),
+        );
+      });
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    }
+  };
 
 const actionMaxRemovePool = () => async (dispatch, getState) => {
   try {
     const state = getState();
     const maxShareData = removePoolSelector.maxShareAmountSelector(state);
-    const {
-      maxInputShareStr,
-      maxOutputShareStr,
-    } = maxShareData;
+    const { maxInputShareStr, maxOutputShareStr } = maxShareData;
+
     batch(() => {
-      dispatch(change(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken, maxInputShareStr));
-      dispatch(change(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken, maxOutputShareStr));
+      dispatch(
+        change(
+          formConfigsRemovePool.formName,
+          formConfigsRemovePool.inputToken,
+          maxInputShareStr,
+        ),
+      );
+      dispatch(
+        change(
+          formConfigsRemovePool.formName,
+          formConfigsRemovePool.outputToken,
+          maxOutputShareStr,
+        ),
+      );
     });
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
 };
 
-const actionChangePercentRemovePool = (percent) => async (dispatch, getState) => {
-  try {
-    const state = getState();
-    const maxShareData = removePoolSelector.maxShareAmountSelector(state);
-    const { inputToken, outputToken } = removePoolSelector.tokenSelector(state);
-    const {
-      maxInputHuman,
-      maxOutputHuman,
-    } = maxShareData;
+const actionChangePercentRemovePool =
+  (percent) => async (dispatch, getState) => {
+    try {
+      const state = getState();
+      const maxShareData = removePoolSelector.maxShareAmountSelector(state);
+      const { inputToken, outputToken } =
+        removePoolSelector.tokenSelector(state);
+      const { maxInputHuman, maxOutputHuman } = maxShareData;
 
-    const inputHuman = new BigNumber(maxInputHuman).multipliedBy(percent).dividedBy(100).toNumber();
-    const inputStr = format.toFixed(inputHuman, inputToken.pDecimals);
+      const inputHuman = new BigNumber(maxInputHuman)
+        .multipliedBy(percent)
+        .dividedBy(100)
+        .toNumber();
+      const inputStr = format.toFixed(inputHuman, inputToken.pDecimals);
 
-    const outputHuman = new BigNumber(maxOutputHuman).multipliedBy(percent).dividedBy(100).toNumber();
-    const outputStr = format.toFixed(outputHuman, outputToken.pDecimals);
-    batch(() => {
-      dispatch(change(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken, inputStr));
-      dispatch(change(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken, outputStr));
-    });
-  } catch (error) {
-    new ExHandler(error).showErrorToast();
-  }
-};
+      const outputHuman = new BigNumber(maxOutputHuman)
+        .multipliedBy(percent)
+        .dividedBy(100)
+        .toNumber();
+      const outputStr = format.toFixed(outputHuman, outputToken.pDecimals);
+      batch(() => {
+        dispatch(
+          change(
+            formConfigsRemovePool.formName,
+            formConfigsRemovePool.inputToken,
+            inputStr,
+          ),
+        );
+        dispatch(
+          change(
+            formConfigsRemovePool.formName,
+            formConfigsRemovePool.outputToken,
+            outputStr,
+          ),
+        );
+      });
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    }
+  };
 
 export const actionFree = () => ({
-  type: TYPES.ACTION_FREE
+  type: TYPES.ACTION_FREE,
 });
 
-export default ({
+export default {
   actionGetBalance,
   actionSetContributeID,
   actionInitContribute,
@@ -451,5 +570,5 @@ export default ({
   actionMaxRemovePool,
   actionChangePercentRemovePool,
 
-  actionFree
-});
+  actionFree,
+};

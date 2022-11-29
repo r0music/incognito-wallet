@@ -1,26 +1,37 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import {actionGetPDexV3Inst} from '@screens/PDexV3';
-import {batch, useDispatch} from 'react-redux';
-import {ExHandler} from '@services/exception';
-import {Toast} from '@components/core';
-import {actionFetch} from '@screens/PDexV3/features/Portfolio';
+import { actionGetPDexV3Inst } from '@screens/PDexV3';
+import { batch, useDispatch } from 'react-redux';
+import { ExHandler } from '@services/exception';
+import { Toast } from '@components/core';
+import { actionFetch } from '@screens/PDexV3/features/Portfolio';
 import Loading from '@screens/DexV2/components/Loading';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { ANALYTICS } from '@src/constants';
 
-const withTransaction = WrappedComp => props => {
+const withTransaction = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(false);
   const [visible, setVisible] = React.useState(false);
   const [error, setError] = React.useState('');
   const onShowSuccess = () => {
-    setTimeout(() => { setVisible(true); }, 500);
+    setTimeout(() => {
+      setVisible(true);
+    }, 500);
   };
   const onClose = () => {
     setVisible(false);
   };
-  const onCreateContributes = async ({ fee, tokenId1, tokenId2, amount1, amount2, poolPairID, amp, nftID }) => {
+  const onCreateContributes = async ({
+    fee,
+    tokenId1,
+    tokenId2,
+    amount1,
+    amount2,
+    poolPairID,
+    amp,
+    nftID,
+  }) => {
     if (loading) return;
     try {
       setLoading(true);
@@ -36,12 +47,14 @@ const withTransaction = WrappedComp => props => {
         nftID,
       });
       setTimeout(() => {
-        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CONTRIBUTE_LP, {
-          token_id1: tokenId1,
-          token_id2: tokenId2,
-          token_amount1: amount1,
-          token_amount2: amount2,
-        }));
+        dispatch(
+          requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CONTRIBUTE_LP, {
+            token_id1: tokenId1,
+            token_id2: tokenId2,
+            token_amount1: amount1,
+            token_amount2: amount2,
+          }),
+        );
       }, 300);
       onShowSuccess();
     } catch (error) {
@@ -50,7 +63,14 @@ const withTransaction = WrappedComp => props => {
       setLoading(false);
     }
   };
-  const onCreateNewPool = async ({ fee, tokenId1, tokenId2, amount1, amount2, amp }) => {
+  const onCreateNewPool = async ({
+    fee,
+    tokenId1,
+    tokenId2,
+    amount1,
+    amount2,
+    amp,
+  }) => {
     if (loading) return;
     try {
       setLoading(true);
@@ -62,15 +82,17 @@ const withTransaction = WrappedComp => props => {
         amount1,
         amount2,
         poolPairID: '',
-        amp
+        amp,
       });
       setTimeout(() => {
-        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CONTRIBUTE_NEW_LP, {
-          token_id1: tokenId1,
-          token_id2: tokenId2,
-          token_amount1: amount1,
-          token_amount2: amount2,
-        }));
+        dispatch(
+          requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CONTRIBUTE_NEW_LP, {
+            token_id1: tokenId1,
+            token_id2: tokenId2,
+            token_amount1: amount1,
+            token_amount2: amount2,
+          }),
+        );
       }, 300);
       onShowSuccess();
     } catch (error) {
@@ -79,21 +101,48 @@ const withTransaction = WrappedComp => props => {
       setLoading(false);
     }
   };
-  const onRemoveContribute = async ({ fee, poolTokenIDs, poolPairID, shareAmount, nftID, amount1, amount2 }) => {
+  const onRemoveContribute = async ({
+    fee,
+    poolTokenIDs,
+    poolPairID,
+    shareAmount,
+    nftID,
+    amount1,
+    amount2,
+  }) => {
+    // console.log('[onRemoveContribute] params ', {
+    //   fee,
+    //   poolTokenIDs,
+    //   poolPairID,
+    //   shareAmount,
+    //   nftID,
+    //   amount1,
+    //   amount2,
+    // });
     if (loading) return;
     try {
       setLoading(true);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      await pDexV3Inst.createAndSendWithdrawContributeRequestTx({
-        fee, poolTokenIDs, poolPairID, shareAmount, nftID, amount1, amount2
+      const result = await pDexV3Inst.createAndSendWithdrawContributeRequestTx({
+        fee,
+        poolTokenIDs,
+        poolPairID,
+        shareAmount,
+        nftID,
+        amount1,
+        amount2,
       });
+
+      console.log('[onRemoveContribute] result: ', result);
       setTimeout(() => {
-        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.REMOVE_LP, {
-          token_id1: poolTokenIDs[0],
-          token_id2: poolTokenIDs[1],
-          share_amount: shareAmount,
-          pool_pair_id: poolPairID
-        }));
+        dispatch(
+          requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.REMOVE_LP, {
+            token_id1: poolTokenIDs[0],
+            token_id2: poolTokenIDs[1],
+            share_amount: shareAmount,
+            pool_pair_id: poolPairID,
+          }),
+        );
       }, 300);
       onShowSuccess();
     } catch (error) {
@@ -132,7 +181,7 @@ const withTransaction = WrappedComp => props => {
       });
       endWithdrawFee();
     } catch (error) {
-      Toast.showError(error.message || typeof error === 'string' && error);
+      Toast.showError(error.message || (typeof error === 'string' && error));
       setError(new ExHandler(error).getMessage(error?.message));
     } finally {
       setLoading(false);
