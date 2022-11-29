@@ -1,75 +1,75 @@
-import React, { useState } from 'react';
-import Header from '@src/components/Header';
-import { BtnQuestionDefault } from '@src/components/Button';
-import PropTypes from 'prop-types';
-import {
-  ListAllToken2,
-  TokenFollow,
-  handleFilterTokenByKeySearch,
-} from '@src/components/Token';
 import { View } from '@components/core';
-import globalStyled from '@src/theme/theme.styled';
-import { FONT } from '@src/styles';
-import { compose } from 'recompose';
 import withLazy from '@components/LazyHoc/LazyHoc';
-import { isEmpty } from 'lodash';
-import { useFuse } from '@components/Hoc/useFuse';
-import { styled } from './Shield.styled';
+import { searchToken } from '@services/api/token';
+import { BtnQuestionDefault } from '@src/components/Button';
+import Header from '@src/components/Header';
+import { ListAllToken2, TokenFollow } from '@src/components/Token';
+import { FONT } from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
+import { debounce, orderBy } from 'lodash';
+import PropTypes from 'prop-types';
+import React, { useMemo, useState } from 'react';
+import { compose } from 'recompose';
+import { RULE_SORT } from '@screens/PDexV3/features/Swap/Swap.constant';
 import withShield from './Shield.enhance';
+import { styled } from './Shield.styled';
 
 const Shield = (props) => {
   const { handleShield, handleWhyShield, hideBackButton, availableTokens } =
     props;
 
-  // Get list verifiedToken list unVerifiedTokens from list all token
-  const _verifiedTokens = availableTokens?.filter(
-    (token) => token?.isVerified && !token?.movedUnifiedToken,
-  );
-  const _unVerifiedTokens = availableTokens?.filter(
-    (token) => !token.isVerified && !token?.movedUnifiedToken,
-  );
-
+  const [tokenList, setTokenList] = useState(availableTokens);
   const [showUnVerifiedTokens, setShowUnVerifiedTokens] = useState(false);
+
+  const [verifiedTokens, unVerifiedTokens] = useMemo(() => {
+    const resultFiltered = tokenList.reduce(
+      (result, token) => {
+        if (token?.isVerified && !token?.movedUnifiedToken) {
+          result.verifiedTokens.push(token);
+        } else if (!token?.isVerified && !token?.movedUnifiedToken) {
+          result.unVerifiedTokens.push(token);
+        } else {
+          // console.log('TOKEN MOVED UNIFIED => ', token.tokenId);
+        }
+        return result;
+      },
+      {
+        verifiedTokens: [],
+        unVerifiedTokens: [],
+      },
+    );
+    return [resultFiltered.verifiedTokens, resultFiltered.unVerifiedTokens];
+  }, tokenList);
 
   const onSetShowUnVerifiedTokens = () => {
     setShowUnVerifiedTokens(!showUnVerifiedTokens);
   };
 
-  const [verifiedTokens, onSearchVerifiedTokens] = useFuse(_verifiedTokens, {
-    keys: ['displayName', 'name', 'symbol', 'pSymbol'],
-    matchAllOnEmptyQuery: true,
-    isCaseSensitive: false,
-    findAllMatches: true,
-    includeMatches: false,
-    includeScore: true,
-    useExtendedSearch: false,
-    threshold: 0,
-    location: 0,
-    distance: 2,
-    maxPatternLength: 32,
-  });
+  let tokens = [];
 
-  const [unVerifiedTokens, onSearchUnVerifiedTokens] = useFuse(
-    _unVerifiedTokens,
-    {
-      keys: ['displayName', 'name', 'symbol', 'pSymbol'],
-      matchAllOnEmptyQuery: true,
-      isCaseSensitive: false,
-      findAllMatches: true,
-      includeMatches: false,
-      includeScore: true,
-      useExtendedSearch: false,
-      threshold: 0,
-      location: 0,
-      distance: 2,
-      maxPatternLength: 32,
-    },
-  );
-
-  let tokens = [verifiedTokens];
-  if (showUnVerifiedTokens) {
+  if (!verifiedTokens && !unVerifiedTokens) {
+    tokens = [];
+  } else if (verifiedTokens && verifiedTokens.length < 1) {
+    tokens = [unVerifiedTokens];
+  } else if (unVerifiedTokens && unVerifiedTokens.length < 1) {
+    tokens = [verifiedTokens];
+  } else if (!showUnVerifiedTokens) {
+    tokens = [verifiedTokens];
+  } else if (showUnVerifiedTokens) {
     tokens = [verifiedTokens, unVerifiedTokens];
   }
+
+  const debounceSearch = debounce(async (nextValue) => {
+    setShowUnVerifiedTokens(false);
+    if (!nextValue || nextValue.length < 1) {
+      setTokenList(availableTokens);
+    } else {
+      const result = (await searchToken(nextValue)) || [];
+      if (result && result.length < 1) {
+        setTokenList([]);
+      } else setTokenList(orderBy(result, RULE_SORT.key, RULE_SORT.value));
+    }
+  }, 500);
 
   return (
     <>
@@ -78,8 +78,7 @@ const Shield = (props) => {
         canSearch
         isNormalSearch
         onTextSearchChange={(value) => {
-          onSearchVerifiedTokens(value);
-          onSearchUnVerifiedTokens(value);
+          debounceSearch(value);
         }}
         titleStyled={FONT.TEXT.incognitoH4}
         hideBackButton={hideBackButton}

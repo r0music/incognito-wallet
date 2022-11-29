@@ -81,7 +81,7 @@ const parseExchangeDataModelResponse = (
     amountOutPreSlippage: data.AmountOutPreSlippage || '0',
     amountOutPreSlippageNumber: parseFloat(data.AmountOutPreSlippage || '0'),
     fees: data.Fee || [],
-    routes: data.Paths || [],
+    routes: data.Paths || '',
     incTokenID: incTokenID || '',
     feeAddress: data.FeeAddress || '',
     callContract: data.CallContract,

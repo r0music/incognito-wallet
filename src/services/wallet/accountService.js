@@ -31,6 +31,7 @@ import { CustomError, ErrorCode, ExHandler } from '../exception';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 
 const TAG = 'Account';
+const GET_BALANCE_CACHE_EXPIRED_TIME = 20 * 1000; //20s
 
 export default class Account {
   static NO_OF_INPUT_PER_DEFRAGMENT_TX = 10;
@@ -59,10 +60,7 @@ export default class Account {
     new Validator('wallet', wallet).required();
     let imported = false;
     try {
-      const account = await wallet.importAccount(
-        privakeyStr,
-        accountName,
-      );
+      const account = await wallet.importAccount(privakeyStr, accountName);
       imported = !!account.isImport;
       if (imported) {
         await saveWallet(wallet);
@@ -360,11 +358,14 @@ export default class Account {
     try {
       const params = { tokenID, version };
       const key = accountWallet.getKeyCacheBalance(params);
-      balance = await cachePromise(key, () =>
-        accountWallet.getBalance({
-          tokenID,
-          version,
-        }),
+      balance = await cachePromise(
+        key,
+        () =>
+          accountWallet.getBalance({
+            tokenID,
+            version,
+          }),
+        GET_BALANCE_CACHE_EXPIRED_TIME,
       );
       balance = new BigNumber(balance).toNumber();
     } catch (error) {
