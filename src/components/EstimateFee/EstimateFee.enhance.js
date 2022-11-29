@@ -1,14 +1,14 @@
 /* eslint-disable import/no-cycle */
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { ExHandler } from '@src/services/exception';
-import debounce from 'lodash/debounce';
+import convert from '@src/utils/convert';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useFocusEffect } from 'react-navigation-hooks';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { reset } from 'redux-form';
-import { useKeyboard } from '../UseEffect/useKeyboard';
-import { actionFetchFee } from './EstimateFee.actions';
+import { actionFetchFee, actionFetchingFee } from './EstimateFee.actions';
+import { estimateFeeSelector } from './EstimateFee.selector';
 
 const enhance = (WrappedComp) => (props) => {
   const {
@@ -22,7 +22,8 @@ const enhance = (WrappedComp) => (props) => {
     childSelectedPrivacy,
   } = props;
   const dispatch = useDispatch();
-  const [isKeyboardVisible] = useKeyboard();
+  const { init } = useSelector(estimateFeeSelector);
+
   const handleChangeForm = async (
     address,
     amount,
@@ -33,9 +34,23 @@ const enhance = (WrappedComp) => (props) => {
     childSelectedPrivacy,
   ) => {
     try {
-      if (!amount || !address || !childSelectedPrivacy) {
+      const originalAmount = convert.toOriginalAmount(
+        amount,
+        selectedPrivacy?.pDecimals,
+      );
+      const _originalAmount = Number(originalAmount);
+
+      if (
+        !init ||
+        !amount ||
+        !address ||
+        !selectedPrivacy?.tokenId ||
+        !childSelectedPrivacy ||
+        _originalAmount === 0
+      ) {
         return;
       }
+
       let screen = 'Send';
       if (childSelectedPrivacy?.networkId !== 'INCOGNITO') {
         screen = 'UnShield';
@@ -46,21 +61,24 @@ const enhance = (WrappedComp) => (props) => {
         return;
       }
 
-      await dispatch(
-        actionFetchFee({
-          amount,
-          address,
-          screen,
-          memo,
-        }),
-      );
+      await dispatch(actionFetchingFee());
+
+      setTimeout(() => {
+        dispatch(
+          actionFetchFee({
+            amount,
+            address,
+            screen,
+            memo,
+          }),
+        );
+      }, 1500);
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
   };
-  const _handleChangeForm = React.useRef(debounce(handleChangeForm, 1500));
   React.useEffect(() => {
-    _handleChangeForm.current(
+    handleChangeForm(
       address,
       amount,
       memo,
@@ -78,19 +96,6 @@ const enhance = (WrappedComp) => (props) => {
     selectedPrivacy,
     childSelectedPrivacy,
   ]);
-  React.useEffect(() => {
-    if (!isKeyboardVisible && _handleChangeForm && _handleChangeForm.current) {
-      _handleChangeForm.current(
-        address,
-        amount,
-        memo,
-        isExternalAddress,
-        isIncognitoAddress,
-        selectedPrivacy,
-        childSelectedPrivacy,
-      );
-    }
-  }, [isKeyboardVisible]);
 
   useFocusEffect(
     React.useCallback(() => {
