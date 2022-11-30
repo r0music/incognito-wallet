@@ -26,7 +26,7 @@ const enhance = (WrappedComp) => (props) => {
   const account = useDebounceSelector(defaultAccountSelector);
   const accountWallet = useDebounceSelector(getDefaultAccountWalletSelector);
   const token =  useNavigationParam('tokenShield') || {};
-  const tokenShield = new SelectedPrivacy(
+  const tokenShield = token?.isSelectedPrivacyModal ? token : new SelectedPrivacy(
     account,
     {},
       token,
