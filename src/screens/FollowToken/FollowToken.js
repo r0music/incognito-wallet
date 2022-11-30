@@ -30,7 +30,7 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import { styled } from './FollowToken.styled';
 
 const AddManually = () => {
-  const title = "Don't see your coin?";
+  const title = 'Don\'t see your coin?';
   const navigation = useNavigation();
   const handleAddTokenManually = () =>
     navigation?.navigate(routeNames.AddManually, { type: 'ERC20' });

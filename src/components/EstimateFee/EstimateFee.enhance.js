@@ -2,6 +2,7 @@
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { ExHandler } from '@src/services/exception';
 import convert from '@src/utils/convert';
+import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useFocusEffect } from 'react-navigation-hooks';
@@ -24,6 +25,26 @@ const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const { init } = useSelector(estimateFeeSelector);
 
+  const validateData = () => {
+    const originalAmount = convert.toOriginalAmount(
+      amount,
+      selectedPrivacy?.pDecimals,
+    );
+    const _originalAmount = Number(originalAmount);
+
+    if (
+      !init ||
+      !amount ||
+      !address ||
+      !selectedPrivacy?.tokenId ||
+      !childSelectedPrivacy ||
+      _originalAmount === 0
+    ) {
+      return false;
+    }
+    return true;
+  };
+
   const handleChangeForm = async (
     address,
     amount,
@@ -34,23 +55,6 @@ const enhance = (WrappedComp) => (props) => {
     childSelectedPrivacy,
   ) => {
     try {
-      const originalAmount = convert.toOriginalAmount(
-        amount,
-        selectedPrivacy?.pDecimals,
-      );
-      const _originalAmount = Number(originalAmount);
-
-      if (
-        !init ||
-        !amount ||
-        !address ||
-        !selectedPrivacy?.tokenId ||
-        !childSelectedPrivacy ||
-        _originalAmount === 0
-      ) {
-        return;
-      }
-
       let screen = 'Send';
       if (childSelectedPrivacy?.networkId !== 'INCOGNITO') {
         screen = 'UnShield';
@@ -61,32 +65,33 @@ const enhance = (WrappedComp) => (props) => {
         return;
       }
 
-      await dispatch(actionFetchingFee());
-
-      setTimeout(() => {
-        dispatch(
-          actionFetchFee({
-            amount,
-            address,
-            screen,
-            memo,
-          }),
-        );
-      }, 1500);
+      await dispatch(
+        actionFetchFee({
+          amount,
+          address,
+          screen,
+          memo,
+        }),
+      );
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
   };
+
+  const _handleChangeForm = React.useRef(debounce(handleChangeForm, 1500));
   React.useEffect(() => {
-    handleChangeForm(
-      address,
-      amount,
-      memo,
-      isExternalAddress,
-      isIncognitoAddress,
-      selectedPrivacy,
-      childSelectedPrivacy,
-    );
+    if (validateData()) {
+      dispatch(actionFetchingFee());
+      _handleChangeForm.current(
+        address,
+        amount,
+        memo,
+        isExternalAddress,
+        isIncognitoAddress,
+        selectedPrivacy,
+        childSelectedPrivacy,
+      );
+    }
   }, [
     address,
     amount,
