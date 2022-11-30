@@ -191,6 +191,8 @@ class SelectedPrivacy {
     const isUnknown = _tokenID !== PRV_ID && !tokenId;
     const unknownText = 'Incognito Token';
 
+    this.isSelectedPrivacyModal = true;
+
     this.currencyType = pTokenData.currencyType;
     this.isToken = tokenId !== CONSTANT_COMMONS.PRV_TOKEN_ID && !!tokenId; // all kind of tokens (private tokens, incognito tokens)
     this.isMainCrypto = _tokenID === PRV_ID; // PRV
