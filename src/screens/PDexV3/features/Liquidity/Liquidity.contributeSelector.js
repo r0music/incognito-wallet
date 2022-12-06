@@ -92,14 +92,15 @@ export const mappingDataSelector = createSelector(
     let currentPrice = format.amountVer2(price, 0);
     let currentPriceStr = `1 ${input.symbol} = ${currentPrice} ${output.symbol}`;
 
+    const percent = 100;
     // Ratio
     let token1Ratio = new BigNumber(token1PoolValue)
       .div(new BigNumber(token1PoolValue)
         .plus(new BigNumber(token2PoolValue)
           .div(new BigNumber(virtual2Value)
             .div(virtual1Value))))
-      .multipliedBy(100).toFixed(2);
-    let token2Ratio = new BigNumber(100).minus(token1Ratio);
+      .multipliedBy(percent).toFixed(2);
+    let token2Ratio = new BigNumber(percent).minus(token1Ratio);
     token1Ratio = format.amountVer2(token1Ratio, 0);
     token2Ratio = format.amountVer2(token2Ratio.toString(), 0);
     const poolRatioStr = `${token1Ratio}% ${input.symbol} - ${token2Ratio}% ${output.symbol}`;
