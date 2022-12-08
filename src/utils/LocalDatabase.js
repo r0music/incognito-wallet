@@ -7,6 +7,8 @@ import isEmpty from 'lodash/isEmpty';
 import Device from '@models/device';
 // eslint-disable-next-line import/no-cycle
 import {findAccountFromListAccounts} from '@screens/Node/Node.utils';
+import { v4 } from 'uuid';
+import RNRestart from 'react-native-restart';
 
 const TAG = 'LocalDatabase';
 export const KEY_SAVE = {
@@ -25,6 +27,8 @@ export const KEY_SAVE = {
   SHIP_ADDRESS: '$ship_address',
   MASTER_KEY_LIST: CONSTANT_KEYS.MASTER_KEY_LIST,
   FIREBASE_ID: '$FIREBASE_ID',
+  DEVICE_ID_VER2: '$device_id_ver2',
+  ACCESS_TOKEN_VER2: '$access_token_ver2',
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -271,4 +275,26 @@ export default class LocalDatabase {
       )
     );
   };
+
+  /** new flow security */
+  static saveDeviceIDVer2(deviceID) {
+    return LocalDatabase.saveValue(KEY_SAVE.DEVICE_ID_VER2, deviceID);
+  }
+
+  static getDeviceIDVer2 = async () => {
+    let deviceID = await LocalDatabase.getValue(KEY_SAVE.DEVICE_ID_VER2) || '';
+    if (!deviceID) {
+      deviceID = v4();
+      await LocalDatabase.saveValue(KEY_SAVE.DEVICE_ID_VER2, deviceID);
+    }
+    return deviceID;
+  }
+
+  static getAccessTokenVer2() {
+    return LocalDatabase.getValue(KEY_SAVE.ACCESS_TOKEN_VER2);
+  }
+
+  static saveAccessTokenVer2(accessToken) {
+    return LocalDatabase.saveValue(KEY_SAVE.ACCESS_TOKEN_VER2, accessToken);
+  }
 }

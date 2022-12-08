@@ -217,4 +217,5 @@ export default {
   LiquidityVer1: 'LiquidityVer1',
   ShieldRefund: 'ShieldRefund',
   SelectTokenScreen: 'SelectTokenScreen',
+  AccessTokenCaptcha: 'AccessTokenCaptcha',
 };

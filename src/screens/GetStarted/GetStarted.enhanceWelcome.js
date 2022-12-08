@@ -21,9 +21,11 @@ const enhance = (WrappedComp) => (props) => {
     handleFetchTutorial();
     handleFetchData();
   }, []);
+
   if (loading) {
     return <LoadingContainer />;
   }
+
   if (masterKeyList.length === 0 || !masterKeyList) {
     return <Welcome />;
   }

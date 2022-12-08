@@ -3,13 +3,13 @@ import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
 import Server from '@src/services/wallet/Server';
 import storage from '@src/services/storage';
 import { PDexV3 } from 'incognito-chain-web-js/build/wallet';
-import { getToken } from '@src/services/auth';
+import { getRuntimeAccessToken } from '@services/http';
 
 export const getPDexV3Instance = async ({ account = {} } = {}) => {
   try {
     const server = await Server.getDefault();
     let pDexV3Inst = new PDexV3();
-    const authToken = await getToken();
+    const authToken = getRuntimeAccessToken();
     if (account) {
       pDexV3Inst.setAccount(account);
     }

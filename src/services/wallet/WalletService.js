@@ -14,9 +14,9 @@ import { randomBytes } from 'react-native-randombytes';
 import { DEX } from '@utils/dex';
 import accountService from '@services/wallet/accountService';
 import { updateWalletAccounts } from '@services/api/masterKey';
-import { getToken } from '@src/services/auth';
 import formatUtil from '@utils/format';
 import { getStorageLoadWalletError, setStorageLoadWalletError } from '@models/storageError';
+import { getRuntimeAccessToken } from '@services/http';
 import { getPassphrase } from './passwordService';
 import Server from './Server';
 
@@ -94,7 +94,7 @@ export async function configsWallet(wallet) {
     wallet.UseLegacyEncoding = true;
     wallet.PubsubService = server?.pubsubServices;
     wallet.RpcRequestService = server?.requestServices;
-    wallet.AuthToken = await getToken();
+    wallet.AuthToken = await getRuntimeAccessToken();
     wallet.RpcApiService = server?.apiServices;
     wallet.PortalService = server?.portalServices;
     wallet.Network = server?.id;

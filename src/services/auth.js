@@ -1,34 +1,43 @@
 /* eslint-disable import/no-cycle */
 import { setTokenHeader } from '@src/services/http';
-import { getToken as getFirebaseToken } from '@src/services/firebase';
-import DeviceInfo from 'react-native-device-info';
-import { getToken as getUserToken } from '@src/services/api/user';
+import { refreshAccessTokenVer2 } from '@src/services/api/user';
 import LocalDatabase from '@utils/LocalDatabase';
 import { v4 } from 'uuid';
-import { cachePromise } from './cache';
+import RNRestart from 'react-native-restart';
 
 export const getTokenNoCache = async () => {
-  let firebaseToken = '';
+  let _accessToken = '';
   try {
-    firebaseToken = await getFirebaseToken();
+    const [deviceID, accessToken] = await Promise.all([
+      LocalDatabase.getDeviceIDVer2(),
+      LocalDatabase.getAccessTokenVer2()
+    ]);
+    setTokenHeader(accessToken);
+    const { token: newAccessToken } = await refreshAccessTokenVer2({ deviceID });
+    if (accessToken !== newAccessToken) {
+      setTokenHeader(newAccessToken);
+    }
+    _accessToken = newAccessToken;
+    await LocalDatabase.saveAccessTokenVer2(_accessToken);
+
+    // keep old logic, new logic don't use
+    const uniqueId = (await LocalDatabase.getDeviceId());
+    if (!uniqueId) {
+      await LocalDatabase.saveDeviceId(v4());
+    }
   } catch (error) {
-    firebaseToken = (await LocalDatabase.getDeviceId()) || v4() + new Date().getTime();
+    // REFRESH TOKEN WITH ERROR, RESTART APP
+    await LocalDatabase.saveAccessTokenVer2('');
+    setTimeout(() => {
+      RNRestart.Restart();
+    }, 1000);
   }
-  const uniqueId =
-    (await LocalDatabase.getDeviceId()) || v4();
-  const tokenData = await getUserToken(uniqueId, firebaseToken);
-  await LocalDatabase.saveDeviceId(uniqueId);
-  const { token } = tokenData;
-  return token;
+  return _accessToken;
 };
 
 export const getToken = async () => {
-  const result = await cachePromise(
-    'AUTH_TOKEN',
-    () => getTokenNoCache(),
-    100000000000,
-  );
-  return result;
+  const token = await getTokenNoCache();
+  return token;
 };
 
 export const login = async () => {

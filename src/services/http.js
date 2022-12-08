@@ -22,7 +22,7 @@ const instance = axios.create({
     Authorization: '',
   },
 });
-let renewToken = null;
+
 let pendingSubscribers = [];
 let isAlreadyFetchingAccessToken = false;
 
@@ -65,7 +65,6 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   res => {
-    const config = res?.config;
     const result = res?.data?.Result;
     return Promise.resolve(result);
   },
@@ -126,6 +125,7 @@ instance.interceptors.response.use(
 
 export const setTokenHeader = token => {
   try {
+    if (!token) return;
     currentAccessToken = token;
     axios.defaults.headers.Authorization = `Bearer ${token}`;
   } catch {
@@ -133,10 +133,8 @@ export const setTokenHeader = token => {
   }
 };
 
-export const setRenewToken = fn => {
-  if (typeof fn !== 'function')
-    throw new Error('setRenewToken must be recieved a function');
-  renewToken = fn;
+export const getRuntimeAccessToken = () => {
+  return currentAccessToken;
 };
 
 export default instance;

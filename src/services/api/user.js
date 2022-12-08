@@ -37,3 +37,18 @@ export const updateMetrics = async ({ type, params }) => {
     console.log('Ignore: ', e);
   }
 };
+
+export const getNewAccessTokenVer2 = ({ deviceID, captcha }) => {
+  return http.post('/auth/new-access-token', {
+    DeviceID: deviceID,
+    DeviceToken: deviceID,
+    'h-captcha-response': captcha
+  }).then(userModel.parseTokenData);
+};
+
+export const refreshAccessTokenVer2 = ({ deviceID }) => {
+  return http.post('/auth/refresh-access-token', {
+    DeviceID: deviceID,
+    DeviceToken: deviceID,
+  }).then(userModel.parseTokenData);
+};

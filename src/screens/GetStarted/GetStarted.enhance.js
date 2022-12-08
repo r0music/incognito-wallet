@@ -19,7 +19,8 @@ import { ANALYTICS } from '@src/constants';
 import {actionFetch as actionFetchHomeConfigs} from '@screens/Home/Home.actions';
 import {actionCheckUnreadNews} from '@screens/News';
 import { actionFetchPairs } from '@screens/PDexV3/features/Swap';
-import { setTokenHeader } from '@services/http';
+import {getRuntimeAccessToken, setTokenHeader} from '@services/http';
+import withAccessToken from '@screens/GetStarted/GetStarted.accessToken';
 import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
 import withWizard from './GetStarted.enhanceWizard';
 import withWelcome from './GetStarted.enhanceWelcome';
@@ -57,19 +58,18 @@ const enhance = (WrappedComp) => (props) => {
     await setLoading(true);
     try {
       try {
-        if (typeof global.login === 'function') {
-          token = await global.login();
-          setTokenHeader(token);
+        if (typeof getRuntimeAccessToken === 'function') {
+          token = getRuntimeAccessToken();
         }
       } catch (error) {
         console.log('CANT LOAD NEW ACCESS TOKEN');
         hasError = true;
       } finally {
         if (!token || hasError) {
+          hasError = true;
           setError('Hey, you there? Your internet connection is unstable. Please check your network settings and launch the app again.');
         }
       }
-      login();
       batch(() => {
         dispatch(actionFetchProfile());
         // dispatch(getInternalTokenList());
@@ -82,7 +82,7 @@ const enhance = (WrappedComp) => (props) => {
         await serverService.setDefaultList();
       }
       await dispatch(actionLoadDefaultWallet());
-      dispatch(loadAllMasterKeyAccounts());
+      // dispatch(loadAllMasterKeyAccounts());
     } catch (error) {
       hasError = !!error;
       await setError(getErrorMsg(error));
@@ -128,6 +128,7 @@ const enhance = (WrappedComp) => (props) => {
 export default compose(
   withDetectStatusNetwork,
   withWizard,
+  withAccessToken,
   withWelcome,
   enhance,
 );
