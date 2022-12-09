@@ -416,7 +416,7 @@ export const loadAllMasterKeyAccounts = () => async (dispatch, getState) => {
   } catch (error) {
     new ExHandler(error).showErrorToast();
   } finally {
-    dispatch(actionInitNotification());
+    // dispatch(actionInitNotification());
   }
   await dispatch(actionLoadingAllMasterKeyAccount(false));
 };
