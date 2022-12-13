@@ -1,5 +1,6 @@
 import http from '@src/services/http';
 import historyModel from '@src/models/history';
+import http4 from '@src/services/http4';
 
 export const getpTokenHistory = ({
   paymentAddress,
@@ -104,4 +105,31 @@ export const retryExpiredDeposit = ({
     body.TxOutchain = TxOutchain;
   }
   return http.post('eta/retry', body);
+};
+
+export const getHistoryUnShieldEVM = ({ txIdList }) => {
+  if (!txIdList) throw new Error('Missing txIdList');
+  if (!Array.isArray(txIdList)) throw new Error('txIdList is not Array!');
+  return http4
+    .post('unshield/status', {
+      TxList: txIdList,
+    })
+    .then((res) => {
+      const mockupData = {
+        Result: {
+          '5fcecef9cb51e1a463c95d2f54f58b2ca9d7fba8e7c62783063ba7a4b44bce59': {
+            inc_request_tx_status: 'accepted',
+            network: 'bsc',
+            outchain_tx: 'abc',
+            outchain_status: 'success',
+          },
+          c95d38dab14f32b9f4f0a3e09f22ea703dfbedc9d4d68819983e8b2dbcf5c969: {
+            inc_request_tx_status: 'accepted',
+            network: 'bsc',
+            outchain_tx: 'failed',
+          },
+        },
+      };
+      return res || mockupData;
+    });
 };
