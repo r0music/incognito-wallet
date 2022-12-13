@@ -1,7 +1,10 @@
 /* eslint-disable no-unreachable */
 /* eslint-disable import/no-cycle */
 import {
-  actionAddStorageDataCentralized, actionAddStorageDataDecentralized, actionRemoveStorageDataCentralized, actionRemoveStorageDataDecentralized
+  actionAddStorageDataCentralized,
+  actionAddStorageDataDecentralized,
+  actionRemoveStorageDataCentralized,
+  actionRemoveStorageDataDecentralized,
 } from '@screens/UnShield';
 import accountService from '@services/wallet/accountService';
 import { Toast } from '@src/components/core';
@@ -9,13 +12,19 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import { CONSTANT_COMMONS, CONSTANT_KEYS, MESSAGES } from '@src/constants';
 import {
-  accountSelector, childSelectedPrivacySelector, selectedPrivacySelector
+  accountSelector,
+  childSelectedPrivacySelector,
+  selectedPrivacySelector,
 } from '@src/redux/selectors';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import routeNames from '@src/router/routeNames';
 import { devSelector } from '@src/screens/Dev';
-import { updatePTokenFee, withdraw } from '@src/services/api/withdraw';
+import {
+  updatePTokenFee,
+  withdraw,
+  submitUnShieldTx,
+} from '@src/services/api/withdraw';
 import { ExHandler } from '@src/services/exception';
 import convert from '@src/utils/convert';
 import format from '@src/utils/format';
@@ -105,7 +114,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const account = useSelector(defaultAccountSelector);
   const wallet = useSelector(walletSelector);
-  const handleBurningToken = async (payload = {}, txHashHandler) => {
+  const handleBurningToken = async (payload = {}, txHashHandler, txHandler) => {
     try {
       const {
         originalAmount,
@@ -116,7 +125,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         isFantom,
         isAvax,
         isAurora,
-        isNear
+        isNear,
       } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
 
@@ -131,10 +140,12 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       if (isNear) burningRequestMeta = BurningNearRequestMeta;
 
       /**--> Get payment info <--*/
-      const paymentInfo = [{
-        paymentAddress: masterAddress,
-        amount: userFee,
-      }];
+      const paymentInfo = [
+        {
+          paymentAddress: masterAddress,
+          amount: userFee,
+        },
+      ];
       let prvPayments = [];
       let tokenPayments = [];
       if (isUseTokenFee) {
@@ -155,6 +166,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         info,
         remoteAddress: paymentAddress,
         txHashHandler,
+        txHandler,
         burningType: burningRequestMeta,
         version: PrivacyVersion.ver2,
       });
@@ -168,7 +180,11 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     }
   };
 
-  const handleBurningPegPRV = async (payload = {}, txHashHandler) => {
+  const handleBurningPegPRV = async (
+    payload = {},
+    txHashHandler,
+    txHandler,
+  ) => {
     try {
       const { originalAmount, feeForBurn, paymentAddress, isBSC } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
@@ -187,6 +203,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         info,
         remoteAddress: paymentAddress,
         txHashHandler,
+        txHandler,
         burningType: isBSC
           ? BurningPRVBEP20RequestMeta
           : BurningPRVERC20RequestMeta,
@@ -202,7 +219,11 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     }
   };
 
-  const handleBurningUnifiedToken = async (payload = {}, txHashHandler) => {
+  const handleBurningUnifiedToken = async (
+    payload = {},
+    txHashHandler,
+    txHandler,
+  ) => {
     try {
       const { feeForBurn, paymentAddress } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
@@ -251,6 +272,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         txHashHandler,
         burningInfos,
         version: PrivacyVersion.ver2,
+        txHandler,
       });
       if (res.txId) {
         return { ...res, burningTxId: res?.txId };
@@ -266,7 +288,10 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     try {
       const { amount, originalAmount, paymentAddress } = payload;
       const amountToNumber = convert.toNumber(amount, true);
-      const requestedAmount = format.toFixed(amountToNumber, selectedPrivacy?.pDecimals);
+      const requestedAmount = format.toFixed(
+        amountToNumber,
+        selectedPrivacy?.pDecimals,
+      );
       let data = {
         requestedAmount,
         originalAmount,
@@ -292,24 +317,41 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         userFeesData,
         fast2x,
       };
-      if (!userFeesData?.ID) throw new Error('Missing id withdraw session');
+      // if (!userFeesData?.ID) throw new Error('Missing id withdraw session');
+      if (!userFeesData?.FeeAddressShardID)
+        throw new Error('Missing FeeAddressShardID');
+
       let _tx;
       const txHashHandler = async ({ txId }) => {
         _tx = { ...data, burningTxId: txId };
-        await dispatch(
-          actionAddStorageDataDecentralized({
-            keySave,
-            tx: _tx,
-          }),
-        );
+        // TO DO (New Unshield flow)
+        // await dispatch(
+        //   actionAddStorageDataDecentralized({
+        //     keySave,
+        //     tx: _tx,
+        //   }),
+        // );
       };
+
+      const txHandler = async (data) => {
+        console.log('[txHandler] CALLBACK =>  ', data);
+        const { rawTx = '', txId = '' } = data;
+        const OTA = await accountService.getOTAReceive({
+          wallet,
+          account,
+          senderShardID: userFeesData?.FeeAddressShardID || 0,
+        });
+        // console.log('[txHandler] OTA =>  ', OTA);
+        await submitUnShieldTx({ rawTx, txId, feeRefundOTA: OTA });
+      };
+
       let tx;
       if (isUnshieldPegPRV) {
-        tx = await handleBurningPegPRV(payload, txHashHandler);
+        tx = await handleBurningPegPRV(payload, txHashHandler, txHandler);
       } else if (isUnshieldPUnifiedToken) {
-        tx = await handleBurningUnifiedToken(payload, txHashHandler);
+        tx = await handleBurningUnifiedToken(payload, txHashHandler, txHandler);
       } else {
-        tx = await handleBurningToken(payload, txHashHandler);
+        tx = await handleBurningToken(payload, txHashHandler, txHandler);
       }
       if (toggleDecentralized) {
         await setState({
@@ -318,7 +360,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         });
         await Utils.delay(15);
       } else {
-        await withdraw({ ..._tx, signPublicKeyEncode });
+        // await withdraw({ ..._tx, signPublicKeyEncode });
         await dispatch(
           actionRemoveStorageDataDecentralized({
             keySave,
@@ -393,7 +435,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         {
           PaymentAddress: masterAddress,
           Amount: String(userFee),
-        }
+        },
       ];
 
       let prvPayments = [
@@ -411,15 +453,9 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       ];
 
       if (isUseTokenFee) {
-        tokenPayments = [
-          ...tokenPayments,
-          ...paymentInfo
-        ];
+        tokenPayments = [...tokenPayments, ...paymentInfo];
       } else {
-        prvPayments = [
-          ...prvPayments,
-          ...paymentInfo
-        ];
+        prvPayments = [...prvPayments, ...paymentInfo];
       }
       /**---------------------------*/
       const res = await accountService.createAndSendPrivacyToken({
@@ -437,7 +473,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       if (res.txId) {
         return res;
       } else {
-        throw new Error('Sent tx, but doesn\'t have txID, please check it');
+        throw new Error("Sent tx, but doesn't have txID, please check it");
       }
     } catch (error) {
       throw error;
