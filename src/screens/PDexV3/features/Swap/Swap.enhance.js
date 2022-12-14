@@ -121,17 +121,17 @@ const enhance = (WrappedComp) => (props) => {
         dispatch(actionToggleProTab(true));
         return;
       }
-      if (!sellInputToken.isMainCrypto) {
-        const needFaucet = await dispatch(
-          actionCheckNeedFaucetPRV(
-            <FaucetPRVModal />,
-            swapInfo?.accountBalance,
-          ),
-        );
-        if (needFaucet) {
-          return;
-        }
-      }
+      // if (!sellInputToken.isMainCrypto) {
+      //   const needFaucet = await dispatch(
+      //     actionCheckNeedFaucetPRV(
+      //       <FaucetPRVModal />,
+      //       swapInfo?.accountBalance,
+      //     ),
+      //   );
+      //   if (needFaucet) {
+      //     return;
+      //   }
+      // }
       const { isSignificant } = feeTokenData;
       if (isSignificant) {
         return setVisibleSignificant(true);
