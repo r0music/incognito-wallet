@@ -12,7 +12,7 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import floor from 'lodash/floor';
 import { trim } from 'lodash';
 import {
-  // estimateUserFees,
+  estimateUserFees,
   estimateFeeDecentralized,
   genCentralizedWithdrawAddress,
 } from '@src/services/api/withdraw';
@@ -579,36 +579,46 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
           ? parentTokenSelectedPrivacy?.tokenId
           : '',
       };
+      if (
+        isNearToken ||
+        currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR
+      ) {
+        userFeesData = await estimateUserFees(data);
 
-      // let userFeesData = await estimateUserFees(data);
-
-      let userFeeDataNew: EstimateFeeEVMUnShieldResult =
-        await estimateFeeDecentralized(data);
-
-      // Map new data structure to old data structure
-
-      userFeesData = {
-        // ID: userFeeDataNew.ID || 12345,
-        FeeAddress: userFeeDataNew.feeAddress || '',
-        EstimateReceivedAmount: {
-          ExpectedAmount: userFeeDataNew.expectedReceive || 0,
-          Fee: userFeeDataNew.protocolFee || 0,
-          BurntAmount: userFeeDataNew.burntAmount || 0,
-        },
-        FeeAddressShardID: userFeeDataNew.feeAddressShardID || 0,
-      };
-
-      // Add fields for userFeesData Object
-      if (userFeeDataNew.tokenid !== PRVIDSTR) {
-        userFeesData.TokenFees = {
-          Level1: userFeeDataNew.feeAmount || 0,
-        };
+        console.log(
+          '[actionFetchUserFees][NEAR CASE] userFeesData ',
+          userFeesData,
+        );
       } else {
-        userFeesData.PrivacyFees = {
-          Level1: userFeeDataNew.feeAmount || 0,
+        // let userFeesData = await estimateUserFees(data);
+
+        let userFeeDataNew: EstimateFeeEVMUnShieldResult =
+          await estimateFeeDecentralized(data);
+
+        // Map new data structure to old data structure
+        userFeesData = {
+          // ID: userFeeDataNew.ID || 12345,
+          FeeAddress: userFeeDataNew.feeAddress || '',
+          EstimateReceivedAmount: {
+            ExpectedAmount: userFeeDataNew.expectedReceive || 0,
+            Fee: userFeeDataNew.protocolFee || 0,
+            BurntAmount: userFeeDataNew.burntAmount || 0,
+          },
+          FeeAddressShardID: userFeeDataNew.feeAddressShardID || 0,
         };
+
+        // Add fields for userFeesData Object
+        if (userFeeDataNew.tokenid !== PRVIDSTR) {
+          userFeesData.TokenFees = {
+            Level1: userFeeDataNew.feeAmount || 0,
+          };
+        } else {
+          userFeesData.PrivacyFees = {
+            Level1: userFeeDataNew.feeAmount || 0,
+          };
+        }
+        console.log('[actionFetchUserFees] userFeesData ', userFeesData);
       }
-      console.log('[actionFetchUserFees] userFeesData ', userFeesData);
     } else {
       const payload = {
         originalAmount,

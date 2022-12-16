@@ -1584,4 +1584,13 @@ export default class Account {
     });
     return OTA;
   }
+
+  static async saveTxUnShieldEVMStorage({ wallet, account, tx }) {
+    new Validator('saveTxUnShieldEVMStorage-account', account).required();
+    new Validator('saveTxUnShieldEVMStorage-wallet', wallet).required();
+    new Validator('saveTxUnShieldEVMStorage-tx', tx).required();
+    const accountWallet = getAccountWallet(account, wallet);
+    await accountWallet.saveTxUnShieldEVMToStorage(tx);
+    return;
+  }
 }

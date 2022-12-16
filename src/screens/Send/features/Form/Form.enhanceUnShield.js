@@ -333,9 +333,8 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         // );
       };
 
-      const txHandler = async (data) => {
-        console.log('[txHandler] CALLBACK =>  ', data);
-        const { rawTx = '', txId = '' } = data;
+      const txHandler = async (dataCallback) => {
+        const { rawTx = '', txId = '' } = dataCallback;
         const OTA = await accountService.getOTAReceive({
           wallet,
           account,
@@ -343,6 +342,10 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         });
         // console.log('[txHandler] OTA =>  ', OTA);
         await submitUnShieldTx({ rawTx, txId, feeRefundOTA: OTA });
+
+        //Save Tx data to Local Storage
+        const tx = { ...data, burningTxId: txId,  txHash: txId };
+        await accountService.saveTxUnShieldEVMStorage({ wallet, account, tx});
       };
 
       let tx;
@@ -473,7 +476,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       if (res.txId) {
         return res;
       } else {
-        throw new Error("Sent tx, but doesn't have txID, please check it");
+        throw new Error('Sent tx, but doesn\'t have txID, please check it');
       }
     } catch (error) {
       throw error;

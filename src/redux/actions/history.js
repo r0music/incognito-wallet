@@ -99,6 +99,7 @@ export const actionFetchTx = () => async (dispatch, getState) => {
     const accountWallet = getDefaultAccountWalletSelector(state);
     new Validator('accountWallet', accountWallet).required().object();
     const version = PrivacyVersion.ver2;
+
     switch (txType) {
       case ACCOUNT_CONSTANT.TX_TYPE.RECEIVE: {
         tx = mappingTxReceiverSelector(state)(tx);
