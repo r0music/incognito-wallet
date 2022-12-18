@@ -10,7 +10,7 @@ import accountService from '@services/wallet/accountService';
 import { Toast } from '@src/components/core';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
-import { CONSTANT_COMMONS, CONSTANT_KEYS, MESSAGES } from '@src/constants';
+import { CONSTANT_COMMONS, CONSTANT_KEYS, MESSAGES, CONSTANT_CONFIGS } from '@src/constants';
 import {
   accountSelector,
   childSelectedPrivacySelector,
@@ -48,6 +48,41 @@ import { useNavigation } from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { reset } from 'redux-form';
 import { formName } from './Form.enhance';
+
+export const getTxOutChainLinkByTokenInfo = (tokenInfo) => {
+  if (
+    tokenInfo?.isErc20Token ||
+    tokenInfo?.isETH ||
+    tokenInfo?.currencyType ===
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20
+  ) {
+    return `${CONSTANT_CONFIGS.ETHERSCAN_URL}/tx/`;
+  }
+  if (
+    tokenInfo?.isBep2Token ||
+    tokenInfo?.isBSC ||
+    tokenInfo?.currencyType ===
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20
+  ) {
+    return `${CONSTANT_CONFIGS.BSCSCAN_URL}/tx/`;
+  }
+  if (tokenInfo?.isPolygonErc20Token || tokenInfo?.isMATIC) {
+    return `${CONSTANT_CONFIGS.POLYGONSCAN_URL}/tx/`;
+  }
+  if (tokenInfo?.isFantomErc20Token || tokenInfo?.isFTM) {
+    return `${CONSTANT_CONFIGS.FANTOMSCAN_URL}/tx/`;
+  }
+  if (tokenInfo?.isAvaxErc20Token || tokenInfo?.isAVAX) {
+    return `${CONSTANT_CONFIGS.AVAXSCAN_URL}/tx/`;
+  }
+  if (tokenInfo?.isAuroraErc20Token || tokenInfo?.isAURORA_ETH) {
+    return `${CONSTANT_CONFIGS.AURORASCAN_URL}/tx/`;
+  }
+  if (tokenInfo?.isNearToken || tokenInfo?.isNEAR) {
+    return `${CONSTANT_CONFIGS.NEARSCAN_URL}/tx/`;
+  }
+  return '';
+};
 
 export const enhanceUnshield = (WrappedComp) => (props) => {
   const {
@@ -355,8 +390,10 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           isUsedPRVFee: data.isUsedPRVFee,
           userFeesData: data.userFeesData,
           totalFees: data.totalFees,
-          txHash: txId
+          txHash: txId,
+          outChainLink: getTxOutChainLinkByTokenInfo(childSelectedPrivacy)
         };
+        console.log('DATA Tx Burn Save Local: ', dataSaveLocal );
         //Save Tx data to Local Storage
         const tx = { ...dataSaveLocal };
         await accountService.saveTxUnShieldEVMStorage({ wallet, account, tx});

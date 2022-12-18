@@ -22,7 +22,7 @@ import {
 import { PRV } from '@src/constants/common';
 import { CONSTANT_CONFIGS, CONSTANT_COMMONS } from '@src/constants';
 import BigNumber from 'bignumber.js';
-import { selectedPrivacy } from './selectedPrivacy';
+import { selectedPrivacy, getPrivacyDataByTokenID } from './selectedPrivacy';
 import { burnerAddressSelector } from './account';
 
 export const renderNoClipAmount = (params) => {
@@ -297,7 +297,7 @@ export const mappingTxUnShieldSelector = createSelector(
   selectedPrivacy,
   decimalDigitsSelector,
   ({ pDecimals, symbol }, decimalDigits) => (txUnshield) => {
-    console.log('==> txUnshield ', txUnshield);
+    // console.log('==> txUnshield ', txUnshield);
     const {
       amount,
       fee,
@@ -311,7 +311,9 @@ export const mappingTxUnShieldSelector = createSelector(
       totalFees,
       isUsedPRVFee,
       network,
-      requestedAmount
+      tokenId,
+      requestedAmount,
+      outChainLink
     } = txUnshield;
 
     const statusColor = color;
@@ -319,6 +321,11 @@ export const mappingTxUnShieldSelector = createSelector(
     const outchainFee = totalFees;
     const isUnShieldByPToken = !isUsedPRVFee;
     let inchainTxId = txHash || txId;
+
+    const inChainTx = inchainTxId ? `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${inchainTxId}` : '';
+    const outChainTx = outchain_tx ? outChainLink + outchain_tx : '';
+
+    // console.log('outChainTx ', outChainTx);
     let result = {
       ...txUnshield,
       statusStr: capitalize(statusStr || ''),
@@ -326,23 +333,23 @@ export const mappingTxUnShieldSelector = createSelector(
       amountStr: requestedAmount || renderAmount({
         amount,
         pDecimals,
-        decimalDigits,
+        decimalDigits: false,
       }),
       symbol,
       statusColor,
       statusDetail,
-      inChainTx: inchainTxId ? `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${inchainTxId}` : '',
-      outChainTx: outchain_tx ? `${CONSTANT_CONFIGS.BTC_EXPLORER_URL}/tx/${outchain_tx}` : '',
+      inChainTx: inChainTx,
+      outChainTx: outChainTx,
       inchainFeeStr: renderAmount({
         amount: fee,
         pDecimals: PRV.pDecimals,
-        decimalDigits,
+        decimalDigits: false,
       }),
       outchainFee,
       outchainFeeStr: renderAmount({
-        amount: totalFees,
+        amount: outchainFee,
         pDecimals,
-        decimalDigits,
+        decimalDigits: false,
       }),
       isUnShieldByPToken,
       network: CONSTANT_COMMONS.NETWORK_MAP_FULL_NAME[network] || ''
