@@ -1,4 +1,5 @@
 import orderBy from 'lodash/orderBy';
+import { capitalize } from 'lodash';
 import {
   Validator,
   ACCOUNT_CONSTANT,
@@ -292,111 +293,69 @@ export const historyPortalSelector = createSelector(
     history.txsPortal.map((txp) => mappingTxPortal(txp)),
 );
 
-export const mappingTxUnShieldNewSelector = createSelector(
+export const mappingTxUnShieldSelector = createSelector(
   selectedPrivacy,
   decimalDigitsSelector,
-  (selectedPrivacy, decimalDigits) => (txt) => {
-    new Validator('txt', txt).required().object();
+  ({ pDecimals, symbol }, decimalDigits) => (txUnshield) => {
+    console.log('==> txUnshield ', txUnshield);
     const {
-      status,
-      currencyType,
+      amount,
+      fee,
       time,
-      incognitoAmount,
-      statusMessage,
-      isShieldTx,
-      decentralized,
-      expiredAt,
-      statusDetail,
-      isExpiredShieldCentralized,
-      isShielding,
-      inchainFee,
-      outchainFee,
-      receivedAmount,
-      tokenFee,
-      isUnShieldByPToken,
-      pDecimals,
-      decimals,
-      unifiedReward,
+      color,
+      status,
+      statusStr,
+      txHash,
+      txId,
+      outchain_tx,
+      totalFees,
+      isUsedPRVFee,
       network,
-      unifiedStatus,
-    } = txt;
-    const shouldRenderQrShieldingAddress =
-      isShieldTx &&
-      (isShielding ||
-        isExpiredShieldCentralized ||
-        (status === 17 && currencyType !== 1 && currencyType !== 3));
-    const expiredAtStr = decentralized
-      ? ''
-      : formatUtil.formatDateTime(expiredAt);
-    const statusColor = isShieldTx
-      ? getStatusColorShield(txt)
-      : getStatusColorUnshield(txt);
-    const showDetail =
-      !!statusDetail &&
-      status !== ACCOUNT_CONSTANT.STATUS_CODE_SHIELD_REFUND.PENDING;
-    let receivedFundsStr =
-      isShieldTx && receivedAmount
-        ? renderAmount({
-          amount: receivedAmount,
-          pDecimals: decimals,
-          decimalDigits,
-        })
-        : '';
-    const shieldingFeeStr =
-      isShieldTx && tokenFee
-        ? renderAmount({
-          amount: tokenFee,
-          pDecimals: decimals,
-          decimalDigits,
-        })
-        : '';
-    // const network = tokenId === PRVIDSTR && currencyType && currencyType !== 0
-    //   ? CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_NAME[currencyType]
-    //   : '';
-    const result = {
-      ...txt,
+      requestedAmount
+    } = txUnshield;
+
+    const statusColor = color;
+    const statusDetail = status || statusStr;
+    const outchainFee = totalFees;
+    const isUnShieldByPToken = !isUsedPRVFee;
+    let inchainTxId = txHash || txId;
+    let result = {
+      ...txUnshield,
+      statusStr: capitalize(statusStr || ''),
       timeStr: formatUtil.formatDateTime(time),
-      amountStr: renderAmount({
-        amount: incognitoAmount,
+      amountStr: requestedAmount || renderAmount({
+        amount,
         pDecimals,
         decimalDigits,
       }),
-      statusStr: statusMessage,
-      symbol: '',
-      shouldRenderQrShieldingAddress,
-      isShielding,
-      expiredAtStr,
+      symbol,
       statusColor,
-      showDetail,
+      statusDetail,
+      inChainTx: inchainTxId ? `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${inchainTxId}` : '',
+      outChainTx: outchain_tx ? `${CONSTANT_CONFIGS.BTC_EXPLORER_URL}/tx/${outchain_tx}` : '',
       inchainFeeStr: renderAmount({
-        amount: inchainFee,
+        amount: fee,
         pDecimals: PRV.pDecimals,
         decimalDigits,
       }),
+      outchainFee,
       outchainFeeStr: renderAmount({
-        amount:
-          parseInt(outchainFee || '0') + parseInt(unifiedStatus?.fee || '0'),
-        pDecimals: isUnShieldByPToken ? pDecimals : PRV.pDecimals,
-        decimalDigits,
-      }),
-      receivedFundsStr,
-      shieldingFeeStr,
-      network,
-      rewardAmountStr: renderAmount({
-        amount: unifiedReward?.reward || 0,
+        amount: totalFees,
         pDecimals,
         decimalDigits,
       }),
+      isUnShieldByPToken,
+      network: CONSTANT_COMMONS.NETWORK_MAP_FULL_NAME[network] || ''
     };
     return result;
   },
 );
 
-export const historyUnShieldNewSelector = createSelector(
+export const historyUnShieldSelector = createSelector(
   historySelector,
-  mappingTxUnShieldNewSelector,
-  (history, mappingTxUnShieldNew) =>
-    history.txsUnshield.map((txt) => mappingTxUnShieldNew(txt)),
+  mappingTxUnShieldSelector,
+  (history, mappingTxUnShield) =>
+    history.txsUnshield.map((txt) => mappingTxUnShield(txt)),
 );
 
 export const historyTxsSelector = createSelector(
@@ -405,7 +364,7 @@ export const historyTxsSelector = createSelector(
   historyReceiverSelector,
   historyPTokenSelector,
   historyPortalSelector,
-  historyUnShieldNewSelector,
+  historyUnShieldSelector,
   (history, txsTransactor, txsReceiver, txsPToken, txsPortal, txsUnshield) => {
     const { isFetching, isFetched } = history;
     const histories = [...txsTransactor, ...txsReceiver, ...txsPToken, ...txsPortal, ...txsUnshield] || [];

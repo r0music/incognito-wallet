@@ -59,6 +59,7 @@ export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivac
     fast2x,
     feePrvText,
     feePTokenText,
+    totalFees,
   } = estimateFee;
   const { amount } = selectedPrivacyData;
   const isUseTokenFee = actived !== CONSTANT_COMMONS.PRV.id;
@@ -143,6 +144,7 @@ export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivac
     isBTC,
     hasMultiLevel: userFees?.hasMultiLevel,
     editableInput,
+    totalFees
   };
 };
 

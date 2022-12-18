@@ -227,6 +227,7 @@ export const actionHandleFeeEst =
   async (dispatch, getState) => {
     let feePrv, feePrvText, totalFeePrv, totalFeePrvText, userFeePrv;
     let totalFeePToken, totalFeePTokenText, userFeePToken;
+    let totalFees;
     const state = getState();
     const {
       rate,
@@ -257,6 +258,7 @@ export const actionHandleFeeEst =
           hasMultiLevel,
           isUnShield,
         });
+        totalFees = totalFee;
         if (isUsedPRVFee) {
           totalFeePrv = totalFee;
           totalFeePrvText = totalFeeText;
@@ -282,6 +284,7 @@ export const actionHandleFeeEst =
           totalFeePToken,
           totalFeePTokenText,
           userFeePToken,
+          totalFees,
         }),
       );
       await new Promise.all([

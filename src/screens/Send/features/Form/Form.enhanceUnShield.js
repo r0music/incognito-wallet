@@ -63,6 +63,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     totalFeeText,
     isUnShield,
     isUseTokenFee,
+    totalFees,
   } = useSelector(feeDataSelector);
   const dev = useSelector(devSelector);
   const { isUnshieldPegPRV, isUnshieldPUnifiedToken } = props;
@@ -316,6 +317,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         isUsedPRVFee,
         userFeesData,
         fast2x,
+        totalFees
       };
       // if (!userFeesData?.ID) throw new Error('Missing id withdraw session');
       if (!userFeesData?.FeeAddressShardID)
@@ -343,8 +345,20 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         // console.log('[txHandler] OTA =>  ', OTA);
         await submitUnShieldTx({ rawTx, txId, feeRefundOTA: OTA });
 
+        let dataSaveLocal = {
+          requestedAmount: data.requestedAmount,
+          originalAmount: data.originalAmount,
+          paymentAddress: data.paymentAddress,
+          tokenContractID: data.tokenContractID,
+          tokenId: data.tokenId,
+          burningTxId: data.burningTxId,
+          isUsedPRVFee: data.isUsedPRVFee,
+          userFeesData: data.userFeesData,
+          totalFees: data.totalFees,
+          txHash: txId
+        };
         //Save Tx data to Local Storage
-        const tx = { ...data, burningTxId: txId,  txHash: txId };
+        const tx = { ...dataSaveLocal };
         await accountService.saveTxUnShieldEVMStorage({ wallet, account, tx});
       };
 
