@@ -106,18 +106,18 @@ export const mappingDataSelector = createSelector(
     const poolRatioStr = `${token1Ratio}% ${input.symbol} - ${token2Ratio}% ${output.symbol}`;
 
     const hookFactories = [
-      {
-        label: 'Pool size',
-        value: poolSize,
-      },
-      {
-        label: 'Current price',
-        value: currentPriceStr,
-      },
-      {
-        label: 'Pool ratio',
-        value: poolRatioStr
-      },
+      // {
+      //   label: 'Pool size',
+      //   value: poolSize,
+      // },
+      // {
+      //   label: 'Current price',
+      //   value: currentPriceStr,
+      // },
+      // {
+      //   label: 'Pool ratio',
+      //   value: poolRatioStr
+      // },
       {
         label: `${input.symbol} Balance`,
         value: input.maxAmountDisplay,
