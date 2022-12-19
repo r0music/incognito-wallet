@@ -313,7 +313,8 @@ export const mappingTxUnShieldSelector = createSelector(
       network,
       tokenId,
       requestedAmount,
-      outChainLink
+      outChainLink,
+      paymentAddress
     } = txUnshield;
 
     const statusColor = color;
@@ -352,7 +353,8 @@ export const mappingTxUnShieldSelector = createSelector(
         decimalDigits: false,
       }),
       isUnShieldByPToken,
-      network: CONSTANT_COMMONS.NETWORK_MAP_FULL_NAME[network] || ''
+      network: CONSTANT_COMMONS.NETWORK_MAP_FULL_NAME[network] || '',
+      userPaymentAddress: paymentAddress || ''
     };
     return result;
   },
