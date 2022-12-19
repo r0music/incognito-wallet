@@ -158,7 +158,7 @@ const enhance = (WrappedComp) => (props) => {
           actionInitSwapForm({
             defaultPair: {
               selltoken:
-                'b832e5d3b1f01a4f0623f7fe91d6673461e1f5d37d91fe78c5c2e6183ff39696', //BTC
+                '076a4423fa20922526bd50b0d7b0dc1c593ce16e15ba141ede5fb5a28aa3f229', //USDT_UNIFIED
               buytoken:
                 '0000000000000000000000000000000000000000000000000000000000000004', //PRV
             },
