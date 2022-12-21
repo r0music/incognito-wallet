@@ -59,14 +59,14 @@ const enhance = (WrappedComp) => (props) => {
           return dispatch(focus(formConfigs.formName, field));
         }
       }
-      if (!sellInputAmount.isMainCrypto) {
-        const needFaucet = await dispatch(
-          actionCheckNeedFaucetPRV(<FaucetPRVModal />, accountBalance),
-        );
-        if (needFaucet) {
-          return;
-        }
-      }
+      // if (!sellInputAmount.isMainCrypto) {
+      //   const needFaucet = await dispatch(
+      //     actionCheckNeedFaucetPRV(<FaucetPRVModal />, accountBalance),
+      //   );
+      //   if (needFaucet) {
+      //     return;
+      //   }
+      // }
       if (!nftTokenAvailable) {
         return dispatch(
           actionToggleModal({
