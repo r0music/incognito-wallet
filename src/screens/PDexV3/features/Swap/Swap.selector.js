@@ -1090,6 +1090,13 @@ export const getIsNavigateFromMarketTab = createSelector(
   ({ isNavigateFromMarketTab }) => isNavigateFromMarketTab,
 );
 
+export const getIsNavigateToSelectToken = createSelector(
+  swapSelector,
+  ({ isNavigateToSelection }) => isNavigateToSelection,
+);
+
+
+
 export const getSearchTokenListByField = createSelector(
   [listPairsSelector, selltokenSelector, buytokenSelector],
   (pairsToken, selltoken, buytoken) =>

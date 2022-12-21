@@ -48,6 +48,7 @@ import {
   ACTION_RESET_EXCHANGE_SUPPORTED,
   ACTION_SAVE_UNIFIED_ALERT_STATE_BY_ID,
   ACTION_ESTIMATE_COUNT,
+  ACTION_NAVIGATE_TO_SELECT_TOKENS
 } from './Swap.constant';
 
 const initialState = {
@@ -146,6 +147,7 @@ const initialState = {
   isNavigateFromMarketTab: false,
   unifiedInforAlertHash: {},
   estimateCount: 1,
+  isNavigateToSelection: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -461,6 +463,13 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isNavigateFromMarketTab: action.payload,
+      };
+    }
+
+    case ACTION_NAVIGATE_TO_SELECT_TOKENS: {
+      return {
+        ...state,
+        isNavigateToSelection: action.payload,
       };
     }
 
