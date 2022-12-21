@@ -82,6 +82,7 @@ import {
   ACTION_SAVE_UNIFIED_ALERT_STATE_BY_ID,
   ACTION_ESTIMATE_COUNT,
   ESTIMATE_COUNT_MAX,
+  ACTION_NAVIGATE_TO_SELECT_TOKENS
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -143,6 +144,11 @@ export const actionResetExchangeSupported = (payload) => ({
 
 export const actionNavigateFormMarketTab = (payload) => ({
   type: ACTION_NAVIGATE_FROM_MARKET,
+  payload,
+});
+
+export const actionNavigateToSelectToken = (payload) => ({
+  type: ACTION_NAVIGATE_TO_SELECT_TOKENS,
   payload,
 });
 
