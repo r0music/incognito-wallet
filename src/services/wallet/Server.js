@@ -48,8 +48,8 @@ const MAIN_NET_SERVER = {
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
   uniConfigs: UNI_CONSTANTS.UNI_MAINNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
-  // webAppService: 'https://api-webapp.incognito.org/',
-  webAppService: 'http://51.161.117.193:8898/', // Dev-Mainnet (Lam)
+  webAppService: 'https://api-webapp.incognito.org/',
+  // webAppService: 'http://51.161.117.193:8898/', // Dev-Mainnet (Lam)
 };
 const BETA_SERVER = {
   id: 'beta',

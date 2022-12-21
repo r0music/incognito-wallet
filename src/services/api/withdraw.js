@@ -393,11 +393,11 @@ export const estimateFeeDecentralized = (data) => {
   // amount   => 10000  (amount * pDecimal)
   // tokenid  => 000000000004
 
-  console.log('[estimateFeeDecentralized] API payload: ', {
-    network,
-    amount,
-    tokenid,
-  });
+  // console.log('[estimateFeeDecentralized] API payload: ', {
+  //   network,
+  //   amount,
+  //   tokenid,
+  // });
 
   let url = `unshield/estimatefee?network=${network}&amount=${amount}&tokenid=${tokenid}`;
   return http4.get(url);

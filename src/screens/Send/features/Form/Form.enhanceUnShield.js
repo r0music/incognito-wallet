@@ -393,10 +393,10 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           txHash: txId,
           outChainLink: getTxOutChainLinkByTokenInfo(childSelectedPrivacy)
         };
-        console.log('DATA Tx Burn Save Local: ', dataSaveLocal );
+        // console.log('DATA Tx Burn Save Local: ', dataSaveLocal);
         //Save Tx data to Local Storage
         const tx = { ...dataSaveLocal };
-        await accountService.saveTxUnShieldEVMStorage({ wallet, account, tx});
+        await accountService.saveTxUnShieldEVMStorage({ wallet, account, tx });
       };
 
       let tx;
