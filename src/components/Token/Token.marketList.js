@@ -55,7 +55,12 @@ const MarketList = (props) => {
       );
       marketTokens = orderBy(
           marketTokens,
-          (item) => item.isPRV,
+          (item) => [
+            item.isPRV,
+            item.symbol === 'BTC' || item.externalSymbol === 'BTC',
+            item.symbol === 'XMR' || item.externalSymbol === 'XMR',
+            item.symbol === 'ETH' || item.externalSymbol === 'ETH',
+            (item.symbol === 'BNB' || item.externalSymbol === 'BNB') && item.currencyType === 7], //BNB network BSC
           ['desc', orderField],
       );
     } else {

@@ -8,16 +8,18 @@ import { TradeSuccessModal } from '@src/screens/PDexV3/features/Trade';
 import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/RemoveStorage.Dialog';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import React, { useEffect, useState } from 'react';
-import { useNavigation } from 'react-navigation-hooks';
+import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { compose } from 'recompose';
 import { focus } from 'redux-form';
+import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
 
 import enchanUnifiedAlert from './Swap.enhanceUnifiedAlert';
 import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
   NETWORK_NAME_SUPPORTED,
+  SWAP_DEFAULT_FAIR
 } from './Swap.constant';
 
 import {
@@ -27,6 +29,7 @@ import {
   actionReset,
   actionSetDefaultExchange,
   actionToggleProTab,
+  actionNavigateToSelectToken,
 } from './Swap.actions';
 
 import {
@@ -37,7 +40,9 @@ import {
   swapFormErrorSelector,
   swapInfoSelector,
   feeErorSelector,
+  getIsNavigateToSelectToken
 } from './Swap.selector';
+
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
@@ -49,10 +54,11 @@ const enhance = (WrappedComp) => (props) => {
   const prvFeeError = useSelector(feeErorSelector);
 
   const isNavigateFromMarketTab = useSelector(getIsNavigateFromMarketTab);
+  const navigateToSelectToken = useSelector(getIsNavigateToSelectToken);
+
   const [visibleSignificant, setVisibleSignificant] = useState(false);
   const [ordering, setOrdering] = useState(false);
   const navigation = useNavigation();
-
   const {
     isPrivacyApp = false,
     exchange = KEYS_PLATFORMS_SUPPORTED.incognito,
@@ -156,12 +162,7 @@ const enhance = (WrappedComp) => (props) => {
       if (!isNavigateFromMarketTab) {
         await dispatch(
           actionInitSwapForm({
-            defaultPair: {
-              selltoken:
-                '076a4423fa20922526bd50b0d7b0dc1c593ce16e15ba141ede5fb5a28aa3f229', //USDT_UNIFIED
-              buytoken:
-                '0000000000000000000000000000000000000000000000000000000000000004', //PRV
-            },
+            defaultPair: SWAP_DEFAULT_FAIR,
             refresh: true,
             shouldFetchHistory: false,
           }),
@@ -179,6 +180,21 @@ const enhance = (WrappedComp) => (props) => {
     }
     dispatch(actionNavigateFormMarketTab(false));
   }, []);
+
+  
+  useFocusEffect(
+    React.useCallback(() => {
+      const setDefaultPair = async () => {
+        dispatch(actionSetDefaultPair(SWAP_DEFAULT_FAIR));
+      };
+
+      if (isNavigateFromMarketTab || navigateToSelectToken) {
+        return;
+      }
+
+      setDefaultPair();
+    }, [isNavigateFromMarketTab, navigateToSelectToken]),
+  );
 
   return (
     <ErrorBoundary>

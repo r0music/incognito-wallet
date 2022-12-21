@@ -34,6 +34,7 @@ import {
   actionSetFocusToken,
   actionSwapToken,
   actionToggleProTab,
+  actionNavigateToSelectToken
 } from './Swap.actions';
 import SwapProTab from './Swap.proTab';
 import { inputGroupStyled as styled } from './Swap.styled';
@@ -56,6 +57,7 @@ const SwapInputsGroup = React.memo(() => {
   };
 
   const onSelectSellToken = () => {
+    dispatch(actionNavigateToSelectToken(true));
     navigation.navigate(routeNames.SelectTokenScreen, {
       data: {
         from: 'sellToken',
@@ -66,6 +68,7 @@ const SwapInputsGroup = React.memo(() => {
   };
 
   const onSelectBuyToken = () => {
+    dispatch(actionNavigateToSelectToken(true));
     navigation.navigate(routeNames.SelectTokenScreen, {
       data: {
         from: 'buyToken',

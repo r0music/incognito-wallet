@@ -1,6 +1,8 @@
 import routeNames from '@src/router/routeNames';
 import { CONSTANT_CONFIGS } from '@src/constants';
 
+export const ACTION_NAVIGATE_TO_SELECT_TOKENS =
+  '[pDexV3][swap] Navigate to Select Token';
 export const ACTION_NAVIGATE_FROM_MARKET =
   '[pDexV3][swap] Navigate form Market Tab';
 export const ACTION_RESET_EXCHANGE_SUPPORTED =
@@ -269,3 +271,8 @@ export const ONE_DAY = 24 * 60 * 60 * 1000; // 1 day
 // export const ONE_DAY = 1 * 60 * 1000; //1 minute
 
 export const ESTIMATE_COUNT_MAX = 2;
+
+export const SWAP_DEFAULT_FAIR = {
+  selltoken: '076a4423fa20922526bd50b0d7b0dc1c593ce16e15ba141ede5fb5a28aa3f229', //USDT_UNIFIED
+  buytoken: '0000000000000000000000000000000000000000000000000000000000000004', //PRV
+};
