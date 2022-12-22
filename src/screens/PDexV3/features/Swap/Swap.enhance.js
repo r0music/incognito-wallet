@@ -19,7 +19,7 @@ import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
   NETWORK_NAME_SUPPORTED,
-  SWAP_DEFAULT_FAIR
+  SWAP_DEFAULT_FAIR,
 } from './Swap.constant';
 
 import {
@@ -40,9 +40,9 @@ import {
   swapFormErrorSelector,
   swapInfoSelector,
   feeErorSelector,
-  getIsNavigateToSelectToken
+  getIsNavigateToSelectToken,
+  validatePRVNetworkFee,
 } from './Swap.selector';
-
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
@@ -51,6 +51,7 @@ const enhance = (WrappedComp) => (props) => {
   const sellInputToken = useDebounceSelector(sellInputTokenSelector);
   const feeTokenData = useDebounceSelector(feetokenDataSelector);
   const estimateTradeError = useSelector(getEsimateTradeError);
+  const errorNetworkFeeMessage = useSelector(validatePRVNetworkFee);
   const prvFeeError = useSelector(feeErorSelector);
 
   const isNavigateFromMarketTab = useSelector(getIsNavigateFromMarketTab);
@@ -114,7 +115,7 @@ const enhance = (WrappedComp) => (props) => {
           return dispatch(focus(formConfigs.formName, field));
         }
       }
-      if (estimateTradeError || prvFeeError) {
+      if (estimateTradeError || prvFeeError || errorNetworkFeeMessage) {
         return;
       }
       if (
@@ -181,7 +182,6 @@ const enhance = (WrappedComp) => (props) => {
     dispatch(actionNavigateFormMarketTab(false));
   }, []);
 
-  
   useFocusEffect(
     React.useCallback(() => {
       const setDefaultPair = async () => {

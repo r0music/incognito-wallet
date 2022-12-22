@@ -395,6 +395,9 @@ export const feetokenDataSelector = createSelector(
       const feeTokenData: SelectedPrivacy = getPrivacyDataByTokenID(feetoken);
       const sellTokenData: SelectedPrivacy = getPrivacyDataByTokenID(selltoken);
       const buyTokenData: SelectedPrivacy = getPrivacyDataByTokenID(buytoken);
+      const PRVPrivacy: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
+      const prvBalance = PRVPrivacy?.amount || 0;
+
       const selector = formValueSelector(formConfigs.formName);
       const fee = selector(state, formConfigs.feetoken);
       const { id: platformID } = platform;
@@ -626,6 +629,8 @@ export const feetokenDataSelector = createSelector(
         tradePathStr,
         impactAmountStr,
         impactAmount,
+        prvBalance,
+        PRVPrivacy,
       };
     } catch (error) {
       console.log('feetokenDataSelector-error', error);
@@ -1085,6 +1090,35 @@ export const getEsimateTradeError = createSelector(
   ({ estimateTradeError }) => estimateTradeError,
 );
 
+export const validatePRVNetworkFee = createSelector(
+  swapInfoSelector,
+  feetokenDataSelector,
+  getPrivacyDataByTokenIDSelector,
+  (swapInfo, feeTokenData, getPrivacyDataByTokenID) => {
+    // console.log('[validatePRVNetworkFee] ==>> ', {
+    //   swapInfo,
+    //   feeTokenData,
+    // });
+    const PRVPrivacy: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
+    const { payFeeByPRV, feetoken, minFeeOriginalPRV, origininalFeeAmount } =
+      feeTokenData;
+    const { networkfee } = swapInfo;
+    const prvBalance = PRVPrivacy?.amount || 0;
+
+    const totalFeePRV = payFeeByPRV
+      ? minFeeOriginalPRV + networkfee
+      : networkfee;
+
+    // console.log('prvBalance ', prvBalance);
+    // console.log('totalFeePRV ', totalFeePRV);
+
+    if (new BigNumber(prvBalance).minus(totalFeePRV).lt(0)) {
+      return `Your ${PRV.symbol} balance is insufficient.`;
+    }
+    return undefined;
+  },
+);
+
 export const getIsNavigateFromMarketTab = createSelector(
   swapSelector,
   ({ isNavigateFromMarketTab }) => isNavigateFromMarketTab,
@@ -1094,8 +1128,6 @@ export const getIsNavigateToSelectToken = createSelector(
   swapSelector,
   ({ isNavigateToSelection }) => isNavigateToSelection,
 );
-
-
 
 export const getSearchTokenListByField = createSelector(
   [listPairsSelector, selltokenSelector, buytokenSelector],

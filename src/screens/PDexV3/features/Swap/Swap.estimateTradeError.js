@@ -4,7 +4,7 @@ import { Text } from '@src/components/core';
 import { useSelector } from 'react-redux';
 // import { colorsSelector } from '@src/theme';
 import { FONT, COLORS } from '@src/styles';
-import { getEsimateTradeError } from './Swap.selector';
+import { getEsimateTradeError, validatePRVNetworkFee } from './Swap.selector';
 
 const styled = StyleSheet.create({
   container: {
@@ -23,10 +23,11 @@ const styled = StyleSheet.create({
 const EstimateTradeError = () => {
   // const colors = useSelector(colorsSelector);
   const error = useSelector(getEsimateTradeError);
-  if (!error) return null;
+  const errorNetworkFeeMessage = useSelector(validatePRVNetworkFee);
+  if (!error && !errorNetworkFeeMessage) return null;
   return (
     <View style={styled.container}>
-      <Text style={styled.text}>{error}</Text>
+      <Text style={styled.text}>{error || errorNetworkFeeMessage}</Text>
     </View>
   );
 };
