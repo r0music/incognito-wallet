@@ -2,7 +2,7 @@ import { PRV } from '@src/constants/common';
 import uniq from 'lodash/uniq';
 import { sharedSelector } from '@src/redux/selectors';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
-import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
+import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector, getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
 import { COLORS } from '@src/styles';
 import convert from '@src/utils/convert';
 import format from '@src/utils/format';
@@ -239,6 +239,7 @@ export const orderLimitDataSelector = createSelector(
   rateDataSelector,
   poolSelectedDataSelector,
   nftTokenDataSelector,
+  getPrivacyPRVInfo,
   (
     state,
     { networkfee, isFetching, percent, ordering },
@@ -248,6 +249,8 @@ export const orderLimitDataSelector = createSelector(
     feeTokenData,
     rateData,
     pool,
+    nftInfo,
+    privacyPRVInfo
   ) => {
     const { customRate } = rateData;
     const sellInputAmount = getInputAmount(formConfigs.selltoken);
@@ -268,71 +271,74 @@ export const orderLimitDataSelector = createSelector(
       totalAmountToken = {};
     const calculating = isFetching;
     let disabledBtn = calculating || !isValid(formConfigs.formName)(state);
+    let hideNetworkFee = false;
     switch (activedTab) {
-    case TAB_BUY_LIMIT_ID: {
-      mainColor = buyColor;
-      btnActionTitle = 'Place buy order';
-      reviewOrderTitle = `Buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
-      reviewOrderDesc = 'Pay with';
-      totalAmountToken = sellInputAmount?.tokenData;
-      let buyAmount = buyInputAmount?.amount;
-      const originalbuyAmount = convert.toOriginalAmount(
-        buyAmount,
+      case TAB_BUY_LIMIT_ID: {
+        hideNetworkFee = false;
+        mainColor = buyColor;
+        btnActionTitle = 'Place buy order';
+        reviewOrderTitle = `Buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
+        reviewOrderDesc = 'Pay with';
+        totalAmountToken = sellInputAmount?.tokenData;
+        let buyAmount = buyInputAmount?.amount;
+        const originalbuyAmount = convert.toOriginalAmount(
+          buyAmount,
           sellInputAmount?.pDecimals,
-      );
-      buyAmount = convert.toHumanAmount(
-        originalbuyAmount,
+        );
+        buyAmount = convert.toHumanAmount(
+          originalbuyAmount,
           sellInputAmount?.pDecimals,
-      );
-      totalAmount = new BigNumber(buyAmount)
-        .multipliedBy(new BigNumber(customRate))
-        .toNumber();
-      totalOriginalAmount = convert.toOriginalAmount(
-        totalAmount,
+        );
+        totalAmount = new BigNumber(buyAmount)
+          .multipliedBy(new BigNumber(customRate))
+          .toNumber();
+        totalOriginalAmount = convert.toOriginalAmount(
+          totalAmount,
           totalAmountToken?.pDecimals,
-      );
-      totalAmountStr = format.amountVer2(
-        totalOriginalAmount,
+        );
+        totalAmountStr = format.amountVer2(
+          totalOriginalAmount,
           totalAmountToken?.pDecimals,
-      );
-      reviewOrderDescValue = `${totalAmountStr} ${totalAmountToken?.symbol}`;
-      cfmTitle = `You placed an order to buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol} for ${reviewOrderDescValue}`;
-      disabledBtn = !originalbuyAmount && disabledBtn;
-      break;
-    }
-    case TAB_SELL_LIMIT_ID: {
-      mainColor = sellColor;
-      btnActionTitle = 'Place sell order';
-      reviewOrderTitle = `Sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
-      reviewOrderDesc = 'Receive';
-      totalAmountToken = buyInputAmount?.tokenData;
-      let sellAmount = sellInputAmount?.amount;
-      const originalSellAmount = convert.toOriginalAmount(
-        sellAmount,
+        );
+        reviewOrderDescValue = `${totalAmountStr} ${totalAmountToken?.symbol}`;
+        cfmTitle = `You placed an order to buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol} for ${reviewOrderDescValue}`;
+        disabledBtn = !originalbuyAmount && disabledBtn;
+        break;
+      }
+      case TAB_SELL_LIMIT_ID: {
+        hideNetworkFee = false;
+        mainColor = sellColor;
+        btnActionTitle = 'Place sell order';
+        reviewOrderTitle = `Sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
+        reviewOrderDesc = 'Receive';
+        totalAmountToken = buyInputAmount?.tokenData;
+        let sellAmount = sellInputAmount?.amount;
+        const originalSellAmount = convert.toOriginalAmount(
+          sellAmount,
           sellInputAmount?.pDecimals,
-      );
-      sellAmount = convert.toHumanAmount(
-        originalSellAmount,
+        );
+        sellAmount = convert.toHumanAmount(
+          originalSellAmount,
           sellInputAmount?.pDecimals,
-      );
-      totalAmount = new BigNumber(sellAmount)
-        .multipliedBy(new BigNumber(customRate))
-        .toNumber();
-      totalOriginalAmount = convert.toOriginalAmount(
-        totalAmount,
+        );
+        totalAmount = new BigNumber(sellAmount)
+          .multipliedBy(new BigNumber(customRate))
+          .toNumber();
+        totalOriginalAmount = convert.toOriginalAmount(
+          totalAmount,
           totalAmountToken?.pDecimals,
-      );
-      totalAmountStr = format.amountVer2(
-        totalOriginalAmount,
+        );
+        totalAmountStr = format.amountVer2(
+          totalOriginalAmount,
           totalAmountToken?.pDecimals,
-      );
-      reviewOrderDescValue = `${totalAmountStr} ${totalAmountToken?.symbol}`;
-      cfmTitle = `You placed an order to sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol} for ${reviewOrderDescValue}`;
-      disabledBtn = !originalSellAmount && disabledBtn;
-      break;
-    }
-    default:
-      break;
+        );
+        reviewOrderDescValue = `${totalAmountStr} ${totalAmountToken?.symbol}`;
+        cfmTitle = `You placed an order to sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol} for ${reviewOrderDescValue}`;
+        disabledBtn = !originalSellAmount && disabledBtn;
+        break;
+      }
+      default:
+        break;
     }
     totalAmountData = {
       totalAmountToken,
@@ -371,6 +377,10 @@ export const orderLimitDataSelector = createSelector(
     if (priceChange24h < 0) {
       colorPriceChange24h = COLORS.red;
     }
+
+    // console.log('privacyPRVInfo: ', privacyPRVInfo);
+
+    const errorNetworkFee = new BigNumber(privacyPRVInfo.prvBalanceOriginal || 0).lt(new BigNumber(networkfee || 0));
     return {
       mainColor,
       buyColor,
@@ -405,6 +415,8 @@ export const orderLimitDataSelector = createSelector(
       calculating,
       totalAmountData,
       accountBalance: prv?.amount || 0,
+      hideNetworkFee,
+      errorNetworkFee
     };
   },
 );
@@ -417,11 +429,11 @@ export const mappingOrderHistorySelector = createSelector(
   nftTokenDataSelector,
   getPrivacyDataByTokenIDSelector,
   (
-    { withdrawingOrderTxs, withdrawOrderTxs },
-    getDataByPoolId,
-    { nftTokenAvailable, list },
-    getPrivacyDataByTokenID,
-  ) =>
+      { withdrawingOrderTxs, withdrawOrderTxs },
+      getDataByPoolId,
+      { nftTokenAvailable, list },
+      getPrivacyDataByTokenID,
+    ) =>
     (order) => {
       try {
         if (!order) {
@@ -505,14 +517,14 @@ export const mappingOrderHistorySelector = createSelector(
         let cancelTx, claimTx;
         if (withdrawTx?.requestTx) {
           switch (withdrawTx?.txType) {
-          case ACCOUNT_CONSTANT.TX_TYPE.CANCEL_ORDER_LIMIT:
-            cancelTx = withdrawTx;
-            break;
-          case ACCOUNT_CONSTANT.TX_TYPE.CLAIM_ORDER_LIMIT:
-            claimTx = withdrawTx;
-            break;
-          default:
-            break;
+            case ACCOUNT_CONSTANT.TX_TYPE.CANCEL_ORDER_LIMIT:
+              cancelTx = withdrawTx;
+              break;
+            case ACCOUNT_CONSTANT.TX_TYPE.CLAIM_ORDER_LIMIT:
+              claimTx = withdrawTx;
+              break;
+            default:
+              break;
           }
         }
         const btnTitleClaim = 'Claim';
@@ -729,7 +741,12 @@ export const selectableTokens2Selector = createSelector(
   (pools, poolSelected) => {
     const { tokenId: token1Id } = poolSelected?.token1;
     return pools
-      .filter(({ token1, token2 }) => token1?.tokenId === token1Id && !token1.movedUnifiedToken && !token2.movedUnifiedToken)
+      .filter(
+        ({ token1, token2 }) =>
+          token1?.tokenId === token1Id &&
+          !token1.movedUnifiedToken &&
+          !token2.movedUnifiedToken,
+      )
       .map(({ token2 }) => token2);
   },
 );
