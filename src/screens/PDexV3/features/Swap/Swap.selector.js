@@ -16,6 +16,7 @@ import {
 } from '@src/redux/selectors/account';
 import { checkConvertSelector } from '@src/screens/ConvertToUnifiedToken/state/selectors';
 
+import { MESSAGES } from '@src/constants';
 import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
@@ -1113,7 +1114,7 @@ export const validatePRVNetworkFee = createSelector(
     // console.log('totalFeePRV ', totalFeePRV);
 
     if (new BigNumber(prvBalance).minus(totalFeePRV).lt(0)) {
-      return `Your ${PRV.symbol} balance is insufficient.`;
+      return MESSAGES.PRV_NOT_ENOUGHT;
     }
     return undefined;
   },

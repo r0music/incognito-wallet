@@ -1,5 +1,10 @@
 import { createSelector } from 'reselect';
-import { selectedPrivacySelector, childSelectedPrivacySelector } from '@src/redux/selectors';
+import {
+  selectedPrivacySelector,
+  childSelectedPrivacySelector,
+} from '@src/redux/selectors';
+import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
+import BigNumber from 'bignumber.js';
 import { getFeeData } from './EstimateFee.utils';
 
 export const estimateFeeSelector = createSelector(
@@ -15,7 +20,6 @@ export const feeDataSelector = createSelector(
     getFeeData(estimateFee, selectedPrivacy, childSelectedPrivacy),
 );
 
-
 export const networksSelector = createSelector(
   selectedPrivacySelector.selectedPrivacy,
   (selectedPrivacy) => {
@@ -26,5 +30,24 @@ export const networksSelector = createSelector(
     } else {
       return [selectedPrivacy];
     }
+  },
+);
+
+export const validatePRVNetworkFee = createSelector(
+  feeDataSelector,
+  getPrivacyPRVInfo,
+  (feeData, prvBalanceInfo) => {
+    // console.log('[validatePRVNetworkFee] feeData  ', feeData);
+    // console.log('[validatePRVNetworkFee] prvBalanceInfo  ', prvBalanceInfo);
+    const { isUsedPRVFee, totalFee, feePrv } = feeData;
+    const { isEnoughNetworkFeeDefault, prvBalanceOriginal } = prvBalanceInfo;
+    if (!isEnoughNetworkFeeDefault) return false;
+    if (new BigNumber(feePrv).gt(new BigNumber(prvBalanceOriginal)))
+      return false;
+    if (isUsedPRVFee) {
+      if (new BigNumber(totalFee).gt(new BigNumber(prvBalanceOriginal)))
+        return false;
+    }
+    return true;
   },
 );

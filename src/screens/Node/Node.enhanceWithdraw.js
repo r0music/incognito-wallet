@@ -15,10 +15,15 @@ import {
 import { getValidNodes, checkValidNode, findAccountFromListAccounts } from '@screens/Node/Node.utils';
 import { listAllMasterKeyAccounts } from '@src/redux/selectors/masterKey';
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
+import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
+import BigNumber from 'bignumber.js';
+import convert from '@src/utils/convert';
 
 const enhanceWithdraw = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const listAccount = useSelector(listAllMasterKeyAccounts);
+  const { feePerTx, prvBalanceOriginal, pDecimals } = useSelector(getPrivacyPRVInfo);
+
   const { listDevice, noRewards, withdrawTxs, withdrawing } = props;
 
   const withdrawable = useMemo(() => {
@@ -109,18 +114,46 @@ const enhanceWithdraw = (WrappedComp) => (props) => {
     }
   };
 
-  const handleWithdrawAll = async () => {
-    dispatch(updateWithdrawing(true));
-    for (const device of listDevice) {
-      try {
-        if (checkValidNode(device)) {
-          await handleWithdraw(device, false);
-        }
-      } catch {
-        /*Ignore the error*/
-      }
+const validateNetworkFee = (listDevice) => {
+  // console.log('listDevice ', listDevice);
+  let isValid = false;
+  const vNodeDeviceCount = listDevice.reduce((prev, curr) => {
+    if (curr.IsVNode || curr.IsFundedUnstaked) {
+      ++prev;
     }
-    showToastMessage(MESSAGES.ALL_NODE_WITHDRAWAL);
+    return prev;
+  }, 0) || 1;
+
+  const totalNetworkFeeForVNodes = vNodeDeviceCount * (feePerTx || MAX_FEE_PER_TX);
+
+  if (new BigNumber(prvBalanceOriginal).gt(totalNetworkFeeForVNodes)) {
+    isValid = true;
+  }
+
+  const totalNetworkFeeForVNodesStr = convert.toHumanAmount(
+    new BigNumber(totalNetworkFeeForVNodes),
+    pDecimals,
+  );
+  return { isValid, totalNetworkFeeForVNodesStr };
+};
+
+  const handleWithdrawAll = async () => {
+    const { isValid, totalNetworkFeeForVNodesStr } = validateNetworkFee(listDevice);
+    if (!isValid) {
+      Toast.showError(`Network Fee: ${totalNetworkFeeForVNodesStr} PRV` + '\n' + MESSAGES.PRV_NOT_ENOUGHT, { duration: 10000 });
+    } else {
+      dispatch(updateWithdrawing(true));
+      for (const device of listDevice) {
+        try {
+          if (checkValidNode(device)) {
+            await handleWithdraw(device, false);
+          }
+        } catch {
+          /*Ignore the error*/
+        }
+      }
+      showToastMessage(MESSAGES.ALL_NODE_WITHDRAWAL);
+    }
   };
 
   const handlePressWithdraw = onClickView(handleWithdraw);

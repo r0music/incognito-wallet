@@ -1,6 +1,6 @@
 import {createSelector} from 'reselect';
 import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
-import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/redux/selectors/selectedPrivacy';
+import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector, getPrivacyPRVInfo} from '@src/redux/selectors/selectedPrivacy';
 import {sharedSelector} from '@src/redux/selectors';
 import {getExchangeRate, getPairRate} from '@screens/PDexV3';
 import {allTokensIDsSelector} from '@src/redux/selectors/token';
@@ -51,13 +51,30 @@ export const inputAmountSelector = createSelector(
   getInputAmount,
 );
 
+export const validateNetworkFeeSelector = createSelector(
+  getPrivacyPRVInfo,
+  feeAmountSelector,
+  (prvBalanceInfo, feeAmountData ) => {
+    const { prvBalanceOriginal} = prvBalanceInfo;
+    const { feeAmount } = feeAmountData;
+    const isEnoughNetworkFee = new BigNumber(prvBalanceOriginal).gt(new BigNumber(feeAmount));
+    return {
+      isEnoughNetworkFee
+    };
+  }
+);
+
 export const hookFactoriesSelector = createSelector(
   tokenSelector,
   sharedSelector.isGettingBalance,
   feeAmountSelector,
   inputAmountSelector,
-  ({ inputToken, outputToken }, isGettingBalance, { token: feeToken }, inputAmount) => {
+  getPrivacyPRVInfo,
+  validateNetworkFeeSelector,
+  ({ inputToken, outputToken }, isGettingBalance, { token: feeToken, feeAmountStr }, inputAmount, prvBalanceInfo, validateNetworkFeeData ) => {
     if (!inputToken || !outputToken || !feeToken) return [];
+    const { symbol } = prvBalanceInfo;
+    const { isEnoughNetworkFee} = validateNetworkFeeData;
     const input = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
     const output = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
     const exchangeRateStr = getExchangeRate(inputToken, outputToken, input.originalInputAmount, output.originalInputAmount);
@@ -74,6 +91,10 @@ export const hookFactoriesSelector = createSelector(
         label: `${output.symbol} Balance`,
         value: output.maxAmountDisplay,
       },
+      !isEnoughNetworkFee ? {
+        label: 'Network Fee',
+        value: `${feeAmountStr} ${symbol}`,
+      }: undefined,
     ];
   }
 );
@@ -158,10 +179,12 @@ export const disableCreatePool = createSelector(
   isFetchingSelector,
   nftTokenDataSelector,
   isTypingSelector,
-  ( inputAmount, isFetching, { nftToken }, isTyping ) => {
+  validateNetworkFeeSelector,
+  (inputAmount, isFetching, { nftToken }, isTyping, validateNetworkFeeData) => {
+    const { isEnoughNetworkFee} = validateNetworkFeeData;
     const { error: inputError } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
     const { error: outputError } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
-    const disabled = !!inputError || !!outputError || isFetching || !nftToken || isTyping;
+    const disabled = !!inputError || !!outputError || isFetching || !nftToken || isTyping || !isEnoughNetworkFee;
     return {
       disabled,
       nftTokenAvailable: !!nftToken
@@ -182,4 +205,5 @@ export default ({
   isFetchingSelector,
   focusFieldSelector,
   isTypingSelector,
+  validateNetworkFeeSelector
 });
