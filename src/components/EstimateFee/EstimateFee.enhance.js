@@ -25,7 +25,17 @@ const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const { init } = useSelector(estimateFeeSelector);
 
+  let screen = 'Send';
+  if (childSelectedPrivacy?.networkId !== 'INCOGNITO') {
+    screen = 'UnShield';
+  } else {
+    screen = 'Send';
+  }
+
   const validateData = () => {
+    if (isPortalToken && screen === 'UnShield') {
+      return false;
+    }
     const originalAmount = convert.toOriginalAmount(
       amount,
       selectedPrivacy?.pDecimals,
@@ -55,16 +65,6 @@ const enhance = (WrappedComp) => (props) => {
     childSelectedPrivacy,
   ) => {
     try {
-      let screen = 'Send';
-      if (childSelectedPrivacy?.networkId !== 'INCOGNITO') {
-        screen = 'UnShield';
-      } else {
-        screen = 'Send';
-      }
-      if (isPortalToken && screen === 'UnShield') {
-        return;
-      }
-
       await dispatch(
         actionFetchFee({
           amount,

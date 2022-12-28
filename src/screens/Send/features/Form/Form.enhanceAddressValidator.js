@@ -176,6 +176,9 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     // }
 
     // default
+    if(props?.isPortalToken) {
+      return validator.combinedBTCAddress;
+    }
     return validator.combinedUnknownAddress;
   };
 
