@@ -99,6 +99,10 @@ export const useTabFactories = () => {
         label: 'Fee',
         value: feeTokenData?.feeAmountText ?? '',
       });
+      result.push({
+        label: 'Network Fee',
+        value: swapInfo?.networkfeeAmountStr || 0,
+      });
     }
     return result.filter((hook) => !isEmpty(hook) && !!hook?.value);
   }, [swapInfo, feeTokenData, currentExchangeData]);

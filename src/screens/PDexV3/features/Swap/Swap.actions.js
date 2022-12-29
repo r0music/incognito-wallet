@@ -82,7 +82,7 @@ import {
   ACTION_SAVE_UNIFIED_ALERT_STATE_BY_ID,
   ACTION_ESTIMATE_COUNT,
   ESTIMATE_COUNT_MAX,
-  ACTION_NAVIGATE_TO_SELECT_TOKENS
+  ACTION_NAVIGATE_TO_SELECT_TOKENS,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -908,6 +908,7 @@ export const actionEstimateTrade =
     const inputAmount = inputAmountSelector(state);
     const estimateCount = getEsimateCountSelector(state);
     const formErrors = swapFormErrorSelector(state);
+    const { networkfee } = swapInfoSelector(state);
 
     let feeData = feetokenDataSelector(state);
     const prvData: SelectedPrivacy = getPrivacyDataByTokenID(state)(PRV.id);
@@ -1014,6 +1015,7 @@ export const actionEstimateTrade =
           sellInputToken,
           buyInputToken,
           prvData,
+          networkfee,
         );
         return;
       }
@@ -1209,6 +1211,7 @@ const checkReEstimate = async (
   sellInputToken,
   buyInputToken,
   prvData,
+  networkfee = 0,
 ) => {
   // console.log('checkReEstimate ====>>> ');
   // console.log({
@@ -1234,12 +1237,32 @@ const checkReEstimate = async (
         // CASE 1:
         // SellToken: PRV
         // Fee: PRV
+        const totalFee = feeAmount + networkfee;
+        // console.log('feeAmount ', feeAmount);
+        // console.log('networkfee ', networkfee);
+        // console.log('totalFee ', totalFee);
+
         const sellAmountAndFeePRVTotal = new BigNumber(sellAmount).plus(
-          feeAmount,
+          totalFee,
         );
         if (sellAmountAndFeePRVTotal.gt(prvBalanceObj)) {
+          const newPRVInputAmountNumber = prvBalanceObj.minus(totalFee);
+
+          if (newPRVInputAmountNumber.lt(0)) {
+            //Option 1: don't est
+            // await dispatch(actionEstiamteCount());
+            // return;
+
+            //Option 2:
+            //Still est with old value
+
+            await dispatch(actionEstiamteCount());
+            dispatch(actionEstimateTrade());
+            return;
+          }
+
           const newPRVInputAmount = convert.toHumanAmount(
-            prvBalanceObj.minus(feeAmount),
+            newPRVInputAmountNumber,
             prvData.pDecimals || prvData.decimals,
           );
           const newPRVInputAmountToFixed = format.toFixed(

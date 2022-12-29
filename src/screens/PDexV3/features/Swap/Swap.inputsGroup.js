@@ -34,7 +34,7 @@ import {
   actionSetFocusToken,
   actionSwapToken,
   actionToggleProTab,
-  actionNavigateToSelectToken
+  actionNavigateToSelectToken,
 } from './Swap.actions';
 import SwapProTab from './Swap.proTab';
 import { inputGroupStyled as styled } from './Swap.styled';
@@ -96,6 +96,7 @@ const SwapInputsGroup = React.memo(() => {
         buyInputAmount,
         feetokenData,
         navigation,
+        swapInfo,
       ),
     [
       sellInputAmount?.originalAmount,

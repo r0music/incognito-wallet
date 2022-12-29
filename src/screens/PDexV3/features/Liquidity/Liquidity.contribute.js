@@ -30,6 +30,7 @@ import NetworkFee from '@src/components/NetworkFee';
 import {actionToggleModal} from '@components/Modal';
 import { withLayout_2 } from '@components/Layout';
 import useSendSelf from '@screens/PDexV3/features/Liquidity/Liquidity.useSendSelf';
+import NetworkFeeError from '@screens/PDexV3/features/Liquidity/Liquidity.networkFeeError';
 
 const initialFormValues = {
   inputToken: '',
@@ -114,7 +115,7 @@ export const Extra = React.memo(() => {
   const data = useSelector(contributeSelector.mappingDataSelector);
   const renderHooks = () => {
     if (!data) return;
-    return (data?.hookFactories || []).map((item) => (
+    return (data?.hookFactories || []).filter(item => !!item).map((item) => (
       <RowSpaceText {...item} key={item?.label} />
     ));
   };
@@ -194,6 +195,7 @@ const Contribute = ({
 }) => {
   const isFetching = useSelector(contributeSelector.statusSelector);
   const { feeAmountStr, showFaucet } = useSelector(contributeSelector.feeAmountSelector);
+  const { isEnoughNetworkFee } = useSelector(contributeSelector.validateNetworkFeeSelector);
   const _error = useSendSelf({ error, setLoading, setError });
   const onSubmit = (params) => {
     typeof onCreateContributes === 'function' && onCreateContributes(params);
@@ -227,6 +229,7 @@ const Contribute = ({
                   <ContributeButton onSubmit={onSubmit} />
                   {showFaucet && <NetworkFee feeStr={feeAmountStr} />}
                   <Extra />
+                  {!isEnoughNetworkFee && <NetworkFeeError />}
                 </View>
               </>
             )}

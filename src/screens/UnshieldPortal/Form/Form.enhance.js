@@ -9,6 +9,7 @@ import { selectedPrivacySelector } from '@src/redux/selectors';
 import { ANALYTICS, CONSTANT_COMMONS } from '@src/constants';
 import format from '@utils/format';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
+import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
 import { enhanceAddressValidation } from './Form.enhanceAddressValidator';
 import { enhanceInit, formName } from './Form.enhanceInit';
 import { enhancePortalUnshield } from './Form.enhancePortalUnShield';
@@ -19,11 +20,12 @@ export const enhance = (WrappedComp) => (props) => {
   const [isSending, setIsSending] = React.useState(false);
   const { handleUnshieldPortal, onChangeField } = props;
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const { isEnoughNetworkFeeDefault } = useSelector(getPrivacyPRVInfo);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const isFormValid = useSelector((state) => isValid(formName)(state));
   const syncErrors = useSelector((state) => getFormSyncErrors(formName)(state));
-  const disabledForm = Object.keys(syncErrors).length !== 0 || !isFormValid;
+  const disabledForm = Object.keys(syncErrors).length !== 0 || !isFormValid || !isEnoughNetworkFeeDefault;
   const { portalData } = props;
   const { incNetworkFee } = portalData;
   const onPressMax = async () => {

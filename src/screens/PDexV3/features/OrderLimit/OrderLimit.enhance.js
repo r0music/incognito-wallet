@@ -32,7 +32,7 @@ import {
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
-  const { cfmTitle, disabledBtn, accountBalance } = useSelector(
+  const { cfmTitle, disabledBtn, accountBalance, errorNetworkFee } = useSelector(
     orderLimitDataSelector,
   );
   const { isFetching, isFetched } = useDebounceSelector(orderLimitSelector);
@@ -44,7 +44,7 @@ const enhance = (WrappedComp) => (props) => {
   );
   const handleConfirm = async () => {
     try {
-      if (ordering) {
+      if (ordering || errorNetworkFee) {
         return;
       }
       await setOrdering(true);
