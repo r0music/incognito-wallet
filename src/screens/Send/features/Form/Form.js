@@ -16,6 +16,7 @@ import { actionResetFormSupportSendInChain } from '@src/components/EstimateFee/E
 import {
   feeDataSelector,
   networksSelector,
+  validatePRVNetworkFee,
 } from '@src/components/EstimateFee/EstimateFee.selector';
 import LoadingTx from '@src/components/LoadingTx';
 import { CONSTANT_COMMONS } from '@src/constants';
@@ -39,6 +40,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Field, formValueSelector } from 'redux-form';
 import withSendForm, { formName } from './Form.enhance';
 import { styledForm as styled } from './Form.styled';
+import NetworkFee from './Form.networkFee';
 
 const initialFormValues = {
   amount: '',
@@ -91,6 +93,7 @@ const SendForm = (props) => {
   const dispatch = useDispatch();
   const { titleBtnSubmit, isUnShield, editableInput } =
     useSelector(feeDataSelector);
+  const networkFeeValid = useSelector(validatePRVNetworkFee);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const childSelectedPrivacy = useSelector(
     childSelectedPrivacySelector.childSelectedPrivacy,
@@ -312,6 +315,7 @@ const SendForm = (props) => {
                 }}
               />
               {renderMemo()}
+              <NetworkFee onChangeField={onChangeField} />
               <Button
                 title={titleBtnSubmit}
                 btnStyle={[
@@ -319,7 +323,12 @@ const SendForm = (props) => {
                   isUnShield ? styled.submitBtnUnShield : null,
                 ]}
                 style={{ marginTop: 24 }}
-                disabled={disabledForm || isDisabled || !childSelectedPrivacy}
+                disabled={
+                  disabledForm ||
+                  isDisabled ||
+                  !childSelectedPrivacy ||
+                  !networkFeeValid
+                }
                 onPress={handleSubmit(submitHandler)}
                 {...generateTestId(SEND.SUBMIT_BUTTON)}
               />

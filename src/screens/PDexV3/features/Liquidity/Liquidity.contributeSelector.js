@@ -1,6 +1,6 @@
 import {createSelector} from 'reselect';
 import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
-import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/redux/selectors/selectedPrivacy';
+import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector, getPrivacyPRVInfo} from '@src/redux/selectors/selectedPrivacy';
 import {listShareSelector} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
 import {sharedSelector} from '@src/redux/selectors';
 import {getPoolSize} from '@screens/PDexV3';
@@ -55,6 +55,20 @@ export const feeAmountSelector = createSelector(
   },
 );
 
+export const validateNetworkFeeSelector = createSelector(
+  getPrivacyPRVInfo,
+  feeAmountSelector,
+  (prvBalanceInfo, feeAmountData ) => {
+    const { prvBalanceOriginal} = prvBalanceInfo;
+    const { feeAmount } = feeAmountData;
+    const isEnoughNetworkFee = new BigNumber(prvBalanceOriginal).gt(new BigNumber(feeAmount));
+    return {
+      isEnoughNetworkFee
+    };
+  }
+);
+
+
 export const inputAmountSelector = createSelector(
   (state) => state,
   sharedSelector.isGettingBalance,
@@ -70,15 +84,21 @@ export const mappingDataSelector = createSelector(
   sharedSelector.isGettingBalance,
   feeAmountSelector,
   inputAmountSelector,
+  getPrivacyPRVInfo,
+  validateNetworkFeeSelector,
   (
     { data: poolData, nftId },
     getPrivacyDataByTokenID,
     { inputToken, outputToken },
     isGettingBalance,
-    { token: feeToken },
+    { token: feeToken, feeAmountStr },
     inputAmount,
+    prvBalanceInfo,
+    validateNetworkFeeData,
   ) => {
     if (!poolData || !inputToken || !outputToken) return {};
+    const { symbol } = prvBalanceInfo;
+    const { isEnoughNetworkFee} = validateNetworkFeeData;
     const { token1Value: token1PoolValue, token2Value: token2PoolValue, price, virtual1Value, virtual2Value } = poolData;
     const poolSize = getPoolSize(inputToken, outputToken, token1PoolValue, token2PoolValue);
     const input = inputAmount(formConfigsContribute.formName, formConfigsContribute.inputToken);
@@ -126,6 +146,10 @@ export const mappingDataSelector = createSelector(
         label: `${output.symbol} Balance`,
         value: output.maxAmountDisplay,
       },
+      !isEnoughNetworkFee ? {
+        label: 'Network Fee',
+        value: `${feeAmountStr} ${symbol}`,
+      }: undefined,
     ];
     return {
       ...poolData,
@@ -193,4 +217,5 @@ export default ({
   inputAmountSelector,
   nftTokenSelector,
   disableContribute,
+  validateNetworkFeeSelector
 });

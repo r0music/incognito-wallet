@@ -8,7 +8,7 @@ import { getEsimateTradeError, validatePRVNetworkFee } from './Swap.selector';
 
 const styled = StyleSheet.create({
   container: {
-    marginTop: 20,
+    marginTop: 6,
     marginBottom: 0,
   },
   text: {
