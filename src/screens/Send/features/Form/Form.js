@@ -17,6 +17,7 @@ import {
   feeDataSelector,
   networksSelector,
   validatePRVNetworkFee,
+  validateTotalPRVBurningSelector,
 } from '@src/components/EstimateFee/EstimateFee.selector';
 import LoadingTx from '@src/components/LoadingTx';
 import { CONSTANT_COMMONS } from '@src/constants';
@@ -38,6 +39,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, formValueSelector } from 'redux-form';
+import { actionFundingPRVModalVisible } from '@screens/FundingPRV/FundingPRV.actions';
 import withSendForm, { formName } from './Form.enhance';
 import { styledForm as styled } from './Form.styled';
 import NetworkFee from './Form.networkFee';
@@ -93,7 +95,8 @@ const SendForm = (props) => {
   const dispatch = useDispatch();
   const { titleBtnSubmit, isUnShield, editableInput } =
     useSelector(feeDataSelector);
-  const networkFeeValid = useSelector(validatePRVNetworkFee);
+  // const networkFeeValid = useSelector(validatePRVNetworkFee);
+  const { isEnoughtPRVNeededAfterBurn, isCurrentPRVBalanceExhausted } = useSelector(validateTotalPRVBurningSelector);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const childSelectedPrivacy = useSelector(
     childSelectedPrivacySelector.childSelectedPrivacy,
@@ -118,7 +121,13 @@ const SendForm = (props) => {
       ? onCentralizedPress
       : onDecentralizedPress
     : handleSend;
-  const submitHandler = handlePressSend;
+  // const submitHandler = handlePressSend;
+  const showFundingPRVAlert = () =>{
+    dispatch(actionFundingPRVModalVisible(true));
+  };
+
+  const submitHandler = isEnoughtPRVNeededAfterBurn ? handlePressSend : showFundingPRVAlert;
+
 
   const getNetworks = () => {
     let networks = useSelector(networksSelector);
@@ -315,7 +324,7 @@ const SendForm = (props) => {
                 }}
               />
               {renderMemo()}
-              <NetworkFee onChangeField={onChangeField} />
+              <NetworkFee onChangeField={onChangeField} isCurrentPRVBalanceExhausted={isCurrentPRVBalanceExhausted} />
               <Button
                 title={titleBtnSubmit}
                 btnStyle={[
@@ -326,8 +335,7 @@ const SendForm = (props) => {
                 disabled={
                   disabledForm ||
                   isDisabled ||
-                  !childSelectedPrivacy ||
-                  !networkFeeValid
+                  !childSelectedPrivacy
                 }
                 onPress={handleSubmit(submitHandler)}
                 {...generateTestId(SEND.SUBMIT_BUTTON)}

@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import isNaN from 'lodash/isNaN';
-import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
+import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector , getPrivacyPRVInfo, validatePRVBalanceSelector } from '@src/redux/selectors/selectedPrivacy';
 import format from '@src/utils/format';
 import { formValueSelector, isValid, getFormSyncErrors } from 'redux-form';
 import convert from '@src/utils/convert';
@@ -15,6 +15,7 @@ import {
   switchAccountSelector,
 } from '@src/redux/selectors/account';
 import { checkConvertSelector } from '@src/screens/ConvertToUnifiedToken/state/selectors';
+import { minPRVNeededSelector } from '@screens/FundingPRV/FundingPRV.selector';
 
 import { MESSAGES } from '@src/constants';
 import {
@@ -1095,14 +1096,13 @@ export const validatePRVNetworkFee = createSelector(
   swapInfoSelector,
   feetokenDataSelector,
   getPrivacyDataByTokenIDSelector,
-  (swapInfo, feeTokenData, getPrivacyDataByTokenID) => {
-    // console.log('[validatePRVNetworkFee] ==>> ', {
-    //   swapInfo,
-    //   feeTokenData,
-    // });
+  selltokenSelector,
+  inputAmountSelector,
+  (swapInfo, feeTokenData, getPrivacyDataByTokenID, selltoken, inputAmount) => {
+
     const PRVPrivacy: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
-    const { payFeeByPRV, feetoken, minFeeOriginalPRV, origininalFeeAmount } =
-      feeTokenData;
+
+    const { payFeeByPRV, feetoken, minFeeOriginalPRV, origininalFeeAmount } = feeTokenData;
     const { networkfee } = swapInfo;
     const prvBalance = PRVPrivacy?.amount || 0;
 
@@ -1118,6 +1118,62 @@ export const validatePRVNetworkFee = createSelector(
     }
     return undefined;
   },
+);
+
+
+export const validateTotalBurningPRVSelector = createSelector(
+  swapInfoSelector,
+  feetokenDataSelector,
+  getPrivacyDataByTokenIDSelector,
+  selltokenSelector,
+  inputAmountSelector,
+  minPRVNeededSelector,
+  getPrivacyPRVInfo,
+  validatePRVBalanceSelector,
+  (swapInfo, feeTokenData, getPrivacyDataByTokenID, selltoken, inputAmount, minPRVNeeded, prvBalanceInfo, validatePRVBalanceFn) => {
+    try {
+      // console.log('[validateTotalBurningPRVSelector] ==>> ', {
+      //   swapInfo,
+      //   feeTokenData,
+      //   PRVPrivacy,
+      //   selltoken,
+      //   sellinputAmount
+      // });
+      // const PRVPrivacy: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
+      const sellinputAmount = inputAmount(formConfigs.selltoken);
+      const { tokenId: sellTokenId } = selltoken;
+      const { originalAmount: sellOriginalAmount } = sellinputAmount;
+      const { payFeeByPRV, minFeeOriginalPRV } = feeTokenData;
+      const { networkfee } = swapInfo;
+      const { PRV_ID, feePerTx } = prvBalanceInfo;
+  
+      let totalBurningPRV = 0;
+
+  
+      // SellToken = PRV
+      if (sellTokenId === PRV_ID) {
+        totalBurningPRV = sellOriginalAmount;
+      } else {
+        totalBurningPRV = 0;
+      }
+  
+      // PayFee = PRV
+      if (payFeeByPRV) {
+        totalBurningPRV = totalBurningPRV + minFeeOriginalPRV + networkfee;
+      } else {
+        totalBurningPRV = totalBurningPRV + networkfee;
+      }
+
+      if (!totalBurningPRV || totalBurningPRV == 0) {
+        totalBurningPRV = feePerTx;
+      }
+
+      return validatePRVBalanceFn(totalBurningPRV);
+
+    } catch (error) {
+      console.log('[validateTotalBurningPRVSelector] ERROR ', error);
+    }
+  }
 );
 
 export const getIsNavigateFromMarketTab = createSelector(

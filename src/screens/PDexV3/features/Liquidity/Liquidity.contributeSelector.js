@@ -1,6 +1,6 @@
 import {createSelector} from 'reselect';
 import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
-import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector, getPrivacyPRVInfo} from '@src/redux/selectors/selectedPrivacy';
+import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector, getPrivacyPRVInfo, validatePRVBalanceSelector} from '@src/redux/selectors/selectedPrivacy';
 import {listShareSelector} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
 import {sharedSelector} from '@src/redux/selectors';
 import {getPoolSize} from '@screens/PDexV3';
@@ -9,6 +9,7 @@ import format from '@utils/format';
 import {formConfigsContribute} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {nftTokenDataSelector} from '@src/redux/selectors/account';
 import BigNumber from 'bignumber.js';
+import { minPRVNeededSelector } from '@screens/FundingPRV/FundingPRV.selector';
 
 const contributeSelector = createSelector(
   liquiditySelector,
@@ -58,7 +59,8 @@ export const feeAmountSelector = createSelector(
 export const validateNetworkFeeSelector = createSelector(
   getPrivacyPRVInfo,
   feeAmountSelector,
-  (prvBalanceInfo, feeAmountData ) => {
+  minPRVNeededSelector,
+  (prvBalanceInfo, feeAmountData, minPRVNeeded) => {
     const { prvBalanceOriginal} = prvBalanceInfo;
     const { feeAmount } = feeAmountData;
     const isEnoughNetworkFee = new BigNumber(prvBalanceOriginal).gt(new BigNumber(feeAmount));
@@ -146,10 +148,14 @@ export const mappingDataSelector = createSelector(
         label: `${output.symbol} Balance`,
         value: output.maxAmountDisplay,
       },
-      !isEnoughNetworkFee ? {
+      // !isEnoughNetworkFee ? {
+      //   label: 'Network Fee',
+      //   value: `${feeAmountStr} ${symbol}`,
+      // }: undefined,
+      {
         label: 'Network Fee',
         value: `${feeAmountStr} ${symbol}`,
-      }: undefined,
+      },
     ];
     return {
       ...poolData,
@@ -163,6 +169,63 @@ export const mappingDataSelector = createSelector(
     };
   }
 );
+
+export const validateTotalBurnPRVSelector = createSelector(
+  getPrivacyPRVInfo,
+  feeAmountSelector,
+  minPRVNeededSelector,
+  inputAmountSelector,
+  validatePRVBalanceSelector,
+  (prvBalanceInfo, feeAmountData, minPRVNeeded, inputAmount, validatePRVBalanceFn) => {
+    try {
+      const { prvBalanceOriginal, PRV_ID, feePerTx } = prvBalanceInfo;
+      const { feeAmount } = feeAmountData;
+  
+      const input = inputAmount(formConfigsContribute.formName, formConfigsContribute.inputToken);
+      const output = inputAmount(formConfigsContribute.formName, formConfigsContribute.outputToken);
+  
+      const { tokenId: token1Id, originalInputAmount: originalInputAmount1 } = input;
+      const { tokenId: token2Id, originalInputAmount: originalInputAmount2 } = output;
+  
+      // console.log('LD-Contribute [validateTotalBurnPRVSelector] ', {
+      //   input,
+      //   output,
+      //   feeAmountData,
+      //   prvBalanceInfo
+      // } );
+  
+      let totalBurningPRV = 0;
+    
+      // SellToken = PRV
+      if (token1Id === PRV_ID) {
+        totalBurningPRV = totalBurningPRV + originalInputAmount1;
+      } 
+  
+      if (token2Id === PRV_ID) {
+        totalBurningPRV = totalBurningPRV + originalInputAmount2;
+      } 
+
+      totalBurningPRV = totalBurningPRV + feeAmount;
+  
+      if (!totalBurningPRV || totalBurningPRV == 0) {
+        totalBurningPRV = feePerTx;
+      }
+  
+      // console.log('LD-Contribute [validateTotalBurnPRVSelector] ==>> ', {
+      //   prvBalanceOriginal,
+      //   totalBurningPRV,
+      //   minPRVNeeded
+      // });
+  
+      return validatePRVBalanceFn(totalBurningPRV);
+
+  
+    } catch (error) {
+      console.log('LD-Contribute [validateTotalBurnPRVSelector]  ERROR : ', error);
+    }
+  }
+);
+
 
 export const nftTokenSelector = createSelector(
   poolIDSelector,
@@ -217,5 +280,6 @@ export default ({
   inputAmountSelector,
   nftTokenSelector,
   disableContribute,
-  validateNetworkFeeSelector
+  validateNetworkFeeSelector,
+  validateTotalBurnPRVSelector
 });

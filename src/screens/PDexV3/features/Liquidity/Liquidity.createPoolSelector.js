@@ -1,6 +1,6 @@
 import {createSelector} from 'reselect';
 import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
-import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector, getPrivacyPRVInfo} from '@src/redux/selectors/selectedPrivacy';
+import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector, getPrivacyPRVInfo, validatePRVBalanceSelector} from '@src/redux/selectors/selectedPrivacy';
 import {sharedSelector} from '@src/redux/selectors';
 import {getExchangeRate, getPairRate} from '@screens/PDexV3';
 import {allTokensIDsSelector} from '@src/redux/selectors/token';
@@ -12,6 +12,7 @@ import BigNumber from 'bignumber.js';
 import convert from '@utils/convert';
 import {isNaN} from 'lodash';
 import format from '@utils/format';
+import { minPRVNeededSelector } from '@screens/FundingPRV/FundingPRV.selector';
 
 const createPoolSelector = createSelector(
   liquiditySelector,
@@ -64,6 +65,61 @@ export const validateNetworkFeeSelector = createSelector(
   }
 );
 
+export const validateTotalBurnPRVSelector = createSelector(
+  getPrivacyPRVInfo,
+  feeAmountSelector,
+  minPRVNeededSelector,
+  inputAmountSelector,
+  validatePRVBalanceSelector,
+  (prvBalanceInfo, feeAmountData, minPRVNeeded, inputAmount, validatePRVBalanceFn) => {
+    try {
+      const { prvBalanceOriginal, PRV_ID, feePerTx } = prvBalanceInfo;
+      const { feeAmount } = feeAmountData;
+  
+      const input = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
+      const output = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
+  
+      const { tokenId: token1Id, originalInputAmount: originalInputAmount1 } = input;
+      const { tokenId: token2Id, originalInputAmount: originalInputAmount2 } = output;
+  
+      // console.log('LD-CreatePool [validateTotalBurnPRVSelector] ', {
+      //   input,
+      //   output,
+      //   feeAmountData,
+      //   prvBalanceInfo
+      // } );
+  
+      let totalBurningPRV = 0;
+    
+      // SellToken = PRV
+      if (token1Id === PRV_ID) {
+        totalBurningPRV = totalBurningPRV + originalInputAmount1;
+      } 
+  
+      if (token2Id === PRV_ID) {
+        totalBurningPRV = totalBurningPRV + originalInputAmount2;
+      } 
+
+      totalBurningPRV = totalBurningPRV + feeAmount;
+  
+      if (!totalBurningPRV || totalBurningPRV == 0) {
+        totalBurningPRV = feePerTx;
+      }
+  
+      // console.log('LD-CreatePool [validateTotalBurnPRVSelector] ==>> ', {
+      //   prvBalanceOriginal,
+      //   totalBurningPRV,
+      //   minPRVNeeded
+      // });
+
+      return validatePRVBalanceFn(totalBurningPRV);
+
+    } catch (error) {
+      console.log('LD-CreatePool [validateTotalBurnPRVSelector]  ERROR : ', error);
+    }
+  }
+);
+
 export const hookFactoriesSelector = createSelector(
   tokenSelector,
   sharedSelector.isGettingBalance,
@@ -91,10 +147,14 @@ export const hookFactoriesSelector = createSelector(
         label: `${output.symbol} Balance`,
         value: output.maxAmountDisplay,
       },
-      !isEnoughNetworkFee ? {
+      // !isEnoughNetworkFee ? {
+      //   label: 'Network Fee',
+      //   value: `${feeAmountStr} ${symbol}`,
+      // }: undefined,
+      {
         label: 'Network Fee',
         value: `${feeAmountStr} ${symbol}`,
-      }: undefined,
+      }
     ];
   }
 );
@@ -205,5 +265,6 @@ export default ({
   isFetchingSelector,
   focusFieldSelector,
   isTypingSelector,
-  validateNetworkFeeSelector
+  validateNetworkFeeSelector,
+  validateTotalBurnPRVSelector
 });

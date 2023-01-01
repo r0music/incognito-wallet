@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { compose } from 'recompose';
 import { focus } from 'redux-form';
 import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
+import { actionFundingPRVModalVisible } from '@screens/FundingPRV/FundingPRV.actions';
 
 import enchanUnifiedAlert from './Swap.enhanceUnifiedAlert';
 import {
@@ -41,7 +42,8 @@ import {
   swapInfoSelector,
   feeErorSelector,
   getIsNavigateToSelectToken,
-  validatePRVNetworkFee,
+  // validatePRVNetworkFee,
+  validateTotalBurningPRVSelector,
 } from './Swap.selector';
 
 const enhance = (WrappedComp) => (props) => {
@@ -51,7 +53,16 @@ const enhance = (WrappedComp) => (props) => {
   const sellInputToken = useDebounceSelector(sellInputTokenSelector);
   const feeTokenData = useDebounceSelector(feetokenDataSelector);
   const estimateTradeError = useSelector(getEsimateTradeError);
-  const errorNetworkFeeMessage = useSelector(validatePRVNetworkFee);
+  // const errorNetworkFeeMessage = useSelector(validatePRVNetworkFee);
+  const {
+    isEnoughtPRVNeededAfterBurn,
+    isCurrentPRVBalanceExhausted,
+  } = useSelector(validateTotalBurningPRVSelector);
+
+  // console.log('11111 ',  {
+  //   isEnoughtPRVNeededAfterBurn,
+  //   isCurrentPRVBalanceExhausted,
+  // });
   const prvFeeError = useSelector(feeErorSelector);
 
   const isNavigateFromMarketTab = useSelector(getIsNavigateFromMarketTab);
@@ -115,9 +126,17 @@ const enhance = (WrappedComp) => (props) => {
           return dispatch(focus(formConfigs.formName, field));
         }
       }
-      if (estimateTradeError || prvFeeError || errorNetworkFeeMessage) {
+      if (estimateTradeError || prvFeeError || isCurrentPRVBalanceExhausted) {
         return;
       }
+
+      if (!isEnoughtPRVNeededAfterBurn) {
+        dispatch(actionFundingPRVModalVisible(true));
+        dispatch(actionReset());
+        initSwapForm();
+        return;
+      }
+
       if (
         swapInfo?.disabledBtnSwap &&
         !formErrors[formConfigs.selltoken] &&

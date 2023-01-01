@@ -25,9 +25,12 @@ const EstimateTradeError = () => {
   const error = useSelector(getEsimateTradeError);
   const errorNetworkFeeMessage = useSelector(validatePRVNetworkFee);
   if (!error && !errorNetworkFeeMessage) return null;
+  // if (!error) return null;
+
   return (
     <View style={styled.container}>
       <Text style={styled.text}>{error || errorNetworkFeeMessage}</Text>
+      {/* {<Text style={styled.text}>{error}</Text>} */}
     </View>
   );
 };
