@@ -3,8 +3,10 @@ import {
   selectedPrivacySelector,
   childSelectedPrivacySelector,
 } from '@src/redux/selectors';
-import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
+import { getPrivacyPRVInfo, validatePRVBalanceSelector } from '@src/redux/selectors/selectedPrivacy';
 import BigNumber from 'bignumber.js';
+import { formValueSelector } from 'redux-form';
+import convert from '@src/utils/convert';
 import { getFeeData } from './EstimateFee.utils';
 
 export const estimateFeeSelector = createSelector(
@@ -51,3 +53,55 @@ export const validatePRVNetworkFee = createSelector(
     return true;
   },
 );
+
+export const validateTotalPRVBurningSelector = createSelector(
+  state => state.form,
+  selectedPrivacySelector.selectedPrivacy,
+  feeDataSelector,
+  getPrivacyPRVInfo,
+  validatePRVBalanceSelector,
+  (state, selectedPrivacy, feeData, prvBalanceInfo, validatePRVBalanceFn) => {
+    if (!state) return; 
+    try {
+      const selector = formValueSelector('formSend', (state) => state);
+      const amountStr = selector(state, 'amount');
+      const amountToNumber = convert.toNumber(amountStr, true);
+      const amountToNumberOrignial = convert.toOriginalAmount(
+        amountToNumber,
+        selectedPrivacy?.pDecimals,
+        false,
+      );
+
+      let totalPRVBurning = 0;
+
+      const { tokenId: currentTokenId } = selectedPrivacy;
+      const { fee, feePrv, isUsedPRVFee } = feeData;
+      const { PRV_ID, feePerTx } = prvBalanceInfo;
+
+      // Send or Unshield for PRV
+      if (currentTokenId === PRV_ID) {
+        totalPRVBurning = amountToNumberOrignial;
+      } else {
+        //Other tokens
+        totalPRVBurning = 0;
+      }
+      
+      if (isUsedPRVFee) {
+        totalPRVBurning = totalPRVBurning + feePrv;
+      } else {
+        totalPRVBurning = totalPRVBurning + fee;
+      }
+
+        //totalPRVBurning after calculte = 0 => asign default 
+      if (!totalPRVBurning || totalPRVBurning === 0) {
+        totalPRVBurning = feePerTx;
+
+      }
+      return validatePRVBalanceFn(totalPRVBurning);
+    } catch (error) {
+      console.log('[EstimateFee] ERROR: ', error);
+    }
+  },
+);
+
+

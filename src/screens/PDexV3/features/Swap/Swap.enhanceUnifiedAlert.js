@@ -15,7 +15,7 @@ const enhanceUnifiedAlert = (WrappedComp) => (props) => {
   const isToggleUnifiedInfor = useSelector(isToggleUnifiedInforSelector);
   const currentPaymentAddress = useSelector(getCurrentPaymentAddressSelector);
 
-  // console.log('enhanceUnifiedAlert  RENDER ', {
+  // console.log('UnifiedAlert   ', {
   //   isToggleUnifiedInfor,
   // });
 
@@ -48,12 +48,14 @@ const enhanceUnifiedAlert = (WrappedComp) => (props) => {
           ...props,
         }}
       />
+      {isToggleUnifiedInfor && (
       <UnifiedInforAlert
         isVisible={isToggleUnifiedInfor}
         cancelOnClick={cancelOnClick}
         confirmOnClick={confirmOnClick}
         onTouchOutside={onTouchOutside}
       />
+)}
     </ErrorBoundary>
   );
 };

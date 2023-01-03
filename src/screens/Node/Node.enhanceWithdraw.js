@@ -140,7 +140,7 @@ const validateNetworkFee = (listDevice) => {
   const handleWithdrawAll = async () => {
     const { isValid, totalNetworkFeeForVNodesStr } = validateNetworkFee(listDevice);
     if (!isValid) {
-      Toast.showError(`Network Fee: ${totalNetworkFeeForVNodesStr} PRV` + '\n' + MESSAGES.PRV_NOT_ENOUGHT, { duration: 10000 });
+      Toast.showError(`Total Network Fees: ${totalNetworkFeeForVNodesStr} PRV` + '\n' + MESSAGES.PRV_NOT_ENOUGHT, { duration: 10000 });
     } else {
       dispatch(updateWithdrawing(true));
       for (const device of listDevice) {
