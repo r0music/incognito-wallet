@@ -15,15 +15,17 @@ import {
 import { getValidNodes, checkValidNode, findAccountFromListAccounts } from '@screens/Node/Node.utils';
 import { listAllMasterKeyAccounts } from '@src/redux/selectors/masterKey';
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
-import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
+import { getPrivacyPRVInfo, validatePRVBalanceSelector } from '@src/redux/selectors/selectedPrivacy';
 import BigNumber from 'bignumber.js';
 import convert from '@src/utils/convert';
+import { actionRefillPRVModalVisible } from '@src/screens/RefillPRV/RefillPRV.actions';
 
 const enhanceWithdraw = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const listAccount = useSelector(listAllMasterKeyAccounts);
-  const { feePerTx, prvBalanceOriginal, pDecimals } = useSelector(getPrivacyPRVInfo);
-
+  const { feePerTx, prvBalanceOriginal, pDecimals, feePerTxToHumanStr, feeAndSymbol } = useSelector(getPrivacyPRVInfo);
+  const validatePRVBalanceFn = useSelector(validatePRVBalanceSelector);
+  
   const { listDevice, noRewards, withdrawTxs, withdrawing } = props;
 
   const withdrawable = useMemo(() => {
@@ -65,8 +67,24 @@ const enhanceWithdraw = (WrappedComp) => (props) => {
     try {
       const account = device.Account;
       const allRewards = device?.AllRewards;
+      const {
+        isEnoughtPRVNeededAfterBurn,
+        isCurrentPRVBalanceExhausted,
+      } = validatePRVBalanceFn(MAX_FEE_PER_TX);
+      
       // Case withdraw VNode | PNode unstaked
       if (device.IsVNode || device.IsFundedUnstaked) {
+
+        if (isCurrentPRVBalanceExhausted) {
+          Toast.showError(`${feeAndSymbol} is required per node.` + '\n' + 'Insufficient PRV balance to cover network fee.', { duration: 10000 });
+          return;
+        }
+
+        if (!isEnoughtPRVNeededAfterBurn) {
+          dispatch(actionRefillPRVModalVisible(true));
+          return;
+        }
+
         const { PaymentAddress } = account || {};
         // get tokens can withdraw with PaymentAddress
         const tokenIds = allRewards.reduce((tokens, currentReward) => {
@@ -126,6 +144,11 @@ const validateNetworkFee = (listDevice) => {
 
   const totalNetworkFeeForVNodes = vNodeDeviceCount * (feePerTx || MAX_FEE_PER_TX);
 
+  let {
+    isEnoughtPRVNeededAfterBurn,
+    isCurrentPRVBalanceExhausted,
+  } = validatePRVBalanceFn(totalNetworkFeeForVNodes);
+
   if (new BigNumber(prvBalanceOriginal).gt(totalNetworkFeeForVNodes)) {
     isValid = true;
   }
@@ -134,26 +157,34 @@ const validateNetworkFee = (listDevice) => {
     new BigNumber(totalNetworkFeeForVNodes),
     pDecimals,
   );
-  return { isValid, totalNetworkFeeForVNodesStr };
+  return { isValid, isEnoughtPRVNeededAfterBurn, isCurrentPRVBalanceExhausted, totalNetworkFeeForVNodesStr };
 };
 
   const handleWithdrawAll = async () => {
-    const { isValid, totalNetworkFeeForVNodesStr } = validateNetworkFee(listDevice);
+
+    const { isValid, isEnoughtPRVNeededAfterBurn, isCurrentPRVBalanceExhausted, totalNetworkFeeForVNodesStr } = validateNetworkFee(listDevice);
+
     if (!isValid) {
-      Toast.showError(`Total Network Fees: ${totalNetworkFeeForVNodesStr} PRV` + '\n' + MESSAGES.PRV_NOT_ENOUGHT, { duration: 10000 });
-    } else {
-      dispatch(updateWithdrawing(true));
-      for (const device of listDevice) {
-        try {
-          if (checkValidNode(device)) {
-            await handleWithdraw(device, false);
-          }
-        } catch {
-          /*Ignore the error*/
-        }
-      }
-      showToastMessage(MESSAGES.ALL_NODE_WITHDRAWAL);
+      Toast.showError(`${feeAndSymbol} is required per node.` + '\n' + 'Insufficient PRV balance to cover network fee.', { duration: 10000 });
+      return;
     }
+
+    if (!isEnoughtPRVNeededAfterBurn) {
+      dispatch(actionRefillPRVModalVisible(true));
+      return;
+    }
+
+    dispatch(updateWithdrawing(true));
+    for (const device of listDevice) {
+      try {
+        if (checkValidNode(device)) {
+          await handleWithdraw(device, false);
+        }
+      } catch {
+        /*Ignore the error*/
+      }
+    }
+    showToastMessage(MESSAGES.ALL_NODE_WITHDRAWAL);
   };
 
   const handlePressWithdraw = onClickView(handleWithdraw);
