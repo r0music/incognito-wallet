@@ -9,7 +9,8 @@ import { selectedPrivacySelector } from '@src/redux/selectors';
 import { ANALYTICS, CONSTANT_COMMONS } from '@src/constants';
 import format from '@utils/format';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
-import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
+import { getPrivacyPRVInfo, validatePRVBalanceSelector } from '@src/redux/selectors/selectedPrivacy';
+import { actionRefillPRVModalVisible } from '@src/screens/RefillPRV/RefillPRV.actions';
 import { enhanceAddressValidation } from './Form.enhanceAddressValidator';
 import { enhanceInit, formName } from './Form.enhanceInit';
 import { enhancePortalUnshield } from './Form.enhancePortalUnShield';
@@ -20,7 +21,11 @@ export const enhance = (WrappedComp) => (props) => {
   const [isSending, setIsSending] = React.useState(false);
   const { handleUnshieldPortal, onChangeField } = props;
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const { isEnoughNetworkFeeDefault } = useSelector(getPrivacyPRVInfo);
+  const { isEnoughNetworkFeeDefault, feePerTx } = useSelector(getPrivacyPRVInfo);
+  const {
+    isEnoughtPRVNeededAfterBurn,
+    isCurrentPRVBalanceExhausted,
+  } = useSelector(validatePRVBalanceSelector)(feePerTx);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const isFormValid = useSelector((state) => isValid(formName)(state));
@@ -53,6 +58,10 @@ export const enhance = (WrappedComp) => (props) => {
   const handlePressUnshieldPortal = async (payload) => {
     try {
       if (disabledForm) {
+        return;
+      }
+      if (!isEnoughtPRVNeededAfterBurn) {
+        dispatch(actionRefillPRVModalVisible(true));
         return;
       }
       dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.UNSHIELD));
