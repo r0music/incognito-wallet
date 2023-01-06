@@ -1,8 +1,6 @@
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import withLazy from '@src/components/LazyHoc/LazyHoc';
 import { actionToggleModal } from '@src/components/Modal';
-import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
-import { actionCheckNeedFaucetPRV } from '@src/redux/actions/token';
 import routeNames from '@src/router/routeNames';
 import { TradeSuccessModal } from '@src/screens/PDexV3/features/Trade';
 import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/RemoveStorage.Dialog';
@@ -16,7 +14,7 @@ import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
 import { actionRefillPRVModalVisible } from '@src/screens/RefillPRV/RefillPRV.actions';
 import { PRV } from '@src/constants/common';
 
-import enchanUnifiedAlert from './Swap.enhanceUnifiedAlert';
+import enhanceUnifiedAlert from './Swap.enhanceUnifiedAlert';
 import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
@@ -31,20 +29,17 @@ import {
   actionReset,
   actionSetDefaultExchange,
   actionToggleProTab,
-  actionNavigateToSelectToken,
 } from './Swap.actions';
 
 import {
   feetokenDataSelector,
   getEsimateTradeError,
   getIsNavigateFromMarketTab,
-  sellInputTokenSelector,
   buyInputTokenSeletor,
   swapFormErrorSelector,
   swapInfoSelector,
   feeErorSelector,
   getIsNavigateToSelectToken,
-  // validatePRVNetworkFee,
   validateTotalBurningPRVSelector,
 } from './Swap.selector';
 
@@ -52,20 +47,14 @@ const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const swapInfo = useDebounceSelector(swapInfoSelector);
   const formErrors = useDebounceSelector(swapFormErrorSelector);
-  const sellInputToken = useDebounceSelector(sellInputTokenSelector);
   const buyInputToken = useDebounceSelector(buyInputTokenSeletor);
   const feeTokenData = useDebounceSelector(feetokenDataSelector);
   const estimateTradeError = useSelector(getEsimateTradeError);
-  // const errorNetworkFeeMessage = useSelector(validatePRVNetworkFee);
   const {
     isEnoughtPRVNeededAfterBurn,
     isCurrentPRVBalanceExhausted,
   } = useSelector(validateTotalBurningPRVSelector);
 
-  // console.log('11111 ',  {
-  //   isEnoughtPRVNeededAfterBurn,
-  //   isCurrentPRVBalanceExhausted,
-  // });
   const prvFeeError = useSelector(feeErorSelector);
 
   const isNavigateFromMarketTab = useSelector(getIsNavigateFromMarketTab);
@@ -187,7 +176,7 @@ const enhance = (WrappedComp) => (props) => {
           actionInitSwapForm({
             defaultPair: SWAP_DEFAULT_FAIR,
             refresh: true,
-            shouldFetchHistory: false,
+            shouldFetchHistory: true,
           }),
         );
       }
@@ -195,7 +184,7 @@ const enhance = (WrappedComp) => (props) => {
   };
 
   useEffect(() => {
-    handleInitSwapForm();
+    handleInitSwapForm().then();
     if (navigation?.state?.routeName !== routeNames.Trade) {
       return () => {
         unmountSwap();
@@ -226,7 +215,7 @@ const enhance = (WrappedComp) => (props) => {
         onPressCancel={() => setVisibleSignificant(false)}
         onPressAccept={() => {
           setVisibleSignificant(false);
-          handleCreateSwapOrder();
+          handleCreateSwapOrder().then();
         }}
         title="Warning"
         subTitle="Do note that due to trade size, the price of this trade varies significantly from market price."
@@ -236,4 +225,4 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default compose(withLazy, enhance, enchanUnifiedAlert);
+export default compose(withLazy, enhance, enhanceUnifiedAlert);
