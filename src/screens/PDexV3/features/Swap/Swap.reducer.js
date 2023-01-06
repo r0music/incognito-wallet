@@ -103,6 +103,12 @@ const initialState = {
       feeToken: {},
       error: null,
     },
+    [KEYS_PLATFORMS_SUPPORTED.interswap]: {
+      // trisolaris
+      feePrv: {},
+      feeToken: {},
+      error: null,
+    },
   },
   buytoken: '',
   selltoken: '',
@@ -130,6 +136,7 @@ const initialState = {
   pancakeTokens: [],
   uniTokens: [],
   curveTokens: [],
+  interswapTokens: [],
   platforms: [...PLATFORMS_SUPPORTED],
   field: '',
   useMax: false,
@@ -311,6 +318,7 @@ const reducer = (state = initialState, action) => {
         spookyTokens,
         joeTokens,
         trisolarisTokens,
+        interswapTokens,
       } = action.payload;
       return {
         ...state,
@@ -322,6 +330,7 @@ const reducer = (state = initialState, action) => {
         spookyTokens,
         joeTokens,
         trisolarisTokens,
+        interswapTokens,
       };
     }
     case ACTION_FETCH_SWAP: {
