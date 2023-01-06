@@ -12,6 +12,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { change, Field } from 'redux-form';
 import { throttle } from 'lodash';
+import {InterSwapMsg} from '@screens/PDexV3/features/Swap/Swap.simpleTab';
 import { formConfigs } from './Swap.constant';
 import SwapDetails from './Swap.details';
 import { maxAmountValidatorForSellInput } from './Swap.utils';
@@ -194,6 +195,7 @@ const SwapInputsGroup = React.memo(() => {
         visibleHeader={false}
         onChange={(value) => onChange(formConfigs.buytoken, value)}
       />
+      <InterSwapMsg />
       <ToggleArrow
         label="Advanced"
         toggle={swapInfo?.toggleProTab}

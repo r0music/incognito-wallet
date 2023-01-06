@@ -3,6 +3,7 @@ import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
 import { BIG_COINS } from '@src/screens/DexV2/constants';
 import { PRV_ID } from '@screens/Dex/constants';
 import { detectToken } from '@src/utils/misc';
+import {PRV} from '@src/constants/common';
 import PToken from './pToken';
 
 function getNetworkName() {
@@ -171,6 +172,10 @@ function getIconUrl(chainTokenImageUri) {
 
   if (this.tokenId === PRV_ID) {
     return 'https://statics.incognito.org/wallet/cryptocurrency-icons/32@2x/color/prv@2x.png';
+  }
+
+  if (this.symbol === PRV.symbol) {
+    return null;
   }
 
   if (this.isMainCrypto || this.isPToken) {
