@@ -12,6 +12,7 @@ import { compose } from 'recompose';
 import { focus } from 'redux-form';
 import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
 import { actionRefillPRVModalVisible } from '@src/screens/RefillPRV/RefillPRV.actions';
+import { PRV } from '@src/constants/common';
 
 import enhanceUnifiedAlert from './Swap.enhanceUnifiedAlert';
 import {
@@ -34,6 +35,7 @@ import {
   feetokenDataSelector,
   getEsimateTradeError,
   getIsNavigateFromMarketTab,
+  buyInputTokenSeletor,
   swapFormErrorSelector,
   swapInfoSelector,
   feeErorSelector,
@@ -45,6 +47,7 @@ const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const swapInfo = useDebounceSelector(swapInfoSelector);
   const formErrors = useDebounceSelector(swapFormErrorSelector);
+  const buyInputToken = useDebounceSelector(buyInputTokenSeletor);
   const feeTokenData = useDebounceSelector(feetokenDataSelector);
   const estimateTradeError = useSelector(getEsimateTradeError);
   const {
@@ -119,7 +122,7 @@ const enhance = (WrappedComp) => (props) => {
         return;
       }
 
-      if (!isEnoughtPRVNeededAfterBurn) {
+      if (!isEnoughtPRVNeededAfterBurn && buyInputToken.tokenId !== PRV.id) {
         dispatch(actionRefillPRVModalVisible(true));
         dispatch(actionReset());
         initSwapForm();
