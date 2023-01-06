@@ -7,12 +7,12 @@ import { useNavigation, useFocusEffect } from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionSaveUnifiedAlertStateById } from './Swap.actions';
 
-import { isToggleUnifiedInforSelector } from './Swap.selector';
+import { isToggleUnifiedInfoSelector } from './Swap.selector';
 
 const enhanceUnifiedAlert = (WrappedComp) => (props) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const isToggleUnifiedInfor = useSelector(isToggleUnifiedInforSelector);
+  const isToggleUnifiedInfor = useSelector(isToggleUnifiedInfoSelector);
   const currentPaymentAddress = useSelector(getCurrentPaymentAddressSelector);
 
   // console.log('UnifiedAlert   ', {
