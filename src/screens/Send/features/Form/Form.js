@@ -126,9 +126,8 @@ const SendForm = (props) => {
     dispatch(actionRefillPRVModalVisible(true));
   };
 
-  const submitHandler = isEnoughtPRVNeededAfterBurn ? handlePressSend : showRefillPRVAlert;
-
-
+  const submitHandler = isEnoughtPRVNeededAfterBurn || selectedPrivacy.isMainCrypto ? handlePressSend : showRefillPRVAlert;
+  
   const getNetworks = () => {
     let networks = useSelector(networksSelector);
     let incognitoNetwork = [

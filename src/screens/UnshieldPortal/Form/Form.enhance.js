@@ -25,7 +25,7 @@ export const enhance = (WrappedComp) => (props) => {
   const {
     isEnoughtPRVNeededAfterBurn,
     isCurrentPRVBalanceExhausted,
-  } = useSelector(validatePRVBalanceSelector)(feePerTx);
+  } = useSelector(validatePRVBalanceSelector)(feePerTx, false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const isFormValid = useSelector((state) => isValid(formName)(state));
