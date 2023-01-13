@@ -1246,6 +1246,46 @@ export const getSearchTokenListByField = createSelector(
     }),
 );
 
+export const filterSwapableToken = createSelector(
+  [selltokenSelector, buytokenSelector],
+  (selltoken, buytoken) => (currentField, tokenList) => {
+
+      let tokensFiltered = [];
+      let baseToken;
+
+      // console.log('buytoken ', buytoken);
+      // console.log('selltoken ', selltoken);
+      // console.log('currentField ', currentField);
+
+      if (currentField === 'sellToken') {
+        baseToken = buytoken;
+      } else {
+        baseToken = selltoken;
+      }
+
+      const childNetworks = baseToken.isPUnifiedToken
+
+      ? baseToken.listUnifiedToken.map((child) => child.groupNetworkName)
+      : [baseToken.groupNetworkName];
+
+      tokensFiltered = tokenList.filter((token: SelectedPrivacy) => {
+        if (token?.tokenId === buytoken?.tokenId) return false;
+        if (token?.movedUnifiedToken) return false; // not supported moved unified token
+        if (!!baseToken?.defaultPoolPair || !!token.defaultPoolPair) return true; //Swappable on pDex
+
+        const tokenChildNetworks = token.isPUnifiedToken
+          ? token.listUnifiedToken.map((child) => child.groupNetworkName)
+          : [token.groupNetworkName];
+
+        return childNetworks.some(
+          (networkName) =>
+            networkName && tokenChildNetworks.includes(networkName),
+        );
+      }) || [];
+     
+      return tokensFiltered;
+});
+
 export const feeErorSelector = createSelector(
   [feetokenDataSelector, inputAmountSelector, getPrivacyDataByTokenIDSelector],
   (feetokenData, inputAmount, getPrivacyDataByTokenID) => {

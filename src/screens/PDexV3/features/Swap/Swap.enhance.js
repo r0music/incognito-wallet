@@ -76,7 +76,7 @@ const enhance = (WrappedComp) => (props) => {
   const initSwapForm = (refresh = false) =>
     dispatch(
       actionInitSwapForm({
-        defaultPair: swapInfo?.defaultPair,
+        defaultPair: SWAP_DEFAULT_FAIR,
         refresh,
         shouldFetchHistory: true,
       }),
@@ -197,6 +197,7 @@ const enhance = (WrappedComp) => (props) => {
     React.useCallback(() => {
       const setDefaultPair = async () => {
         dispatch(actionSetDefaultPair(SWAP_DEFAULT_FAIR));
+        initSwapForm();
       };
 
       if (isNavigateFromMarketTab || navigateToSelectToken) {
