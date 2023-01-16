@@ -41,6 +41,13 @@ import { batch } from 'react-redux';
 import orderBy from 'lodash/orderBy';
 import uniq from 'lodash/uniq';
 
+export const addPToken = (
+  pToken = throw new Error('pToken object is required'),
+) => ({
+  type: type.ADD_PTOKEN,
+  data: pToken,
+});
+
 export const setToken = (
   token = throw new Error('Token object is required'),
 ) => ({
