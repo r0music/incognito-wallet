@@ -199,7 +199,8 @@ export const getPrivacyDataFilterSelector = createSelector(
 
 export const getPrivacyPRVInfo = createSelector(
   getPrivacyDataByTokenID,
-  (getFn) => {
+  defaultAccount,
+  (getFn, account) => {
     const prvBalance = getFn(PRV_ID);
 
     const {
@@ -262,7 +263,8 @@ export const getPrivacyPRVInfo = createSelector(
 export const validatePRVBalanceSelector = createSelector(
   getPrivacyPRVInfo,
   minPRVNeededSelector,
-  (prvBalanceInfor, minPRVNeeded) => (totalPRVBurn, isPRVBurn = false) => {
+  defaultAccount,
+  (prvBalanceInfor, minPRVNeeded, account) => (totalPRVBurn, isPRVBurn = false) => {
     
     let result = {
       isEnoughtPRVNeededAfterBurn: true,
@@ -286,11 +288,10 @@ export const validatePRVBalanceSelector = createSelector(
       // (isCurrentPRVBalanceExhausted = true, otherwise isCurrentPRVBalanceExhausted = false )
       // User can not perform any action 
       result.isCurrentPRVBalanceExhausted = prvBalanceOriginalBN.lt(minPRVNeededBN);
-      result.isEnoughtPRVNeededAfterBurn = prvBalanceOriginalBN.minus(totalPRVBurnBN).isGreaterThanOrEqualTo(minPRVNeededBN); 
-      // if [current PRV Balance] - [total PRV Burn] > minPRVNeededBN 
-      // (isEnoughtPRVNeededAfterBurn = true, otherwise isEnoughtPRVNeededAfterBurn = false )
-      // User can perform any action after create transaction!
-   
+
+      // Ingore ReFill PopUp PRV (will change after) => hard code value = TRUE!
+      // result.isEnoughtPRVNeededAfterBurn = prvBalanceOriginalBN.minus(totalPRVBurnBN).isGreaterThanOrEqualTo(minPRVNeededBN); 
+      result.isEnoughtPRVNeededAfterBurn = true; 
 
     } catch (error) {
       console.log('[validatePRVBalanceSelector] error ', error);

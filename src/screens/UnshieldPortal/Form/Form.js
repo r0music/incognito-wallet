@@ -12,12 +12,17 @@ import {
 import { SEND } from '@src/constants/elements';
 import { generateTestId } from '@src/utils/misc';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useSelector , useDispatch } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import LoadingTx from '@src/components/LoadingTx';
 import format from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { colorsSelector } from '@src/theme/theme.selector';
+import {
+  validateTotalPRVBurningSelector,
+} from '@src/components/EstimateFee/EstimateFee.selector';
+import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
+import { actionFaucetPRV } from '@src/redux/actions/token';
 import { styledForm as styled } from './Form.styled';
 import withSendForm from './Form.enhance';
 import { formName } from './Form.enhanceInit';
@@ -68,6 +73,8 @@ const SendForm = (props) => {
     validateBalancePRV,
   } = props;
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const dispatch = useDispatch();
+  const { isEnoughtPRVNeededAfterBurn, isCurrentPRVBalanceExhausted } = useSelector(validateTotalPRVBurningSelector);
   const { externalSymbol, pDecimals, } = selectedPrivacy;
 
   const placeholderAddress = `Incognito${
@@ -79,7 +86,12 @@ const SendForm = (props) => {
 
   const amountValidator = validatePortalAmount;
 
-  const submitHandler = handlePressUnshieldPortal;
+  const showPopupFaucetPRV = async () => {
+    await dispatch(actionFaucetPRV(<FaucetPRVModal />));
+    return;
+  };
+
+  const submitHandler = isCurrentPRVBalanceExhausted ? showPopupFaucetPRV : handlePressUnshieldPortal;
   const colors = useSelector(colorsSelector);
 
   return (

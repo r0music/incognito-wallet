@@ -40,6 +40,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, formValueSelector } from 'redux-form';
 import { actionRefillPRVModalVisible } from '@src/screens/RefillPRV/RefillPRV.actions';
+import { actionFaucetPRV } from '@src/redux/actions/token';
+import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
 import withSendForm, { formName } from './Form.enhance';
 import { styledForm as styled } from './Form.styled';
 import NetworkFee from './Form.networkFee';
@@ -121,13 +123,32 @@ const SendForm = (props) => {
       ? onCentralizedPress
       : onDecentralizedPress
     : handleSend;
-  // const submitHandler = handlePressSend;
   const showRefillPRVAlert = () =>{
     dispatch(actionRefillPRVModalVisible(true));
   };
 
-  const submitHandler = isEnoughtPRVNeededAfterBurn || selectedPrivacy.isMainCrypto ? handlePressSend : showRefillPRVAlert;
-  
+  const showPopupFaucetPRV = async () => {
+    await dispatch(actionFaucetPRV(<FaucetPRVModal />));
+  };
+
+  const submitHandler = handlePressSend;
+
+  const sendOnPress = (data) => {
+    // if (!isEnoughtPRVNeededAfterBurn && !selectedPrivacy.isMainCrypto)
+    // {
+    //   showRefillPRVAlert();
+    //   return;
+    // }
+    if (
+      disabledForm ||
+      isDisabled ||
+      !childSelectedPrivacy
+    ) {
+      return;
+    }
+    submitHandler(data);
+};
+
   const getNetworks = () => {
     let networks = useSelector(networksSelector);
     let incognitoNetwork = [
@@ -331,12 +352,13 @@ const SendForm = (props) => {
                   isUnShield ? styled.submitBtnUnShield : null,
                 ]}
                 style={{ marginTop: 24 }}
-                disabled={
-                  disabledForm ||
-                  isDisabled ||
-                  !childSelectedPrivacy
-                }
-                onPress={handleSubmit(submitHandler)}
+                onPress={() => {
+                  if (isCurrentPRVBalanceExhausted) {
+                    showPopupFaucetPRV();
+                    return;
+                  }
+                  handleSubmit(sendOnPress)();
+                }}
                 {...generateTestId(SEND.SUBMIT_BUTTON)}
               />
             </>

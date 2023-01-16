@@ -183,8 +183,8 @@ export const maxAmountValidatorForPRVSellInput = (
   }
 
   // Input < Balance
-  if (originalAmountBN.plus(totalFeePRVBN).plus(feePerTxBN).gt(prvBalanceOriginalBN)) {
-    const newInputValue = new BigNumber(prvBalanceOriginalBN - totalFeePRVBN - feePerTxBN).abs();
+  if (originalAmountBN.plus(totalFeePRVBN).gt(prvBalanceOriginalBN)) {
+    const newInputValue = new BigNumber(prvBalanceOriginalBN - totalFeePRVBN).abs();
     const newInputValueNumber = convert.toHumanAmount(
       newInputValue,
       pDecimals,
