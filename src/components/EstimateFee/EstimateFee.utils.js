@@ -30,7 +30,7 @@ export const getMaxAmount = ({ selectedPrivacy, isUseTokenFee, totalFee }) => {
   };
 };
 
-export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivacyData) => {
+export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivacyData, prvBalanceInfo) => {
   const {
     actived,
     minFeePTokenText,
