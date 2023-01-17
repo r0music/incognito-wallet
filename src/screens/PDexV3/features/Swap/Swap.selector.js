@@ -1165,12 +1165,13 @@ export const validateTotalBurningPRVSelector = createSelector(
       const { payFeeByPRV, minFeeOriginalPRV } = feeTokenData;
       const { networkfee } = swapInfo;
       const { PRV_ID, feePerTx } = prvBalanceInfo;
-  
+      
       let totalBurningPRV = 0;
+      let isPRVBurn = sellTokenId === PRV_ID;
 
   
       // SellToken = PRV
-      if (sellTokenId === PRV_ID) {
+      if (isPRVBurn) {
         totalBurningPRV = sellOriginalAmount;
       } else {
         totalBurningPRV = 0;
@@ -1178,22 +1179,67 @@ export const validateTotalBurningPRVSelector = createSelector(
   
       // PayFee = PRV
       if (payFeeByPRV) {
-        totalBurningPRV = totalBurningPRV + minFeeOriginalPRV + networkfee;
-      } else {
-        totalBurningPRV = totalBurningPRV + networkfee;
-      }
+        totalBurningPRV = totalBurningPRV + minFeeOriginalPRV;
+      } 
+
+      // Plus (+) network fee default
+      totalBurningPRV = totalBurningPRV + networkfee;
+
+      // console.log('[LOG][validateTotalBurningPRVSelector] totalBurningPRV ', totalBurningPRV);
 
       if (!totalBurningPRV || totalBurningPRV == 0) {
         totalBurningPRV = feePerTx;
       }
 
-      return validatePRVBalanceFn(totalBurningPRV);
+      return validatePRVBalanceFn(totalBurningPRV, isPRVBurn);
 
     } catch (error) {
-      console.log('[validateTotalBurningPRVSelector] ERROR ', error);
+      console.log('[LOG][validateTotalBurningPRVSelector] ERROR ', error);
     }
   }
 );
+
+
+export const getTotalFeePRVSelector = createSelector(
+  swapInfoSelector,
+  feetokenDataSelector,
+  selltokenSelector,
+  inputAmountSelector,
+  minPRVNeededSelector,
+  getPrivacyPRVInfo,
+  (swapInfo, feeTokenData, selltoken, inputAmount, minPRVNeeded, prvBalanceInfo) => {
+    try {
+
+      const sellinputAmount = inputAmount(formConfigs.selltoken);
+      const { tokenId: sellTokenId } = selltoken;
+      const { originalAmount: sellOriginalAmount } = sellinputAmount;
+      const { payFeeByPRV, minFeeOriginalPRV } = feeTokenData;
+      const { networkfee } = swapInfo;
+      const { PRV_ID, feePerTx } = prvBalanceInfo;
+      
+      let totalFeePRV = 0;
+
+      // PayFee = PRV
+      if (payFeeByPRV) {
+        totalFeePRV = totalFeePRV + minFeeOriginalPRV;
+      } 
+
+      // Plus (+) network fee default
+      totalFeePRV = totalFeePRV + networkfee;
+
+      if (!totalFeePRV || totalFeePRV == 0) {
+        totalFeePRV = feePerTx;
+      }
+      // console.log('[getTotalFeePRVSelector] totalFeePRV ', totalFeePRV);
+
+      return totalFeePRV;
+
+    } catch (error) {
+      console.log('[getTotalFeePRVSelector] ERROR ', error);
+    }
+  }
+);
+
 
 export const getIsNavigateFromMarketTab = createSelector(
   swapSelector,

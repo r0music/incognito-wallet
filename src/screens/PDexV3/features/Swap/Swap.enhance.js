@@ -13,7 +13,8 @@ import { focus } from 'redux-form';
 import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
 import { actionRefillPRVModalVisible } from '@src/screens/RefillPRV/RefillPRV.actions';
 import { PRV } from '@src/constants/common';
-
+import { actionFaucetPRV } from '@src/redux/actions/token';
+import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
 import enhanceUnifiedAlert from './Swap.enhanceUnifiedAlert';
 import {
   formConfigs,
@@ -41,6 +42,7 @@ import {
   feeErorSelector,
   getIsNavigateToSelectToken,
   validateTotalBurningPRVSelector,
+  sellInputTokenSelector
 } from './Swap.selector';
 
 const enhance = (WrappedComp) => (props) => {
@@ -48,6 +50,7 @@ const enhance = (WrappedComp) => (props) => {
   const swapInfo = useDebounceSelector(swapInfoSelector);
   const formErrors = useDebounceSelector(swapFormErrorSelector);
   const buyInputToken = useDebounceSelector(buyInputTokenSeletor);
+  const sellInputToken = useDebounceSelector(sellInputTokenSelector);
   const feeTokenData = useDebounceSelector(feetokenDataSelector);
   const estimateTradeError = useSelector(getEsimateTradeError);
   const {
@@ -105,11 +108,19 @@ const enhance = (WrappedComp) => (props) => {
       }, 500);
     }
   };
+
   const handleConfirm = async () => {
     try {
+
       if (ordering) {
         return;
       }
+      
+      if (!sellInputToken.isMainCrypto && isCurrentPRVBalanceExhausted) {
+        await dispatch(actionFaucetPRV(<FaucetPRVModal />));
+        return;
+      }
+
       await setOrdering(true);
       const fields = [formConfigs.selltoken, formConfigs.buytoken];
       for (let index = 0; index < fields.length; index++) {
@@ -118,7 +129,8 @@ const enhance = (WrappedComp) => (props) => {
           return dispatch(focus(formConfigs.formName, field));
         }
       }
-      if (estimateTradeError || prvFeeError || isCurrentPRVBalanceExhausted) {
+
+      if (estimateTradeError || prvFeeError) {
         return;
       }
 
@@ -139,17 +151,6 @@ const enhance = (WrappedComp) => (props) => {
         dispatch(actionToggleProTab(true));
         return;
       }
-      // if (!sellInputToken.isMainCrypto) {
-      //   const needFaucet = await dispatch(
-      //     actionCheckNeedFaucetPRV(
-      //       <FaucetPRVModal />,
-      //       swapInfo?.accountBalance,
-      //     ),
-      //   );
-      //   if (needFaucet) {
-      //     return;
-      //   }
-      // }
       const { isSignificant } = feeTokenData;
       if (isSignificant) {
         return setVisibleSignificant(true);
