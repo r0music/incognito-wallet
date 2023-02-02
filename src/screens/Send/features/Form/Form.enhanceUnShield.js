@@ -85,6 +85,7 @@ export const getTxOutChainLinkByTokenInfo = (tokenInfo) => {
 };
 
 export const enhanceUnshield = (WrappedComp) => (props) => {
+  const { setErrorMessage } = props;
   const {
     isETH,
     fee,
@@ -620,13 +621,30 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         await dispatch(reset(formName));
       }
     } catch (e) {
+      // console.log('EEEE ', { e });
       if (e.message === MESSAGES.NOT_ENOUGH_NETWORK_FEE) {
         Toast.showError(e.message);
       } else {
-        new ExHandler(
-          e,
-          'Something went wrong. Please try again.',
-        ).showErrorToast(true);
+        // new ExHandler(
+        //   e,
+        //   'Something went wrong. Please try again.',
+        // ).showErrorToast(true);
+
+        if (typeof e === 'string') {
+          setErrorMessage(e);
+        }
+        if (typeof e === 'object') {
+          const jsonObj = JSON.stringify(e);
+          const info = e.code || e.name;
+          const message = e.detail || e.message;
+          const errorMessage = `[${info}]: ${message}`;
+          // console.log(jsonObj);
+          if (jsonObj.includes('-3001') || jsonObj.includes('UTXO')) {
+            setErrorMessage(MESSAGES.MAXIMUM_UTXO_ERROR);
+          } else {
+            setErrorMessage(errorMessage);
+          }
+        }
       }
     }
   };
