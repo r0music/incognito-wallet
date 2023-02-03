@@ -14,9 +14,10 @@ import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
 import { actionRefillPRVModalVisible } from '@src/screens/RefillPRV/RefillPRV.actions';
 import { PRV } from '@src/constants/common';
 import { actionFaucetPRV } from '@src/redux/actions/token';
-import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
 import { MESSAGES } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
+import FaucetPRVModal, { useFaucet } from '@src/components/Modal/features/FaucetPRVModal';
+import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
 import enhanceUnifiedAlert from './Swap.enhanceUnifiedAlert';
 import {
   formConfigs,
@@ -47,6 +48,7 @@ import {
   sellInputTokenSelector
 } from './Swap.selector';
 
+
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const swapInfo = useDebounceSelector(swapInfoSelector);
@@ -55,6 +57,9 @@ const enhance = (WrappedComp) => (props) => {
   const sellInputToken = useDebounceSelector(sellInputTokenSelector);
   const feeTokenData = useDebounceSelector(feetokenDataSelector);
   const estimateTradeError = useSelector(getEsimateTradeError);
+  const { isNeedFaucet } = useSelector(getPrivacyPRVInfo);
+  const [navigateFaucet] = useFaucet();
+
   const {
     isEnoughtPRVNeededAfterBurn,
     isCurrentPRVBalanceExhausted,
@@ -79,6 +84,10 @@ const enhance = (WrappedComp) => (props) => {
     dispatch(actionReset());
   };
 
+  const navigateToFaucetWeb = async () => {
+    navigateFaucet();
+  };
+  
   const initSwapForm = (refresh = false) =>
     dispatch(
       actionInitSwapForm({
@@ -137,11 +146,15 @@ const enhance = (WrappedComp) => (props) => {
       if (ordering) {
         return;
       }
-      
-      if (!sellInputToken.isMainCrypto && isCurrentPRVBalanceExhausted) {
-        await dispatch(actionFaucetPRV(<FaucetPRVModal />));
+
+      if (isNeedFaucet) {
+        navigateToFaucetWeb();
         return;
       }
+      // if (!sellInputToken.isMainCrypto && isCurrentPRVBalanceExhausted) {
+      //   await dispatch(actionFaucetPRV(<FaucetPRVModal />));
+      //   return;
+      // }
 
       await setOrdering(true);
       await setErrorMessage(true);
