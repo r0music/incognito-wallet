@@ -349,12 +349,7 @@ const SendForm = (props) => {
                 }}
               />
               {renderMemo()}
-<<<<<<< HEAD
-              <NetworkFee onChangeField={onChangeField} isCurrentPRVBalanceExhausted={isCurrentPRVBalanceExhausted} />
-              <ErrorMessage errorMessage={errorMessage} />
-=======
               <ErrorMessageView onChangeField={onChangeField} isCurrentPRVBalanceExhausted={isNeedFaucet} />
->>>>>>> 60a7521c3 (Modify code: hide faucet popup)
               <Button
                 title={titleBtnSubmit}
                 btnStyle={[
