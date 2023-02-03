@@ -201,17 +201,19 @@ export const getPrivacyPRVInfo = createSelector(
   getPrivacyDataByTokenID,
   defaultAccount,
   (getFn, account) => {
-    const prvBalance = getFn(PRV_ID);
+
+    // console.log('Current Account: ', account);
+
+    const prvInfor = getFn(PRV_ID);
 
     const {
-      amount = 0,
       priceUsd,
       decimals,
       pDecimals,
       tokenId,
       symbol,
       externalSymbol,
-    } = prvBalance;
+    } = prvInfor;
 
     //
     const feePerTx = ACCOUNT_CONSTANT.MAX_FEE_PER_TX || 0;
@@ -222,13 +224,20 @@ export const getPrivacyPRVInfo = createSelector(
     const feePerTxToHumanStr =  feePerTxToHuman.toString();
     const feeAndSymbol =  `${feePerTxToHumanStr} ${symbol || externalSymbol} `;
     //
-    const prvBalanceOriginal = convert.toNumber(amount) || 0;
+    const prvBalanceOriginal = convert.toNumber(account.value) || 0;
     const prvbalanceToHuman = convert.toHumanAmount(
       new BigNumber(prvBalanceOriginal),
       pDecimals,
     );
     const prvbalanceToHumanStr = prvbalanceToHuman.toString();
+    // console.log(' prvBalanceOriginal ', prvBalanceOriginal);
+    // console.log(' feePerTx ', feePerTx);
+
     const isEnoughNetworkFeeDefault = new BigNumber(prvBalanceOriginal).gt(
+      new BigNumber(feePerTx),
+    );
+    // console.log('=>>> isEnoughNetworkFeeDefault ', isEnoughNetworkFeeDefault);
+    const isNeedFaucet = new BigNumber(prvBalanceOriginal).isLessThan(
       new BigNumber(feePerTx),
     );
     const isCurrentBalanceGreaterPerTx = new BigNumber(prvBalanceOriginal).gt(feePerTx);
@@ -251,7 +260,8 @@ export const getPrivacyPRVInfo = createSelector(
       prvbalanceToHumanStr,
       isEnoughNetworkFeeDefault,
       
-      isCurrentBalanceGreaterPerTx
+      isCurrentBalanceGreaterPerTx,
+      isNeedFaucet
     };
 
     // console.log('[getPrivacyPRVInfo] RESULT: ', result);

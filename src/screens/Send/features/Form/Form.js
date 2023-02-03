@@ -41,11 +41,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Field, formValueSelector } from 'redux-form';
 import { actionRefillPRVModalVisible } from '@src/screens/RefillPRV/RefillPRV.actions';
 import { actionFaucetPRV } from '@src/redux/actions/token';
-import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
+import FaucetPRVModal, { useFaucet } from '@src/components/Modal/features/FaucetPRVModal';
+import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
 import withSendForm, { formName } from './Form.enhance';
 import { styledForm as styled } from './Form.styled';
-import NetworkFee from './Form.networkFee';
-import ErrorMessage from './Form.errorMessage';
+import ErrorMessageView from './Form.errorMesageView';
 
 const initialFormValues = {
   amount: '',
@@ -97,10 +97,13 @@ const SendForm = (props) => {
     errorMessage
   } = props;
   const dispatch = useDispatch();
+  const [navigateFaucet] = useFaucet();
+
   const { titleBtnSubmit, isUnShield, editableInput } =
     useSelector(feeDataSelector);
   // const networkFeeValid = useSelector(validatePRVNetworkFee);
   const { isEnoughtPRVNeededAfterBurn, isCurrentPRVBalanceExhausted } = useSelector(validateTotalPRVBurningSelector);
+  const { isNeedFaucet } = useSelector(getPrivacyPRVInfo);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const childSelectedPrivacy = useSelector(
     childSelectedPrivacySelector.childSelectedPrivacy,
@@ -125,7 +128,8 @@ const SendForm = (props) => {
       ? onCentralizedPress
       : onDecentralizedPress
     : handleSend;
-  const showRefillPRVAlert = () => {
+
+  const showRefillPRVAlert = () =>{
     dispatch(actionRefillPRVModalVisible(true));
   };
 
@@ -133,14 +137,13 @@ const SendForm = (props) => {
     await dispatch(actionFaucetPRV(<FaucetPRVModal />));
   };
 
+  const navigateToFaucetWeb = async () => {
+    navigateFaucet();
+  };
+
   const submitHandler = handlePressSend;
 
   const sendOnPress = (data) => {
-    // if (!isEnoughtPRVNeededAfterBurn && !selectedPrivacy.isMainCrypto)
-    // {
-    //   showRefillPRVAlert();
-    //   return;
-    // }
     if (
       disabledForm ||
       isDisabled ||
@@ -346,18 +349,23 @@ const SendForm = (props) => {
                 }}
               />
               {renderMemo()}
+<<<<<<< HEAD
               <NetworkFee onChangeField={onChangeField} isCurrentPRVBalanceExhausted={isCurrentPRVBalanceExhausted} />
               <ErrorMessage errorMessage={errorMessage} />
+=======
+              <ErrorMessageView onChangeField={onChangeField} isCurrentPRVBalanceExhausted={isNeedFaucet} />
+>>>>>>> 60a7521c3 (Modify code: hide faucet popup)
               <Button
                 title={titleBtnSubmit}
                 btnStyle={[
                   styled.submitBtn,
                   isUnShield ? styled.submitBtnUnShield : null,
                 ]}
-                style={{ marginTop: 24 }}
+                style={[{ marginTop: 24 }, styled.faucetStyle]}
                 onPress={() => {
-                  if (isCurrentPRVBalanceExhausted) {
-                    showPopupFaucetPRV();
+                  if (isNeedFaucet) {
+                    // showPopupFaucetPRV();
+                    navigateToFaucetWeb();
                     return;
                   }
                   handleSubmit(sendOnPress)();

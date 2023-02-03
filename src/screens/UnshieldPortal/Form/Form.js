@@ -18,16 +18,17 @@ import LoadingTx from '@src/components/LoadingTx';
 import format from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { colorsSelector } from '@src/theme/theme.selector';
-import {
-  validateTotalPRVBurningSelector,
-} from '@src/components/EstimateFee/EstimateFee.selector';
-import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
+// import {
+//   validateTotalPRVBurningSelector,
+// } from '@src/components/EstimateFee/EstimateFee.selector';
+import FaucetPRVModal, { useFaucet } from '@src/components/Modal/features/FaucetPRVModal';
+import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
 import { actionFaucetPRV } from '@src/redux/actions/token';
 import { styledForm as styled } from './Form.styled';
 import withSendForm from './Form.enhance';
 import { formName } from './Form.enhanceInit';
 import { UnshieldPortalCondition } from '../UnshieldPortalCondition';
-import NetworkFeeError from './Form.networkFeeError';
+import ErrorMessageView from './Form.errorMessageView';
 
 const initialFormValues = {
   amount: '',
@@ -74,7 +75,10 @@ const SendForm = (props) => {
   } = props;
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const dispatch = useDispatch();
-  const { isEnoughtPRVNeededAfterBurn, isCurrentPRVBalanceExhausted } = useSelector(validateTotalPRVBurningSelector);
+  const [navigateFaucet] = useFaucet();
+  // const { isEnoughtPRVNeededAfterBurn, isCurrentPRVBalanceExhausted } = useSelector(validateTotalPRVBurningSelector);
+  const { isNeedFaucet } = useSelector(getPrivacyPRVInfo);
+  
   const { externalSymbol, pDecimals, } = selectedPrivacy;
 
   const placeholderAddress = `Incognito${
@@ -82,6 +86,7 @@ const SendForm = (props) => {
       ? ' '
       : ` or ${selectedPrivacy?.rootNetworkName} `
   }address`;
+  const btnTitle = isNeedFaucet ? 'Faucet' : 'Unshield my crypto';
   const { avgUnshieldFee, receivedAmount } = portalData;
 
   const amountValidator = validatePortalAmount;
@@ -91,7 +96,11 @@ const SendForm = (props) => {
     return;
   };
 
-  const submitHandler = isCurrentPRVBalanceExhausted ? showPopupFaucetPRV : handlePressUnshieldPortal;
+  const navigateToFaucetWeb = async () => {
+    navigateFaucet();
+  };
+
+  const submitHandler = isNeedFaucet ? navigateToFaucetWeb : handlePressUnshieldPortal;
   const colors = useSelector(colorsSelector);
 
   return (
@@ -144,7 +153,7 @@ const SendForm = (props) => {
                   </View>
                 )}
               />
-              <NetworkFeeError />
+              <ErrorMessageView />
               <TextInput
                 label="Bitcoin network (est.)"
                 canEditable={false}
@@ -198,7 +207,7 @@ const SendForm = (props) => {
                 />
               </Modal>
               <Button
-                title='Unshield my crypto'
+                title={btnTitle}
                 buttonStyle={[
                   styled.submitBtn,
                 ]}
