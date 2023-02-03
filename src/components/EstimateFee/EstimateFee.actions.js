@@ -642,7 +642,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
             Level1: userFeeDataNew.feeAmount || 0,
           };
         }
-        console.log('[actionFetchUserFees] userFeesData ', userFeesData);
+        // console.log('[actionFetchUserFees] userFeesData ', userFeesData);
       }
     } else {
       const payload = {

@@ -2004,7 +2004,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
         break;
     }
   } catch (error) {
-    new ExHandler(error).showErrorToast();
+    throw error;
   } finally {
     batch(() => {
       dispatch(actionFetchingSwap(false));

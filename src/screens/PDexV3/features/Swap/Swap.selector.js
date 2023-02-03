@@ -834,6 +834,7 @@ export const swapInfoSelector = createSelector(
   inputAmountSelector,
   (state) => state,
   getPrivacyDataByTokenIDSelector,
+  getPrivacyPRVInfo,
   (
     {
       data,
@@ -851,10 +852,12 @@ export const swapInfoSelector = createSelector(
     getInputAmount,
     state,
     getPrivacyDataByTokenID,
+    prvInfo
   ) => {
     try {
       const sellInputAmount = getInputAmount(formConfigs.selltoken);
       const buyInputAmount = getInputAmount(formConfigs.buytoken);
+      const { isNeedFaucet } = prvInfo;
       const networkfeeAmount = format.toFixed(
         convert.toHumanAmount(networkfee, PRV.pDecimals),
         PRV.pDecimals,
@@ -868,8 +871,12 @@ export const swapInfoSelector = createSelector(
         calculating ||
         (!isFetched && !isFetching) ||
         !isValid(formConfigs.formName)(state);
-      if (calculating) {
-        btnSwapText = 'Calculating...';
+      if (isNeedFaucet) {
+        btnSwapText = 'Faucet';
+      } else {
+        if (calculating) {
+          btnSwapText = 'Calculating...';
+        }
       }
       const tradingFeeStr = `${feeTokenData?.feeAmountText} ${feeTokenData?.symbol}`;
       const sellInputBalanceStr = `${sellInputAmount?.balanceStr || '0'} ${
