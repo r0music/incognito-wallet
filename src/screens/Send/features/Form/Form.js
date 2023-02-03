@@ -45,6 +45,7 @@ import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
 import withSendForm, { formName } from './Form.enhance';
 import { styledForm as styled } from './Form.styled';
 import NetworkFee from './Form.networkFee';
+import ErrorMessage from './Form.errorMessage';
 
 const initialFormValues = {
   amount: '',
@@ -93,6 +94,7 @@ const SendForm = (props) => {
     validateMemo,
     navigation,
     isPortalToken,
+    errorMessage
   } = props;
   const dispatch = useDispatch();
   const { titleBtnSubmit, isUnShield, editableInput } =
@@ -123,7 +125,7 @@ const SendForm = (props) => {
       ? onCentralizedPress
       : onDecentralizedPress
     : handleSend;
-  const showRefillPRVAlert = () =>{
+  const showRefillPRVAlert = () => {
     dispatch(actionRefillPRVModalVisible(true));
   };
 
@@ -345,6 +347,7 @@ const SendForm = (props) => {
               />
               {renderMemo()}
               <NetworkFee onChangeField={onChangeField} isCurrentPRVBalanceExhausted={isCurrentPRVBalanceExhausted} />
+              <ErrorMessage errorMessage={errorMessage} />
               <Button
                 title={titleBtnSubmit}
                 btnStyle={[
