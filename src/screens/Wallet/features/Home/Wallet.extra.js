@@ -31,6 +31,7 @@ import { Row } from '@src/components';
 import AddToken from '@screens/Wallet/features/Home/Wallet.addToken';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { TouchableOpacity } from 'react-native';
+import IconEye from '@components/Icons/icon.eye';
 
 const Balance = React.memo(({ hideBalance }) => {
   const dispatch = useDispatch();
@@ -70,6 +71,9 @@ const Balance = React.memo(({ hideBalance }) => {
             hideBalance={hideBalance}
             fromBalance
           />
+          <View style={styledBalance.btnHideBalance}>
+            <IconEye hideEye={hideBalance} />
+          </View>
         </TouchableOpacity>
       </Row>
     </View>

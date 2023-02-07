@@ -272,9 +272,14 @@ export const Amount = (props) => {
     false,
   );
   const style = hideBalance && fromBalance ? { fontSize: 56 } : {};
+  const _style = [styled.bottomText, styled.boldText, customStyle, style];
+  if (hideBalance && fromBalance) return (
+    <Text style={_style}>•••••••
+    </Text>
+);
   return (
     <NormalText
-      style={[styled.bottomText, styled.boldText, customStyle, style]}
+      style={_style}
       text={
         hideBalance
           ? fromBalance

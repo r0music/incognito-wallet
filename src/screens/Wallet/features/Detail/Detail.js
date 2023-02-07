@@ -45,38 +45,53 @@ import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { groupBtnStyled, balanceStyled, historyStyled } from './Detail.styled';
 
 const GroupButton = React.memo(() => {
+  // const navigation = useNavigation();
+  // const dispatch = useDispatch();
+  // const selected = useDebounceSelector(selectedPrivacySelector.selectedPrivacy);
+  // const handleBuy = () => {
+  //   navigation.navigate(routeNames.Trade, { tabIndex: 0 });
+  //   const poolId = selected.defaultPoolPair;
+  //   if (poolId) {
+  //     dispatch(
+  //       actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
+  //     );
+  //     dispatch(actionSetPoolSelected(poolId));
+  //     setTimeout(() => {
+  //       dispatch(actionInit());
+  //     }, 200);
+  //   }
+  // };
+  // const handleSell = () => {
+  //   const poolId = selected.defaultPoolPair;
+  //   navigation.navigate(routeNames.Trade, { tabIndex: 1 });
+  //   if (poolId) {
+  //     dispatch(
+  //       actionChangeTab({
+  //         rootTabID: ROOT_TAB_TRADE,
+  //         tabID: TAB_SELL_LIMIT_ID,
+  //       }),
+  //     );
+  //     dispatch(actionSetPoolSelected(poolId));
+  //     setTimeout(() => {
+  //       dispatch(actionInit());
+  //     }, 200);
+  //   }
+  // };
+
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const selected = useDebounceSelector(selectedPrivacySelector.selectedPrivacy);
-  const handleBuy = () => {
-    navigation.navigate(routeNames.Trade, { tabIndex: 0 });
-    const poolId = selected.defaultPoolPair;
-    if (poolId) {
-      dispatch(
-        actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
-      );
-      dispatch(actionSetPoolSelected(poolId));
-      setTimeout(() => {
-        dispatch(actionInit());
-      }, 200);
-    }
+  const handleSend = () => {
+    navigation.navigate(routeNames.Send);
+    dispatch(actionToggleModal({ visible: false }));
   };
-  const handleSell = () => {
-    const poolId = selected.defaultPoolPair;
-    navigation.navigate(routeNames.Trade, { tabIndex: 1 });
-    if (poolId) {
-      dispatch(
-        actionChangeTab({
-          rootTabID: ROOT_TAB_TRADE,
-          tabID: TAB_SELL_LIMIT_ID,
-        }),
-      );
-      dispatch(actionSetPoolSelected(poolId));
-      setTimeout(() => {
-        dispatch(actionInit());
-      }, 200);
-    }
+  const handleReceive = () => {
+    navigation.navigate(routeNames.ReceiveCrypto);
+    dispatch(actionToggleModal({ visible: false }));
   };
+  const [onPressSend, isSendDisabled] = useFeatureConfig(
+      appConstant.DISABLED.SEND,
+      handleSend,
+  );
 
   return (
     <SafeAreaView>
@@ -86,17 +101,27 @@ const GroupButton = React.memo(() => {
           { ...globalStyled.defaultPaddingHorizontal },
         ]}
       >
-        <BtnPrimary
-          title="Buy"
+        {/*<BtnPrimary*/}
+        {/*  title="Buy"*/}
+        {/*  wrapperStyle={groupBtnStyled.btnStyle}*/}
+        {/*  background={COLORS.green}*/}
+        {/*  onPress={handleBuy}*/}
+        {/*/>*/}
+        {/*<BtnPrimary*/}
+        {/*  title="Sell"*/}
+        {/*  wrapperStyle={groupBtnStyled.btnStyle}*/}
+        {/*  background={COLORS.red2}*/}
+        {/*  onPress={handleSell}*/}
+        {/*/>*/}
+        <BtnSecondary
+          title="Receive"
           wrapperStyle={groupBtnStyled.btnStyle}
-          background={COLORS.green}
-          onPress={handleBuy}
+          onPress={handleReceive}
         />
         <BtnPrimary
-          title="Sell"
+          title="Send"
           wrapperStyle={groupBtnStyled.btnStyle}
-          background={COLORS.red2}
-          onPress={handleSell}
+          onPress={onPressSend}
         />
       </View2>
     </SafeAreaView>
@@ -242,7 +267,7 @@ const Detail = (props) => {
       <Header
         title={selected?.name}
         customHeaderTitle={<BtnInfo />}
-        rightHeader={<CustomRightHeader />}
+        // rightHeader={<CustomRightHeader />}
         onGoBack={onGoBack}
         handleSelectedAccount={onRefresh}
       />
