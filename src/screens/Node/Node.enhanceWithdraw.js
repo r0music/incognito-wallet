@@ -55,7 +55,7 @@ const enhanceWithdraw = (WrappedComp) => (props) => {
         tokenID: tokenId,
         account,
         wallet: account.Wallet,
-        fee: MAX_FEE_PER_TX,
+        fee: 0, //default fee: MAX_FEE_PER_TX
       });
       _withdrawTxs[paymentAddress] = res?.txId;
     }
@@ -80,10 +80,10 @@ const enhanceWithdraw = (WrappedComp) => (props) => {
           return;
         }
 
-        if (!isEnoughtPRVNeededAfterBurn) {
-          dispatch(actionRefillPRVModalVisible(true));
-          return;
-        }
+        // if (!isEnoughtPRVNeededAfterBurn) {
+        //   dispatch(actionRefillPRVModalVisible(true));
+        //   return;
+        // }
 
         const { PaymentAddress } = account || {};
         // get tokens can withdraw with PaymentAddress
@@ -164,15 +164,15 @@ const validateNetworkFee = (listDevice) => {
 
     const { isValid, isEnoughtPRVNeededAfterBurn, isCurrentPRVBalanceExhausted, totalNetworkFeeForVNodesStr } = validateNetworkFee(listDevice);
 
-    if (!isValid) {
-      Toast.showError(`${feeAndSymbol} is required per node.` + '\n' + 'Insufficient PRV balance to cover network fee.', { duration: 10000 });
-      return;
-    }
+    // if (!isValid) {
+    //   Toast.showError(`${feeAndSymbol} is required per node.` + '\n' + 'Insufficient PRV balance to cover network fee.', { duration: 10000 });
+    //   return;
+    // }
 
-    if (!isEnoughtPRVNeededAfterBurn) {
-      dispatch(actionRefillPRVModalVisible(true));
-      return;
-    }
+    // if (!isEnoughtPRVNeededAfterBurn) {
+    //   dispatch(actionRefillPRVModalVisible(true));
+    //   return;
+    // }
 
     dispatch(updateWithdrawing(true));
     for (const device of listDevice) {
