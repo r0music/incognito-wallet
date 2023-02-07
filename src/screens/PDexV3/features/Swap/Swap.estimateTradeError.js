@@ -5,7 +5,8 @@ import { useSelector } from 'react-redux';
 // import { colorsSelector } from '@src/theme';
 import { FONT, COLORS } from '@src/styles';
 import { useFaucet } from '@src/components/Modal/features/FaucetPRVModal';
-import { getEsimateTradeError, validatePRVNetworkFee } from './Swap.selector';
+import { getEsimateTradeError, validatePRVNetworkFee, inputAmountSelector } from './Swap.selector';
+import { formConfigs } from './Swap.constant';
 
 const styled = StyleSheet.create({
   container: {
@@ -26,7 +27,10 @@ const EstimateTradeError = () => {
   const error = useSelector(getEsimateTradeError);
   const [navigateFaucet] = useFaucet();
   const errorNetworkFeeMessage = useSelector(validatePRVNetworkFee);
-  if (!error && !errorNetworkFeeMessage) return null;
+  const inputAmount = useSelector(inputAmountSelector);
+  const sellInputAmount = inputAmount(formConfigs.selltoken);
+  const { amountText } = sellInputAmount;
+  if (!error && !errorNetworkFeeMessage ) return null;
 
   // if (!error) return null;
   if (error) {
@@ -37,7 +41,8 @@ const EstimateTradeError = () => {
     );
   }
 
-  if (errorNetworkFeeMessage) {
+  // estimate done = amountText have a value!
+  if (errorNetworkFeeMessage && amountText.length > 0) {
     return (
       <View style={styled.container}>
         <Text style={styled.text}>{errorNetworkFeeMessage}
