@@ -31,6 +31,7 @@ export const styledBalance = StyleSheet.create({
   },
   wrapperAmount: {
     flexDirection: 'row',
+    width: '100%'
   },
   title: {
     fontFamily: FONT.NAME.regular,
@@ -51,7 +52,7 @@ export const styledBalance = StyleSheet.create({
     height: '100%',
   },
   balanceContainer: {
-    width: '100%',
+    // width: '100%',
   },
   wrapBalance: {
     minHeight: FONT.SIZE.veryLarge + 10,
@@ -60,11 +61,13 @@ export const styledBalance = StyleSheet.create({
     marginLeft: 5,
   },
   btnHideBalance: {
-    position: 'absolute',
-    right: -15,
-    top: -15,
-    width: 50,
-    height: 50,
+    // position: 'absolute',
+    // right: -15,
+    // top: -15,
+    // width: 50,
+    // height: 50,
+    marginLeft: 6,
+    paddingTop: 6
   },
 });
 
