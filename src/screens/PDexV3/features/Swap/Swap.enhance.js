@@ -6,7 +6,11 @@ import { TradeSuccessModal } from '@src/screens/PDexV3/features/Trade';
 import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/RemoveStorage.Dialog';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import React, { useEffect, useState } from 'react';
-import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
+import {
+  useFocusEffect,
+  useNavigation,
+  useIsFocused,
+} from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { compose } from 'recompose';
 import { focus } from 'redux-form';
@@ -16,9 +20,12 @@ import { PRV } from '@src/constants/common';
 import { actionFaucetPRV } from '@src/redux/actions/token';
 import { MESSAGES } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
-import FaucetPRVModal, { useFaucet } from '@src/components/Modal/features/FaucetPRVModal';
+import FaucetPRVModal, {
+  useFaucet,
+} from '@src/components/Modal/features/FaucetPRVModal';
 import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
 import enhanceUnifiedAlert from './Swap.enhanceUnifiedAlert';
+
 import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
@@ -45,25 +52,26 @@ import {
   feeErorSelector,
   getIsNavigateToSelectToken,
   validateTotalBurningPRVSelector,
-  sellInputTokenSelector
+  sellInputTokenSelector,
 } from './Swap.selector';
 
+import enhanceNavigation from './Swap.enhanceNavigation';
+import enhanceInit from './Swap.enhanceInit';
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
-  const swapInfo = useDebounceSelector(swapInfoSelector);
-  const formErrors = useDebounceSelector(swapFormErrorSelector);
-  const buyInputToken = useDebounceSelector(buyInputTokenSeletor);
-  const sellInputToken = useDebounceSelector(sellInputTokenSelector);
-  const feeTokenData = useDebounceSelector(feetokenDataSelector);
+  const swapInfo = useSelector(swapInfoSelector);
+  const formErrors = useSelector(swapFormErrorSelector);
+  const buyInputToken = useSelector(buyInputTokenSeletor);
+  const sellInputToken = useSelector(sellInputTokenSelector);
+  const feeTokenData = useSelector(feetokenDataSelector);
   const estimateTradeError = useSelector(getEsimateTradeError);
   const { isNeedFaucet } = useSelector(getPrivacyPRVInfo);
   const [navigateFaucet] = useFaucet();
+  const focus = useIsFocused();
 
-  const {
-    isEnoughtPRVNeededAfterBurn,
-    isCurrentPRVBalanceExhausted,
-  } = useSelector(validateTotalBurningPRVSelector);
+  const { isEnoughtPRVNeededAfterBurn, isCurrentPRVBalanceExhausted } =
+    useSelector(validateTotalBurningPRVSelector);
 
   const prvFeeError = useSelector(feeErorSelector);
 
@@ -73,25 +81,34 @@ const enhance = (WrappedComp) => (props) => {
   const [visibleSignificant, setVisibleSignificant] = useState(false);
   const [ordering, setOrdering] = useState(false);
   const [errorMessage, setErrorMessage] = React.useState(undefined);
-  const navigation = useNavigation();
+
   const {
+    defaultPair = SWAP_DEFAULT_FAIR.INCOGNITO, //Default using pair Incognito Mode
     isPrivacyApp = false,
     exchange = KEYS_PLATFORMS_SUPPORTED.incognito,
-    network = NETWORK_NAME_SUPPORTED.INCOGNITO,
   } = props;
 
-  const unmountSwap = () => {
-    dispatch(actionReset());
-  };
+  useEffect(() => {
+    initSwapForm();
+    dispatch(actionNavigateFormMarketTab(false));
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (isNavigateFromMarketTab || navigateToSelectToken) {
+        return;
+      }
+    }, [isNavigateFromMarketTab, navigateToSelectToken]),
+  );
 
   const navigateToFaucetWeb = async () => {
     navigateFaucet();
   };
-  
+
   const initSwapForm = (refresh = false) =>
     dispatch(
       actionInitSwapForm({
-        defaultPair: SWAP_DEFAULT_FAIR,
+        defaultPair,
         refresh,
         shouldFetchHistory: true,
       }),
@@ -135,14 +152,13 @@ const enhance = (WrappedComp) => (props) => {
           setErrorMessage(errorMessage);
         }
       } else {
-      new ExHandler(e).showErrorToast();
+        new ExHandler(e).showErrorToast();
       }
     }
   };
 
   const handleConfirm = async () => {
     try {
-
       if (ordering) {
         return;
       }
@@ -158,7 +174,7 @@ const enhance = (WrappedComp) => (props) => {
 
       await setOrdering(true);
       await setErrorMessage(true);
-    
+
       const fields = [formConfigs.selltoken, formConfigs.buytoken];
       for (let index = 0; index < fields.length; index++) {
         const field = fields[index];
@@ -192,7 +208,6 @@ const enhance = (WrappedComp) => (props) => {
       if (isSignificant) {
         return setVisibleSignificant(true);
       }
-      
       await handleCreateSwapOrder();
     } catch {
       //
@@ -200,13 +215,13 @@ const enhance = (WrappedComp) => (props) => {
       setOrdering(false);
     }
   };
+
   const handleInitSwapForm = async () => {
     if (isPrivacyApp) {
       await dispatch(
         actionSetDefaultExchange({
           isPrivacyApp,
           exchange,
-          network,
         }),
       );
     } else {
@@ -222,34 +237,17 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
 
-  useEffect(() => {
-    handleInitSwapForm().then();
-    if (navigation?.state?.routeName !== routeNames.Trade) {
-      return () => {
-        unmountSwap();
-      };
-    }
-    dispatch(actionNavigateFormMarketTab(false));
-  }, []);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      const setDefaultPair = async () => {
-        dispatch(actionSetDefaultPair(SWAP_DEFAULT_FAIR));
-        initSwapForm();
-      };
-
-      if (isNavigateFromMarketTab || navigateToSelectToken) {
-        return;
-      }
-
-      setDefaultPair();
-    }, [isNavigateFromMarketTab, navigateToSelectToken]),
-  );
-
   return (
     <ErrorBoundary>
-      <WrappedComp {...{ ...props, handleConfirm, initSwapForm, errorMessage, setErrorMessage}} />
+      <WrappedComp
+        {...{
+          ...props,
+          handleConfirm,
+          initSwapForm,
+          errorMessage,
+          setErrorMessage,
+        }}
+      />
       <RemoveSuccessDialog
         visible={visibleSignificant}
         onPressCancel={() => setVisibleSignificant(false)}
@@ -265,4 +263,10 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default compose(withLazy, enhance, enhanceUnifiedAlert);
+export default compose(
+  withLazy,
+  enhanceInit,
+  enhanceNavigation,
+  enhanceUnifiedAlert,
+  enhance,
+);

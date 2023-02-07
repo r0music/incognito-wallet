@@ -37,7 +37,7 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 };
 
 const Swap = (props) => {
-  const { initSwapForm, handleConfirm, errorMessage} = props;
+  const { initSwapForm, handleConfirm, errorMessage } = props;
   const swapInfo = useDebounceSelector(swapInfoSelector);
 
   const [page, setPage] = React.useState(0);
@@ -64,12 +64,12 @@ const Swap = (props) => {
     <>
       <KeyboardAwareScrollView
         style={[styled.scrollview]}
-        refreshControl={(
+        refreshControl={
           <RefreshControl
             refreshing={swapInfo?.refreshing}
             onRefresh={initSwapForm}
           />
-        )}
+        }
         onScroll={({ nativeEvent }) => {
           if (
             isCloseToBottom(nativeEvent) &&

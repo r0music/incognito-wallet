@@ -24,7 +24,10 @@ import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { pTokenIdsSelector } from '@src/redux/selectors/token';
 import { actionResetData } from '../Swap.actions';
 import { formConfigs, RULE_SORT } from '../Swap.constant';
-import { filterSwapableToken, getSearchTokenListByField } from '../Swap.selector';
+import {
+  filterSwapableToken,
+  getDefaultTokenListBySearch,
+} from '../Swap.selector';
 import { styled } from './SelectionToken.styled';
 
 const DEBOUNCE_TIME = 500;
@@ -34,17 +37,21 @@ const SelectTokenList = React.memo(() => {
   const data = useNavigationParam('data');
   const onPress = useNavigationParam('onPress');
   const { goBack } = useNavigation();
-  const { from, tokenId } = data;
+  const { from: field, tokenId: currentTokenId } = data;
   // const getPrivacyDataByTokenID = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID);
   const account = useSelector(defaultAccountSelector);
   const pTokenIdsList = useSelector(pTokenIdsSelector);
   const filterSwapableTokenFn = useSelector(filterSwapableToken);
 
-  if (!from || !tokenId) return null;
+  if (!field || !currentTokenId) return null;
 
-  
-  const availableTokens = useSelector(getSearchTokenListByField)(from, tokenId);
-  const availableTokensSorted = useMemo(() => orderBy(availableTokens, RULE_SORT.key, RULE_SORT.value), []);
+  const availableTokens =
+    useSelector(getDefaultTokenListBySearch)(currentTokenId) || [];
+
+  const availableTokensSorted = useMemo(
+    () => orderBy(availableTokens, RULE_SORT.key, RULE_SORT.value),
+    [],
+  );
 
   const [isLoading, setLoading] = useState(false);
   const [tokenList, setTokenList] = useState(availableTokensSorted);
@@ -55,25 +62,24 @@ const SelectTokenList = React.memo(() => {
   const wrapData = useCallback((tokens) => {
     let newTokensList = [];
     pTokenDic = {};
-    newTokensList = tokens?.map((token) => {
-      const newPToken = new PToken(token, tokens);
-      pTokenDic[newPToken.tokenId] = newPToken;
-      return newPToken;
-    }) || [];
-    newTokensList =  newTokensList?.map((token) => {
-      return new SelectedPrivacy(
-        account,
-        {},
-        token,
-        token.tokenId
-      );
+    newTokensList =
+      tokens?.map((token) => {
+        const newPToken = new PToken(token, tokens);
+        pTokenDic[newPToken.tokenId] = newPToken;
+        return newPToken;
+      }) || [];
+    newTokensList = newTokensList?.map((token) => {
+      return new SelectedPrivacy(account, {}, token, token.tokenId);
     });
     return newTokensList;
   }, []);
 
-  const isExistToken = useCallback((tokenId) => {
-    return pTokenIdsList.find(pTokenId => pTokenId === tokenId);
-  }, [pTokenIdsList]);
+  const isExistToken = useCallback(
+    (tokenId) => {
+      return pTokenIdsList.find((pTokenId) => pTokenId === tokenId);
+    },
+    [pTokenIdsList],
+  );
 
   const debounceSearch = debounce(async (keySearch) => {
     if (!keySearch || keySearch.length < 1) {
@@ -86,13 +92,19 @@ const SelectTokenList = React.memo(() => {
         setTokenList([]);
       } else {
         //filter token with verified = true
-        let filterTokenVerifed = result.filter(token => !!token.isVerified);
-        
+        let filterTokenVerifed = result.filter((token) => !!token.isVerified);
+
         //filter swappable
-        filterTokenVerifed = filterSwapableTokenFn(from, filterTokenVerifed);
+        filterTokenVerifed = filterSwapableTokenFn(
+          currentTokenId,
+          field,
+          filterTokenVerifed,
+        );
 
         //Sort result final
-        setTokenList(orderBy(filterTokenVerifed, RULE_SORT.key, RULE_SORT.value));
+        setTokenList(
+          orderBy(filterTokenVerifed, RULE_SORT.key, RULE_SORT.value),
+        );
       }
       setLoading(false);
     }
@@ -105,8 +117,6 @@ const SelectTokenList = React.memo(() => {
         item={item}
         onPress={async () => {
           goBack();
-          dispatch(actionResetData());
-          dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
           const tokenId = item.tokenId;
           if (!isExistToken(tokenId)) {
             batch(() => {
@@ -115,6 +125,8 @@ const SelectTokenList = React.memo(() => {
               dispatch(actionFetchPairs(true));
             });
           }
+          dispatch(actionResetData());
+          dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
           await delay(0);
           if (typeof onPress === 'function') {
             onPress(item);
@@ -138,13 +150,10 @@ const SelectTokenList = React.memo(() => {
         }}
       />
       <View borderTop style={[{ flex: 1 }]}>
-        { isLoading ? (
+        {isLoading ? (
           <LoadingContainer />
         ) : (
-          <ListAllToken3
-            tokensFactories={tokenList}
-            renderItem={renderItem}
-          />
+          <ListAllToken3 tokensFactories={tokenList} renderItem={renderItem} />
         )}
       </View>
     </View2>
