@@ -48,7 +48,7 @@ import {
   ACTION_RESET_EXCHANGE_SUPPORTED,
   ACTION_SAVE_UNIFIED_ALERT_STATE_BY_ID,
   ACTION_ESTIMATE_COUNT,
-  ACTION_NAVIGATE_TO_SELECT_TOKENS
+  ACTION_NAVIGATE_TO_SELECT_TOKENS,
 } from './Swap.constant';
 
 const initialState = {
@@ -132,7 +132,6 @@ const initialState = {
     fetching: false,
   },
   toggleProTab: false,
-  pDEXPairs: [],
   pancakeTokens: [],
   uniTokens: [],
   curveTokens: [],
@@ -154,7 +153,7 @@ const initialState = {
   isNavigateFromMarketTab: false,
   unifiedInforAlertHash: {},
   estimateCount: 1,
-  isNavigateToSelection: false
+  isNavigateToSelection: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -311,7 +310,6 @@ const reducer = (state = initialState, action) => {
     case ACTION_FETCHED_LIST_PAIRS: {
       const {
         pairs,
-        pDEXPairs,
         pancakeTokens,
         uniTokens,
         curveTokens,
@@ -323,7 +321,6 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         pairs,
-        pDEXPairs,
         pancakeTokens,
         uniTokens,
         curveTokens,

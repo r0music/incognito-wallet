@@ -6,7 +6,10 @@ import {
   PrivacyVersion,
   EXCHANGE_SUPPORTED,
 } from 'incognito-chain-web-js/build/wallet';
-import {defaultAccountSelector, defaultAccountWalletSelector} from '@src/redux/selectors/account';
+import {
+  defaultAccountSelector,
+  defaultAccountWalletSelector,
+} from '@src/redux/selectors/account';
 import { ExHandler } from '@src/services/exception';
 import routeNames from '@src/router/routeNames';
 import { change, reset, isValid } from 'redux-form';
@@ -115,7 +118,8 @@ import {
   findTokenJoeByIdSelector,
   findTokenTrisolarisByIdSelector,
   getEsimateCountSelector,
-  swapFormErrorSelector, findTokenInterSwapByIdSelector,
+  swapFormErrorSelector,
+  findTokenInterSwapByIdSelector,
 } from './Swap.selector';
 import {
   PANCAKE_SUPPORT_NETWORK,
@@ -903,80 +907,80 @@ export const actionHandleInjectEstDataForTrisolaris =
   };
 
 export const actionHandleInjectEstDataForInterswap =
-    () => async (dispatch, getState) => {
-      try {
-        const state = getState();
-        let feeData = feetokenDataSelector(state);
-        const isUseTokenFee = feeData?.interswap?.isUseTokenFee;
-        const inputAmount = inputAmountSelector(state);
-        let sellInputToken, buyInputToken, inputToken, inputPDecimals;
-        sellInputToken = inputAmount(formConfigs.selltoken);
-        buyInputToken = inputAmount(formConfigs.buytoken);
-        const { tokenId: selltoken } = sellInputToken;
-        const { tokenId: buytoken } = buyInputToken;
-        if (isUseTokenFee) {
-          await dispatch(actionSetFeeToken(selltoken));
-        } else {
-          await dispatch(actionSetFeeToken(PRV.id));
-        }
-        const { field, useMax } = feeData;
-        const getInterSwapTokenParamReq = findTokenInterSwapByIdSelector(state);
-        const tokenSellInterSwap = getInterSwapTokenParamReq(selltoken);
-        const tokenBuyInterSwap = getInterSwapTokenParamReq(buytoken);
-
-        if (tokenSellInterSwap == null || tokenBuyInterSwap == null) {
-          throw 'This pair is not existed  on Interswap';
-        }
-        switch (field) {
-          case formConfigs.selltoken: {
-            inputPDecimals = tokenBuyInterSwap.pDecimals;
-            inputToken = formConfigs.buytoken;
-            break;
-          }
-          case formConfigs.buytoken: {
-            inputPDecimals = tokenSellInterSwap.pDecimals;
-            inputToken = formConfigs.selltoken;
-            break;
-          }
-          default:
-            break;
-        }
-        const {
-          maxGet,
-          minFeePRVFixed,
-          availableFixedSellAmountPRV,
-          minFeeTokenFixed,
-        } = feetokenDataSelector(state);
-
-        batch(() => {
-          if (useMax) {
-            dispatch(
-                change(
-                    formConfigs.formName,
-                    formConfigs.selltoken,
-                    availableFixedSellAmountPRV,
-                ),
-            );
-          }
-          dispatch(
-              change(
-                  formConfigs.formName,
-                  inputToken,
-                  maxGet ? maxGet.toString() : '',
-              ),
-          );
-          dispatch(
-              change(
-                  formConfigs.formName,
-                  formConfigs.feetoken,
-                  isUseTokenFee ? minFeeTokenFixed : minFeePRVFixed,
-              ),
-          );
-        });
-      } catch (error) {
-        throw error;
+  () => async (dispatch, getState) => {
+    try {
+      const state = getState();
+      let feeData = feetokenDataSelector(state);
+      const isUseTokenFee = feeData?.interswap?.isUseTokenFee;
+      const inputAmount = inputAmountSelector(state);
+      let sellInputToken, buyInputToken, inputToken, inputPDecimals;
+      sellInputToken = inputAmount(formConfigs.selltoken);
+      buyInputToken = inputAmount(formConfigs.buytoken);
+      const { tokenId: selltoken } = sellInputToken;
+      const { tokenId: buytoken } = buyInputToken;
+      if (isUseTokenFee) {
+        await dispatch(actionSetFeeToken(selltoken));
+      } else {
+        await dispatch(actionSetFeeToken(PRV.id));
       }
-    };
+      const { field, useMax } = feeData;
+      const getInterSwapTokenParamReq = findTokenInterSwapByIdSelector(state);
+      const tokenSellInterSwap = getInterSwapTokenParamReq(selltoken);
+      const tokenBuyInterSwap = getInterSwapTokenParamReq(buytoken);
+
+      if (tokenSellInterSwap == null || tokenBuyInterSwap == null) {
+        throw 'This pair is not existed  on Interswap';
+      }
+      switch (field) {
+        case formConfigs.selltoken: {
+          inputPDecimals = tokenBuyInterSwap.pDecimals;
+          inputToken = formConfigs.buytoken;
+          break;
+        }
+        case formConfigs.buytoken: {
+          inputPDecimals = tokenSellInterSwap.pDecimals;
+          inputToken = formConfigs.selltoken;
+          break;
+        }
+        default:
+          break;
+      }
+      const {
+        maxGet,
+        minFeePRVFixed,
+        availableFixedSellAmountPRV,
+        minFeeTokenFixed,
+      } = feetokenDataSelector(state);
+
+      batch(() => {
+        if (useMax) {
+          dispatch(
+            change(
+              formConfigs.formName,
+              formConfigs.selltoken,
+              availableFixedSellAmountPRV,
+            ),
+          );
+        }
+        dispatch(
+          change(
+            formConfigs.formName,
+            inputToken,
+            maxGet ? maxGet.toString() : '',
+          ),
+        );
+        dispatch(
+          change(
+            formConfigs.formName,
+            formConfigs.feetoken,
+            isUseTokenFee ? minFeeTokenFixed : minFeePRVFixed,
+          ),
+        );
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
 
 export const actionEstimateTrade =
   ({ field = formConfigs.selltoken, useMax = false } = {}) =>
@@ -1060,7 +1064,7 @@ export const actionEstimateTrade =
           toToken: buyTokenId,
           slippage: slippagetolerance.toString(),
           network: network,
-          shardID: `${shardID}`
+          shardID: `${shardID}`,
         });
       } catch (error) {
         // console.log('=> getEstimateTradingFee! error ', {
@@ -1098,7 +1102,7 @@ export const actionEstimateTrade =
           buyInputToken,
           prvData,
           networkfee,
-          minPRVNeeded
+          minPRVNeeded,
         );
         return;
       }
@@ -1116,7 +1120,7 @@ export const actionEstimateTrade =
           rate,
           rateStr,
           amountOutStr,
-          interSwapData
+          interSwapData,
         } = exchange;
         const [isUseTokenFee, originalTradeFee] = isUseTokenFeeParser(fees);
         const platformData = {
@@ -1130,7 +1134,7 @@ export const actionEstimateTrade =
             impactAmount: format.amount(impactAmount, 0),
             tokenRoute: interSwapData?.path || routes,
             rateValue: format.amount(rateStr, 0),
-            interSwapData
+            interSwapData,
           },
           feeToken: {
             sellAmount: sellAmountStr,
@@ -1142,7 +1146,7 @@ export const actionEstimateTrade =
             impactAmount: format.amount(impactAmount, 0),
             tokenRoute: interSwapData?.path || routes,
             rateValue: format.amount(rateStr, 0),
-            interSwapData
+            interSwapData,
           },
           rateValue: format.amountVer2(rateStr, 0),
           tradeID: '',
@@ -1240,15 +1244,15 @@ export const actionEstimateTrade =
             }
             break;
           case 'interswap':
-          {
-            job.push(
+            {
+              job.push(
                 dispatch(
-                    actionChangeEstimateData({
-                      [KEYS_PLATFORMS_SUPPORTED.interswap]: platformData,
-                    }),
+                  actionChangeEstimateData({
+                    [KEYS_PLATFORMS_SUPPORTED.interswap]: platformData,
+                  }),
                 ),
-            );
-          }
+              );
+            }
             break;
           default:
             {
@@ -1454,12 +1458,8 @@ export const actionFetchedPairs = (payload) => ({
 });
 
 export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
-  return await dispatch(actionFetchPairs1(refresh));
-};
-
-export const actionFetchPairs1 = (refresh) => async (dispatch, getState) => {
   let pairs = [];
-  let pDEXPairs = [];
+
   let pancakeTokens = [];
   let uniTokens = [];
   let curveTokens = [];
@@ -1546,7 +1546,6 @@ export const actionFetchPairs1 = (refresh) => async (dispatch, getState) => {
   dispatch(
     actionFetchedPairs({
       pairs,
-      pDEXPairs,
       pancakeTokens,
       uniTokens,
       curveTokens,
@@ -1559,7 +1558,10 @@ export const actionFetchPairs1 = (refresh) => async (dispatch, getState) => {
   return pairs;
 };
 
-const isSupportByPlatform = (platFormSupportNetwork: number[], token) => {
+export const isSupportByPlatform = (
+  platFormSupportNetwork: number[],
+  token,
+) => {
   let isSupport = platFormSupportNetwork.includes(token.currencyType);
   let isSupportUnified = platFormSupportNetwork.some((currencyType) =>
     token.listUnifiedTokenCurrencyType.includes(currencyType),
@@ -1581,6 +1583,9 @@ export const actionInitSwapForm =
       const { slippage: defautSlippage, resetSlippage1 } = swapSelector(state);
       const isUsePRVToPayFee = feetoken === PRV.id;
       let pair = defaultPair || defaultPairSelector(state);
+
+      console.log('PHAT: pair hien tai ', pair);
+
       batch(() => {
         dispatch(actionInitingSwapForm(true));
         dispatch(reset(formConfigs.formName));
@@ -1595,21 +1600,24 @@ export const actionInitSwapForm =
         }
       });
       const pairs = await dispatch(actionFetchPairs(refresh));
-      const isDefaultPairExisted =
-        difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
-      if (!pair?.selltoken || !pair?.buytoken || !isDefaultPairExisted) {
-        state = getState();
-        const listPairsSellToken = listPairsIDVerifiedSelector(state);
-        const listPairsBuyToken = listPairsIDBuyTokenVerifiedSelector(state);
-        pair = {
-          selltoken: listPairsSellToken[0],
-          buytoken: listPairsBuyToken[1],
-        };
-        batch(() => {
-          dispatch(actionSetSellTokenFetched(pair.selltoken));
-          dispatch(actionSetBuyTokenFetched(pair.buytoken));
-        });
-      }
+      console.log('PHAT: pairs ', pairs);
+      // const isDefaultPairExisted =
+      //   difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
+      // console.log('PHAT: isDefaultPairExisted ', isDefaultPairExisted);
+      // console.log('PHAT: pair ', pair);
+      // if (!pair?.selltoken || !pair?.buytoken || !isDefaultPairExisted) {
+      //   state = getState();
+      //   const listPairsSellToken = listPairsIDVerifiedSelector(state);
+      //   const listPairsBuyToken = listPairsIDBuyTokenVerifiedSelector(state);
+      //   pair = {
+      //     selltoken: listPairsSellToken[0],
+      //     buytoken: listPairsBuyToken[1],
+      //   };
+      //   batch(() => {
+      //     dispatch(actionSetSellTokenFetched(pair.selltoken));
+      //     dispatch(actionSetBuyTokenFetched(pair.buytoken));
+      //   });
+      // }
       const { selltoken } = pair;
       state = getState();
       let _defautSlippage = replaceCommaText({ text: defautSlippage });
@@ -1835,7 +1843,8 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
     switch (platform.id) {
       case KEYS_PLATFORMS_SUPPORTED.interswap: {
         const interSwapData = exchangeData?.interSwapData;
-        if (!interSwapData || !interSwapData.midToken) throw 'Can not create transaction empty data';
+        if (!interSwapData || !interSwapData.midToken)
+          throw 'Can not create transaction empty data';
         const slippage = slippagetoleranceSelector(state);
         const { midToken, midOTA, pAppNetwork, pAppName } = interSwapData;
         const payloadSubmitInterTx = {
@@ -1848,7 +1857,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
           pAppNetwork,
           pAppName,
           inputAddress: '',
-          feeAddressShardID: exchangeData?.feeAddressShardID
+          feeAddressShardID: exchangeData?.feeAddressShardID,
         };
         // create pdex tx
         if (interSwapData.fistBatchIsPDex) {
@@ -1863,11 +1872,11 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
               feetoken,
               version: PrivacyVersion.ver2,
               minAcceptableAmount: `${new BigNumber(
-                  interSwapData.pdexMinAcceptableAmount || 0,
+                interSwapData.pdexMinAcceptableAmount || 0,
               ).integerValue()}`,
               sellAmountText: _sellAmountText,
               buyAmountText: _buyAmountText,
-              interSwapData: payloadSubmitInterTx
+              interSwapData: payloadSubmitInterTx,
             },
           };
           tx = await TransactionHandler.createTransactionPDex({
@@ -1875,12 +1884,14 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
             params,
           });
         } else {
-          const midTokenData = getPrivacyDataByTokenID(state)(interSwapData?.midToken);
-          const midChildToken = midTokenData?.isPUnifiedToken ?
-              midTokenData.listUnifiedToken.find((token) =>
-                  token.networkId === exchangeData.networkID
-              ) :
-              midTokenData;
+          const midTokenData = getPrivacyDataByTokenID(state)(
+            interSwapData?.midToken,
+          );
+          const midChildToken = midTokenData?.isPUnifiedToken
+            ? midTokenData.listUnifiedToken.find(
+                (token) => token.networkId === exchangeData.networkID,
+              )
+            : midTokenData;
           const createTransactionPAppsPayload: CreateTransactionPAppsPayload = {
             pDexV3Instance: pDexV3Inst || {},
             sellTokenID: tokenIDToSell || '',
@@ -1897,10 +1908,10 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
             buyTokenID: tokenIDToBuy,
             sellAmountText: _sellAmountText,
             buyAmountText: _buyAmountText,
-            interSwapData: payloadSubmitInterTx
+            interSwapData: payloadSubmitInterTx,
           };
           tx = await TransactionHandler.createTransactionPApps(
-              createTransactionPAppsPayload,
+            createTransactionPAppsPayload,
           );
         }
         break;

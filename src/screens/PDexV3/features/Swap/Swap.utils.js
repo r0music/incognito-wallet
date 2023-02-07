@@ -20,6 +20,14 @@ import floor from 'lodash/floor';
 import { Text } from 'react-native';
 import routeNames from '@routers/routeNames';
 import { formConfigs, KEYS_PLATFORMS_SUPPORTED } from './Swap.constant';
+import {
+  PANCAKE_SUPPORT_NETWORK,
+  UNISWAP_SUPPORT_NETWORK,
+  CURVE_SUPPORT_NETWORK,
+  SPOOKY_SUPPORT_NETWORK,
+  TRISOLARIS_SUPPORT_NETWORK,
+  JOE_SUPPORT_NETWORK,
+} from './Swap.types';
 
 export const minFeeValidator = (feetokenData, isFetching) => {
   if (!feetokenData || isFetching) {
@@ -115,7 +123,7 @@ export const maxAmountValidatorForPRVSellInput = (
   swapInfo,
   inputValue,
   privacyPRVInfo,
-  totalFeePRV
+  totalFeePRV,
 ) => {
   // console.log('[LOG]', {
   //   sellInputAmount,
@@ -132,13 +140,8 @@ export const maxAmountValidatorForPRVSellInput = (
     return undefined;
   }
 
-  const {
-    originalAmount,
-    symbol,
-    tokenData,
-    tokenId,
-    pDecimals,
-  } = sellInputAmount || {};
+  const { originalAmount, symbol, tokenData, tokenId, pDecimals } =
+    sellInputAmount || {};
 
   const sellTokenIsPRV = tokenId === PRV.id;
 
@@ -167,7 +170,7 @@ export const maxAmountValidatorForPRVSellInput = (
     );
   }
 
-  // Balance < TotalFee 
+  // Balance < TotalFee
   if (prvBalanceOriginalBN.lt(totalFeePRVBN)) {
     return (
       <Text onPress={onMessagePress}>
@@ -177,22 +180,18 @@ export const maxAmountValidatorForPRVSellInput = (
   }
 
   // Balance < Network Fee + 0.1 = 0.2
-  if (prvBalanceOriginalBN.lt(2*feePerTxBN)) {
+  if (prvBalanceOriginalBN.lt(2 * feePerTxBN)) {
     //By Pass, we have to go show popup-rerill-prv after
     return undefined;
   }
 
   // Input < Balance
   if (originalAmountBN.plus(totalFeePRVBN).gt(prvBalanceOriginalBN)) {
-    const newInputValue = new BigNumber(prvBalanceOriginalBN - totalFeePRVBN).abs();
-    const newInputValueNumber = convert.toHumanAmount(
-      newInputValue,
-      pDecimals,
-    );
-    const newInputValueText = format.toFixed(
-      newInputValueNumber,
-      pDecimals,
-    );
+    const newInputValue = new BigNumber(
+      prvBalanceOriginalBN - totalFeePRVBN,
+    ).abs();
+    const newInputValueNumber = convert.toHumanAmount(newInputValue, pDecimals);
+    const newInputValueText = format.toFixed(newInputValueNumber, pDecimals);
     return (
       <Text onPress={onMessagePress}>
         {`Max amount you can convert is ${newInputValueText} ${symbol}.`}
@@ -698,4 +697,30 @@ export const getNetworkByExchange = (exchange) => {
       break;
   }
   return network;
+};
+
+export const getSupportNetworkByPlatform = (platform) => {
+  switch (platform) {
+    case KEYS_PLATFORMS_SUPPORTED.pancake:
+      return PANCAKE_SUPPORT_NETWORK;
+
+    case KEYS_PLATFORMS_SUPPORTED.uni:
+    case KEYS_PLATFORMS_SUPPORTED.uniEther:
+      return UNISWAP_SUPPORT_NETWORK;
+
+    case KEYS_PLATFORMS_SUPPORTED.curve:
+      return CURVE_SUPPORT_NETWORK;
+
+    case KEYS_PLATFORMS_SUPPORTED.spooky:
+      return SPOOKY_SUPPORT_NETWORK;
+
+    case KEYS_PLATFORMS_SUPPORTED.joe:
+      return JOE_SUPPORT_NETWORK;
+
+    case KEYS_PLATFORMS_SUPPORTED.trisolaris:
+      return TRISOLARIS_SUPPORT_NETWORK;
+
+    default:
+      return [];
+  }
 };

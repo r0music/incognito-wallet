@@ -64,12 +64,12 @@ const Swap = (props) => {
     <>
       <KeyboardAwareScrollView
         style={[styled.scrollview]}
-        refreshControl={(
+        refreshControl={
           <RefreshControl
             refreshing={swapInfo?.refreshing}
             onRefresh={initSwapForm}
           />
-        )}
+        }
         onScroll={({ nativeEvent }) => {
           if (
             isCloseToBottom(nativeEvent) &&
@@ -110,3 +110,4 @@ Swap.propTypes = {
 };
 
 export default withSwap(React.memo(Swap));
+// export default Swap;
