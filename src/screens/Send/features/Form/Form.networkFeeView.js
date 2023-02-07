@@ -15,6 +15,7 @@ import {
 } from '@src/redux/selectors';
 import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
 import { MESSAGES } from '@src/constants';
+import { useFaucet } from '@src/components/Modal/features/FaucetPRVModal';
 
 export const styled = StyleSheet.create({
   symbol: {
@@ -34,7 +35,7 @@ const NetworkFeeView = ({ onChangeField }) => {
   const feeData = useSelector(feeDataSelector);
   const { feePerTxToHumanStr } = useSelector(getPrivacyPRVInfo);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
-
+  const [navigateFaucet] = useFaucet();
   const { isMainCrypto, isCentralized } = selectedPrivacy;
   const valid = useSelector(validatePRVNetworkFee);
   const { isUsedPRVFee, feePrvText, screen } = feeData;
@@ -62,7 +63,19 @@ const NetworkFeeView = ({ onChangeField }) => {
           editable: false,
         }}
       />
-      {!valid && <Text style={styled.errorText}>{MESSAGES.PRV_NOT_ENOUGHT}</Text> }
+      {!valid && (
+      <Text style={styled.errorText}>
+        {MESSAGES.PRV_NOT_ENOUGHT}
+        <Text
+          style={[styled.errorText, {textDecorationLine: 'underline'} ]}
+          onPress={() => {
+            navigateFaucet();
+          }}
+        >
+        Faucet.
+        </Text>
+      </Text>
+) }
     </>
   );
 };

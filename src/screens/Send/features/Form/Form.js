@@ -365,11 +365,11 @@ const SendForm = (props) => {
                 ]}
                 style={[{ marginTop: 24 }, styled.faucetStyle]}
                 onPress={() => {
-                  if (isNeedFaucet) {
-                    // showPopupFaucetPRV();
-                    navigateToFaucetWeb();
-                    return;
-                  }
+                  // if (isNeedFaucet) {
+                  //   // showPopupFaucetPRV();
+                  //   navigateToFaucetWeb();
+                  //   return;
+                  // }
                   handleSubmit(sendOnPress)();
                 }}
                 {...generateTestId(SEND.SUBMIT_BUTTON)}
