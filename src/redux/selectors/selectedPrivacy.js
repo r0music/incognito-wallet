@@ -300,8 +300,10 @@ export const validatePRVBalanceSelector = createSelector(
       result.isCurrentPRVBalanceExhausted = prvBalanceOriginalBN.lt(minPRVNeededBN);
 
       // Ingore ReFill PopUp PRV (will change after) => hard code value = TRUE!
-      // result.isEnoughtPRVNeededAfterBurn = prvBalanceOriginalBN.minus(totalPRVBurnBN).isGreaterThanOrEqualTo(minPRVNeededBN); 
-      result.isEnoughtPRVNeededAfterBurn = true; 
+      result.isEnoughtPRVNeededAfterBurn = prvBalanceOriginalBN.minus(totalPRVBurnBN).isGreaterThanOrEqualTo(minPRVNeededBN); 
+
+      // Hard code = true, ignore case Refill PRV!? 
+      // result.isEnoughtPRVNeededAfterBurn = true; 
 
     } catch (error) {
       console.log('[validatePRVBalanceSelector] error ', error);

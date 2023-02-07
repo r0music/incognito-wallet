@@ -45,7 +45,8 @@ import FaucetPRVModal, { useFaucet } from '@src/components/Modal/features/Faucet
 import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
 import withSendForm, { formName } from './Form.enhance';
 import { styledForm as styled } from './Form.styled';
-import ErrorMessageView from './Form.errorMesageView';
+import NetworkFeeView from './Form.networkFeeView';
+import ErrorMessageView from './Form.errorMessageView';
 
 const initialFormValues = {
   amount: '',
@@ -102,7 +103,7 @@ const SendForm = (props) => {
   const { titleBtnSubmit, isUnShield, editableInput } =
     useSelector(feeDataSelector);
   // const networkFeeValid = useSelector(validatePRVNetworkFee);
-  const { isEnoughtPRVNeededAfterBurn, isCurrentPRVBalanceExhausted } = useSelector(validateTotalPRVBurningSelector);
+  const { isEnoughtPRVNeededAfterBurn } = useSelector(validateTotalPRVBurningSelector);
   const { isNeedFaucet } = useSelector(getPrivacyPRVInfo);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const childSelectedPrivacy = useSelector(
@@ -144,6 +145,11 @@ const SendForm = (props) => {
   const submitHandler = handlePressSend;
 
   const sendOnPress = (data) => {
+    if (!isEnoughtPRVNeededAfterBurn && !selectedPrivacy.isMainCrypto)
+    {
+      showRefillPRVAlert();
+      return;
+    }
     if (
       disabledForm ||
       isDisabled ||
@@ -349,7 +355,8 @@ const SendForm = (props) => {
                 }}
               />
               {renderMemo()}
-              <ErrorMessageView onChangeField={onChangeField} isCurrentPRVBalanceExhausted={isNeedFaucet} />
+              <NetworkFeeView onChangeField={onChangeField} />
+              <ErrorMessageView errorMessage={errorMessage} />
               <Button
                 title={titleBtnSubmit}
                 btnStyle={[

@@ -30,10 +30,9 @@ export const styled = StyleSheet.create({
   },
 });
 
-const ErrorMessageView = ({ onChangeField, isCurrentPRVBalanceExhausted }) => {
+const NetworkFeeView = ({ onChangeField }) => {
   const feeData = useSelector(feeDataSelector);
   const { feePerTxToHumanStr } = useSelector(getPrivacyPRVInfo);
-  
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
 
   const { isMainCrypto, isCentralized } = selectedPrivacy;
@@ -44,19 +43,12 @@ const ErrorMessageView = ({ onChangeField, isCurrentPRVBalanceExhausted }) => {
     onChangeField && onChangeField(feePrvText || feePerTxToHumanStr, 'networkFee');
   }, [onChangeField, isUsedPRVFee, feePrvText, feePerTxToHumanStr]);
 
-
-  // if (isUsedPRVFee || valid) return null;
-
   // Token = PRV
   if (isMainCrypto) {
-    if (isCurrentPRVBalanceExhausted)
-      // return <Text style={styled.errorText}>{MESSAGES.PRV_NOT_ENOUGHT}</Text>;
-      return null;
-    else
-      return null; //Becasue duplicate UI Network Fee
+    return null;
   }
   
-  if (valid && !isCentralized) return null;
+  // if (valid && !isCentralized) return null;
   if (screen === 'Send') return null;
 
   return (
@@ -74,4 +66,4 @@ const ErrorMessageView = ({ onChangeField, isCurrentPRVBalanceExhausted }) => {
     </>
   );
 };
-export default ErrorMessageView;
+export default NetworkFeeView;
