@@ -86,7 +86,8 @@ export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivac
   });
   let titleBtnSubmit = 'Send';
   if (isNeedFaucet) {
-    titleBtnSubmit = 'Faucet';
+    // titleBtnSubmit = 'Faucet';
+    titleBtnSubmit = 'Send';
   } else if (isFetching) {
     titleBtnSubmit = 'Calculating fee...';
   }

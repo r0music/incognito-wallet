@@ -6,6 +6,7 @@ import { MESSAGES } from '@src/constants';
 import { COLORS, FONT } from '@src/styles';
 import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
 import { useSelector } from 'react-redux';
+import { useFaucet } from '@src/components/Modal/features/FaucetPRVModal';
 
 const styled = StyleSheet.create({
   container: {
@@ -23,10 +24,20 @@ const styled = StyleSheet.create({
 
 const ErrorMessageView = () => {
   const { isNeedFaucet } = useSelector(getPrivacyPRVInfo);
+  const [navigateFaucet] = useFaucet();
   if (!isNeedFaucet) return null;
   return (
     <View style={styled.container}>
-      <Text style={styled.text}>{MESSAGES.PRV_NOT_ENOUGHT}</Text>
+      <Text style={styled.text}>{MESSAGES.PRV_NOT_ENOUGHT}
+        <Text
+          style={[styled.text, {textDecorationLine: 'underline'} ]}
+          onPress={() => {
+            navigateFaucet();
+          }}
+        >
+        Faucet.
+        </Text>
+      </Text>
     </View>
   );
 };

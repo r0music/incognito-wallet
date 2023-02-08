@@ -13,6 +13,12 @@ export default StyleSheet.create({
     color: COLORS.red,
     lineHeight: 22,
   },
+  error1: {
+    color: COLORS.red,
+    lineHeight: 16,
+    fontSize: 14,
+    ...FONT.STYLE.normal,
+  },
   bigText: {
     color: COLORS.blue5,
     fontSize: 40,

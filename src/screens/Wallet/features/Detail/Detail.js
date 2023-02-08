@@ -10,7 +10,7 @@ import {
   tokenSelector,
   accountSelector,
 } from '@src/redux/selectors';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { BtnInfo } from '@src/components/Button';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
@@ -22,18 +22,7 @@ import { isGettingBalance as isGettingMainCryptoBalanceSelector } from '@src/red
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { useHistoryEffect } from '@screens/Wallet/features/History';
 import appConstant from '@src/constants/app';
-import { actionChangeTab } from '@components/core/Tabs/Tabs.actions';
-import {
-  ROOT_TAB_TRADE,
-  TAB_BUY_LIMIT_ID,
-  TAB_SELL_LIMIT_ID,
-} from '@screens/PDexV3/features/Trade/Trade.constant';
-import {
-  actionInit,
-  actionSetPoolSelected,
-} from '@screens/PDexV3/features/OrderLimit';
 import { BtnSecondary, BtnPrimary } from '@components/core/Button';
-import { COLORS } from '@src/styles';
 import { ThreeDotsVerIcon } from '@components/Icons';
 import { actionToggleModal } from '@components/Modal';
 import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
@@ -42,7 +31,10 @@ import { colorsSelector } from '@src/theme';
 import withLazy from '@components/LazyHoc/LazyHoc';
 import { followTokenItemSelector } from '@screens/Wallet/features/FollowList/FollowList.selector';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import {actionUpdateShowWalletBalance, hideWalletBalanceSelector} from '@screens/Setting';
+import IconEye from '@components/Icons/icon.eye';
 import { groupBtnStyled, balanceStyled, historyStyled } from './Detail.styled';
+
 
 const GroupButton = React.memo(() => {
   // const navigation = useNavigation();
@@ -133,6 +125,7 @@ const Balance = React.memo(() => {
   const tokenID = useNavigationParam('tokenId');
   const token = useDebounceSelector(followTokenItemSelector)(tokenID);
   const colors = useDebounceSelector(colorsSelector);
+  const dispatch = useDispatch();
   const isGettingBalance = useDebounceSelector(
     sharedSelector.isGettingBalance,
   ).includes(selected?.tokenId);
@@ -140,6 +133,10 @@ const Balance = React.memo(() => {
     ...selected,
     isGettingBalance,
   };
+  const hideBalance = useDebounceSelector(hideWalletBalanceSelector);
+  const toggleHideBalance = () =>         dispatch(actionUpdateShowWalletBalance());
+
+
   const amountProps = {
     customStyle: balanceStyled.amount,
     ...tokenData,
@@ -151,7 +148,16 @@ const Balance = React.memo(() => {
   };
   return (
     <View style={balanceStyled.container}>
-      <Amount {...amountProps} amount={token?.amount} />
+      <TouchableOpacity
+        style={balanceStyled.btnToggleBalance}
+        activeOpacity={1}
+        onPress={toggleHideBalance}
+      >
+        <Amount {...amountProps} amount={token?.amount} hideBalance={hideBalance} fromBalance />
+        <View style={balanceStyled.btnHideBalance}>
+          <IconEye hideEye={!hideBalance} />
+        </View>
+      </TouchableOpacity>
       <View style={balanceStyled.hook}>
         <Price
           pricePrv={selected.pricePrv}

@@ -6,7 +6,7 @@ import { formValueSelector, isValid, getFormSyncErrors } from 'redux-form';
 import convert from '@src/utils/convert';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { PRV } from '@src/constants/common';
-import { sharedSelector } from '@src/redux/selectors';
+import { sharedSelector, accountSelector } from '@src/redux/selectors';
 import memoize from 'lodash/memoize';
 import { getExchangeRate2, getPoolSize } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
@@ -16,7 +16,6 @@ import {
 } from '@src/redux/selectors/account';
 import { checkConvertSelector } from '@src/screens/ConvertToUnifiedToken/state/selectors';
 import { minPRVNeededSelector } from '@src/screens/RefillPRV/RefillPRV.selector';
-
 import { MESSAGES } from '@src/constants';
 import {
   formConfigs,
@@ -872,7 +871,8 @@ export const swapInfoSelector = createSelector(
         (!isFetched && !isFetching) ||
         !isValid(formConfigs.formName)(state);
       if (isNeedFaucet) {
-        btnSwapText = 'Faucet';
+        // btnSwapText = 'Faucet';
+        btnSwapText = 'Swap';
       } else {
         if (calculating) {
           btnSwapText = 'Calculating...';
@@ -1124,13 +1124,14 @@ export const validatePRVNetworkFee = createSelector(
   getPrivacyDataByTokenIDSelector,
   selltokenSelector,
   inputAmountSelector,
-  (swapInfo, feeTokenData, getPrivacyDataByTokenID, selltoken, inputAmount) => {
+  accountSelector.defaultAccount,
+  (swapInfo, feeTokenData, getPrivacyDataByTokenID, selltoken, inputAmount, account) => {
 
     const PRVPrivacy: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
 
     const { payFeeByPRV, feetoken, minFeeOriginalPRV, origininalFeeAmount } = feeTokenData;
     const { networkfee } = swapInfo;
-    const prvBalance = PRVPrivacy?.amount || 0;
+    const prvBalance = convert.toNumber(account.value) || 0;
 
     const totalFeePRV = payFeeByPRV
       ? minFeeOriginalPRV + networkfee

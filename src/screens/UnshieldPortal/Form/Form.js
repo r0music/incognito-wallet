@@ -86,7 +86,8 @@ const SendForm = (props) => {
       ? ' '
       : ` or ${selectedPrivacy?.rootNetworkName} `
   }address`;
-  const btnTitle = isNeedFaucet ? 'Faucet' : 'Unshield my crypto';
+  // const btnTitle = isNeedFaucet ? 'Faucet' : 'Unshield my crypto';
+  const btnTitle = 'Unshield my crypto';
   const { avgUnshieldFee, receivedAmount } = portalData;
 
   const amountValidator = validatePortalAmount;
@@ -100,7 +101,8 @@ const SendForm = (props) => {
     navigateFaucet();
   };
 
-  const submitHandler = isNeedFaucet ? navigateToFaucetWeb : handlePressUnshieldPortal;
+  // const submitHandler = isNeedFaucet ? navigateToFaucetWeb : handlePressUnshieldPortal;
+  const submitHandler = handlePressUnshieldPortal;
   const colors = useSelector(colorsSelector);
 
   return (
