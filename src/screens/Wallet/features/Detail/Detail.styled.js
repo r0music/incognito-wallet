@@ -61,6 +61,12 @@ export const balanceStyled = StyleSheet.create({
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.medium + 4,
   },
+  btnHideBalance: {
+    marginLeft: 4
+  },
+  btnToggleBalance: {
+    flexDirection: 'row'
+  }
 });
 
 export const historyStyled = StyleSheet.create({
