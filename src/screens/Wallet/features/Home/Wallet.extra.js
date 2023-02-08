@@ -72,7 +72,7 @@ const Balance = React.memo(({ hideBalance }) => {
             fromBalance
           />
           <View style={styledBalance.btnHideBalance}>
-            <IconEye hideEye={hideBalance} />
+            <IconEye hideEye={!hideBalance} />
           </View>
         </TouchableOpacity>
       </Row>
