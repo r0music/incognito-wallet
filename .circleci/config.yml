@@ -324,7 +324,7 @@ workflows:
           filters:
             branches:
               only:
-                - features/interswap
+                - fix/unshield-pegging
       - generate_data:
           requires:
             - checkout_code
