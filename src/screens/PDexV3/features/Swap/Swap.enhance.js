@@ -147,10 +147,10 @@ const enhance = (WrappedComp) => (props) => {
         return;
       }
 
-      if (isNeedFaucet) {
-        navigateToFaucetWeb();
-        return;
-      }
+      // if (isNeedFaucet) {
+      //   navigateToFaucetWeb();
+      //   return;
+      // }
       // if (!sellInputToken.isMainCrypto && isCurrentPRVBalanceExhausted) {
       //   await dispatch(actionFaucetPRV(<FaucetPRVModal />));
       //   return;
@@ -192,7 +192,6 @@ const enhance = (WrappedComp) => (props) => {
       if (isSignificant) {
         return setVisibleSignificant(true);
       }
-
       
       await handleCreateSwapOrder();
     } catch {

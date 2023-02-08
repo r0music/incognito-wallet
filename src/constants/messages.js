@@ -31,6 +31,9 @@ export default {
   UPDATE_FIRMWARE_NODE_DONE: 'All done! Your Node is as good as new.',
   UPDATE_FIRMWARE_NODE_FAIL: 'Please power cycle your Node to continue.',
 
-  PRV_NOT_ENOUGHT: 'Your PRV balance is insufficient to cover network fees.',
+  PRV_NOT_ENOUGHT: 'Your PRV balance is insufficient to cover network fees. ',
+  
   MAXIMUM_UTXO_ERROR: 'The number of UTXO is exceeded, please consolidate them in More > Consolidate then try',
+
+  FAUCET_PRV_MESSAGE: 'Incognito collects a small network fee of PRV to pay the miners who help power the network.',
 };

@@ -13,8 +13,8 @@ export const styled = StyleSheet.create({
   },
 });
 
-const ErrorMessage = ({ errorMessage }) => {
+const ErrorMessageView = ({ errorMessage }) => {
   if (!errorMessage || errorMessage === '') return null;
   return <Text style={styled.errorText}>{errorMessage}</Text>;
 };
-export default ErrorMessage;
+export default ErrorMessageView;

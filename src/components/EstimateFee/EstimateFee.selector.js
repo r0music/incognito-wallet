@@ -44,7 +44,7 @@ export const validatePRVNetworkFee = createSelector(
     // console.log('[validatePRVNetworkFee] prvBalanceInfo  ', prvBalanceInfo);
     const { isUsedPRVFee, totalFee, feePrv } = feeData;
     const { isEnoughNetworkFeeDefault, prvBalanceOriginal } = prvBalanceInfo;
-    if (!isEnoughNetworkFeeDefault) return false;
+    // if (!isEnoughNetworkFeeDefault) return false;
     if (new BigNumber(feePrv).gt(new BigNumber(prvBalanceOriginal)))
       return false;
     if (isUsedPRVFee) {

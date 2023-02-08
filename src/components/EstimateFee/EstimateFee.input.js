@@ -83,7 +83,7 @@ const EstimateFeeInput = (props) => {
       const _maxFee = convert.toNumber(maxFee, true);
       const _fee = convert.toNumber(totalFee, true);
       const _minFee = convert.toNumber(minFee, true);
-      const messageError =  actived === PRV_ID ? MESSAGES.PRV_NOT_ENOUGHT : 'Insufficient balance.';
+      const messageError =  actived === PRV_ID ? MESSAGES.PRV_NOT_ENOUGHT + ' .Faucet.': 'Insufficient balance.';
       try {
         maxFeeValidator = validator.maxValue(_maxFee, {
           message:

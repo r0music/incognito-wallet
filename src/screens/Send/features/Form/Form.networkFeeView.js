@@ -15,6 +15,7 @@ import {
 } from '@src/redux/selectors';
 import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
 import { MESSAGES } from '@src/constants';
+import { useFaucet } from '@src/components/Modal/features/FaucetPRVModal';
 
 export const styled = StyleSheet.create({
   symbol: {
@@ -30,12 +31,11 @@ export const styled = StyleSheet.create({
   },
 });
 
-const ErrorMessageView = ({ onChangeField, isCurrentPRVBalanceExhausted }) => {
+const NetworkFeeView = ({ onChangeField }) => {
   const feeData = useSelector(feeDataSelector);
   const { feePerTxToHumanStr } = useSelector(getPrivacyPRVInfo);
-  
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
-
+  const [navigateFaucet] = useFaucet();
   const { isMainCrypto, isCentralized } = selectedPrivacy;
   const valid = useSelector(validatePRVNetworkFee);
   const { isUsedPRVFee, feePrvText, screen } = feeData;
@@ -44,19 +44,12 @@ const ErrorMessageView = ({ onChangeField, isCurrentPRVBalanceExhausted }) => {
     onChangeField && onChangeField(feePrvText || feePerTxToHumanStr, 'networkFee');
   }, [onChangeField, isUsedPRVFee, feePrvText, feePerTxToHumanStr]);
 
-
-  // if (isUsedPRVFee || valid) return null;
-
   // Token = PRV
   if (isMainCrypto) {
-    if (isCurrentPRVBalanceExhausted)
-      // return <Text style={styled.errorText}>{MESSAGES.PRV_NOT_ENOUGHT}</Text>;
-      return null;
-    else
-      return null; //Becasue duplicate UI Network Fee
+    return null;
   }
   
-  if (valid && !isCentralized) return null;
+  // if (valid && !isCentralized) return null;
   if (screen === 'Send') return null;
 
   return (
@@ -70,8 +63,20 @@ const ErrorMessageView = ({ onChangeField, isCurrentPRVBalanceExhausted }) => {
           editable: false,
         }}
       />
-      {!valid && <Text style={styled.errorText}>{MESSAGES.PRV_NOT_ENOUGHT}</Text> }
+      {!valid && (
+      <Text style={styled.errorText}>
+        {MESSAGES.PRV_NOT_ENOUGHT}
+        <Text
+          style={[styled.errorText, {textDecorationLine: 'underline'} ]}
+          onPress={() => {
+            navigateFaucet();
+          }}
+        >
+        Faucet.
+        </Text>
+      </Text>
+) }
     </>
   );
 };
-export default ErrorMessageView;
+export default NetworkFeeView;
