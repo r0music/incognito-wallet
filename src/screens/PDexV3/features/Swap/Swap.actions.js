@@ -190,13 +190,11 @@ export const actionRemoveError = () => ({
 export const actionSetDefaultExchange = ({
   isPrivacyApp,
   exchange,
-  network = null,
 }) => ({
   type: ACTION_SET_DEFAULT_EXCHANGE,
   payload: {
     isPrivacyApp,
     exchange,
-    network,
   },
 });
 
@@ -1577,14 +1575,17 @@ export const actionInitSwapForm =
   ({ refresh = true, defaultPair = {}, shouldFetchHistory = false } = {}) =>
   async (dispatch, getState) => {
     try {
+      console.log('[actionInitSwapForm] ', {
+        refresh,
+        defaultPair,
+        shouldFetchHistory
+      });
       let state = getState();
       const feetoken = feeSelectedSelector(state);
       const defaultExchange = defaultExchangeSelector(state);
       const { slippage: defautSlippage, resetSlippage1 } = swapSelector(state);
       const isUsePRVToPayFee = feetoken === PRV.id;
       let pair = defaultPair || defaultPairSelector(state);
-
-      console.log('PHAT: pair hien tai ', pair);
 
       batch(() => {
         dispatch(actionInitingSwapForm(true));
@@ -1600,24 +1601,21 @@ export const actionInitSwapForm =
         }
       });
       const pairs = await dispatch(actionFetchPairs(refresh));
-      console.log('PHAT: pairs ', pairs);
-      // const isDefaultPairExisted =
-      //   difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
-      // console.log('PHAT: isDefaultPairExisted ', isDefaultPairExisted);
-      // console.log('PHAT: pair ', pair);
-      // if (!pair?.selltoken || !pair?.buytoken || !isDefaultPairExisted) {
-      //   state = getState();
-      //   const listPairsSellToken = listPairsIDVerifiedSelector(state);
-      //   const listPairsBuyToken = listPairsIDBuyTokenVerifiedSelector(state);
-      //   pair = {
-      //     selltoken: listPairsSellToken[0],
-      //     buytoken: listPairsBuyToken[1],
-      //   };
-      //   batch(() => {
-      //     dispatch(actionSetSellTokenFetched(pair.selltoken));
-      //     dispatch(actionSetBuyTokenFetched(pair.buytoken));
-      //   });
-      // }
+      const isDefaultPairExisted =
+        difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
+      if (!pair?.selltoken || !pair?.buytoken || !isDefaultPairExisted) {
+        state = getState();
+        const listPairsSellToken = listPairsIDVerifiedSelector(state);
+        const listPairsBuyToken = listPairsIDBuyTokenVerifiedSelector(state);
+        pair = {
+          selltoken: listPairsSellToken[0],
+          buytoken: listPairsBuyToken[1],
+        };
+        batch(() => {
+          dispatch(actionSetSellTokenFetched(pair.selltoken));
+          dispatch(actionSetBuyTokenFetched(pair.buytoken));
+        });
+      }
       const { selltoken } = pair;
       state = getState();
       let _defautSlippage = replaceCommaText({ text: defautSlippage });

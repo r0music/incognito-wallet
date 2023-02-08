@@ -2,7 +2,6 @@ import TabSwap, {
   actionReset,
   actionSetDefaultExchange,
   KEYS_PLATFORMS_SUPPORTED,
-  NETWORK_NAME_SUPPORTED,
   SWAP_DEFAULT_FAIR,
 } from '@screens/PDexV3/features/Swap';
 import Header from '@src/components/Header';
@@ -22,7 +21,6 @@ const PrivacyAppsPancake = () => {
       actionSetDefaultExchange({
         isPrivacyApp: true,
         exchange: KEYS_PLATFORMS_SUPPORTED.pancake,
-        network: NETWORK_NAME_SUPPORTED.BINANCE_SMART_CHAIN,
       }),
     );
   }, []);
@@ -34,7 +32,6 @@ const PrivacyAppsPancake = () => {
         isPrivacyApp
         defaultPair={SWAP_DEFAULT_FAIR.PANCAKE}
         exchange={KEYS_PLATFORMS_SUPPORTED.pancake}
-        network={NETWORK_NAME_SUPPORTED.BINANCE_SMART_CHAIN}
       />
     </>
   );

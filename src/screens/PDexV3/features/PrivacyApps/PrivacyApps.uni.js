@@ -1,5 +1,5 @@
 import TabSwap, {
-  actionReset, KEYS_PLATFORMS_SUPPORTED, NETWORK_NAME_SUPPORTED,
+  actionReset, KEYS_PLATFORMS_SUPPORTED,
   SWAP_DEFAULT_FAIR,
   actionSetDefaultExchange
 } from '@screens/PDexV3/features/Swap';
@@ -20,7 +20,6 @@ const PrivacyAppsUni = () => {
       actionSetDefaultExchange({
         isPrivacyApp: true,
         exchange: KEYS_PLATFORMS_SUPPORTED.uni,
-        network: NETWORK_NAME_SUPPORTED.POLYGON,
       }),
     );
   }, []);
@@ -34,7 +33,6 @@ const PrivacyAppsUni = () => {
         isPrivacyApp
         defaultPair={SWAP_DEFAULT_FAIR.UNISWAP}
         exchange={KEYS_PLATFORMS_SUPPORTED.uni}
-        network={NETWORK_NAME_SUPPORTED.POLYGON}
       />
     </>
   );

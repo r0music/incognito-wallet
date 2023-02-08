@@ -1106,11 +1106,6 @@ export const errorEstimateTradeSelector = createSelector(
   ({ data }, platformId) => data[platformId]?.error || '',
 );
 
-export const exchangeNetworkSelector = createSelector(
-  swapSelector,
-  ({ network }) => network,
-);
-
 export const getExchangeDataEstimateTradeSelector = createSelector(
   swapSelector,
   platformIdSelectedSelector,

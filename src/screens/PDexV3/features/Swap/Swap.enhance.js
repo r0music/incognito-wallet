@@ -83,14 +83,12 @@ const enhance = (WrappedComp) => (props) => {
     defaultPair = SWAP_DEFAULT_FAIR.INCOGNITO, //Default using pair Incognito Mode
     isPrivacyApp = false,
     exchange = KEYS_PLATFORMS_SUPPORTED.incognito,
-    network = NETWORK_NAME_SUPPORTED.INCOGNITO,
   } = props;
 
   useEffect(() => {
     // handleInitSwapForm().then();
     if (navigation?.state?.routeName !== routeNames.Trade) {
       return () => {
-        console.log('REDSET 333');
         dispatch(actionReset());
       };
     }
@@ -100,7 +98,6 @@ const enhance = (WrappedComp) => (props) => {
   useFocusEffect(
     React.useCallback(() => {
       const setDefaultPair = async () => {
-        console.log('ABCDE 111111 ');
         // dispatch(actionSetDefaultPair(defaultPair));
         initSwapForm();
       };
@@ -233,7 +230,6 @@ const enhance = (WrappedComp) => (props) => {
         actionSetDefaultExchange({
           isPrivacyApp,
           exchange,
-          network,
         }),
       );
     } else {

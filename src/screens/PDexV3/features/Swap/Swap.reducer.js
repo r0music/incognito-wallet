@@ -148,7 +148,6 @@ const initialState = {
   isUsePRVToPayFee: true,
   bestRateExchange: null,
   exchangeSupportsList: [],
-  network: null,
   estimateTradeError: null,
   isNavigateFromMarketTab: false,
   unifiedInforAlertHash: {},
@@ -195,7 +194,6 @@ const reducer = (state = initialState, action) => {
       const {
         exchange,
         isPrivacyApp = _isPrivacyApp,
-        network,
       } = action.payload;
       return {
         ...state,
@@ -205,7 +203,6 @@ const reducer = (state = initialState, action) => {
             ? { ...platform, visible: true }
             : { ...platform, visible: false },
         ),
-        network,
         isPrivacyApp,
       };
     }

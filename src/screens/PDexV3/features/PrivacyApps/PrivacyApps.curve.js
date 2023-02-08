@@ -1,5 +1,5 @@
 import TabSwap, {
-  actionReset, KEYS_PLATFORMS_SUPPORTED, NETWORK_NAME_SUPPORTED,
+  actionReset, KEYS_PLATFORMS_SUPPORTED,
   SWAP_DEFAULT_FAIR,
   actionSetDefaultExchange
 } from '@screens/PDexV3/features/Swap';
@@ -20,7 +20,6 @@ const PrivacyAppsCurve = () => {
       actionSetDefaultExchange({
         isPrivacyApp: true,
         exchange: KEYS_PLATFORMS_SUPPORTED.curve,
-        network: NETWORK_NAME_SUPPORTED.POLYGON,
       }),
     );
   }, []);
@@ -35,7 +34,6 @@ const PrivacyAppsCurve = () => {
         isPrivacyApp
         defaultPair={SWAP_DEFAULT_FAIR.CURVE}
         exchange={KEYS_PLATFORMS_SUPPORTED.curve}
-        network={NETWORK_NAME_SUPPORTED.POLYGON}
       />
     </>
   );

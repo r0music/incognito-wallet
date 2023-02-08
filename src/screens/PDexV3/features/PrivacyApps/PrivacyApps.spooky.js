@@ -1,7 +1,6 @@
 import TabSwap, {
   actionReset,
   KEYS_PLATFORMS_SUPPORTED,
-  NETWORK_NAME_SUPPORTED,
   SWAP_DEFAULT_FAIR,
   actionSetDefaultExchange,
 } from '@screens/PDexV3/features/Swap';
@@ -23,7 +22,6 @@ const PrivacyAppsSpooky = () => {
         actionSetDefaultExchange({
           isPrivacyApp: true,
           exchange: KEYS_PLATFORMS_SUPPORTED.spooky,
-          network: NETWORK_NAME_SUPPORTED.FANTOM,
         }),
       );
     }, 1000);
@@ -36,7 +34,6 @@ const PrivacyAppsSpooky = () => {
         isPrivacyApp
         defaultPair={SWAP_DEFAULT_FAIR.SPOOKY}
         exchange={KEYS_PLATFORMS_SUPPORTED.spooky}
-        network={NETWORK_NAME_SUPPORTED.FANTOM}
       />
     </>
   );
