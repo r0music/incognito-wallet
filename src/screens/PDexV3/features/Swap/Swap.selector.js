@@ -4,6 +4,7 @@ import {
   getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector,
   getPrivacyPRVInfo,
   validatePRVBalanceSelector,
+  getAllPrivacyDataSelector,
 } from '@src/redux/selectors/selectedPrivacy';
 import format from '@src/utils/format';
 import { formValueSelector, isValid, getFormSyncErrors } from 'redux-form';
@@ -20,7 +21,7 @@ import {
 } from '@src/redux/selectors/account';
 import { checkConvertSelector } from '@src/screens/ConvertToUnifiedToken/state/selectors';
 import { minPRVNeededSelector } from '@src/screens/RefillPRV/RefillPRV.selector';
-import { MESSAGES } from '@src/constants';
+import { MESSAGES, CONSTANT_COMMONS } from '@src/constants';
 import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
@@ -29,6 +30,7 @@ import {
   ONE_DAY,
 } from './Swap.constant';
 import { getInputAmount, calMintAmountExpected } from './Swap.utils';
+
 // import { isSupportByPlatform } from './Swap.actions';
 
 export const swapSelector = createSelector(
@@ -181,25 +183,25 @@ export const listPairsSelector = createSelector(
   },
 );
 
-export const listPairsIDVerifiedSelector = createSelector(
-  listPairsSelector,
-  (pairs) => {
-    const result = pairs
-      .filter((token: SelectedPrivacy) => !!token?.isVerified)
-      .map((token) => token?.tokenId);
-    return result;
-  },
-);
+// export const listPairsIDVerifiedSelector = createSelector(
+//   listPairsSelector,
+//   (pairs) => {
+//     const result = pairs
+//       .filter((token: SelectedPrivacy) => !!token?.isVerified)
+//       .map((token) => token?.tokenId);
+//     return result;
+//   },
+// );
 
-export const listPairsIDBuyTokenVerifiedSelector = createSelector(
-  listPairsSelector,
-  (pairs) => {
-    const result = pairs
-      .filter((token: SelectedPrivacy) => !!token?.isVerified)
-      .map((token) => token?.tokenId);
-    return result;
-  },
-);
+// export const listPairsIDBuyTokenVerifiedSelector = createSelector(
+//   listPairsSelector,
+//   (pairs) => {
+//     const result = pairs
+//       .filter((token: SelectedPrivacy) => !!token?.isVerified)
+//       .map((token) => token?.tokenId);
+//     return result;
+//   },
+// );
 
 // group inputs
 
@@ -1092,7 +1094,8 @@ export const swapFormErrorSelector = createSelector(
 
 export const defaultExchangeSelector = createSelector(
   swapSelector,
-  ({ defaultExchange }) => defaultExchange || 'Incognito',
+  ({ defaultExchange }) =>
+    defaultExchange || KEYS_PLATFORMS_SUPPORTED.incognito,
 );
 
 export const isPrivacyAppSelector = createSelector(
@@ -1474,5 +1477,20 @@ export const isToggleUnifiedInfoSelector = createSelector(
       // }
     }
     return false;
+  },
+);
+
+export const getPrivacyTokenListSelector = createSelector(
+  getAllPrivacyDataSelector,
+  (allPrivacyData) => {
+    const tokenList: SelectedPrivacy[] = allPrivacyData || [];
+    return (
+      tokenList.filter(
+        (token) =>
+          token.tokenId &&
+          token.currencyType !==
+            CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR_TOKEN,
+      ) || []
+    );
   },
 );

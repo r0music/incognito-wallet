@@ -55,6 +55,9 @@ import {
   sellInputTokenSelector,
 } from './Swap.selector';
 
+import enhanceNavigation from './Swap.enhanceNavigation';
+import enhanceInit from './Swap.enhanceInit';
+
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const swapInfo = useSelector(swapInfoSelector);
@@ -78,7 +81,7 @@ const enhance = (WrappedComp) => (props) => {
   const [visibleSignificant, setVisibleSignificant] = useState(false);
   const [ordering, setOrdering] = useState(false);
   const [errorMessage, setErrorMessage] = React.useState(undefined);
-  const navigation = useNavigation();
+
   const {
     defaultPair = SWAP_DEFAULT_FAIR.INCOGNITO, //Default using pair Incognito Mode
     isPrivacyApp = false,
@@ -86,27 +89,15 @@ const enhance = (WrappedComp) => (props) => {
   } = props;
 
   useEffect(() => {
-    // handleInitSwapForm().then();
-    if (navigation?.state?.routeName !== routeNames.Trade) {
-      return () => {
-        dispatch(actionReset());
-      };
-    }
+    initSwapForm();
     dispatch(actionNavigateFormMarketTab(false));
   }, []);
 
   useFocusEffect(
     React.useCallback(() => {
-      const setDefaultPair = async () => {
-        // dispatch(actionSetDefaultPair(defaultPair));
-        initSwapForm();
-      };
-
       if (isNavigateFromMarketTab || navigateToSelectToken) {
         return;
       }
-
-      setDefaultPair();
     }, [isNavigateFromMarketTab, navigateToSelectToken]),
   );
 
@@ -224,6 +215,7 @@ const enhance = (WrappedComp) => (props) => {
       setOrdering(false);
     }
   };
+
   const handleInitSwapForm = async () => {
     if (isPrivacyApp) {
       await dispatch(
@@ -271,4 +263,10 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default compose(withLazy, enhance, enhanceUnifiedAlert);
+export default compose(
+  withLazy,
+  enhanceInit,
+  enhanceNavigation,
+  enhance,
+  enhanceUnifiedAlert,
+);

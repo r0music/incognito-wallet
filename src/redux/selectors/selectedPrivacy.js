@@ -174,46 +174,20 @@ export const getAllPrivacyDataSelector = createSelector(
   pTokenIdsSelector,
   getPrivacyDataByTokenID,
   (tokenIdList, getPrivacyDataByTokenIDFunction) =>
-    memoize(
-      () =>
-        tokenIdList.map((tokenId) =>
-          getPrivacyDataByTokenIDFunction(tokenId),
-        ) || [],
-    ),
-);
-
-export const getPrivacyDataFilterSelector = createSelector(
-  getAllPrivacyDataSelector,
-  (getAllPrivacyDataFunction) => {
-    const selectTokenList: SelectedPrivacy[] = getAllPrivacyDataFunction();
-    return (
-      selectTokenList.filter(
-        (token) =>
-          token.tokenId &&
-          token.currencyType !==
-            CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.NEAR_TOKEN,
-      ) || []
-    );
-  },
+    tokenIdList.map((tokenId) => getPrivacyDataByTokenIDFunction(tokenId)) ||
+    [],
 );
 
 export const getPrivacyPRVInfo = createSelector(
   getPrivacyDataByTokenID,
   defaultAccount,
   (getFn, account) => {
-
     // console.log('Current Account: ', account);
 
     const prvInfor = getFn(PRV_ID);
 
-    const {
-      priceUsd,
-      decimals,
-      pDecimals,
-      tokenId,
-      symbol,
-      externalSymbol,
-    } = prvInfor;
+    const { priceUsd, decimals, pDecimals, tokenId, symbol, externalSymbol } =
+      prvInfor;
 
     //
     const feePerTx = ACCOUNT_CONSTANT.MAX_FEE_PER_TX || 0;
@@ -221,8 +195,8 @@ export const getPrivacyPRVInfo = createSelector(
       new BigNumber(feePerTx),
       pDecimals,
     );
-    const feePerTxToHumanStr =  feePerTxToHuman.toString();
-    const feeAndSymbol =  `${feePerTxToHumanStr} ${symbol || externalSymbol} `;
+    const feePerTxToHumanStr = feePerTxToHuman.toString();
+    const feeAndSymbol = `${feePerTxToHumanStr} ${symbol || externalSymbol} `;
     //
     const prvBalanceOriginal = convert.toNumber(account.value) || 0;
     const prvbalanceToHuman = convert.toHumanAmount(
@@ -240,7 +214,9 @@ export const getPrivacyPRVInfo = createSelector(
     const isNeedFaucet = new BigNumber(prvBalanceOriginal).isLessThan(
       new BigNumber(feePerTx),
     );
-    const isCurrentBalanceGreaterPerTx = new BigNumber(prvBalanceOriginal).gt(feePerTx);
+    const isCurrentBalanceGreaterPerTx = new BigNumber(prvBalanceOriginal).gt(
+      feePerTx,
+    );
 
     const result = {
       priceUsd,
@@ -254,14 +230,14 @@ export const getPrivacyPRVInfo = createSelector(
       feePerTxToHuman,
       feePerTxToHumanStr,
       feeAndSymbol,
-      
+
       prvBalanceOriginal,
       prvbalanceToHuman,
       prvbalanceToHumanStr,
       isEnoughNetworkFeeDefault,
-      
+
       isCurrentBalanceGreaterPerTx,
-      isNeedFaucet
+      isNeedFaucet,
     };
 
     // console.log('[getPrivacyPRVInfo] RESULT: ', result);
@@ -274,44 +250,47 @@ export const validatePRVBalanceSelector = createSelector(
   getPrivacyPRVInfo,
   minPRVNeededSelector,
   defaultAccount,
-  (prvBalanceInfor, minPRVNeeded, account) => (totalPRVBurn, isPRVBurn = false) => {
-    
-    let result = {
-      isEnoughtPRVNeededAfterBurn: true,
-      isCurrentPRVBalanceExhausted: false,
-      isPRVBurn: false,
-    };
+  (prvBalanceInfor, minPRVNeeded, account) =>
+    (totalPRVBurn, isPRVBurn = false) => {
+      let result = {
+        isEnoughtPRVNeededAfterBurn: true,
+        isCurrentPRVBalanceExhausted: false,
+        isPRVBurn: false,
+      };
 
-    try {
-      const { prvBalanceOriginal, feePerTx } = prvBalanceInfor;
-      const totalPRVBurnBN =  new BigNumber(totalPRVBurn || feePerTx); //If totalPRVBurn = 0, get default burn 0.1PRV / Transaction
-      const prvBalanceOriginalBN =  new BigNumber(prvBalanceOriginal || 0);
-      const minPRVNeededBN =  new BigNumber(minPRVNeeded || feePerTx);
+      try {
+        const { prvBalanceOriginal, feePerTx } = prvBalanceInfor;
+        const totalPRVBurnBN = new BigNumber(totalPRVBurn || feePerTx); //If totalPRVBurn = 0, get default burn 0.1PRV / Transaction
+        const prvBalanceOriginalBN = new BigNumber(prvBalanceOriginal || 0);
+        const minPRVNeededBN = new BigNumber(minPRVNeeded || feePerTx);
 
-      // console.log('[validatePRVBalanceSelector]  ', {
-      //   prvBalanceOriginal,
-      //   totalPRVBurn,
-      //   minPRVNeeded
-      // });
+        // console.log('[validatePRVBalanceSelector]  ', {
+        //   prvBalanceOriginal,
+        //   totalPRVBurn,
+        //   minPRVNeeded
+        // });
 
-      // if current PRV Balance < minPRVNeededBN
-      // (isCurrentPRVBalanceExhausted = true, otherwise isCurrentPRVBalanceExhausted = false )
-      // User can not perform any action 
-      result.isCurrentPRVBalanceExhausted = prvBalanceOriginalBN.lt(minPRVNeededBN);
+        // if current PRV Balance < minPRVNeededBN
+        // (isCurrentPRVBalanceExhausted = true, otherwise isCurrentPRVBalanceExhausted = false )
+        // User can not perform any action
+        result.isCurrentPRVBalanceExhausted =
+          prvBalanceOriginalBN.lt(minPRVNeededBN);
 
-      // Ingore ReFill PopUp PRV (will change after) => hard code value = TRUE!
-      result.isEnoughtPRVNeededAfterBurn = prvBalanceOriginalBN.minus(totalPRVBurnBN).isGreaterThanOrEqualTo(minPRVNeededBN); 
+        // Ingore ReFill PopUp PRV (will change after) => hard code value = TRUE!
+        result.isEnoughtPRVNeededAfterBurn = prvBalanceOriginalBN
+          .minus(totalPRVBurnBN)
+          .isGreaterThanOrEqualTo(minPRVNeededBN);
 
-      // Hard code = true, ignore case Refill PRV!? 
-      // result.isEnoughtPRVNeededAfterBurn = true; 
-
-    } catch (error) {
-      console.log('[validatePRVBalanceSelector] error ', error);
-    } finally {
-      // console.log('[validatePRVBalanceSelector] RESULT  ', result);
-    }
-    return result;
-  });
+        // Hard code = true, ignore case Refill PRV!?
+        // result.isEnoughtPRVNeededAfterBurn = true;
+      } catch (error) {
+        console.log('[validatePRVBalanceSelector] error ', error);
+      } finally {
+        // console.log('[validatePRVBalanceSelector] RESULT  ', result);
+      }
+      return result;
+    },
+);
 
 export default {
   getPrivacyDataByTokenID,
@@ -321,7 +300,6 @@ export default {
   selectedPrivacyByFollowedSelector,
   findTokenFollowedByIdSelector,
   getAllPrivacyDataSelector,
-  getPrivacyDataFilterSelector,
   getPrivacyPRVInfo,
-  validatePRVBalanceSelector
+  validatePRVBalanceSelector,
 };

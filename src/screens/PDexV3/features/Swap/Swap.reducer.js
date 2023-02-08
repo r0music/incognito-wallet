@@ -132,10 +132,15 @@ const initialState = {
     fetching: false,
   },
   toggleProTab: false,
+
   pancakeTokens: [],
   uniTokens: [],
   curveTokens: [],
+  spookyTokens: [],
   interswapTokens: [],
+  trisolarisTokens: [],
+  joeTokens: [],
+
   platforms: [...PLATFORMS_SUPPORTED],
   field: '',
   useMax: false,
@@ -191,10 +196,7 @@ const reducer = (state = initialState, action) => {
     }
     case ACTION_SET_DEFAULT_EXCHANGE: {
       let _isPrivacyApp = state.isPrivacyApp;
-      const {
-        exchange,
-        isPrivacyApp = _isPrivacyApp,
-      } = action.payload;
+      const { exchange, isPrivacyApp = _isPrivacyApp } = action.payload;
       return {
         ...state,
         defaultExchange: exchange,
@@ -344,6 +346,13 @@ const reducer = (state = initialState, action) => {
         {},
         {
           ...initialState,
+          pancakeTokens: state.pancakeTokens,
+          uniTokens: state.uniTokens,
+          curveTokens: state.curveTokens,
+          spookyTokens: state.spookyTokens,
+          interswapTokens: state.interswapTokens,
+          trisolarisTokens: state.trisolarisTokens,
+          joeTokens: state.joeTokens,
           slippage: state.slippage,
           resetSlippage1: state.resetSlippage1,
         },

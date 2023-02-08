@@ -161,9 +161,10 @@ const PrivacyApps = () => {
   useFocusEffect(() => {
     const activeTabTrade = getActivedTab(ROOT_TAB_TRADE);
     if (activeTabTrade === TAB_SWAP_ID) {
-      dispatch(
-        actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
-      );
+      // dispatch(
+      //   actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
+      // );
+      // Default Buy/Sell Tab when navigate from Apps tab (pApps tab)???!!! (What?)
     }
   });
 

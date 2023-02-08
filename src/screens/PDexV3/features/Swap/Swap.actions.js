@@ -30,13 +30,10 @@ import { ANALYTICS } from '@src/constants';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 import SwapService from '@src/services/api/swap';
 import { minPRVNeededSelector } from '@src/screens/RefillPRV/RefillPRV.selector';
-import {
-  getPrivacyDataFilterSelector,
-  getPrivacyDataByTokenID,
-} from '@src/redux/selectors/selectedPrivacy';
+import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
 
 import { parseShard } from '@screens/Account/features/ExportAccount/ExportAccount';
-import {replaceCommaText} from '@utils/string';
+import { replaceCommaText } from '@utils/string';
 import {
   isUseTokenFeeParser,
   extractEstimateData,
@@ -111,8 +108,8 @@ import {
   defaultExchangeSelector,
   isPrivacyAppSelector,
   errorEstimateTradeSelector,
-  listPairsIDVerifiedSelector,
-  listPairsIDBuyTokenVerifiedSelector,
+  // listPairsIDVerifiedSelector,
+  // listPairsIDBuyTokenVerifiedSelector,
   findTokenSpookyByIdSelector,
   getExchangeSupportByPlatformId,
   findTokenJoeByIdSelector,
@@ -120,6 +117,7 @@ import {
   getEsimateCountSelector,
   swapFormErrorSelector,
   findTokenInterSwapByIdSelector,
+  getPrivacyTokenListSelector,
 } from './Swap.selector';
 import {
   PANCAKE_SUPPORT_NETWORK,
@@ -187,10 +185,7 @@ export const actionRemoveError = () => ({
   type: ACTION_REMOVE_ERROR,
 });
 
-export const actionSetDefaultExchange = ({
-  isPrivacyApp,
-  exchange,
-}) => ({
+export const actionSetDefaultExchange = ({ isPrivacyApp, exchange }) => ({
   type: ACTION_SET_DEFAULT_EXCHANGE,
   payload: {
     isPrivacyApp,
@@ -1456,6 +1451,7 @@ export const actionFetchedPairs = (payload) => ({
 });
 
 export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
+  // console.log('[SWAP] actionFetchPairs ');
   let pairs = [];
 
   let pancakeTokens = [];
@@ -1469,17 +1465,17 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
   const state = getState();
 
   try {
-    const { pairs: listPairs } = swapSelector(state);
+    const { pairs: tokenIdList } = swapSelector(state);
 
-    const privacyDataFilterList = getPrivacyDataFilterSelector(state);
-    if (!refresh && listPairs.length > 0) {
-      return listPairs;
+    const privacyTokenList = getPrivacyTokenListSelector(state);
+    if (!refresh && tokenIdList.length > 0) {
+      return tokenIdList;
     }
 
     const defaultExchange = defaultExchangeSelector(state);
     const isPrivacyApp = isPrivacyAppSelector(state);
 
-    privacyDataFilterList.map((token: SelectedPrivacy) => {
+    privacyTokenList.map((token: SelectedPrivacy) => {
       pairs.push(token.tokenId);
 
       if (isSupportByPlatform(PANCAKE_SUPPORT_NETWORK, token)) {
@@ -1578,7 +1574,7 @@ export const actionInitSwapForm =
       console.log('[actionInitSwapForm] ', {
         refresh,
         defaultPair,
-        shouldFetchHistory
+        shouldFetchHistory,
       });
       let state = getState();
       const feetoken = feeSelectedSelector(state);
@@ -1600,22 +1596,26 @@ export const actionInitSwapForm =
           dispatch(actionFreeHistoryOrders());
         }
       });
-      const pairs = await dispatch(actionFetchPairs(refresh));
-      const isDefaultPairExisted =
-        difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
-      if (!pair?.selltoken || !pair?.buytoken || !isDefaultPairExisted) {
-        state = getState();
-        const listPairsSellToken = listPairsIDVerifiedSelector(state);
-        const listPairsBuyToken = listPairsIDBuyTokenVerifiedSelector(state);
-        pair = {
-          selltoken: listPairsSellToken[0],
-          buytoken: listPairsBuyToken[1],
-        };
-        batch(() => {
-          dispatch(actionSetSellTokenFetched(pair.selltoken));
-          dispatch(actionSetBuyTokenFetched(pair.buytoken));
-        });
-      }
+      const pairs = await dispatch(actionFetchPairs(false));
+      // const isDefaultPairExisted =
+      //   difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
+      // if (!pair?.selltoken || !pair?.buytoken || !isDefaultPairExisted) {
+      //   console.log('??????? ');
+      //   state = getState();
+      //   const listPairsSellToken = listPairsIDVerifiedSelector(state);
+      //   const listPairsBuyToken = listPairsIDBuyTokenVerifiedSelector(state);
+      //   pair = {
+      //     selltoken: listPairsSellToken[0],
+      //     buytoken: listPairsBuyToken[1],
+      //   };
+
+      //   console.log('??????? pair ', pair);
+
+      //   batch(() => {
+      //     dispatch(actionSetSellTokenFetched(pair.selltoken));
+      //     dispatch(actionSetBuyTokenFetched(pair.buytoken));
+      //   });
+      // }
       const { selltoken } = pair;
       state = getState();
       let _defautSlippage = replaceCommaText({ text: defautSlippage });
@@ -1649,12 +1649,12 @@ export const actionInitSwapForm =
           }
         }
       });
-      const currentScreen = currentScreenSelector(state);
-      if (currentScreen === routeNames.Trade) {
-        dispatch(setDefaultTradingPlatformOnPdexV3());
-      } else {
-        dispatch(actionChangeSelectedPlatform(defaultExchange));
-      }
+      // const currentScreen = currentScreenSelector(state);
+      // if (currentScreen === routeNames.Trade) {
+      //   dispatch(setDefaultTradingPlatformOnPdexV3());
+      // } else {
+      //   dispatch(actionChangeSelectedPlatform(defaultExchange));
+      // }
     } catch (error) {
       new ExHandler(error).showErrorToast();
     } finally {
