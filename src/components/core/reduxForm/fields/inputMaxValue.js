@@ -6,6 +6,7 @@ import formatUtil from '@src/utils/format';
 import { generateTestId } from '@utils/misc';
 import { SEND } from '@src/constants/elements';
 import { BtnInfinite } from '@src/components/Button';
+import {replaceCommaText} from '@utils/string';
 import createField from './createField';
 
 const styled = StyleSheet.create({
@@ -21,6 +22,7 @@ const renderCustomField = ({
   meta,
   maxValue,
   onPressMax = null,
+  keyboardType,
   ...props
 }) => {
   const { onBlur, onFocus, value, ...rest } = input;
@@ -28,8 +30,10 @@ const renderCustomField = ({
   return (
     <TextInput
       {...{ ...props, ...rest }}
+      keyboardType={keyboardType}
       onChangeText={t => {
-        input.onChange(t);
+        const newText = replaceCommaText({ text: t, keyboardType });
+        input.onChange(newText);
       }}
       onBlur={onBlur}
       onFocus={onFocus}
@@ -65,6 +69,7 @@ const InputMaxValueField = createField({
 renderCustomField.defaultProps = {
   maxValue: null,
   onPressMax: null,
+  keyboardType: 'decimal-pad'
 };
 
 renderCustomField.propTypes = {
@@ -72,6 +77,7 @@ renderCustomField.propTypes = {
   meta: PropTypes.object.isRequired,
   maxValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   onPressMax: PropTypes.func,
+  keyboardType: PropTypes.string
 };
 
 export default InputMaxValueField;
