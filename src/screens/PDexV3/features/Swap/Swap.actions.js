@@ -988,14 +988,15 @@ export const actionEstimateTrade =
 
     if (
       formErrors &&
-      formErrors[formConfigs.selltoken] === 'Must be a number'
+      (formErrors[formConfigs.selltoken] === 'Must be a number' ||
+        formErrors[formConfigs.selltoken] === 'Required')
     ) {
       return;
     }
+
     if (isEmpty(sellInputToken) || isEmpty(buyInputToken)) {
       return;
     }
-
     try {
       const params = { field, useMax };
       // Show loading estimate trade and reset fee data

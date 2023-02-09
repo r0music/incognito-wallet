@@ -14,7 +14,8 @@ import {
   KeysPlatformSupported,
   MAIN_NETWORK,
   NETWORK_IDS_MAPPING,
-  EXCHANGES_NETWROK_ID, InterSwapData,
+  EXCHANGES_NETWROK_ID,
+  InterSwapData,
 } from './Swap.types';
 
 const parseExchangeSupport = (
@@ -36,7 +37,7 @@ const parseExchangeSupport = (
           networkName,
           NETWORK_IDS_MAPPING[networkName],
           incTokenId,
-          sellToken
+          sellToken,
         );
       });
     }
@@ -73,7 +74,7 @@ const parseExchangeDataModelResponse = (
   // Child buy tokenId
   incTokenID: string,
 
-  sellToken: SelectedPrivacy
+  sellToken: SelectedPrivacy,
 ): ExchangeData => {
   let exchangeData: ExchangeData = {
     amountIn: parseFloat(data.AmountIn) || 0,
@@ -107,7 +108,8 @@ const parseExchangeDataModelResponse = (
   };
 
   // format
-  const isInterSwap = exchangeData?.appName === KEYS_PLATFORMS_SUPPORTED.interswap;
+  const isInterSwap =
+    exchangeData?.appName === KEYS_PLATFORMS_SUPPORTED.interswap;
   if (isInterSwap) {
     let path: any = [];
     const respDetails = data?.Details;
@@ -128,17 +130,21 @@ const parseExchangeDataModelResponse = (
         }
       });
 
-      let pAppName = fistBatchIsPDex ? secondBatch?.AppName : firstBatch.AppName;
-      let pAppNetwork = fistBatchIsPDex ? secondBatch?.PAppNetwork : firstBatch.PAppNetwork;
+      let pAppName = fistBatchIsPDex
+        ? secondBatch?.AppName
+        : firstBatch.AppName;
+      let pAppNetwork = fistBatchIsPDex
+        ? secondBatch?.PAppNetwork
+        : firstBatch.PAppNetwork;
 
       let incTokenID = sellToken?.tokenId;
       let networkID = NETWORK_IDS_MAPPING[firstBatch.PAppNetwork]
-          ? NETWORK_IDS_MAPPING[firstBatch.PAppNetwork]
-          : sellToken?.networkId || 0;
+        ? NETWORK_IDS_MAPPING[firstBatch.PAppNetwork]
+        : sellToken?.networkId || 0;
       if (sellToken?.isPUnifiedToken && !fistBatchIsPDex) {
-        const childToken: SelectedPrivacy = (sellToken?.listUnifiedToken || sellToken?.listChildToken)?.find(
-            (token: SelectedPrivacy) => token?.networkId === networkID
-        );
+        const childToken: SelectedPrivacy = (
+          sellToken?.listUnifiedToken || sellToken?.listChildToken
+        )?.find((token: SelectedPrivacy) => token?.networkId === networkID);
         if (childToken?.networkId && childToken?.tokenId) {
           networkID = childToken.networkId;
           incTokenID = childToken?.tokenId;
@@ -156,7 +162,9 @@ const parseExchangeDataModelResponse = (
         midOTA: data?.MidOTA,
         midToken: data?.MidToken,
         fistBatchIsPDex,
-        pdexMinAcceptableAmount: new BigNumber(firstBatch?.AmountOutRaw || 0).toString(),
+        pdexMinAcceptableAmount: new BigNumber(
+          firstBatch?.AmountOutRaw || 0,
+        ).toString(),
         pAppName,
         pAppNetwork,
         path,
@@ -303,8 +311,8 @@ export const extractEstimateData = async (
         : current,
   );
 
-  console.log('extractEstimateData : ', { bestRateExchange, exchangeSupports });
-  console.log('LOGS: extractEstimateData', { exchangeSupports, bestRateExchange, estimateRawData });
+  // console.log('extractEstimateData : ', { bestRateExchange, exchangeSupports });
+  // console.log('LOGS: extractEstimateData', { exchangeSupports, bestRateExchange, estimateRawData });
   return { bestRateExchange, exchangeSupports };
 };
 
