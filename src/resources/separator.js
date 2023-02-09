@@ -1,32 +1,33 @@
-import LocalDatabase from '@utils/LocalDatabase';
+// eslint-disable-next-line import/no-cycle
+import LocalDatabase from '@utils/LocalDatabase'; // dont remove
 
 let decimalSeparator = '.';
 let groupSeparator = ',';
 
 async function loadSeparator() {
-  const savedDecimalSeparator = await LocalDatabase.getDecimalSeparator();
-
-  if (!savedDecimalSeparator) {
-    setDecimalSeparator('.');
-    LocalDatabase.saveDecimalSeparator('.');
-  } else {
-    decimalSeparator = savedDecimalSeparator;
-
-    if (savedDecimalSeparator === '.') {
-      groupSeparator = ',';
-    } else {
-      groupSeparator = '.';
-    }
-  }
+  // const savedDecimalSeparator = await LocalDatabase.getDecimalSeparator();
+  //
+  // if (!savedDecimalSeparator) {
+  //   setDecimalSeparator('.');
+  //   LocalDatabase.saveDecimalSeparator('.');
+  // } else {
+  //   decimalSeparator = savedDecimalSeparator;
+  //
+  //   if (savedDecimalSeparator === '.') {
+  //     groupSeparator = ',';
+  //   } else {
+  //     groupSeparator = '.';
+  //   }
+  // }
 }
 
-export function setDecimalSeparator(newSeparator) {
-  if (decimalSeparator !== newSeparator) {
-    groupSeparator = decimalSeparator;
-    decimalSeparator = newSeparator;
-    LocalDatabase.saveDecimalSeparator(decimalSeparator);
-  }
-}
+// export function setDecimalSeparator(newSeparator) {
+//   if (decimalSeparator !== newSeparator) {
+//     groupSeparator = decimalSeparator;
+//     decimalSeparator = newSeparator;
+//     LocalDatabase.saveDecimalSeparator(decimalSeparator);
+//   }
+// }
 
 export function getDecimalSeparator() {
   return decimalSeparator;

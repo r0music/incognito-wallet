@@ -69,7 +69,7 @@ const Setting = () => {
           {/* <PayFeeByPRV /> */}
           <PINSection />
           <SeparatorSection />
-          <DecimalDigitsSection />
+          {/*<DecimalDigitsSection />*/}
           {/*<CurrencySection />*/}
           <AddressBookSection />
           <ConvertToUnifiedTokenSection />

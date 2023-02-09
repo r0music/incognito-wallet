@@ -33,6 +33,7 @@ import {
 } from '@src/redux/selectors/selectedPrivacy';
 
 import { parseShard } from '@screens/Account/features/ExportAccount/ExportAccount';
+import {replaceCommaText} from '@utils/string';
 import {
   isUseTokenFeeParser,
   extractEstimateData,
@@ -1611,7 +1612,7 @@ export const actionInitSwapForm =
       }
       const { selltoken } = pair;
       state = getState();
-      let _defautSlippage = defautSlippage;
+      let _defautSlippage = replaceCommaText({ text: defautSlippage });
       if (!resetSlippage1) {
         _defautSlippage = format.amountFull('0.5', 0);
         dispatch(actionResetSlippage());

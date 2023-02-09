@@ -6,13 +6,14 @@ import { isAndroid } from '@src/utils/platform';
 import { colorsSelector } from '@src/theme/theme.selector';
 import { useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
+import {replaceCommaText} from '@utils/string';
 import styles from './styles';
 
 const StyledInput = styled.TextInput`
   color: ${({ theme }) => theme.text1};
 `;
 
-// A custome hook for position of cursor's text input on Android OS
+// A custom hook for position of cursor's text input on Android OS
 const useCursorInputTextForAndroid = ({ value, onBlur, onFocus }) => {
   const [selection, setSelection] = React.useState(undefined);
   const [isFocused, setIsFocused] = React.useState(false);
@@ -73,6 +74,7 @@ const BaseTextInput = (props: TextInputProps) => {
     onBlur,
     onChangeText,
     value,
+    keyboardType,
     ...rest
   } = props;
   const colors = useSelector(colorsSelector);
@@ -81,7 +83,8 @@ const BaseTextInput = (props: TextInputProps) => {
   const handleChangeText = (text) => {
     setSelection(undefined);
     if (typeof onChangeText === 'function') {
-      onChangeText(text);
+      const newText = replaceCommaText({ text, keyboardType });
+      onChangeText(newText);
     }
   };
   return (
@@ -91,6 +94,7 @@ const BaseTextInput = (props: TextInputProps) => {
       autoCorrect={false}
       spellCheck={false}
       autoCompleteType="off"
+      keyboardType={keyboardType}
       // style={[styles.input, style, !editable ? { color: colors.text4 } : null]}
       style={[styles.input, style]}
       editable={editable}
