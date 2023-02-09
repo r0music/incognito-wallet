@@ -67,6 +67,7 @@ const Balance = React.memo(({ hideBalance }) => {
             hasPSymbol
             stylePSymbol={styledBalance.pSymbol}
             containerStyle={styledBalance.balanceContainer}
+            ellipsizeMode="clip"
             size="large"
             hideBalance={hideBalance}
             fromBalance
