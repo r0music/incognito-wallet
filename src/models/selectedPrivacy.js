@@ -3,7 +3,7 @@ import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
 import { BIG_COINS } from '@src/screens/DexV2/constants';
 import { PRV_ID } from '@screens/Dex/constants';
 import { detectToken } from '@src/utils/misc';
-import {PRV} from '@src/constants/common';
+import { PRV } from '@src/constants/common';
 import PToken from './pToken';
 
 function getNetworkName() {
@@ -365,6 +365,12 @@ class SelectedPrivacy {
     this.listUnifiedTokenCurrencyType = this.isPUnifiedToken
       ? this.listUnifiedToken.map((token) => token.currencyType)
       : [];
+    this.listUnifiedToken = this.listUnifiedToken.map((child) => {
+      return {
+        ...child,
+        groupNetworkName: getGroupNetworkName.call(child),
+      };
+    });
 
     // Native Token of Network
     this.isETH =

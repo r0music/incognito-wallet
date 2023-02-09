@@ -724,3 +724,14 @@ export const getSupportNetworkByPlatform = (platform) => {
       return [];
   }
 };
+
+export const isSupportByPlatform = (
+  platFormSupportNetwork: number[],
+  token: SelectedPrivacy,
+) => {
+  let isSupport = platFormSupportNetwork.includes(token.currencyType);
+  let isSupportUnified = platFormSupportNetwork.some((currencyType) =>
+    token.listUnifiedTokenCurrencyType.includes(currencyType),
+  );
+  return isSupport || isSupportUnified;
+};

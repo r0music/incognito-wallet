@@ -134,7 +134,7 @@ import TransactionHandler, {
   CreateTransactionPDexPayload,
 } from './Swap.transactionHandler';
 
-import { getNetworkByExchange } from './Swap.utils';
+import { getNetworkByExchange, isSupportByPlatform } from './Swap.utils';
 
 export const actionEstiamteCount = (payload) => ({
   type: ACTION_ESTIMATE_COUNT,
@@ -1550,17 +1550,6 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
     }),
   );
   return pairs;
-};
-
-export const isSupportByPlatform = (
-  platFormSupportNetwork: number[],
-  token,
-) => {
-  let isSupport = platFormSupportNetwork.includes(token.currencyType);
-  let isSupportUnified = platFormSupportNetwork.some((currencyType) =>
-    token.listUnifiedTokenCurrencyType.includes(currencyType),
-  );
-  return isSupport || isSupportUnified;
 };
 
 export const actionFreeHistoryOrders = () => ({

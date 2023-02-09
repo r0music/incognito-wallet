@@ -29,7 +29,12 @@ import {
   getExchangeDataWithCallContract,
   ONE_DAY,
 } from './Swap.constant';
-import { getInputAmount, calMintAmountExpected } from './Swap.utils';
+import {
+  getInputAmount,
+  calMintAmountExpected,
+  getSupportNetworkByPlatform,
+  isSupportByPlatform,
+} from './Swap.utils';
 
 // import { isSupportByPlatform } from './Swap.actions';
 
@@ -1341,8 +1346,14 @@ export const getDefaultTokenListBySearch = createSelector(
 );
 
 export const filterSwapableToken = createSelector(
-  [selltokenSelector, buytokenSelector, getDefaultTokenListBySearch],
-  (selltoken, buytoken, availableTokenListFn) =>
+  [
+    defaultExchangeSelector,
+    isPrivacyAppSelector,
+    selltokenSelector,
+    buytokenSelector,
+    getDefaultTokenListBySearch,
+  ],
+  (platform, isPrivacyApp, selltoken, buytoken, availableTokenListFn) =>
     (currentTokenId, currentField, tokenList = []) => {
       let tokensFiltered = [];
       let baseTokenToCompare;
@@ -1353,9 +1364,7 @@ export const filterSwapableToken = createSelector(
         baseTokenToCompare = selltoken;
       }
 
-      // const tokenIds = tokenList.map(token => token.tokenId) || []
-      // const availableTokenListFn = availableTokenListFn(currentTokenId)
-      // const tokenListFilterd =
+      const supportNetowrks = getSupportNetworkByPlatform(platform);
 
       const childNetworks = baseTokenToCompare.isPUnifiedToken
         ? baseTokenToCompare.listUnifiedToken.map(
@@ -1365,27 +1374,28 @@ export const filterSwapableToken = createSelector(
 
       tokensFiltered =
         tokenList.filter((token: SelectedPrivacy) => {
-          let flag = true;
-
-          // TO DO: filter with privacy apps
-
-          // if (isSupportByPlatform(PANCAKE_SUPPORT_NETWORK, token)) {
-          // }
-
-          if (token?.tokenId === buytoken?.tokenId) flag = false;
-          if (token?.movedUnifiedToken) flag = false; // not supported moved unified token
-          if (!!baseTokenToCompare?.defaultPoolPair || !!token.defaultPoolPair)
-            flag = true; //Swappable on pDex
-
+          // Swap pAPP need this condition (filter on detail Platform)
+          if (isPrivacyApp) {
+            if (!isSupportByPlatform(supportNetowrks, token)) return false;
+          }
+          if (token?.tokenId === buytoken?.tokenId) return false;
+          if (token?.movedUnifiedToken) return false; // not supported moved unified token
+          // Swap pDex (Incognito or Interswap) need this condition
+          if (!isPrivacyApp) {
+            if (
+              !!baseTokenToCompare?.defaultPoolPair ||
+              !!token.defaultPoolPair
+            )
+              return true;
+          }
           const tokenChildNetworks = token.isPUnifiedToken
             ? token.listUnifiedToken.map((child) => child.groupNetworkName)
             : [token.groupNetworkName];
 
-          flag = childNetworks.some(
+          return childNetworks.some(
             (networkName) =>
               networkName && tokenChildNetworks.includes(networkName),
           );
-          return flag;
         }) || [];
 
       return tokensFiltered;
