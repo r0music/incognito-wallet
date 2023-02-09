@@ -54,6 +54,8 @@ const initialFormValues = {
   message: '',
 };
 
+const AMOUNT_KEY_BOARD_TYPE = 'decimal-pad';
+
 const Form = createForm(formName, {
   initialValues: initialFormValues,
   destroyOnUnmount: true,
@@ -302,7 +304,7 @@ const SendForm = (props) => {
                 label="Amount"
                 rightLabel={<RightLabel />}
                 componentProps={{
-                  keyboardType: 'decimal-pad',
+                  keyboardType: AMOUNT_KEY_BOARD_TYPE,
                   onPressMax,
                   style: {
                     marginTop: 22,

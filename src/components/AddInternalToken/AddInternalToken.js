@@ -40,8 +40,8 @@ const Form = createForm(formName, { initialValues });
 const descriptionMaxLength = validator.maxLength(255);
 const isEmail = validator.email();
 const imageValidate = [
-  validator.fileTypes(['png']),
-  validator.maxFileSize(50),
+  validator.fileTypes(['png', 'jpg']),
+  // validator.maxFileSize(50),
 ];
 
 
