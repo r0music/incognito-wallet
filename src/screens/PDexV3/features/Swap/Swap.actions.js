@@ -1440,7 +1440,6 @@ export const actionFetchedPairs = (payload) => ({
 });
 
 export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
-  // console.log('[SWAP] actionFetchPairs ');
   let pairs = [];
 
   let pancakeTokens = [];
@@ -1451,21 +1450,22 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
   let trisolarisTokens = [];
   let interswapTokens = [];
 
-  const state = getState();
-
   try {
+    const state = getState();
     const { pairs: tokenIdList } = swapSelector(state);
 
     const privacyTokenList = getPrivacyTokenListSelector(state);
+
     if (!refresh && tokenIdList.length > 0) {
       return tokenIdList;
     }
-
     const defaultExchange = defaultExchangeSelector(state);
     const isPrivacyApp = isPrivacyAppSelector(state);
 
     privacyTokenList.map((token: SelectedPrivacy) => {
       pairs.push(token.tokenId);
+      // interswap get all tokens
+      interswapTokens.push(token);
 
       if (isSupportByPlatform(PANCAKE_SUPPORT_NETWORK, token)) {
         pancakeTokens.push(token);
@@ -1485,8 +1485,6 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
       if (isSupportByPlatform(TRISOLARIS_SUPPORT_NETWORK, token)) {
         trisolarisTokens.push(token);
       }
-      // interswap get all tokens
-      interswapTokens.push(token);
     });
 
     if (isPrivacyApp) {
@@ -1549,11 +1547,6 @@ export const actionInitSwapForm =
   ({ refresh = true, defaultPair = {}, shouldFetchHistory = false } = {}) =>
   async (dispatch, getState) => {
     try {
-      console.log('[actionInitSwapForm] ', {
-        refresh,
-        defaultPair,
-        shouldFetchHistory,
-      });
       let state = getState();
       const feetoken = feeSelectedSelector(state);
       const defaultExchange = defaultExchangeSelector(state);
@@ -1574,6 +1567,7 @@ export const actionInitSwapForm =
           dispatch(actionFreeHistoryOrders());
         }
       });
+
       const pairs = await dispatch(actionFetchPairs(false));
       // const isDefaultPairExisted =
       //   difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;

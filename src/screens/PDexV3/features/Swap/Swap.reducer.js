@@ -334,6 +334,7 @@ const reducer = (state = initialState, action) => {
           slippage: state.slippage,
           resetSlippage1: state.resetSlippage1,
           unifiedInforAlertHash: state.unifiedInforAlertHash,
+          pairs: state.pairs,
         },
       );
     }
