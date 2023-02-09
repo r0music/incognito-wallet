@@ -876,13 +876,8 @@ export const swapInfoSelector = createSelector(
         calculating ||
         (!isFetched && !isFetching) ||
         !isValid(formConfigs.formName)(state);
-      if (isNeedFaucet) {
-        // btnSwapText = 'Faucet';
-        btnSwapText = 'Swap';
-      } else {
-        if (calculating) {
-          btnSwapText = 'Calculating...';
-        }
+      if (calculating) {
+        btnSwapText = 'Calculating...';
       }
       const tradingFeeStr = `${feeTokenData?.feeAmountText} ${feeTokenData?.symbol}`;
       const sellInputBalanceStr = `${sellInputAmount?.balanceStr || '0'} ${
