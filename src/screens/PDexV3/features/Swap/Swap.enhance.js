@@ -267,6 +267,6 @@ export default compose(
   withLazy,
   enhanceInit,
   enhanceNavigation,
-  enhance,
   enhanceUnifiedAlert,
+  enhance,
 );

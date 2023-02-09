@@ -355,6 +355,7 @@ const reducer = (state = initialState, action) => {
           joeTokens: state.joeTokens,
           slippage: state.slippage,
           resetSlippage1: state.resetSlippage1,
+          unifiedInforAlertHash: state.unifiedInforAlertHash,
         },
       );
     }
