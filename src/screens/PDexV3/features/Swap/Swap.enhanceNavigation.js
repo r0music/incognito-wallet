@@ -21,7 +21,6 @@ const enhanceNavigation = (WrappedComp) => (props) => {
     // console.log('1 isFocused ', isFocused);
     // console.log('2 currentScreen ', currentScreen);
     if (!isFocused && SCREENS_RESET.includes(currentScreen)) {
-      console.log('RESET ====>>> ');
       setTimeout(() => {
         batch(() => {
           dispatch(actionReset());

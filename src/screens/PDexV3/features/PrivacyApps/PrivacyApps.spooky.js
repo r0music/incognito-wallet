@@ -17,14 +17,12 @@ const PrivacyAppsSpooky = () => {
   React.useEffect(() => {
     dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.SPOOKY));
     dispatch(actionReset());
-    setTimeout(() => {
-      dispatch(
-        actionSetDefaultExchange({
-          isPrivacyApp: true,
-          exchange: KEYS_PLATFORMS_SUPPORTED.spooky,
-        }),
-      );
-    }, 1000);
+    dispatch(
+      actionSetDefaultExchange({
+        isPrivacyApp: true,
+        exchange: KEYS_PLATFORMS_SUPPORTED.spooky,
+      }),
+    );
   }, []);
 
   return (

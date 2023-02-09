@@ -37,7 +37,7 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 };
 
 const Swap = (props) => {
-  const { initSwapForm, handleConfirm, errorMessage} = props;
+  const { initSwapForm, handleConfirm, errorMessage } = props;
   const swapInfo = useDebounceSelector(swapInfoSelector);
 
   const [page, setPage] = React.useState(0);
@@ -110,4 +110,3 @@ Swap.propTypes = {
 };
 
 export default withSwap(React.memo(Swap));
-// export default Swap;

@@ -33,8 +33,6 @@ import {
   ACTION_CHANGE_ESTIMATE_DATA,
   ACTION_SET_DEFAULT_EXCHANGE,
   ACTION_FREE_HISTORY_ORDERS,
-  ACTION_SET_ERROR,
-  ACTION_REMOVE_ERROR,
   ACTION_CHANGE_SLIPPAGE,
   ACTION_FETCHING_REWARD_HISTORY,
   ACTION_FETCHED_REWARD_HISTORY,
@@ -167,26 +165,6 @@ const reducer = (state = initialState, action) => {
         ...state,
         slippage: action.payload,
       };
-    }
-    case ACTION_REMOVE_ERROR: {
-      const { data } = state;
-      const newData = Object.keys(data).reduce((obj, key) => {
-        obj[key].error = null;
-        return obj;
-      }, {});
-      return {
-        ...state,
-        data: Object.assign({}, newData),
-      };
-    }
-    case ACTION_SET_ERROR: {
-      const { platformId, error } = action.payload;
-      const { data } = state;
-      const newState = {
-        ...state,
-        data: { ...data, [platformId]: { ...data[platformId], error } },
-      };
-      return newState;
     }
     case ACTION_FREE_HISTORY_ORDERS: {
       return {

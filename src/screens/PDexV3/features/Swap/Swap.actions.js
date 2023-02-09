@@ -67,8 +67,6 @@ import {
   ACTION_CHANGE_ESTIMATE_DATA,
   ACTION_SET_DEFAULT_EXCHANGE,
   ACTION_FREE_HISTORY_ORDERS,
-  ACTION_SET_ERROR,
-  ACTION_REMOVE_ERROR,
   ACTION_CHANGE_SLIPPAGE,
   ACTION_FETCHING_REWARD_HISTORY,
   ACTION_FETCHED_REWARD_HISTORY,
@@ -174,15 +172,6 @@ export const actionSetExchangeSupportList = (payload) => ({
 export const actionChangeSlippage = (payload) => ({
   type: ACTION_CHANGE_SLIPPAGE,
   payload,
-});
-
-export const actionSetError = (payload) => ({
-  type: ACTION_SET_ERROR,
-  payload,
-});
-
-export const actionRemoveError = () => ({
-  type: ACTION_REMOVE_ERROR,
 });
 
 export const actionSetDefaultExchange = ({ isPrivacyApp, exchange }) => ({
@@ -1620,12 +1609,12 @@ export const actionInitSwapForm =
             _defautSlippage,
           ),
         );
-        const useFeeByToken = selltoken !== PRV_ID && !isUsePRVToPayFee;
-        if (useFeeByToken) {
-          dispatch(actionSetFeeToken(selltoken));
-        } else {
-          dispatch(actionSetFeeToken(PRV.id));
-        }
+        // const useFeeByToken = selltoken !== PRV_ID && !isUsePRVToPayFee;
+        // if (useFeeByToken) {
+        //   dispatch(actionSetFeeToken(selltoken));
+        // } else {
+        //   dispatch(actionSetFeeToken(PRV.id));
+        // }
         dispatch(getBalance(selltoken));
         if (selltoken !== PRV_ID && refresh) {
           dispatch(getBalance(PRV_ID));
