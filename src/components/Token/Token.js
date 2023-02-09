@@ -256,6 +256,7 @@ export const Amount = (props) => {
     size,
     hideBalance,
     fromBalance,
+    ellipsizeMode
   } = props;
   const decimalDigits = useSelector(decimalDigitsSelector);
   const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
@@ -290,6 +291,7 @@ export const Amount = (props) => {
       hasPSymbol={hideBalance ? false : hasPSymbol}
       stylePSymbol={stylePSymbol}
       containerStyle={containerStyle}
+      ellipsizeMode={ellipsizeMode}
     />
   );
 };
