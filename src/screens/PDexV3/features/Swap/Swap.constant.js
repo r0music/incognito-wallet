@@ -334,4 +334,16 @@ export const SWAP_DEFAULT_FAIR = {
     buytoken:
       '6eed691cb14d11066f939630ff647f5f1c843a8f964d9a4d295fa9cd1111c474', //FTM
   },
+  JOE: {
+    selltoken:
+      '9624c2357d9be1cb0136e2743d891382e754cc82b53bc249a22fb890e62cf3a6', //USDC (Avalanche)
+    buytoken:
+      'c469fb02623a023b469c81e1564193da7d85fe918cd4a4fdd2c64f97f59f60f5', //AVAX
+  },
+  TRISOLARIS: {
+    selltoken:
+      '9641025869e7e98e72fa746cba0c3b3dc205c743528f7c978c5b6dd8433472d9', //AURORA
+    buytoken:
+      '96de12b4e6ede8795e1938b47fc12da2c5983722e731d2ada185641dd494cd78', //USDC (Aurora)
+  },
 };

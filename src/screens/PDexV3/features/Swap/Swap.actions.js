@@ -1771,7 +1771,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
           analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_JOE;
           break;
         case KEYS_PLATFORMS_SUPPORTED.trisolaris:
-          analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRISOLARIS;
+          analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_TRISOLARIS;
           break;
         case KEYS_PLATFORMS_SUPPORTED.interswap:
           analytic = ANALYTICS.ANALYTIC_DATA_TYPE.INTER_SWAP;

@@ -206,7 +206,17 @@ const reducer = (state = initialState, action) => {
         case KEYS_PLATFORMS_SUPPORTED.curve:
           feetoken = PRV_ID;
           break;
+        case KEYS_PLATFORMS_SUPPORTED.spooky:
+          feetoken = PRV_ID;
+          break;
+        case KEYS_PLATFORMS_SUPPORTED.joe:
+          feetoken = PRV_ID;
+          break;
+        case KEYS_PLATFORMS_SUPPORTED.trisolaris:
+          feetoken = PRV_ID;
+          break;
         default:
+          feetoken = PRV_ID;
           break;
       }
       const newState = {
