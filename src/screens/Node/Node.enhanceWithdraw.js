@@ -128,7 +128,7 @@ const enhanceWithdraw = (WrappedComp) => (props) => {
       accountNameList.push(item.device.AccountName || item.device.Name);
       // messages = messages + `AccountName: ${item.device.AccountName || item.device.Name} \n ${item.errorMessage || ''} \n\n`;
     });
-    messages = `AccountName: ${accountNameList.join(', ')} \nInsufficient PRV balance to cover network fee. \n ${feeAndSymbol} is required per node. `;
+    messages = `Account Name: ${accountNameList.join(', ')} \nInsufficient PRV balance to cover network fee. \n ${feeAndSymbol} is required per node. `;
     return messages;
   };
 
