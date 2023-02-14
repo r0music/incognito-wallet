@@ -52,7 +52,8 @@ const nodeSignInEnhance = WrappedComp => props => {
       <WrappedComp
         {...{
           ...props,
-          loading
+          loading,
+          setLoading
         }}
       />
     </ErrorBoundary>
