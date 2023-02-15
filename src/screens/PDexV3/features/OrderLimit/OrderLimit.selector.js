@@ -720,7 +720,7 @@ export const selectableTokens1Selector = createSelector(
     let tokens = [];
     tokenIDs.forEach((tokenID) => {
       const token = getPrivacyDataByTokenID(tokenID);
-      if (token && !token.movedUnifiedToken) {
+      if (token) {
         tokens.push(token);
       }
     });
@@ -739,7 +739,7 @@ export const selectableTokens2Selector = createSelector(
   (pools, poolSelected) => {
     const { tokenId: token1Id } = poolSelected?.token1;
     return pools
-      .filter(({ token1, token2 }) => token1?.tokenId === token1Id && !token1.movedUnifiedToken && !token2.movedUnifiedToken)
+      .filter(({ token1, token2 }) => token1?.tokenId === token1Id)
       .map(({ token2 }) => token2);
   },
 );

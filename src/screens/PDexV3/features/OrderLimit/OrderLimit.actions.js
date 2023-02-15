@@ -417,6 +417,7 @@ export const actionWithdrawOrder =
             min_accept: minAccept
           }));
         }, 300);
+        console.log('Order Cancel +++++ ', data);
         await pDexV3Inst.createAndSendWithdrawOrderRequestTx({ extra: data });
       } catch (error) {
         new ExHandler(error).showErrorToast();
