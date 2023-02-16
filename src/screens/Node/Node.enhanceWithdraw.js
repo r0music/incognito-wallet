@@ -13,7 +13,7 @@ import {
   actionUpdateWithdrawing as updateWithdrawing,
   updateWithdrawTxs,
 } from '@screens/Node/Node.actions';
-import { getValidNodes, checkValidNode, findAccountFromListAccounts, checkAccountBalanceForNode } from '@screens/Node/Node.utils';
+import { getValidNodes, checkValidNode, findAccountFromListAccounts, checkAccountBalanceForNode, ERROR_MESSAGE_PRV_BALANCE } from '@screens/Node/Node.utils';
 import { listAllMasterKeyAccounts } from '@src/redux/selectors/masterKey';
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
 import { getPrivacyPRVInfo, validatePRVBalanceSelector } from '@src/redux/selectors/selectedPrivacy';
@@ -84,6 +84,16 @@ const enhanceWithdraw = (WrappedComp) => (props) => {
           }
           return tokenIds;
         }, []);
+
+        const {isValid, errorMessage} = await checkAccountBalanceForNode(device, listAccount);
+        if (!isValid) {
+          if (errorMessage === ERROR_MESSAGE_PRV_BALANCE) {
+            if (showToast) {
+              showToastErrorMessage(errorMessage);
+              return;
+            }
+          }
+        }
         const txs = await sendWithdrawTx(PaymentAddress, tokenIds);
         console.debug('Handle withdraw', txs);
         const message = MESSAGES.VNODE_WITHDRAWAL;

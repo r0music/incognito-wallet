@@ -29,6 +29,7 @@ import convert from '@src/utils/convert';
 import BigNumber from 'bignumber.js';
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
 
+export const ERROR_MESSAGE_PRV_BALANCE = 'Insufficient PRV balance to cover network fee.';
 export const checkIfVerifyCodeIsExisting = async () => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -457,7 +458,7 @@ export const checkAccountBalanceForNode = async (device, listAccount) => {
     const prvBalanceOriginal = convert.toNumber(balance) || 0;
       if (new BigNumber(prvBalanceOriginal).isLessThan(MAX_FEE_PER_TX)) {
         isValid = false;
-        errorMessage = 'Insufficient PRV balance to cover network fee.';
+        errorMessage = ERROR_MESSAGE_PRV_BALANCE;
       } else {
       }
     } else {
