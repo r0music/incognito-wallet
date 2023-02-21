@@ -7,6 +7,8 @@ import {
   UniIcon2,
   CurveIcon2,
   SpoonkyIcon2,
+  JoeIcon2,
+  TrisolarisIcon2,
 } from '@src/components/Icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { FONT } from '@src/styles';
@@ -49,11 +51,14 @@ const PrivacyApps = () => {
       case KEYS_PLATFORMS_SUPPORTED.curve:
         navigation.navigate(routeNames.PrivacyAppsCurve);
         break;
-      // case KEYS_PLATFORMS_SUPPORTED.uniEther:
-      //   navigation.navigate(routeNames.PrivacyAppsUniEther);
-      // break;
       case KEYS_PLATFORMS_SUPPORTED.spooky:
         navigation.navigate(routeNames.PrivacyAppsSpooky);
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.joe:
+        navigation.navigate(routeNames.PrivacyAppsTraderJoe);
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.trisolaris:
+        navigation.navigate(routeNames.PrivacyAppsTrisolaris);
         break;
       default:
         break;
@@ -77,12 +82,6 @@ const PrivacyApps = () => {
           },
         ],
         desc: 'Trade anonymously on Binance Smart Chain’s leading DEX. Deep liquidity and super low fees – now with privacy.',
-        defaultPair: {
-          selltoken:
-            '545ef6e26d4d428b16117523935b6be85ec0a63e8c2afeb0162315eb0ce3d151', //USDC (UT)
-          buytoken:
-            'e5032c083f0da67ca141331b6005e4a3740c50218f151a5e829e9d03227e33e2', //BNB (BSC)
-        },
         onPressItem,
       },
       {
@@ -105,12 +104,6 @@ const PrivacyApps = () => {
           },
         ],
         desc: 'Trade confidentially on everyone’s favorite DEX. Faster and cheaper thanks to Polygon, Ethereum, and private like all Incognito apps.',
-        defaultPair: {
-          selltoken:
-            '545ef6e26d4d428b16117523935b6be85ec0a63e8c2afeb0162315eb0ce3d151', //USDC (UT)
-          buytoken:
-            '3ee31eba6376fc16cadb52c8765f20b6ebff92c0b1c5ab5fc78c8c25703bb19e', //ETH (UT)
-        },
         onPressItem,
       },
       // {
@@ -147,19 +140,13 @@ const PrivacyApps = () => {
           },
         ],
         desc: 'Swap stablecoins with complete confidentiality using Privacy Curve. Low fees on Polygon meets full privacy on Incognito.',
-        defaultPair: {
-          selltoken:
-            '545ef6e26d4d428b16117523935b6be85ec0a63e8c2afeb0162315eb0ce3d151', //USDC (UT)
-          buytoken:
-            '076a4423fa20922526bd50b0d7b0dc1c593ce16e15ba141ede5fb5a28aa3f229', //USDT (UT)
-        },
         onPressItem,
       },
       {
         privacyAppId: KEYS_PLATFORMS_SUPPORTED.spooky,
         icon: <SpoonkyIcon2 />,
         headerTitle: 'pSpooky',
-        headerSub: 'Private SpookySwap',
+        headerSub: 'Private Spooky Swap',
         groupActions: [
           {
             id: 'FANTOM',
@@ -171,22 +158,54 @@ const PrivacyApps = () => {
           },
         ],
         desc: 'Explore DeFi on Fantom with full privacy for your activity and assets. Swap Fantom coins anonymously with Private SpookySwap.',
-        defaultPair: {
-          selltoken:
-            '545ef6e26d4d428b16117523935b6be85ec0a63e8c2afeb0162315eb0ce3d151', //USDC (UT)
-          buytoken:
-            '6eed691cb14d11066f939630ff647f5f1c843a8f964d9a4d295fa9cd1111c474', //FTM
-        },
+        onPressItem,
+      },
+      {
+        privacyAppId: KEYS_PLATFORMS_SUPPORTED.joe,
+        icon: <JoeIcon2 />,
+        headerTitle: 'pTraderJoe',
+        headerSub: 'Private Trader Joe',
+        groupActions: [
+          {
+            id: 'AVALANCHE',
+            title: 'Avalanche',
+          },
+          {
+            id: 'DEX',
+            title: 'DEX',
+          },
+        ],
+        desc: 'Trade confidentially on Trader Joe. Faster privacy swap is enabled by fast transaction finality on Avalanche.',
+        onPressItem,
+      },
+      {
+        privacyAppId: KEYS_PLATFORMS_SUPPORTED.trisolaris,
+        icon: <TrisolarisIcon2 />,
+        headerTitle: 'pTrisolaris',
+        headerSub: 'Private Trisolaris',
+        groupActions: [
+          {
+            id: 'AURORA',
+            title: 'Aurora',
+          },
+          {
+            id: 'DEX',
+            title: 'DEX',
+          },
+        ],
+        desc: 'Privacy Swap comes to Aurora ecosystem for the first time. Multiple AMMs for best-in-class execution, now with privacy.',
         onPressItem,
       },
     ];
   }, []);
+
   useFocusEffect(() => {
     const activeTabTrade = getActivedTab(ROOT_TAB_TRADE);
     if (activeTabTrade === TAB_SWAP_ID) {
-      dispatch(
-        actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
-      );
+      // dispatch(
+      //   actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
+      // );
+      // Default Buy/Sell Tab when navigate from Apps tab (pApps tab)???!!! (What?)
     }
   });
 

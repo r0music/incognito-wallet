@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 // eslint-disable-next-line import/no-cycle
 import LocalDatabase from '@utils/LocalDatabase';
 // eslint-disable-next-line import/no-cycle
@@ -24,7 +25,11 @@ import { listAllMasterKeyAccounts } from '@src/redux/selectors/masterKey';
 import { getPNodeBackLog } from '@services/api/device';
 // eslint-disable-next-line import/no-cycle
 import VirtualNodeService from '@services/VirtualNodeService';
+import convert from '@src/utils/convert';
+import BigNumber from 'bignumber.js';
+import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
 
+export const ERROR_MESSAGE_PRV_BALANCE = 'Insufficient PRV balance to cover network fee.';
 export const checkIfVerifyCodeIsExisting = async () => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -429,4 +434,48 @@ export const getNodeBLSKey = async (device, listAccount) => {
   }
 
   return { blsKey, account };
+};
+
+export const checkAccountBalanceForNode = async (device, listAccount) => {
+  let isValid = true;
+  let balance = true;
+  let errorMessage = undefined;
+  try {
+
+    // account = listAccount.find(item => device?.PaymentAddress && item.PaymentAddress === device?.PaymentAddress);
+    const accountWallet = findAccountFromListAccounts({
+      accounts: listAccount,
+      address: device?.PaymentAddress,
+    });
+    const wallet =  accountWallet.Wallet;
+
+    if (device.IsVNode || device.IsFundedUnstaked) {
+      balance = await device.balance(accountWallet, wallet);
+    // console.log('====================================');
+    // console.log('DEVICE: ', device.name || device.PaymentAddress);
+    // console.log('balance: ', balance);
+    // console.log('====================================');
+    const prvBalanceOriginal = convert.toNumber(balance) || 0;
+      if (new BigNumber(prvBalanceOriginal).isLessThan(MAX_FEE_PER_TX)) {
+        isValid = false;
+        errorMessage = ERROR_MESSAGE_PRV_BALANCE;
+      } else {
+      }
+    } else {
+      isValid = false;
+      errorMessage = 'vNode invalid';
+    }
+  } catch (error) {
+    console.log(error);
+    isValid = false;
+    errorMessage = error.message || 'Something went wrong';
+  } finally {
+  }
+
+  return {
+    device,
+    isValid,
+    errorMessage,
+    accountName: device.AccountName || device.Name || ''
+  };
 };

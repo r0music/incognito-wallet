@@ -4,6 +4,7 @@ import {
   MarketIcon,
   MoreIcon,
   TradeIcon,
+  PrivacyAppsIcon,
 } from '@components/Icons';
 import TabAssets from '@screens/MainTabBar/features/Assets';
 import HomeLP from '@screens/MainTabBar/features/HomeLP';
@@ -15,6 +16,7 @@ import { isIOS } from '@src/utils/platform';
 import React from 'react';
 import { Dimensions, Text } from 'react-native';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+import TabPrivacyApps from '@screens/MainTabBar/features/PrivacyApps';
 import { styled } from './MainTabBar.styled';
 
 const { height } = Dimensions.get('window');
@@ -51,13 +53,13 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarLabel: <Text style={styled.label}>Wallet</Text>,
       },
     },
-    // PrivacyApps: {
-    //   screen: TabPrivacyApps,
-    //   navigationOptions: {
-    //     tabBarIcon: ({ focused }) => <PrivacyAppsIcon active={focused} />,
-    //     tabBarLabel: <Text style={styled.label}>Apps</Text>,
-    //   },
-    // },
+    PrivacyApps: {
+      screen: TabPrivacyApps,
+      navigationOptions: {
+        tabBarIcon: ({ focused }) => <PrivacyAppsIcon active={focused} />,
+        tabBarLabel: <Text style={styled.label}>Apps</Text>,
+      },
+    },
     More: {
       screen: More,
       navigationOptions: {

@@ -45,6 +45,8 @@ const Node = (props) => {
     withdrawTxs,
     handleWithdrawAll,
     handlePressWithdraw,
+    loadingWithrawAll
+    
   } = props;
 
   const renderNode = ({ item, index }) => {
@@ -156,7 +158,7 @@ const Node = (props) => {
       <View fullFlex borderTop paddingHorizontal>
         {renderContent()}
         {renderModalActionsForNodePrevSetup()}
-        <DialogLoader loading={loading} />
+        <DialogLoader loading={loading || loadingWithrawAll} />
       </View>
       <BottomBar />
     </>
