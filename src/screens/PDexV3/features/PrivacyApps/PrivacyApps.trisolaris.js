@@ -1,42 +1,42 @@
 import TabSwap, {
   actionReset,
-  actionSetDefaultExchange,
   KEYS_PLATFORMS_SUPPORTED,
   SWAP_DEFAULT_FAIR,
+  actionSetDefaultExchange,
 } from '@screens/PDexV3/features/Swap';
 import Header from '@src/components/Header';
 import { withLayout_2 } from '@src/components/Layout';
 import { ANALYTICS } from '@src/constants';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 
-const PrivacyAppsPancake = () => {
+const PrivacyAppsTrisolaris = () => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.PANCAKE));
+  React.useEffect(() => {
+    dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.TRISOLARIS));
     dispatch(actionReset());
     dispatch(
       actionSetDefaultExchange({
         isPrivacyApp: true,
-        exchange: KEYS_PLATFORMS_SUPPORTED.pancake,
+        exchange: KEYS_PLATFORMS_SUPPORTED.trisolaris,
       }),
     );
   }, []);
 
   return (
     <>
-      <Header title="pPancakeSwap" accountSelectable />
+      <Header title="pTrisolaris" accountSelectable />
       <TabSwap
         isPrivacyApp
-        defaultPair={SWAP_DEFAULT_FAIR.PANCAKE}
-        exchange={KEYS_PLATFORMS_SUPPORTED.pancake}
+        defaultPair={SWAP_DEFAULT_FAIR.TRISOLARIS}
+        exchange={KEYS_PLATFORMS_SUPPORTED.trisolaris}
       />
     </>
   );
 };
 
-PrivacyAppsPancake.propTypes = {};
+PrivacyAppsTrisolaris.propTypes = {};
 
-export default withLayout_2(React.memo(PrivacyAppsPancake));
+export default withLayout_2(React.memo(PrivacyAppsTrisolaris));

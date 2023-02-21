@@ -30,7 +30,12 @@ export const getMaxAmount = ({ selectedPrivacy, isUseTokenFee, totalFee }) => {
   };
 };
 
-export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivacyData, prvBalanceInfo) => {
+export const getFeeData = (
+  estimateFee,
+  selectedPrivacyData,
+  childSelectedPrivacyData,
+  prvBalanceInfo,
+) => {
   const {
     actived,
     minFeePTokenText,
@@ -85,12 +90,10 @@ export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivac
     totalFee,
   });
   let titleBtnSubmit = 'Send';
-  if (isNeedFaucet) {
-    // titleBtnSubmit = 'Faucet';
-    titleBtnSubmit = 'Send';
-  } else if (isFetching) {
+  if (isFetching) {
     titleBtnSubmit = 'Calculating fee...';
   }
+
   const feeText = format.toFixed(
     convert.toHumanAmount(fee, feePDecimals),
     feePDecimals,
@@ -148,7 +151,7 @@ export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivac
     isBTC,
     hasMultiLevel: userFees?.hasMultiLevel,
     editableInput,
-    totalFees
+    totalFees,
   };
 };
 
@@ -165,7 +168,7 @@ export const getTotalFee = ({
     const userFees = isUsedPRVFee
       ? userFeesData?.PrivacyFees
       : userFeesData?.TokenFees;
-    userFee = (Number(userFees?.Level1) || 0);
+    userFee = Number(userFees?.Level1) || 0;
     const extraFee = Number(userFeesData?.EstimateReceivedAmount?.Fee || 0);
     if (hasMultiLevel && fast2x) {
       userFee = Number(userFees?.Level2);

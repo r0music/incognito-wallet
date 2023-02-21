@@ -12,11 +12,14 @@ import { useNavigation } from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { change, Field } from 'redux-form';
 import { throttle } from 'lodash';
-import {InterSwapMsg} from '@screens/PDexV3/features/Swap/Swap.simpleTab';
+import { InterSwapMsg } from '@screens/PDexV3/features/Swap/Swap.simpleTab';
 import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
 import { formConfigs } from './Swap.constant';
 import SwapDetails from './Swap.details';
-import { maxAmountValidatorForSellInput, maxAmountValidatorForPRVSellInput } from './Swap.utils';
+import {
+  maxAmountValidatorForSellInput,
+  maxAmountValidatorForPRVSellInput,
+} from './Swap.utils';
 import FeeError from './Swap.feeError';
 
 import {
@@ -27,7 +30,7 @@ import {
   swapInfoSelector,
   platformSelectedSelector,
   feetokenDataSelector,
-  getTotalFeePRVSelector
+  getTotalFeePRVSelector,
 } from './Swap.selector';
 import {
   actionEstimateTrade,
@@ -104,7 +107,7 @@ const SwapInputsGroup = React.memo(() => {
         navigation,
         swapInfo,
         inputValue,
-        privacyPRVInfo
+        privacyPRVInfo,
       ),
     [
       sellInputAmount?.originalAmount,
@@ -116,7 +119,7 @@ const SwapInputsGroup = React.memo(() => {
       navigation,
       buyInputAmount?.originalAmount,
       buyInputAmount?.availableOriginalAmount,
-      privacyPRVInfo
+      privacyPRVInfo,
     ],
   );
 
@@ -163,7 +166,7 @@ const SwapInputsGroup = React.memo(() => {
         swapInfo,
         inputValue,
         privacyPRVInfo,
-        totalFeePRV
+        totalFeePRV,
       ),
     [
       sellInputAmount?.originalAmount,
@@ -176,7 +179,7 @@ const SwapInputsGroup = React.memo(() => {
       buyInputAmount?.originalAmount,
       buyInputAmount?.availableOriginalAmount,
       privacyPRVInfo,
-      totalFeePRV
+      totalFeePRV,
     ],
   );
 
