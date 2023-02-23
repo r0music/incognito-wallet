@@ -408,6 +408,16 @@ export const findAccountFromListAccounts = ({ accounts, address }) => {
   return accounts.find(item => address && (item.PaymentAddress === address || item.PaymentAddressV1 === address));
 };
 
+const isPRVEnoughByDevice = async (device, accountWallet, wallet) => {
+  const PRVBalance = await device.balance(accountWallet, wallet);
+  const prvBalanceOriginal = convert.toNumber(PRVBalance) || 0;
+  if (new BigNumber(prvBalanceOriginal).isLessThan(MAX_FEE_PER_TX)) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
 export const getNodeBLSKey = async (device, listAccount) => {
   let blsKey = '';
   let account = null;
@@ -438,10 +448,8 @@ export const getNodeBLSKey = async (device, listAccount) => {
 
 export const checkAccountBalanceForNode = async (device, listAccount) => {
   let isValid = true;
-  let balance = true;
   let errorMessage = undefined;
   try {
-
     // account = listAccount.find(item => device?.PaymentAddress && item.PaymentAddress === device?.PaymentAddress);
     const accountWallet = findAccountFromListAccounts({
       accounts: listAccount,
@@ -449,22 +457,32 @@ export const checkAccountBalanceForNode = async (device, listAccount) => {
     });
     const wallet =  accountWallet.Wallet;
 
-    if (device.IsVNode || device.IsFundedUnstaked) {
-      balance = await device.balance(accountWallet, wallet);
-    // console.log('====================================');
-    // console.log('DEVICE: ', device.name || device.PaymentAddress);
-    // console.log('balance: ', balance);
-    // console.log('====================================');
-    const prvBalanceOriginal = convert.toNumber(balance) || 0;
-      if (new BigNumber(prvBalanceOriginal).isLessThan(MAX_FEE_PER_TX)) {
-        isValid = false;
-        errorMessage = ERROR_MESSAGE_PRV_BALANCE;
+    //Vnode case
+    if (device.IsVNode) {
+      if (device.IsFundedUnstaked) {
+        if (!isPRVEnoughByDevice(device, accountWallet, wallet)) {
+          isValid = false;
+          errorMessage = ERROR_MESSAGE_PRV_BALANCE;
+        }
       } else {
+        isValid = false;
+        errorMessage = 'vNode IsFundedUnstaked';
+      }
+    } else if (device.IsPNode ) {
+      //Pnode case
+      if (device?.IsFundedStakeWithdrawable) {
+        if (!isPRVEnoughByDevice(device, accountWallet, wallet)) {
+          isValid = false;
+          errorMessage = ERROR_MESSAGE_PRV_BALANCE;
+        } 
+      } else {
+        isValid = false;
+        errorMessage = 'pNode IsFundedStakeWithdrawable';
       }
     } else {
       isValid = false;
-      errorMessage = 'vNode invalid';
-    }
+      errorMessage = 'node invalid';
+    } 
   } catch (error) {
     console.log(error);
     isValid = false;
