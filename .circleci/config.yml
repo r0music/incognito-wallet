@@ -340,7 +340,7 @@ workflows:
           filters:
             branches:
               only:
-                - inc-store
+                - build-store
       - generate_data:
           requires:
             - checkout_code
