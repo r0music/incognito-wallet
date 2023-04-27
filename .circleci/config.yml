@@ -163,7 +163,7 @@ jobs:
       - run: yarn deployIOS:next3
       - run: curl -X POST -H 'Content-type:application/json' --data '{"text":"'"Deploy iOS $APP_VERSION next3 release successfully! $LAST_COMMIT_MESSAGE"'"}' $SLACK_HOOK
   push_android_production:
-    resource_class: "2xlarge"
+    resource_class: "xlarge"
     executor:
       name: rn/linux_android
     steps:
@@ -174,7 +174,7 @@ jobs:
       - run: yarn deployAndroid:prod
       - run: curl -X POST -H "Content-type:application/json" --data '{"text":"'"Deploy Android $APP_VERSION production successfully! $LAST_COMMIT_MESSAGE"'"}' $SLACK_HOOK
   push_ios_production:
-    resource_class: "2xlarge"
+    resource_class: "xlarge"
     executor:
       name: rn/linux_android
     steps:
@@ -185,7 +185,7 @@ jobs:
       - run: yarn deployIOS:prod
       - run: curl -X POST -H 'Content-type:application/json' --data '{"text":"'"Deploy iOS $APP_VERSION production successfully! $LAST_COMMIT_MESSAGE"'"}' $SLACK_HOOK
   push_play_store:
-    resource_class: "2xlarge"
+    resource_class: "xlarge"
     executor:
       name: rn/linux_android
     steps:
@@ -198,7 +198,7 @@ jobs:
       - run: cp android/app/build/outputs/apk/release/app-release.apk ./$APP_VERSION.apk
       - run: bash .circleci/slack-upload.sh -f ./$APP_VERSION.apk -c '$SLACK_CHANNEL' -s $SLACK_API_KEY -n "$APP_VERSION" -x "\"$LAST_COMMIT_MESSAGE\""
   push_app_store:
-    resource_class: "large"
+#    resource_class: "large"
     macos:
       xcode: 13.1.0
     steps:
