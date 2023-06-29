@@ -155,22 +155,26 @@ export const orderBookSelector = createSelector(
 export const detailsSelector = createSelector(
   poolSelectedSelector,
   (pool) => {
-    const {
-      volumeToAmountStr,
-      poolSizeStr,
-    } = pool;
-    const factories = [
-      {
-        label: 'Trading volume',
-        value: volumeToAmountStr,
-      },
-      {
-        label: 'Pool size',
-        value: poolSizeStr,
-      },
-    ];
+    // const {
+    //   volumeToAmountStr,
+    //   poolSizeStr,
+    // } = pool;
+    // const factories = [
+    //   {
+    //     label: 'Trading volume',
+    //     value: volumeToAmountStr,
+    //   },
+    //   {
+    //     label: 'Pool size',
+    //     value: poolSizeStr,
+    //   },
+    // ];
+    // return {
+    //   factories,
+    // };
+
     return {
-      factories,
+      factories: []
     };
   },
 );
