@@ -107,6 +107,12 @@ const initialState = {
       feeToken: {},
       error: null,
     },
+    [KEYS_PLATFORMS_SUPPORTED.abcde]: { //TODO
+      // abcde
+      feePrv: {},
+      feeToken: {},
+      error: null,
+    },
   },
   buytoken: '',
   selltoken: '',

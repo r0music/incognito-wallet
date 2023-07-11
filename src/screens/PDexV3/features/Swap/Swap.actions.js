@@ -112,6 +112,7 @@ import {
   getExchangeSupportByPlatformId,
   findTokenJoeByIdSelector,
   findTokenTrisolarisByIdSelector,
+  findTokenABCDEByIdSelector, //TODO
   getEsimateCountSelector,
   swapFormErrorSelector,
   findTokenInterSwapByIdSelector,
@@ -888,6 +889,82 @@ export const actionHandleInjectEstDataForTrisolaris =
     }
   };
 
+  //TODO
+  export const actionHandleInjectEstDataForABCDE =
+  () => async (dispatch, getState) => {
+    try {
+      const state = getState();
+      let feeData = feetokenDataSelector(state);
+      const isUseTokenFee = feeData?.abcde?.isUseTokenFee;
+      const inputAmount = inputAmountSelector(state);
+      let sellInputToken, buyInputToken, inputToken, inputPDecimals;
+      sellInputToken = inputAmount(formConfigs.selltoken);
+      buyInputToken = inputAmount(formConfigs.buytoken);
+      const { tokenId: selltoken } = sellInputToken;
+      const { tokenId: buytoken } = buyInputToken;
+      if (isUseTokenFee) {
+        await dispatch(actionSetFeeToken(selltoken));
+      } else {
+        await dispatch(actionSetFeeToken(PRV.id));
+      }
+      const { field, useMax } = feeData;
+      const getAbcdeTokenParamReq = findTokenABCDEByIdSelector(state);//TODO
+      const tokenSell = getAbcdeTokenParamReq(selltoken); //TODO
+      const tokenBuy = getAbcdeTokenParamReq(buytoken);//TODO
+      if (tokenSell == null || tokenBuy == null) {
+        throw 'This pair is not existed  on Trisolaris';
+      }
+      switch (field) {
+        case formConfigs.selltoken: {
+          inputPDecimals = tokenBuy.pDecimals;
+          inputToken = formConfigs.buytoken;
+          break;
+        }
+        case formConfigs.buytoken: {
+          inputPDecimals = tokenSell.pDecimals;
+          inputToken = formConfigs.selltoken;
+          break;
+        }
+        default:
+          break;
+      }
+      const {
+        maxGet,
+        minFeePRVFixed,
+        availableFixedSellAmountPRV,
+        minFeeTokenFixed,
+      } = feetokenDataSelector(state);
+
+      batch(() => {
+        if (useMax) {
+          dispatch(
+            change(
+              formConfigs.formName,
+              formConfigs.selltoken,
+              availableFixedSellAmountPRV,
+            ),
+          );
+        }
+        dispatch(
+          change(
+            formConfigs.formName,
+            inputToken,
+            maxGet ? maxGet.toString() : '',
+          ),
+        );
+        dispatch(
+          change(
+            formConfigs.formName,
+            formConfigs.feetoken,
+            isUseTokenFee ? minFeeTokenFixed : minFeePRVFixed,
+          ),
+        );
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
 export const actionHandleInjectEstDataForInterswap =
   () => async (dispatch, getState) => {
     try {
@@ -1041,6 +1118,16 @@ export const actionEstimateTrade =
       let network = getNetworkByExchange(defaultExchange);
       let estimateRawData;
       try {
+
+        console.log('[SwapService.getEstimateTradingFee]  ', {
+          amount: sellAmountStr,
+          fromToken: sellTokenId,
+          toToken: buyTokenId,
+          slippage: slippagetolerance.toString(),
+          network: network,
+          shardID: `${shardID}`,
+        });
+
         estimateRawData = await SwapService.getEstimateTradingFee({
           amount: sellAmountStr,
           fromToken: sellTokenId,
@@ -1237,6 +1324,18 @@ export const actionEstimateTrade =
               );
             }
             break;
+          case 'abcde':
+              {
+                job.push(
+                  dispatch(
+                    actionChangeEstimateData({
+                      [KEYS_PLATFORMS_SUPPORTED.abcde]: platformData, //TODO
+                    }),
+                  ),
+                );
+              }
+              break;
+            
           default:
             {
               job.push(
@@ -1450,6 +1549,7 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
   let joeTokens = [];
   let trisolarisTokens = [];
   let interswapTokens = [];
+  let abcdeTokens = []; //TODO
 
   try {
     const state = getState();
@@ -1513,6 +1613,9 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
 
         case KEYS_PLATFORMS_SUPPORTED.trisolaris:
           pairs = trisolarisTokens.map((token) => token.tokenId);
+          break;
+        case KEYS_PLATFORMS_SUPPORTED.abcde: //TODO
+          pairs = abcdeTokens.map((token) => token.tokenId);
           break;
         case KEYS_PLATFORMS_SUPPORTED.interswap:
           pairs = interswapTokens.map((token) => token.tokenId);
@@ -1773,6 +1876,9 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
         case KEYS_PLATFORMS_SUPPORTED.trisolaris:
           analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_TRISOLARIS;
           break;
+        case KEYS_PLATFORMS_SUPPORTED.abcde: //TODO
+          analytic = ANALYTICS.ANALYTIC_DATA_TYPE.TRADE_ABCDE;  //TODO
+          break;
         case KEYS_PLATFORMS_SUPPORTED.interswap:
           analytic = ANALYTICS.ANALYTIC_DATA_TYPE.INTER_SWAP;
           break;
@@ -1943,6 +2049,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       case KEYS_PLATFORMS_SUPPORTED.curve:
       case KEYS_PLATFORMS_SUPPORTED.spooky:
       case KEYS_PLATFORMS_SUPPORTED.joe:
+      case KEYS_PLATFORMS_SUPPORTED.abcde: //TODO
       case KEYS_PLATFORMS_SUPPORTED.trisolaris:
         {
           console.log(
@@ -2054,6 +2161,9 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
       case KEYS_PLATFORMS_SUPPORTED.trisolaris:
         callContracts.push(CALL_CONTRACT.TRISOLARIS_AURORA);
         break;
+      case KEYS_PLATFORMS_SUPPORTED.abcde:
+          callContracts.push(CALL_CONTRACT.ABCDE);
+          break;
       default:
         callContracts = [];
         break;
@@ -2243,6 +2353,9 @@ export const actionSwitchPlatform =
         case KEYS_PLATFORMS_SUPPORTED.trisolaris:
           await dispatch(actionHandleInjectEstDataForTrisolaris());
           break;
+        case KEYS_PLATFORMS_SUPPORTED.abcde: //TODO
+          await dispatch(actionHandleInjectEstDataForABCDE());//TODO
+          break;
         case KEYS_PLATFORMS_SUPPORTED.interswap:
           await dispatch(actionHandleInjectEstDataForInterswap());
           break;
@@ -2277,6 +2390,8 @@ export const actionGetMaxAmount = () => async (dispatch, getState) => {
     isUseTokenFee = feeData?.joe?.isUseTokenFee;
   } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.trisolaris) {
     isUseTokenFee = feeData?.trisolaris?.isUseTokenFee;
+  } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.abcde) { //TODO
+    isUseTokenFee = feeData?.abcde?.isUseTokenFee; //TODO
   } else if (platform.id === KEYS_PLATFORMS_SUPPORTED.interswap) {
     isUseTokenFee = feeData?.interswap?.isUseTokenFee;
   }

@@ -27,6 +27,7 @@ import {
   SPOOKY_SUPPORT_NETWORK,
   TRISOLARIS_SUPPORT_NETWORK,
   JOE_SUPPORT_NETWORK,
+  ABCDE_SUPPORT_NETWORK //TODO
 } from './Swap.types';
 
 export const minFeeValidator = (feetokenData, isFetching) => {
@@ -692,6 +693,9 @@ export const getNetworkByExchange = (exchange) => {
     case KEYS_PLATFORMS_SUPPORTED.trisolaris:
       network = 'aurora';
       break;
+    case KEYS_PLATFORMS_SUPPORTED.abcde: //TODO
+        network = 'abcde';  //TODO
+        break;
     default:
       network = 'inc';
       break;
@@ -720,6 +724,8 @@ export const getSupportNetworkByPlatform = (platform) => {
     case KEYS_PLATFORMS_SUPPORTED.trisolaris:
       return TRISOLARIS_SUPPORT_NETWORK;
 
+    case KEYS_PLATFORMS_SUPPORTED.abcde: //TODO
+        return ABCDE_SUPPORT_NETWORK;
     default:
       return [];
   }

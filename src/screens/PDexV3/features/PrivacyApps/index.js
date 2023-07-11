@@ -6,3 +6,4 @@ export { default as PrivacyAppsUniEther } from './PrivacyApps.uniEther';
 export { default as PrivacyAppsSpooky } from './PrivacyApps.spooky';
 export { default as PrivacyAppsTraderJoe } from './PrivacyApps.traderJoe';
 export { default as PrivacyAppsTrisolaris } from './PrivacyApps.trisolaris';
+export { default as PrivacyAppsABCDE } from './PrivacyApps.abcde'; //TODO

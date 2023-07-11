@@ -114,6 +114,7 @@ export const KEYS_PLATFORMS_SUPPORTED = {
   joe: 'joe',
   trisolaris: 'trisolaris',
   interswap: 'interswap',
+  abcde: 'abcde' //TODO
 };
 
 export const KEYS_PLATFORMS_SUPPORTED_NETWORKS = {
@@ -133,6 +134,7 @@ export const NETWORK_NAME_SUPPORTED = {
   AVALANCHE: 'avax',
   NEAR: 'near',
   INTER_SWAP: 'interswap',
+  abcde: 'abcde', //TODO
 };
 
 export const PLATFORMS_SUPPORTED = [
@@ -201,6 +203,13 @@ export const PLATFORMS_SUPPORTED = [
     visible: true,
     isSelected: true,
   },
+  {
+    id: KEYS_PLATFORMS_SUPPORTED.abcde, //TODO
+    title: 'ABCDE pools', //TODO
+    desc: '',
+    visible: true,
+    isSelected: true,
+  },
 ];
 
 const isMainnet = global.isMainnet;
@@ -231,6 +240,11 @@ export const CALL_CONTRACT = {
   TRISOLARIS_AURORA: isMainnet
     ? '0x6e6Cc30856eB766557418d58af6ED8eaB767940d'
     : '0xA17b90be4A5F79076c770384332515359D2F6A88',
+
+  //TODO
+  ABCDE: isMainnet
+    ? ''
+    : '',
 };
 
 export const getExchangeDataWithCallContract = ({
@@ -345,5 +359,12 @@ export const SWAP_DEFAULT_FAIR = {
       '9641025869e7e98e72fa746cba0c3b3dc205c743528f7c978c5b6dd8433472d9', //AURORA
     buytoken:
       '96de12b4e6ede8795e1938b47fc12da2c5983722e731d2ada185641dd494cd78', //USDC (Aurora)
+  },
+  //TODO
+  ABCDE: {
+    selltoken:
+      '545ef6e26d4d428b16117523935b6be85ec0a63e8c2afeb0162315eb0ce3d151', //USDC (UT)
+    buytoken:
+      '3ee31eba6376fc16cadb52c8765f20b6ebff92c0b1c5ab5fc78c8c25703bb19e', //ETH (UT)
   },
 };

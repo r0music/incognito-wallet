@@ -9,6 +9,7 @@ const FANTOM_NETWORK = 4;
 const AURORA_NETWORK = 5;
 const AVALANCHE_NETWORK = 6;
 const NEAR_NETWORK = 7; // TO DO, change after
+const abcde_NETWORK = 8; // TO DO, change after
 
 export const MAIN_NETWORK = {
   ETH: ETH_NETWORK,
@@ -18,6 +19,7 @@ export const MAIN_NETWORK = {
   AURORA: AURORA_NETWORK,
   AVALANCHE: AVALANCHE_NETWORK,
   NEAR: NEAR_NETWORK,
+  abcde: abcde_NETWORK, //TODO
 };
 
 export type EXCHANGES_NETWROK_ID =
@@ -28,7 +30,8 @@ export type EXCHANGES_NETWROK_ID =
   | typeof FANTOM_NETWORK
   | typeof AURORA_NETWORK
   | typeof AVALANCHE_NETWORK
-  | typeof NEAR_NETWORK;
+  | typeof NEAR_NETWORK
+  | typeof abcde_NETWORK; //TODO
 
 export type KeysPlatformSupported =
   | 'incognito'
@@ -39,7 +42,8 @@ export type KeysPlatformSupported =
   | 'spooky'
   | 'joe'
   | 'trisolaris'
-  | 'interswap';
+  | 'interswap'
+  | 'abcde';
 
 type NETWORK_IDS_MAPPING_TYPE = {
   [key: string]: EXCHANGES_NETWROK_ID;
@@ -53,6 +57,7 @@ export const NETWORK_IDS_MAPPING: NETWORK_IDS_MAPPING_TYPE = {
   [NETWORK_NAME_SUPPORTED.FANTOM]: FANTOM_NETWORK,
   [NETWORK_NAME_SUPPORTED.AURORA]: AURORA_NETWORK,
   [NETWORK_NAME_SUPPORTED.AVALANCHE]: AVALANCHE_NETWORK,
+  [NETWORK_NAME_SUPPORTED.abcde]: abcde_NETWORK,
 };
 
 export interface IGroupNetwork {
@@ -70,7 +75,7 @@ export type InterSwapData = {
     logoIcon: string;
     tradePath: string | string[];
   }[];
-}
+};
 
 export type ExchangeData = {
   amountIn: number;
@@ -194,3 +199,5 @@ export const JOE_SUPPORT_NETWORK = [
   CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX,
   CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.AVAX_ERC20,
 ];
+
+export const ABCDE_SUPPORT_NETWORK = [];

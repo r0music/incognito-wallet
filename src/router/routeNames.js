@@ -209,6 +209,7 @@ export default {
   PrivacyAppsSpooky: 'PrivacyAppsSpooky',
   PrivacyAppsTraderJoe: 'PrivacyAppsTraderJoe',
   PrivacyAppsTrisolaris: 'PrivacyAppsTrisolaris',
+  PrivacyAppsABCDE: 'PrivacyAppsABCDE', //TODO
   MarketSearchCoins: 'MarketSearchCoins',
   HomeLP: 'TabHomeLP',
   ConvertToUnifiedToken: 'ConvertToUnifiedToken',

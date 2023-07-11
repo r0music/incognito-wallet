@@ -157,6 +157,7 @@ import {
   PrivacyAppsSpooky,
   PrivacyAppsTraderJoe,
   PrivacyAppsTrisolaris,
+  PrivacyAppsABCDE
 } from '@screens/PDexV3/features/PrivacyApps';
 import MarketSearchCoins from '@screens/MainTabBar/features/Market/Market.searchCoins';
 import HomeLP from '@screens/MainTabBar/features/HomeLP';
@@ -378,6 +379,10 @@ const pDexV3Routes = [
   {
     screen: PrivacyAppsTrisolaris,
     name: routeNames.PrivacyAppsTrisolaris,
+  },
+  {
+    screen: PrivacyAppsABCDE, //TODO
+    name: routeNames.PrivacyAppsABCDE, //TODO
   },
   {
     screen: MarketSearchCoins,

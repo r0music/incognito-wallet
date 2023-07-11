@@ -213,6 +213,8 @@ const convertAppNameToPlatformSupported = (
       return 'trisolaris';
     case 'interswap':
       return 'interswap';
+    case 'abcde': //TODO
+      return 'abcde'; //TODO
     default:
       console.log(
         `[convertAppNameToPlatformSupported] appName NOT FOUND, appName = ${appName}. Return default: incognito `,

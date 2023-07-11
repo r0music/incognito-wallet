@@ -118,3 +118,7 @@ export { default as JoeIcon2 } from './icon.joe2';
 
 export { default as TrisolarisIcon } from './icon.trisolaris';
 export { default as TrisolarisIcon2 } from './icon.trisolaris2';
+
+
+export { default as AabcdeIcon } from './icon.abcde'; //TODO
+export { default as AbcdeIcon2 } from './icon.abcde2'; //TODO

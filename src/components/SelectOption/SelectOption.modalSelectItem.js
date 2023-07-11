@@ -15,6 +15,7 @@ import {
   SpoonkyIcon,
   JoeIcon,
   TrisolarisIcon,
+  AabcdeIcon //TODO
 } from '@src/components/Icons';
 import { KEYS_PLATFORMS_SUPPORTED } from '@src/screens/PDexV3/features/Swap';
 import { isEmpty } from 'lodash';
@@ -96,6 +97,9 @@ export const mapperIcon = ({ id }) => {
             break;
         case KEYS_PLATFORMS_SUPPORTED.trisolaris:
             icon = <TrisolarisIcon style={styled.icon} />;
+            break;
+        case KEYS_PLATFORMS_SUPPORTED.abcde: //TODO
+            icon = <AabcdeIcon style={styled.icon} />; //TODO
             break;
         default:
             break;

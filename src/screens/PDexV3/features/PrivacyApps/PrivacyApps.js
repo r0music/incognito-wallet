@@ -9,6 +9,7 @@ import {
   SpoonkyIcon2,
   JoeIcon2,
   TrisolarisIcon2,
+  AbcdeIcon2 //TODO
 } from '@src/components/Icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { FONT } from '@src/styles';
@@ -60,6 +61,9 @@ const PrivacyApps = () => {
       case KEYS_PLATFORMS_SUPPORTED.trisolaris:
         navigation.navigate(routeNames.PrivacyAppsTrisolaris);
         break;
+      case KEYS_PLATFORMS_SUPPORTED.abcde: //TODO
+          navigation.navigate(routeNames.PrivacyAppsABCDE); //TODO
+          break;
       default:
         break;
     }
@@ -194,6 +198,24 @@ const PrivacyApps = () => {
           },
         ],
         desc: 'Privacy Swap comes to Aurora ecosystem for the first time. Multiple AMMs for best-in-class execution, now with privacy.',
+        onPressItem,
+      },
+      {
+        privacyAppId: KEYS_PLATFORMS_SUPPORTED.abcde, //TODO
+        icon: <AbcdeIcon2 />,
+        headerTitle: 'pabcde',
+        headerSub: 'Private abcde',
+        groupActions: [
+          {
+            id: 'ABCDE',
+            title: 'abcde',
+          },
+          {
+            id: 'DEX',
+            title: 'DEX',
+          },
+        ],
+        desc: 'Description TODO',
         onPressItem,
       },
     ];

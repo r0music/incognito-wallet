@@ -102,6 +102,12 @@ export const trisolarisPairsSelector = createSelector(
   ({ trisolarisTokens }) => trisolarisTokens || [],
 );
 
+//TODO
+export const abcdePairsSelector = createSelector(
+  swapSelector,
+  ({ abcdeTokens }) => abcdeTokens || [],
+);
+
 export const interswapPairsSelector = createSelector(
   swapSelector,
   ({ interswapTokens }) => interswapTokens || [],
@@ -156,6 +162,17 @@ export const findTokenTrisolarisByIdSelector = createSelector(
   (trisolarisTokens) =>
     memoize((tokenID) =>
       trisolarisTokens.find(
+        (t) => t?.tokenID === tokenID || t?.tokenId === tokenID,
+      ),
+    ),
+);
+
+//TODO
+export const findTokenABCDEByIdSelector = createSelector(
+  abcdePairsSelector,
+  (abcdeTokens) =>
+    memoize((tokenID) =>
+    abcdeTokens.find(
         (t) => t?.tokenID === tokenID || t?.tokenId === tokenID,
       ),
     ),
@@ -645,6 +662,7 @@ export const feetokenDataSelector = createSelector(
           case KEYS_PLATFORMS_SUPPORTED.spooky:
           case KEYS_PLATFORMS_SUPPORTED.joe:
           case KEYS_PLATFORMS_SUPPORTED.trisolaris:
+          case KEYS_PLATFORMS_SUPPORTED.abcde: //TODO
             tradePathStr = tokenRoute || '';
             break;
           default:
@@ -790,6 +808,16 @@ export const feeTypesSelector = createSelector(
       }
 
       case KEYS_PLATFORMS_SUPPORTED.trisolaris: {
+        types = [
+          {
+            tokenId: feeToken.tokenId,
+            symbol: feeToken.symbol,
+            actived: feetoken === feetoken,
+          },
+        ];
+        break;
+      }
+      case KEYS_PLATFORMS_SUPPORTED.abcde: { //TODO
         types = [
           {
             tokenId: feeToken.tokenId,
@@ -1288,6 +1316,8 @@ export const getPairDefaultTokentListSelector = createSelector(
     spoonkyPairsSelector,
     joePairsSelector,
     trisolarisPairsSelector,
+    interswapPairsSelector,
+    abcdePairsSelector,
   ],
   (
     defaultExchange,
@@ -1300,6 +1330,7 @@ export const getPairDefaultTokentListSelector = createSelector(
     joeTokens,
     trisolarisTokens,
     interswapTokens,
+    abcdeswapTokens
   ) => {
     if (!defaultExchange) return [];
     if (isPrivacyApp) {
@@ -1317,6 +1348,8 @@ export const getPairDefaultTokentListSelector = createSelector(
           return joeTokens;
         case KEYS_PLATFORMS_SUPPORTED.trisolaris:
           return trisolarisTokens;
+        case KEYS_PLATFORMS_SUPPORTED.abcde: //TODO
+            return abcdeswapTokens; //TODO
         default:
           return [];
       }
