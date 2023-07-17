@@ -11,7 +11,6 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		1F298112246D5724000EE1C6 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB61A68108700A75B9A /* Info.plist */; };
 		1F3B2CDE247FC9FB00F8A129 /* Helvetica-Neue-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F1BF8E22472DFF700A2DA95 /* Helvetica-Neue-Bold.otf */; };
 		1F3B2CDF247FC9FB00F8A129 /* Helvetica-Neue-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F1BF8E52472DFF800A2DA95 /* Helvetica-Neue-Medium.otf */; };
 		1F3B2CE0247FC9FB00F8A129 /* Helvetica-Neue.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F1BF8DE2472DCA200A2DA95 /* Helvetica-Neue.otf */; };
@@ -42,7 +41,6 @@
 		FD6F21E124750AA0000CC07D /* BridgeLottie.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6F21E024750AA0000CC07D /* BridgeLottie.swift */; };
 		FE57448622F97A3700F2A2BC /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE57448522F97A3700F2A2BC /* NetworkExtension.framework */; };
 		FE5C9FA82355D46900AC6E90 /* libreact-native-netinfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5C9FA72355D46900AC6E90 /* libreact-native-netinfo.a */; };
-		FE5C9FB52355EE0100AC6E90 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4BA287542ADF445498FC2188 /* MaterialIcons.ttf */; };
 		FE86096522D747230050666A /* libFirebaseCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE86096422D747230050666A /* libFirebaseCore.a */; };
 		FED68302235DBC6A002F1A7C /* autonomous_config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE6F886022DC3B510009C5AA /* autonomous_config.plist */; };
 		FEEBD6BF2355AD57006EFECD /* AutonomousZMQ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; };
@@ -585,10 +583,8 @@
 				1F3B2CE8247FC9FB00F8A129 /* SF-Pro-Display-MediumItalic.otf in Resources */,
 				1F3B2CE9247FC9FB00F8A129 /* SF-Pro-Display-Regular.otf in Resources */,
 				1F3B2CEA247FC9FB00F8A129 /* SF-Pro-Display-RegularItalic.otf in Resources */,
-				FE5C9FB52355EE0100AC6E90 /* MaterialIcons.ttf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				FED68302235DBC6A002F1A7C /* autonomous_config.plist in Resources */,
-				1F298112246D5724000EE1C6 /* Info.plist in Resources */,
 				712C447B244313E700A3CBA6 /* GoogleService-Info.plist in Resources */,
 				71ACEF372477D8CE003AE3E3 /* Images.xcassets in Resources */,
 			);

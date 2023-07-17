@@ -83,11 +83,11 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress, showInf
               { fontFamily: FONT.NAME.specialRegular }
             ]}
           />
-          {/* <NormalText
+          <NormalText
             style={[styles.greyText, { color: balance.changeColor }]}
             containerStyle={styles.containerStyle}
             text={balance.changeStr}
-          /> */}
+          />
         </View>
         {!hideStar && (
           <TouchableOpacity style={styles.iconStar} onPress={() => handleToggleFollowToken(item)}>
