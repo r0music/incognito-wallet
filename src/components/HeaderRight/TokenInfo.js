@@ -113,7 +113,7 @@ class TokenInfo extends Component {
               {
                 link
                   ? (
-                    <TouchableOpacity style={tokenInfoStyle.link} onPress={() => linkingService.openUrl(link)}>
+                    <TouchableOpacity style={tokenInfoStyle.link} onPress={() => linkingService.openUrl(link + '?from=incognitochain')}>
                       {renderValue(value, multiline, tokenInfoStyle.linkText)}
                     </TouchableOpacity>
                   )
@@ -154,7 +154,7 @@ class TokenInfo extends Component {
       { label: 'Coin supply', value: incognitoTotalSupply ? formatUtil.amount(incognitoTotalSupply, pDecimals) : undefined },
       { label: 'Balance', value: formatUtil.amount(amount, pDecimals) },
       { label: 'Coin ID', value: tokenId, copyable: true },
-      { label: 'Contract ID', value: contractId, copyable: true, link: isBep20Token ? `${CONSTANT_CONFIGS.BSCSCAN_URL}/token/${contractId}`: `${CONSTANT_CONFIGS.ETHERSCAN_URL}/token/${contractId}` },
+      { label: 'Contract ID', value: contractId, copyable: true, link: isBep20Token ? `${CONSTANT_CONFIGS.BSCSCAN_URL}/token/${contractId}`: `${CONSTANT_CONFIGS.ETHERSCAN_URL}/address/${contractId}` },
       { label: 'Owner address', value: incognitoInfo?.showOwnerAddress ? incognitoInfo?.ownerAddress : undefined, copyable: true  },
       { label: 'Owner email', value: incognitoInfo?.ownerEmail, copyable: true  },
       { label: 'Owner website', value: incognitoInfo?.ownerWebsite, link: incognitoInfo?.ownerWebsite, copyable: true  },
