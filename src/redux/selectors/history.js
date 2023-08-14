@@ -264,7 +264,7 @@ export const mappingTxPortalSelector = createSelector(
       statusColor,
       statusDetail,
       inchainTx: inchainTxId ? `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${inchainTxId}` : '',
-      outchainTx: externalTxID ? `${CONSTANT_CONFIGS.BTC_EXPLORER_URL}/tx/${externalTxID}` : '',
+      outchainTx: externalTxID ? `${CONSTANT_CONFIGS.BTC_EXPLORER_URL}/transaction/${externalTxID}` : '',
     };
 
     if (!isShieldTx) {
@@ -670,7 +670,7 @@ export const historyDetailFactoriesSelector = createSelector(
             value: outChainTx,
             disabled: !outChainTx,
             openUrl: !!outChainTx,
-            handleOpenUrl: () => LinkingService.openUrlInSide(outChainTx),
+            handleOpenUrl: () => LinkingService.openUrlInSide(outChainTx + '?from=incognitochain'),
           },
           {
             label: 'Contract',
@@ -779,7 +779,7 @@ export const historyDetailFactoriesSelector = createSelector(
             value: outChainTx,
             disabled: !outChainTx,
             openUrl: !!outChainTx,
-            handleOpenUrl: () => LinkingService.openUrlInSide(outChainTx),
+            handleOpenUrl: () => LinkingService.openUrlInSide(outChainTx + '?from=incognitochain'),
           },
           {
             label: 'Contract',
@@ -867,7 +867,7 @@ export const historyDetailFactoriesSelector = createSelector(
             value: outchainTx,
             disabled: !outchainTx,
             openUrl: !!outchainTx,
-            handleOpenUrl: () => LinkingService.openUrlInSide(outchainTx),
+            handleOpenUrl: () => LinkingService.openUrlInSide(outchainTx + '?from=incognitochain'),
           },
           {
             label: 'Coin',
@@ -899,7 +899,6 @@ export const historyDetailFactoriesSelector = createSelector(
           statusDetail,
           txId,
         } = tx;
-
         return [
           {
             label: 'Unshield',
@@ -960,7 +959,7 @@ export const historyDetailFactoriesSelector = createSelector(
             value: outchainTx,
             disabled: !outchainTx,
             openUrl: !!outchainTx,
-            handleOpenUrl: () => LinkingService.openUrlInSide(outchainTx),
+            handleOpenUrl: () => LinkingService.openUrlInSide(outchainTx + '?from=incognitochain'),
           },
           {
             label: 'Coin',

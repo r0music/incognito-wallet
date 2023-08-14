@@ -49,7 +49,7 @@ const enhance = (WrappedComp) => (props) => {
       tokenInfo?.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20
     ) {
-      return `${CONSTANT_CONFIGS.ETHERSCAN_URL}/token/${tokenInfo?.contractId}`;
+      return `${CONSTANT_CONFIGS.ETHERSCAN_URL}/address/${tokenInfo?.contractId}?from=incognitochain`;
     }
     if (
       tokenInfo?.isBep2Token ||
@@ -57,22 +57,22 @@ const enhance = (WrappedComp) => (props) => {
       tokenInfo?.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20
     ) {
-      return `${CONSTANT_CONFIGS.BSCSCAN_URL}/token/${tokenInfo?.contractId}`;
+      return `${CONSTANT_CONFIGS.BSCSCAN_URL}/address/${tokenInfo?.contractId}?from=incognitochain`;
     }
     if (tokenInfo?.isPolygonErc20Token || tokenInfo?.isMATIC) {
-      return `${CONSTANT_CONFIGS.POLYGONSCAN_URL}/token/${tokenInfo?.contractId}`;
+      return `${CONSTANT_CONFIGS.POLYGONSCAN_URL}/address/${tokenInfo?.contractId}?from=incognitochain`;
     }
     if (tokenInfo?.isFantomErc20Token || tokenInfo?.isFTM) {
-      return `${CONSTANT_CONFIGS.FANTOMSCAN_URL}/token/${tokenInfo?.contractId}`;
+      return `${CONSTANT_CONFIGS.FANTOMSCAN_URL}/address/${tokenInfo?.contractId}?from=incognitochain`;
     }
     if (tokenInfo?.isAvaxErc20Token || tokenInfo?.isAVAX) {
-      return `${CONSTANT_CONFIGS.AVAXSCAN_URL}/token/${tokenInfo?.contractId}`;
+      return `${CONSTANT_CONFIGS.AVAXSCAN_URL}/address/${tokenInfo?.contractId}?from=incognitochain`;
     }
     if (tokenInfo?.isAuroraErc20Token || tokenInfo?.isAURORA_ETH) {
-      return `${CONSTANT_CONFIGS.AURORASCAN_URL}/token/${tokenInfo?.contractId}`;
+      return `${CONSTANT_CONFIGS.AURORASCAN_URL}/address/${tokenInfo?.contractId}?from=incognitochain`;
     }
     if (tokenInfo?.isNearToken || tokenInfo?.isNEAR) {
-      return `${CONSTANT_CONFIGS.NEARSCAN_URL}/token/${tokenInfo?.contractId}`;
+      return `${CONSTANT_CONFIGS.NEARSCAN_URL}/address/${tokenInfo?.contractId}?from=incognitochain`;
     }
     return '';
   };

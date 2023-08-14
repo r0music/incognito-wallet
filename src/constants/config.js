@@ -33,28 +33,28 @@ const API_BASE_URL4 = isMainnet
   // : 'http://51.161.117.193:9898/'; //Testnet (Lam)
 
 const ETHERSCAN_URL = isMainnet
-  ? 'https://etherscan.io'
+  ? 'https://blockchair.com/ethereum'
   : 'https://kovan.etherscan.io';
 const BSCSCAN_URL = isMainnet
-  ? 'https://bscscan.com'
+  ? 'https://blockchair.com/bnb'
   : 'https://testnet.bscscan.com';
 const POLYGONSCAN_URL = isMainnet
-  ? 'https://polygonscan.com'
+  ? 'https://blockchair.com/ethereum'
   : 'https://mumbai.polygonscan.com';
 const FANTOMSCAN_URL = isMainnet
-  ? 'https://ftmscan.com'
+  ? 'https://blockchair.com/ethereum'
   : 'https://testnet.ftmscan.com';
 const AVAXSCAN_URL = isMainnet
-  ? 'https://snowtrace.io'
+  ? 'https://blockchair.com/ethereum'
   : 'https://testnet.snowtrace.io';
 const AURORASCAN_URL = isMainnet
-  ? 'https://aurorascan.dev'
+  ? 'https://blockchair.com/ethereum'
   : 'https://testnet.aurorascan.dev';
 const NEARSCAN_URL = isMainnet
-  ? 'https://explorer.near.org'
+  ? 'https://blockchair.com/ethereum'
   : 'https://explorer.testnet.near.org';
 const BTC_EXPLORER_URL = isMainnet
-  ? 'https://live.blockcypher.com/btc'
+  ? 'https://blockchair.com/bitcoin'
   : 'https://live.blockcypher.com/btc-testnet';
 const DEX_BINANCE_TOKEN_URL = isMainnet
   ? 'https://dex.binance.org/api/v1/tokens'
