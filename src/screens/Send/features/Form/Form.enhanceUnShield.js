@@ -248,7 +248,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       if (res.txId) {
         return { ...res, burningTxId: res?.txId };
       } else {
-        throw new Error('Burned token, but doesnt have txID, please check it');
+        throw new Error('Burned token, but doesnt have txID, please check it ');
       }
     } catch (e) {
       throw e;
