@@ -668,8 +668,8 @@ export const historyDetailFactoriesSelector = createSelector(
           {
             label: 'Outchain TxID',
             value: outChainTx,
-            disabled: !outChainTx,
-            openUrl: !!outChainTx,
+            disabled: !outChainTx || outChainTx.length < 1,
+            openUrl: !!outChainTx && outChainTx.length > 1,
             handleOpenUrl: () => LinkingService.openUrlInSide(outChainTx + '?from=incognitochain'),
           },
           {
@@ -777,8 +777,8 @@ export const historyDetailFactoriesSelector = createSelector(
           {
             label: 'Outchain TxID',
             value: outChainTx,
-            disabled: !outChainTx,
-            openUrl: !!outChainTx,
+            disabled: !outChainTx || outChainTx.length < 1,
+            openUrl: !!outChainTx && outChainTx.length > 1,
             handleOpenUrl: () => LinkingService.openUrlInSide(outChainTx + '?from=incognitochain'),
           },
           {
@@ -865,8 +865,8 @@ export const historyDetailFactoriesSelector = createSelector(
           {
             label: 'Outchain TxID',
             value: outchainTx,
-            disabled: !outchainTx,
-            openUrl: !!outchainTx,
+            disabled: !outchainTx || outchainTx.length < 1,
+            openUrl: !!outchainTx && outchainTx.length > 1,
             handleOpenUrl: () => LinkingService.openUrlInSide(outchainTx + '?from=incognitochain'),
           },
           {
@@ -957,8 +957,8 @@ export const historyDetailFactoriesSelector = createSelector(
           {
             label: 'Outchain TxID',
             value: outchainTx,
-            disabled: !outchainTx,
-            openUrl: !!outchainTx,
+            disabled: !outchainTx || outchainTx.length < 1,
+            openUrl: !!outchainTx && outchainTx.length > 1,
             handleOpenUrl: () => LinkingService.openUrlInSide(outchainTx + '?from=incognitochain'),
           },
           {
