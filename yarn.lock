@@ -3340,11 +3340,11 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@haskkor/react-native-recaptchav3@https://github.com/incognitochain/react-native-recaptchav3":
+"@haskkor/react-native-recaptchav3@https://github.com/incognitochain/react-native-recaptchav3#v1.2.2":
   version "1.2.1"
-  resolved "https://github.com/incognitochain/react-native-recaptchav3#fd7461fc1ed1679c9b538c501c9ae1b154ea5c4d"
+  resolved "https://github.com/incognitochain/react-native-recaptchav3#b18f284b55682fab0658b245167c2200e8c85cae"
   dependencies:
-    react-native-webview "^9.0.1"
+    react-native-webview "11.22.7"
 
 "@improbable-eng/grpc-web@^0.12.0":
   version "0.12.0"
@@ -19717,14 +19717,6 @@ react-native-webview@11.22.7:
   version "11.22.7"
   resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.22.7.tgz#bf0d1755473af6e1af8486e862668fc7530149b4"
   integrity sha512-IYMElB4fFS6S8LbhivAQfAlW95HorqCK4T3mFKmWsV24iPVTfYoaiA1TNzkRnjw2mMgXDk/QnMeH9IbjBVs1Ag==
-  dependencies:
-    escape-string-regexp "2.0.0"
-    invariant "2.2.4"
-
-react-native-webview@^9.0.1:
-  version "9.4.0"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-9.4.0.tgz#108da34a6c7e1c032dcabc942b7e4947ca1d8028"
-  integrity sha512-BBOFUuza0p04+7fNi7TJmB0arpDJzGxHYwTCgI4vj5n/fl7u4jbm7ETp88mf7lo9lP6C6HGLo38KnEy1aXCQkg==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
