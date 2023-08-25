@@ -1,5 +1,7 @@
+// eslint-disable-next-line import/no-cycle
 import convert from '@src/utils/convert';
 import { CONSTANT_COMMONS } from '@src/constants';
+// eslint-disable-next-line import/no-cycle
 import format from '@src/utils/format';
 import floor from 'lodash/floor';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
@@ -34,7 +36,6 @@ export const getFeeData = (
   estimateFee,
   selectedPrivacyData,
   childSelectedPrivacyData,
-  prvBalanceInfo,
 ) => {
   const {
     actived,
@@ -48,6 +49,7 @@ export const getFeeData = (
     minAmount,
     minAmountText,
     isFetching,
+    isFetchingVaultNetworks,
     isAddressValidated,
     isValidETHAddress,
     userFees,
@@ -67,7 +69,6 @@ export const getFeeData = (
     totalFees,
   } = estimateFee;
   const { amount } = selectedPrivacyData;
-  const { isNeedFaucet } = prvBalanceInfo;
   const isUseTokenFee = actived !== CONSTANT_COMMONS.PRV.id;
   const feeUnit = isUseTokenFee
     ? selectedPrivacyData?.externalSymbol || selectedPrivacyData.symbol
@@ -89,9 +90,12 @@ export const getFeeData = (
     isUseTokenFee,
     totalFee,
   });
+
   let titleBtnSubmit = 'Send';
   if (isFetching) {
     titleBtnSubmit = 'Calculating fee...';
+  } else if (isFetchingVaultNetworks) {
+    titleBtnSubmit = 'Fetching...';
   }
 
   const feeText = format.toFixed(

@@ -22,6 +22,7 @@ import {
   ACTION_REMOVE_FEE_TYPE,
   ACTION_FETCH_FAIL_USER_FEES,
   ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN,
+  ACTION_FETCHING_VALID_VAULT_NETWORKS, ACTION_FETCHED_VALID_VAULT_NETWORKS, ACTION_FAILED_VALID_VAULT_NETWORKS,
 } from './EstimateFee.constant';
 import { MAX_FEE_PER_TX, hasMultiLevelUsersFee } from './EstimateFee.utils';
 
@@ -87,6 +88,9 @@ const initialState = {
   },
   isValidating: false,
   fast2x: false,
+
+  isFetchingVaultNetworks: false,
+  vaultNetworks: [], // tokenID list
 };
 
 export default (state = initialState, action) => {
@@ -284,6 +288,27 @@ export default (state = initialState, action) => {
         ...state,
         types: [..._initFeeType],
         actived: CONSTANT_COMMONS.PRV.id,
+      };
+    }
+    case ACTION_FETCHING_VALID_VAULT_NETWORKS: {
+      return {
+        ...state,
+        isFetchingVaultNetworks: true,
+      };
+    }
+    case ACTION_FAILED_VALID_VAULT_NETWORKS: {
+      return {
+        ...state,
+        isFetchingVaultNetworks: false,
+        vaultNetworks: [],
+      };
+    }
+    case ACTION_FETCHED_VALID_VAULT_NETWORKS: {
+      const { tokenIDs } = action.payload;
+      return {
+        ...state,
+        isFetchingVaultNetworks: false,
+        vaultNetworks: tokenIDs,
       };
     }
     default:

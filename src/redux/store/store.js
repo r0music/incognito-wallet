@@ -35,7 +35,7 @@ export default function configureStore(preloadedState) {
   const _composedEnhancers = composeWithDevTools(
     DEBUG
       ? applyMiddleware(thunkMiddleware, logger)
-      : applyMiddleware(thunkMiddleware),
+      : applyMiddleware(thunkMiddleware, logger),
   );
   const store = createStore(
     persistedReducer,
