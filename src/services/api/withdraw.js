@@ -1,5 +1,4 @@
 import http from '@src/services/http';
-import http1 from '@services/http1';
 import { CONSTANT_COMMONS } from '@src/constants';
 import convert from '@src/utils/convert';
 import http4 from '@src/services/http4';
@@ -401,6 +400,12 @@ export const estimateFeeDecentralized = (data) => {
 
   let url = `unshield/estimatefee?network=${network}&amount=${amount}&tokenid=${tokenid}`;
   return http4.get(url);
+};
+
+// payload: { amount, unshieldTokenId }
+// response: tokenID[] as string[]
+export const getAvailableUnshieldNetworks = (payload) => {
+  return http4.post('unshield/available-network', payload);
 };
 
 export const submitUnShieldTx = async (data) => {
