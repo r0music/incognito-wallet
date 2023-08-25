@@ -6,42 +6,47 @@ import {
   accountSelector,
 } from '@src/redux/selectors';
 import convert from '@src/utils/convert';
-import { change, focus } from 'redux-form';
+import {change, focus, formValueSelector} from 'redux-form';
 import format from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import floor from 'lodash/floor';
 import { trim } from 'lodash';
 import {
-  estimateUserFees,
-  estimateFeeDecentralized,
-  genCentralizedWithdrawAddress,
+    estimateUserFees,
+    estimateFeeDecentralized,
+    genCentralizedWithdrawAddress, getAvailableUnshieldNetworks,
 } from '@src/services/api/withdraw';
 import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 import { minPRVNeededSelector } from '@src/screens/RefillPRV/RefillPRV.selector';
+import {clearChildSelectedPrivacy} from '@src/redux/actions/childSelectedPrivacy';
 import {
-  ACTION_FETCHING_FEE,
-  ACTION_FETCHED_FEE,
-  ACTION_FETCH_FAIL_FEE,
-  ACTION_ADD_FEE_TYPE,
-  ACTION_CHANGE_FEE_TYPE,
-  ACTION_FETCHED_PTOKEN_FEE,
-  ACTION_FETCHED_MIN_PTOKEN_FEE,
-  ACTION_CHANGE_FEE,
-  ACTION_INIT,
-  ACTION_INIT_FETCHED,
-  ACTION_FETCHED_MAX_FEE_PRV,
-  ACTION_FETCHED_MAX_FEE_PTOKEN,
-  ACTION_FETCHED_VALID_ADDR,
-  ACTION_FETCHED_USER_FEES,
-  ACTION_FETCHING_USER_FEES,
-  ACTION_TOGGLE_FAST_FEE,
-  ACTION_REMOVE_FEE_TYPE,
-  ACTION_FETCH_FAIL_USER_FEES,
-  ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN,
+    ACTION_FETCHING_FEE,
+    ACTION_FETCHED_FEE,
+    ACTION_FETCH_FAIL_FEE,
+    ACTION_ADD_FEE_TYPE,
+    ACTION_CHANGE_FEE_TYPE,
+    ACTION_FETCHED_PTOKEN_FEE,
+    ACTION_FETCHED_MIN_PTOKEN_FEE,
+    ACTION_CHANGE_FEE,
+    ACTION_INIT,
+    ACTION_INIT_FETCHED,
+    ACTION_FETCHED_MAX_FEE_PRV,
+    ACTION_FETCHED_MAX_FEE_PTOKEN,
+    ACTION_FETCHED_VALID_ADDR,
+    ACTION_FETCHED_USER_FEES,
+    ACTION_FETCHING_USER_FEES,
+    ACTION_TOGGLE_FAST_FEE,
+    ACTION_REMOVE_FEE_TYPE,
+    ACTION_FETCH_FAIL_USER_FEES,
+    ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN,
+    ACTION_FETCHING_VALID_VAULT_NETWORKS,
+    ACTION_FETCHED_VALID_VAULT_NETWORKS,
+    ACTION_FAILED_VALID_VAULT_NETWORKS,
 } from './EstimateFee.constant';
 import { apiCheckValidAddress } from './EstimateFee.services';
 import { estimateFeeSelector, feeDataSelector } from './EstimateFee.selector';
 import { formName } from './EstimateFee.input';
+
 import { MAX_FEE_PER_TX, getMaxAmount, getTotalFee } from './EstimateFee.utils';
 import { EstimateFeeEVMUnShieldResult } from './EstimateFee.type';
 
@@ -692,3 +697,67 @@ export const actionToggleFastFee = (payload) => ({
   type: ACTION_TOGGLE_FAST_FEE,
   payload,
 });
+
+
+
+export const actionFetchingVaultNetwork = () => ({
+    type: ACTION_FETCHING_VALID_VAULT_NETWORKS,
+});
+
+export const actionFetchedVaultNetwork = (payload) => ({
+    type: ACTION_FETCHED_VALID_VAULT_NETWORKS,
+    payload
+});
+
+export const actionFailedVaultNetwork = () => ({
+    type: ACTION_FAILED_VALID_VAULT_NETWORKS,
+});
+
+export const actionFetchVaultNetworks =
+    (amount) => async (dispatch, getState) => {
+    try {
+        dispatch(actionFetchingVaultNetwork());
+        const state = getState();
+        const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
+
+        const currencyType = formValueSelector('formSend')(state, 'currencyType');
+        const originalAmount = convert.toOriginalAmount(
+            amount,
+            selectedPrivacy?.pDecimals,
+        );
+
+        if (!amount || !Number(amount)) {
+            dispatch(actionFetchedVaultNetwork({
+                tokenIDs: []
+            }));
+            return;
+        }
+
+        const tokenID = selectedPrivacy?.tokenId;
+
+        const tokenIDs = await getAvailableUnshieldNetworks({
+            amount: originalAmount,
+            unshieldTokenId: tokenID,
+        });
+
+        const tokenIDsList =[...tokenIDs, tokenID];
+
+        dispatch(actionFetchedVaultNetwork({
+            tokenIDs: tokenIDsList
+        }));
+
+        if (currencyType !== undefined) {
+            const currentNetworkTokenID = selectedPrivacy.currencyType === currencyType ?
+                selectedPrivacy.tokenId :
+                (selectedPrivacy?.listUnifiedToken || [])
+                    .find(token => token.currencyType === currencyType).tokenId;
+            const isValid = tokenIDsList.some(tokenID => tokenID === currentNetworkTokenID);
+            if (!isValid) {
+                dispatch(change('formSend', 'currencyType', undefined));
+                dispatch(clearChildSelectedPrivacy());
+            }
+        }
+    } catch (error) {
+        dispatch(actionFailedVaultNetwork());
+    }
+};
