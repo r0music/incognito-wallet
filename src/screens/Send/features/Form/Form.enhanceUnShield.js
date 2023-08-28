@@ -55,7 +55,7 @@ export const getTxOutChainLinkByTokenInfo = (tokenInfo) => {
     tokenInfo?.currencyType ===
       CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20
   ) {
-    return `${CONSTANT_CONFIGS.ETHERSCAN_URL}/tx/`;
+    return `${CONSTANT_CONFIGS.ETHERSCAN_URL}/transaction/`;
   }
   if (
     tokenInfo?.isBep2Token ||
@@ -63,22 +63,22 @@ export const getTxOutChainLinkByTokenInfo = (tokenInfo) => {
     tokenInfo?.currencyType ===
       CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20
   ) {
-    return `${CONSTANT_CONFIGS.BSCSCAN_URL}/tx/`;
+    return `${CONSTANT_CONFIGS.BSCSCAN_URL}/transaction/`;
   }
   if (tokenInfo?.isPolygonErc20Token || tokenInfo?.isMATIC) {
-    return `${CONSTANT_CONFIGS.POLYGONSCAN_URL}/tx/`;
+    return `${CONSTANT_CONFIGS.POLYGONSCAN_URL}/transaction/`;
   }
   if (tokenInfo?.isFantomErc20Token || tokenInfo?.isFTM) {
-    return `${CONSTANT_CONFIGS.FANTOMSCAN_URL}/tx/`;
+    return `${CONSTANT_CONFIGS.FANTOMSCAN_URL}/transaction/`;
   }
   if (tokenInfo?.isAvaxErc20Token || tokenInfo?.isAVAX) {
-    return `${CONSTANT_CONFIGS.AVAXSCAN_URL}/tx/`;
+    return `${CONSTANT_CONFIGS.AVAXSCAN_URL}/transaction/`;
   }
   if (tokenInfo?.isAuroraErc20Token || tokenInfo?.isAURORA_ETH) {
-    return `${CONSTANT_CONFIGS.AURORASCAN_URL}/tx/`;
+    return `${CONSTANT_CONFIGS.AURORASCAN_URL}/transaction/`;
   }
   if (tokenInfo?.isNearToken || tokenInfo?.isNEAR) {
-    return `${CONSTANT_CONFIGS.NEARSCAN_URL}/tx/`;
+    return `${CONSTANT_CONFIGS.NEARSCAN_URL}/transaction/`;
   }
   return '';
 };
@@ -248,7 +248,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       if (res.txId) {
         return { ...res, burningTxId: res?.txId };
       } else {
-        throw new Error('Burned token, but doesnt have txID, please check it');
+        throw new Error('Burned token, but doesnt have txID, please check it ');
       }
     } catch (e) {
       throw e;
