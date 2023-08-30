@@ -5,6 +5,7 @@ import {
   InputQRField,
   SelectNetworkField,
 } from '@components/core/reduxForm';
+// eslint-disable-next-line import/no-cycle
 import EstimateFee from '@components/EstimateFee/EstimateFee.input';
 import {
   Button,
@@ -12,12 +13,16 @@ import {
   Text,
   View,
 } from '@src/components/core';
-import { actionResetFormSupportSendInChain } from '@src/components/EstimateFee/EstimateFee.actions';
+// eslint-disable-next-line import/no-cycle
+import {
+  actionFetchVaultNetworks,
+  actionResetFormSupportSendInChain
+} from '@src/components/EstimateFee/EstimateFee.actions';
 import {
   feeDataSelector,
   networksSelector,
-  validatePRVNetworkFee,
   validateTotalPRVBurningSelector,
+  vaultNetworksSelector,
 } from '@src/components/EstimateFee/EstimateFee.selector';
 import LoadingTx from '@src/components/LoadingTx';
 import { CONSTANT_COMMONS } from '@src/constants';
@@ -40,9 +45,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, formValueSelector } from 'redux-form';
 import { actionRefillPRVModalVisible } from '@src/screens/RefillPRV/RefillPRV.actions';
-import { actionFaucetPRV } from '@src/redux/actions/token';
-import FaucetPRVModal, { useFaucet } from '@src/components/Modal/features/FaucetPRVModal';
-import { getPrivacyPRVInfo } from '@src/redux/selectors/selectedPrivacy';
+import debounce from 'lodash/debounce';
+// eslint-disable-next-line import/no-cycle
 import withSendForm, { formName } from './Form.enhance';
 import { styledForm as styled } from './Form.styled';
 import NetworkFeeView from './Form.networkFeeView';
@@ -100,13 +104,14 @@ const SendForm = (props) => {
     errorMessage
   } = props;
   const dispatch = useDispatch();
-  const [navigateFaucet] = useFaucet();
 
   const { titleBtnSubmit, isUnShield, editableInput } =
     useSelector(feeDataSelector);
+
+  const { isFetchingVaultNetworks, vaultNetworks } = useSelector(vaultNetworksSelector);
+
   // const networkFeeValid = useSelector(validatePRVNetworkFee);
   const { isEnoughtPRVNeededAfterBurn } = useSelector(validateTotalPRVBurningSelector);
-  const { isNeedFaucet } = useSelector(getPrivacyPRVInfo);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const childSelectedPrivacy = useSelector(
     childSelectedPrivacySelector.childSelectedPrivacy,
@@ -136,14 +141,6 @@ const SendForm = (props) => {
     dispatch(actionRefillPRVModalVisible(true));
   };
 
-  const showPopupFaucetPRV = async () => {
-    await dispatch(actionFaucetPRV(<FaucetPRVModal />));
-  };
-
-  const navigateToFaucetWeb = async () => {
-    navigateFaucet();
-  };
-
   const submitHandler = handlePressSend;
 
   const sendOnPress = (data) => {
@@ -171,8 +168,20 @@ const SendForm = (props) => {
         currencyType: CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.INCOGNITO,
       },
     ];
+
+    if (selectedPrivacy.isPUnifiedToken) {
+      if (isFetchingVaultNetworks || !vaultNetworks.length) {
+        return [];
+      } else {
+        networks = networks.filter(
+          (item) => vaultNetworks.some((tokenID) => tokenID === item.tokenId),
+        );
+      }
+    }
+
     return [...incognitoNetwork, ...networks];
   };
+
   const networks = getNetworks();
 
   const selector = formValueSelector(formName);
@@ -256,6 +265,9 @@ const SendForm = (props) => {
   };
 
   const renderNetworkType = () => {
+    if (!networks || !networks.length) {
+      return null;
+    }
     return (
       <Field
         onChange={(value) => {
@@ -278,6 +290,16 @@ const SendForm = (props) => {
     );
   };
 
+  const fetchVaultNetworks = async (amount) => {
+    try {
+      await dispatch(actionFetchVaultNetworks(amount));
+    } catch (error) {
+      // new ExHandler(error).showErrorToast();
+    }
+  };
+
+  const debounceFetchVaultNetworks = React.useCallback(debounce(fetchVaultNetworks, 300), []);
+
   React.useEffect(() => {
     const { toAddress, amount } = navigation.state?.params || {};
     if (toAddress) {
@@ -290,6 +312,11 @@ const SendForm = (props) => {
     // dispatch(change(formName, 'amount', '0.01'));
   }, [navigation.state?.params]);
 
+  React.useEffect(() => {
+    if (!selectedPrivacy.isPUnifiedToken) return;
+    debounceFetchVaultNetworks(amount);
+  }, [amount, selectedPrivacy.isPUnifiedToken]);
+
   return (
     <View style={styled.container} borderTop>
       <KeyboardAwareScrollView>
@@ -297,7 +324,9 @@ const SendForm = (props) => {
           {({ handleSubmit }) => (
             <>
               <Field
-                onChange={(value) => onChangeField(value, 'amount')}
+                onChange={(value) => {
+                  onChangeField(value, 'amount');
+                }}
                 component={InputMaxValueField}
                 name="amount"
                 placeholder="0.0"

@@ -106,3 +106,15 @@ export const validateTotalPRVBurningSelector = createSelector(
 );
 
 
+export const vaultNetworksSelector = createSelector(
+    estimateFeeSelector,
+    (feeData) => {
+        const { isFetchingVaultNetworks, vaultNetworks } = feeData;
+        return {
+            isFetchingVaultNetworks,
+            vaultNetworks
+        };
+    },
+);
+
+
