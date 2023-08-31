@@ -817,6 +817,7 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 112;
 				DEVELOPMENT_TEAM = G63A8CY3DS;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = G63A8CY3DS;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -858,6 +859,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet;
 				PRODUCT_NAME = Incognito;
 				PROVISIONING_PROFILE_SPECIFIER = AppStore_com.incognito.wallet;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = AppStore_com.incognito.wallet;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -362,8 +362,8 @@ PODS:
     - React
   - react-native-splash-screen (3.2.0):
     - React
-  - react-native-webview (9.4.0):
-    - React
+  - react-native-webview (11.22.7):
+    - React-Core
   - React-RCTActionSheet (0.61.2):
     - React-Core/RCTActionSheetHeaders (= 0.61.2)
   - React-RCTAnimation (0.61.2):
@@ -851,7 +851,7 @@ SPEC CHECKSUMS:
   react-native-randombytes: 3638d24759d67c68f6ccba60c52a7a8a8faa6a23
   react-native-settings: 67977214c0f7d6062ad25581107c16a7a27af2a8
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
-  react-native-webview: cf5527893252b3b036eea024a1da6996f7344c74
+  react-native-webview: 227ba9205abb8579116b69ea5774d9744267c65a
   React-RCTActionSheet: 89b037c0fb7d2671607cb645760164e7e0c013f6
   React-RCTAnimation: e3cefa93c38c004c318f7ec04b883eb14b8b8235
   React-RCTBlob: d26ac0e313fbf14e7203473fd593ccaaeee8329e
