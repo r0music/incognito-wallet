@@ -200,7 +200,7 @@ jobs:
   push_app_store:
 #    resource_class: "large"
     macos:
-      xcode: 14.1.0
+      xcode: 13.4.1
     steps:
       - attach_workspace:
           at: .
