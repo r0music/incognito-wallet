@@ -32,7 +32,6 @@
 		712C447B244313E700A3CBA6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 712C447A244313E700A3CBA6 /* GoogleService-Info.plist */; };
 		71ACEF372477D8CE003AE3E3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 71ACEF362477D8CE003AE3E3 /* Images.xcassets */; };
 		82E467C899D04A02A0589EB9 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB08C251E22B438096EA6169 /* libRNGestureHandler.a */; };
-		9A35DA29B0814E0E85D3F53B /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6024CBE183FA4307ABE2C4F5 /* libRNDeviceInfo.a */; };
 		A23A5B4BF797429292519AC6 /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D828B2179CD4981AB6E75EE /* libRNCAsyncStorage.a */; };
 		C2E73AA50DDC4747BAD7CC54 /* libRNOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 342DA32C89DE489180AC3EF2 /* libRNOS.a */; };
 		C944FB71546FC63E3C584A22 /* libPods-Incognito.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C9B022E86A08BD344C7392 /* libPods-Incognito.a */; };
@@ -229,7 +228,6 @@
 				A23A5B4BF797429292519AC6 /* libRNCAsyncStorage.a in Frameworks */,
 				0D4F7FF3224B482F9DFC427A /* libRNReanimated.a in Frameworks */,
 				FEEBD6BF2355AD57006EFECD /* AutonomousZMQ.framework in Frameworks */,
-				9A35DA29B0814E0E85D3F53B /* libRNDeviceInfo.a in Frameworks */,
 				C2E73AA50DDC4747BAD7CC54 /* libRNOS.a in Frameworks */,
 				D7BDB11DB76A47B9A686E426 /* libTcpSockets.a in Frameworks */,
 				3EF0EC91E7FE4B16A434459C /* libRNZmqService.a in Frameworks */,
@@ -754,7 +752,7 @@
 				CODE_SIGN_ENTITLEMENTS = Incognito/Incognito.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 111;
+				CURRENT_PROJECT_VERSION = 112;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = G63A8CY3DS;
 				ENABLE_BITCODE = NO;
@@ -789,7 +787,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 				);
-				MARKETING_VERSION = 50.26;
+				MARKETING_VERSION = 50.27;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -817,8 +815,9 @@
 				CODE_SIGN_ENTITLEMENTS = Incognito/Incognito.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 111;
+				CURRENT_PROJECT_VERSION = 112;
 				DEVELOPMENT_TEAM = G63A8CY3DS;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = G63A8CY3DS;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -851,7 +850,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 				);
-				MARKETING_VERSION = 50.26;
+				MARKETING_VERSION = 50.27;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -860,6 +859,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet;
 				PRODUCT_NAME = Incognito;
 				PROVISIONING_PROFILE_SPECIFIER = AppStore_com.incognito.wallet;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = AppStore_com.incognito.wallet;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -926,7 +926,7 @@
 				CODE_SIGN_ENTITLEMENTS = Incognito/Incognito.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 111;
+				CURRENT_PROJECT_VERSION = 112;
 				DEVELOPMENT_TEAM = G63A8CY3DS;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -964,7 +964,7 @@
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
-				MARKETING_VERSION = 50.26;
+				MARKETING_VERSION = 50.27;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1041,7 +1041,7 @@
 				CODE_SIGN_ENTITLEMENTS = Incognito/Incognito.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 111;
+				CURRENT_PROJECT_VERSION = 112;
 				DEVELOPMENT_TEAM = G63A8CY3DS;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1079,7 +1079,7 @@
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
-				MARKETING_VERSION = 50.26;
+				MARKETING_VERSION = 50.27;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1156,7 +1156,7 @@
 				CODE_SIGN_ENTITLEMENTS = Incognito/Incognito.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 111;
+				CURRENT_PROJECT_VERSION = 112;
 				DEVELOPMENT_TEAM = G63A8CY3DS;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1194,7 +1194,7 @@
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
-				MARKETING_VERSION = 50.26;
+				MARKETING_VERSION = 50.27;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1270,7 +1270,7 @@
 				CODE_SIGN_ENTITLEMENTS = Incognito/Incognito.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 111;
+				CURRENT_PROJECT_VERSION = 112;
 				DEVELOPMENT_TEAM = G63A8CY3DS;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1308,7 +1308,7 @@
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
-				MARKETING_VERSION = 50.26;
+				MARKETING_VERSION = 50.27;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
