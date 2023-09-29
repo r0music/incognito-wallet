@@ -78,7 +78,9 @@ export const withdraw = (data) => {
     WalletAddress: walletAddress,
     ID: userFeesData?.ID,
     UserFeeSelection: isUsedPRVFee ? 2 : 1,
-    UserFeeLevel: fast2x ? 2 : 1,
+    // TODO: remove this field after backend support
+    // UserFeeLevel: fast2x ? 2 : 1,
+    UserFeeLevel: 2,
   };
   if (signPublicKeyEncode) {
     payload.SignPublicKeyEncode = signPublicKeyEncode;
