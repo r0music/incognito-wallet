@@ -146,15 +146,17 @@ const enhanceWithdraw = (WrappedComp) => (props) => {
 
     let devicesListCanWithdraw = [];
     let devicesListCanNotWithdraw = [];
+    let jobWithdraw = [];
 
     dispatch(updateWithdrawing(true));
     setLoadingWithrawAll(true);
     for (const device of listDevice) {
       try {
         if (checkValidNode(device)) {
-          const {isValid, errorMessage} = await checkAccountBalanceForNode(device, listAccount);
-          if (isValid) devicesListCanWithdraw.push(device);
-          else devicesListCanNotWithdraw.push({ device, errorMessage });
+          jobWithdraw.push(handleWithdraw(device, false));
+          // const {isValid, errorMessage} = await checkAccountBalanceForNode(device, listAccount);
+          // if (isValid) devicesListCanWithdraw.push(device);
+          // else devicesListCanNotWithdraw.push({ device, errorMessage });
           // await handleWithdraw(device, false);
         }
       } catch {
@@ -169,18 +171,20 @@ const enhanceWithdraw = (WrappedComp) => (props) => {
     // });
 
     //Hanlde withdraw with devices valid
-    let jobWithdraw = [];
-    devicesListCanWithdraw.map(device => {
-      jobWithdraw.push(handleWithdraw(device, false));
-    });
-    await Promise.all(jobWithdraw);
+ 
+    // devicesListCanWithdraw.map(device => {
+    //   jobWithdraw.push(handleWithdraw(device, false));
+    // });
+    await Promise.allSettled(jobWithdraw);
 
    //Hanlde withdraw with devices in-valid
-    if (devicesListCanNotWithdraw && devicesListCanNotWithdraw.length > 1) {
-      showToastErrorMessage(handleMessageDevicesWithdrawInvalid(devicesListCanNotWithdraw));
-    } else {
-      showToastMessage(MESSAGES.ALL_NODE_WITHDRAWAL);
-    }
+    // if (devicesListCanNotWithdraw && devicesListCanNotWithdraw.length > 1) {
+    //   showToastErrorMessage(handleMessageDevicesWithdrawInvalid(devicesListCanNotWithdraw));
+    // } else {
+    //   showToastMessage(MESSAGES.ALL_NODE_WITHDRAWAL);
+    // }
+
+    showToastMessage(MESSAGES.ALL_NODE_WITHDRAWAL);
 
     // Turn-off Loading
     dispatch(updateWithdrawing(false));
