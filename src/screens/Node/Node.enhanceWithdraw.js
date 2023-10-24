@@ -131,21 +131,8 @@ const enhanceWithdraw = (WrappedComp) => (props) => {
     }
   };
 
-  const handleMessageDevicesWithdrawInvalid = (devices) => {
-    let messages = '';
-    let accountNameList = [];
-    devices.map(item => {
-      accountNameList.push(item.device.AccountName || item.device.Name);
-      // messages = messages + `AccountName: ${item.device.AccountName || item.device.Name} \n ${item.errorMessage || ''} \n\n`;
-    });
-    messages = `Account Name: ${accountNameList.join(', ')} \nInsufficient PRV balance to cover network fee. \n ${feeAndSymbol} is required per node. `;
-    return messages;
-  };
-
   const handleWithdrawAll = async () => {
 
-    let devicesListCanWithdraw = [];
-    let devicesListCanNotWithdraw = [];
     let jobWithdraw = [];
 
     dispatch(updateWithdrawing(true));
@@ -160,35 +147,21 @@ const enhanceWithdraw = (WrappedComp) => (props) => {
           // await handleWithdraw(device, false);
         }
       } catch {
-        /*Ignore the error*/
       } finally {
       }
     }
 
-    // console.log(' FINAL ', {
-    //   devicesListCanWithdraw,
-    //   devicesListCanNotWithdraw
-    // });
+    try {
+      await Promise.allSettled(jobWithdraw);
+    } catch (error) {
+    } finally {
+      showToastMessage(MESSAGES.ALL_NODE_WITHDRAWAL);
 
-    //Hanlde withdraw with devices valid
+      // Turn-off Loading
+      dispatch(updateWithdrawing(false));
+      setLoadingWithrawAll(false);
+    }
  
-    // devicesListCanWithdraw.map(device => {
-    //   jobWithdraw.push(handleWithdraw(device, false));
-    // });
-    await Promise.allSettled(jobWithdraw);
-
-   //Hanlde withdraw with devices in-valid
-    // if (devicesListCanNotWithdraw && devicesListCanNotWithdraw.length > 1) {
-    //   showToastErrorMessage(handleMessageDevicesWithdrawInvalid(devicesListCanNotWithdraw));
-    // } else {
-    //   showToastMessage(MESSAGES.ALL_NODE_WITHDRAWAL);
-    // }
-
-    showToastMessage(MESSAGES.ALL_NODE_WITHDRAWAL);
-
-    // Turn-off Loading
-    dispatch(updateWithdrawing(false));
-    setLoadingWithrawAll(false);
   };
   
   const handlePressWithdraw = onClickView(handleWithdraw);
