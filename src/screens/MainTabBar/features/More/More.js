@@ -18,8 +18,9 @@ import {
   PowerIcon,
   ProvideIcon,
   ReportIcon,
-  ConsolidateIcon, UTubeIcon,
-  MailIcon
+  ConsolidateIcon,
+  UTubeIcon,
+  MailIcon,
 } from '@components/Icons';
 import { Header, Row } from '@src/components';
 import { ScrollViewBorder, Text, View5 } from '@src/components/core';
@@ -28,6 +29,7 @@ import { VectorSettingColor } from '@components/Icons/icon.setting';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout';
 import { actionConditionConsolidate } from '@screens/Streamline';
+import { CancelOrderIcon } from '@components/Icons/icon.cancelOrder';
 
 const Categories = [
   {
@@ -117,6 +119,12 @@ const Categories = [
         label: 'Support',
         icon: MailIcon,
         key: appConstant.DISABLED.SUPPORT,
+      },
+      {
+        route: routeNames.LegacyPool,
+        label: 'Cancel Order',
+        icon: CancelOrderIcon,
+        key: appConstant.DISABLED.LEGACY_POOL,
       },
     ],
   },

@@ -17,7 +17,9 @@ export const chartSelector = createSelector(
 export const poolSelectedSelector = createSelector(
   chartSelector,
   getDataByPoolIdSelector,
-  ({ poolid }, getDataByPoolId) => getDataByPoolId(poolid),
+  ({ poolid }, getDataByPoolId) => {
+    return  getDataByPoolId(poolid);
+  }
 );
 
 export const priceHistorySelector = createSelector(
@@ -116,7 +118,6 @@ export const priceHistoryCandlesSelector = createSelector(
     };
   },
 );
-
 export const orderBookSelector = createSelector(
   chartSelector,
   poolSelectedSelector,
