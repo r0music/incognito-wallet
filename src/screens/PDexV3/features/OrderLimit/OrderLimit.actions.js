@@ -371,6 +371,9 @@ export const actionFetchOrdersHistory =
       default:
         break;
       }
+      const currentPoolID =  pool?.poolId;
+      data = data.filter(item => item.poolId === currentPoolID) || [];
+
       await dispatch(actionFetchWithdrawOrderTxs());
       await dispatch(actionFetchedOrdersHistory({ field, data }));
     } catch (error) {

@@ -163,6 +163,7 @@ import HomeLP from '@screens/MainTabBar/features/HomeLP';
 import Tutorial from '@screens/Turotial/Tutorial';
 import LiquidityVer1 from '@screens/Dex/Liquidity';
 import SelectionTokenScreen from '@src/screens/PDexV3/features/Swap/SelectToken';
+import LegacyPool from '@screens/LegacyPool';
 
 const masterKeyRoutes = [
   {
@@ -792,6 +793,10 @@ const routes = [
   {
     screen: SelectionTokenScreen,
     name: routeNames.SelectTokenScreen,
+  },
+  {
+    screen: LegacyPool,
+    name: routeNames.LegacyPool,
   },
   ...masterKeyRoutes,
   ...devRoutes,
