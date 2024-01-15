@@ -34,6 +34,7 @@ const DISABLED = {
   CONSOLIDATE: 'Consolidate UTXOs for each keychain',
   CONVERT_UNIFY: 'convert-unify',
   SUPPORT: 'support',
+  LEGACY_POOL: 'Legacy Pool',
 };
 
 const FEATURES_ROUTE_MAP = {
