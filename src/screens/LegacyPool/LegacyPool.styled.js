@@ -11,6 +11,21 @@ import { StyleSheet } from 'react-native';
     color: 'white',
     marginVertical: 12,
   },
+
+
+  groupRadio: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+
+  rowRadio: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems:'center',
+  },
+
+  radioStyle: {
+  }
 });
 
 export default styles;
