@@ -5,31 +5,32 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { compose } from 'recompose';
 
-export const POOL_PRV_USDT_LEGACY_ID =
-  '0000000000000000000000000000000000000000000000000000000000000004-076a4423fa20922526bd50b0d7b0dc1c593ce16e15ba141ede5fb5a28aa3f229-33a8ceae6db677d9860a6731de1a01de7e1ca7930404d7ec9ef5028f226f1633';
+export const NEW_POOL =
+  '0000000000000000000000000000000000000000000000000000000000000004-076a4423fa20922526bd50b0d7b0dc1c593ce16e15ba141ede5fb5a28aa3f229-ecf5fc66e0870854f5e4f7d771b9bb4e688639606634e715f9e09a1b6be3ed0b';
 
-export const POOL_PRV_USDT_NEW_ID =
+export const LEGACY_POOL_1 =
+  '0000000000000000000000000000000000000000000000000000000000000004-076a4423fa20922526bd50b0d7b0dc1c593ce16e15ba141ede5fb5a28aa3f229-33a8ceae6db677d9860a6731de1a01de7e1ca7930404d7ec9ef5028f226f1633';
+export const LEGACY_POOL_2 =
   '0000000000000000000000000000000000000000000000000000000000000004-076a4423fa20922526bd50b0d7b0dc1c593ce16e15ba141ede5fb5a28aa3f229-c8011262f3c7c173df1dea02370824460d15e5f473142a4709fd091c91969e2d';
 
 export const ListPool = [
   {
-    key: 'KEY_LEGACY_POOL',
-    poolID: POOL_PRV_USDT_LEGACY_ID,
+    key: '1',
+    poolID: LEGACY_POOL_1,
     title: 'PRV/USDT (1633)',
     type: 0,
   },
   {
-    key: 'KEY_NEW_POOL',
-    poolID: POOL_PRV_USDT_NEW_ID,
+    key: '2',
+    poolID: LEGACY_POOL_2,
     title: 'PRV/USDT (9e2d)',
     type: 1,
-  }
+  },
 ];
-
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
-  
+
   const [currentPool, setCurrentPool] = useState(ListPool[0]);
 
   useEffect(() => {
@@ -42,7 +43,12 @@ const enhance = (WrappedComp) => (props) => {
 
   return (
     <ErrorBoundary>
-      <WrappedComp {...props} onChangePool={onChangePool} setCurrentPool={setCurrentPool} currentPool={currentPool} />
+      <WrappedComp
+        {...props}
+        onChangePool={onChangePool}
+        setCurrentPool={setCurrentPool}
+        currentPool={currentPool}
+      />
     </ErrorBoundary>
   );
 };
