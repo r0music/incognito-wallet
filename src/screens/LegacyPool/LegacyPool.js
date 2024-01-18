@@ -1,18 +1,22 @@
 import { withLayout_2 } from '@components/Layout';
 import { Header } from '@src/components';
-import { ScrollViewBorder, View, Text, TouchableOpacity } from '@src/components/core';
+import {
+  ScrollViewBorder,
+  View,
+  Text,
+  TouchableOpacity,
+} from '@src/components/core';
 import GroupSubInfo from '@src/screens/PDexV3/features/OrderLimit/OrderLimit.groupSubInfo';
 import React from 'react';
 import { compose } from 'recompose';
 import { actionSetPoolSelected } from '@screens/PDexV3/features/OrderLimit';
 import { useDispatch } from 'react-redux';
-import {useNavigation} from 'react-navigation-hooks';
+import { useNavigation } from 'react-navigation-hooks';
 import { actionGetPDexV3Inst } from '@src/screens/PDexV3';
 import { RatioIcon } from '@components/Icons';
-import withLegacy, { POOL_PRV_USDT_NEW_ID, ListPool } from './LegacyPool.enhance';
+import withLegacy, { NEW_POOL, ListPool } from './LegacyPool.enhance';
 import styles from './LegacyPool.styled';
 // eslint-disable-next-line import/no-cycle
-
 
 const LegacyPool = (props) => {
   const dispatch = useDispatch();
@@ -22,8 +26,8 @@ const LegacyPool = (props) => {
 
   const setDeafultPool = async () => {
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-    dispatch(actionSetPoolSelected(POOL_PRV_USDT_NEW_ID));
-    pDexV3Inst.setDefaultPool(POOL_PRV_USDT_NEW_ID);
+    dispatch(actionSetPoolSelected(NEW_POOL));
+    pDexV3Inst.setDefaultPool(NEW_POOL);
   };
 
   return (
@@ -31,9 +35,9 @@ const LegacyPool = (props) => {
       <Header
         title="Cancel Order"
         onGoBack={() => {
-        navigation.goBack();
-        setDeafultPool();
-      }}
+          navigation.goBack();
+          setDeafultPool();
+        }}
       />
       <ScrollViewBorder
         style={{ paddingHorizontal: 0 }}
@@ -44,21 +48,31 @@ const LegacyPool = (props) => {
             Cancel your Buy/Sell orders on the deprecated PRV/USDT pool.
           </Text>
           <View style={styles.groupRadio}>
-            {ListPool.map((item)=> {
+            {ListPool.map((item) => {
               return (
-                <TouchableOpacity style={styles.rowRadio} key={`${item.title}`} onPress={() => onChangePool(item)}>
-                  <RatioIcon selected={item.type === currentPool.type} style={styles.radioStyle} />
-                  <Text style={[styles.description, {
-                  marginLeft: 10,
-                  fontSize: 15,
-                }]}
+                <TouchableOpacity
+                  style={styles.rowRadio}
+                  key={`${item.title}`}
+                  onPress={() => onChangePool(item)}
+                >
+                  <RatioIcon
+                    selected={item.type === currentPool.type}
+                    style={styles.radioStyle}
+                  />
+                  <Text
+                    style={[
+                      styles.description,
+                      {
+                        marginLeft: 10,
+                        fontSize: 15,
+                      },
+                    ]}
                   >
                     {item.title}
                   </Text>
                 </TouchableOpacity>
               );
             })}
-          
           </View>
 
           <GroupSubInfo
