@@ -6,9 +6,7 @@ import MarketList from '@components/Token/Token.marketList';
 import routeNames from '@routers/routeNames';
 import { headerStyled } from '@screens/MainTabBar/features/Market/Market.styled';
 import withLazy from '@components/LazyHoc/LazyHoc';
-import {
-  actionSetPoolSelected,
-} from '@screens/PDexV3/features/OrderLimit';
+import { actionSetPoolSelected } from '@screens/PDexV3/features/OrderLimit';
 import {
   ROOT_TAB_TRADE,
   TAB_SWAP_ID,
