@@ -2,14 +2,14 @@ import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { ExHandler } from '@src/services/exception';
 import { compose } from 'recompose';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getPTokenList } from '@src/redux/actions/token';
 import withFCM from '@screens/Notification/Notification.withFCM';
 import Modal from '@src/components/Modal';
 import AppUpdater from '@src/components/AppUpdater';
-import {homeSelector} from '@screens/Home/Home.selector';
-import {isIOS} from '@utils/platform';
-import {Linking} from 'react-native';
+import { homeSelector } from '@screens/Home/Home.selector';
+import { isIOS } from '@utils/platform';
+import { Linking } from 'react-native';
 import DialogUpdateApp from '@screens/Home/features/DialogUpdateApp';
 
 const enhance = (WrappedComp) => (props) => {
@@ -55,15 +55,9 @@ const enhance = (WrappedComp) => (props) => {
       <WrappedComp {...props} />
       <Modal />
       <AppUpdater />
-      <DialogUpdateApp
-        visible={outdatedVersion}
-        onPress={onUpdateApp}
-      />
+      <DialogUpdateApp visible={outdatedVersion} onPress={onUpdateApp} />
     </ErrorBoundary>
   );
 };
 
-export default compose(
-  withFCM,
-  enhance,
-);
+export default compose(withFCM, enhance);

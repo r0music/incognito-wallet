@@ -136,7 +136,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.incognito.wallet"
+        applicationId "com.incognito.mobilewallet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 112
@@ -164,14 +164,14 @@ android {
     }
     buildTypes {
         release {
-            resValue "string", "CodePushDeploymentKey", '"1IKsmeDfHkZ2uxo3CvcCamuLdUTazow5b3tAu"'
+            resValue "string", "CodePushDeploymentKey", '""'
             resValue 'string', 'app_name', '"Incognito Wallet"'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
         }
         debug {
-            resValue "string", "CodePushDeploymentKey", '"DKYq2x5W3PEMjVs_BSzQygQD26Q0oOYIb8OXM"'
+                        resValue "string", "CodePushDeploymentKey", '""'
             resValue 'string', 'app_name', '"Debug Incognito Wallet"'
             applicationIdSuffix '.debug'
             debuggable true
@@ -179,28 +179,28 @@ android {
         releaseStaging {
             initWith release
             resValue 'string', 'app_name', '"Staging Incognito Wallet"'
-            resValue "string", "CodePushDeploymentKey", '"_BjHPzC-bAXNbHE-OUSfpecVQUdSR5plKDhhp"'
+             resValue "string", "CodePushDeploymentKey", '""'
             applicationIdSuffix '.staging'
             matchingFallbacks = ['release']
         }
         releaseNext {
             initWith release
             resValue 'string', 'app_name', '"Next Incognito Wallet"'
-            resValue "string", "CodePushDeploymentKey", '"dvFvDhRbM6sR3qxCX3gylRHWbrw8SiS2xNDFa"'
+            resValue "string", "CodePushDeploymentKey", '""'
             applicationIdSuffix '.next'
             matchingFallbacks = ['release']
         }
         releaseNext2 {
             initWith release
             resValue 'string', 'app_name', '"Next 2'
-            resValue "string", "CodePushDeploymentKey", '"r8zWvXfju0WW0k233fIwtSxhy64tm1o3D6FgE"'
+            resValue "string", "CodePushDeploymentKey", '""'
             applicationIdSuffix '.next2'
             matchingFallbacks = ['release']
         }
         releaseNext3 {
             initWith release
             resValue 'string', 'app_name', '"Next 3'
-            resValue "string", "CodePushDeploymentKey", '"MrD0hF3D4dw7delBYPQYPP11hK5zVgWSA4A4L"'
+            resValue "string", "CodePushDeploymentKey", '""'
             applicationIdSuffix '.next3'
             matchingFallbacks = ['release']
         }
@@ -222,7 +222,7 @@ android {
             def abi = output.getFilter(OutputFile.ABI)
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
-                        versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
+                         versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
             }
         }
     }
