@@ -14,7 +14,8 @@ export const styled = StyleSheet.create({
 export const groupBtnStyled = StyleSheet.create({
   groupButton: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems:'center',
+    justifyContent: 'center',
     paddingVertical: 16,
   },
   btnStyle: {

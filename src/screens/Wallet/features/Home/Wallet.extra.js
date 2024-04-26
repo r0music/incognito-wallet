@@ -128,7 +128,7 @@ const GroupButton = React.memo(() => {
       {/*    triangleStyle={groupButtonStyled.triangleStyle}*/}
       {/*  />*/}
       {/*)}*/}
-      <BtnPrimary onPress={onFeaturePress} title="Shield a coin" />
+      {/* <BtnPrimary onPress={onFeaturePress} title="Shield a coin" /> */}
     </View>
   );
 });

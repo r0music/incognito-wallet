@@ -105,11 +105,11 @@ const GroupButton = React.memo(() => {
         {/*  background={COLORS.red2}*/}
         {/*  onPress={handleSell}*/}
         {/*/>*/}
-        <BtnSecondary
+        {/* <BtnSecondary
           title="Receive"
           wrapperStyle={groupBtnStyled.btnStyle}
           onPress={handleReceive}
-        />
+        /> */}
         <BtnPrimary
           title="Send"
           wrapperStyle={groupBtnStyled.btnStyle}

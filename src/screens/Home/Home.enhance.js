@@ -9,6 +9,7 @@ import { BackHandler } from 'react-native';
 import AppUpdater from '@components/AppUpdater';
 import { useBackHandler } from '@src/components/UseEffect';
 import { withNews, actionCheckUnreadNews } from '@screens/News';
+import BottomBarLearnMore from '@components/core/BottomBar/BottomBar_LearnMore';
 import { homeSelector } from './Home.selector';
 import { actionFetch as actionFetchHomeConfigs } from './Home.actions';
 
@@ -42,6 +43,11 @@ const enhance = (WrappedComp) => (props) => {
         }}
       />
       <AppUpdater />
+      <BottomBarLearnMore
+        onPress={() => {}}
+        text="Sunsetting Incognito."
+        autoscroll
+      />
     </ErrorBoundary>
   );
 };

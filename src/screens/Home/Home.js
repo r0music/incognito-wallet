@@ -5,6 +5,7 @@ import { ScrollView } from '@src/components/core';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import AppMaintain from '@components/AppMaintain/index';
 import appConstant from '@src/constants/app';
+import BottomBarLearnMore from '@components/core/BottomBar/BottomBar_LearnMore';
 import styles from './style';
 import withHome from './Home.enhance';
 import Category from './features/Category';
@@ -24,12 +25,12 @@ const Home = (props) => {
   return (
     <View style={styled.container}>
       <ScrollView
-        refreshControl={
+        refreshControl={(
           <RefreshControl
             refreshing={isFetching}
             onRefresh={getHomeConfiguration}
           />
-        }
+        )}
       >
         <View style={styles.contentContainer}>
           {categories.map((category, index) => (
@@ -40,6 +41,11 @@ const Home = (props) => {
           ))}
         </View>
       </ScrollView>
+      <BottomBarLearnMore
+        onPress={() => {}}
+        text="Sunsetting Incognito."
+        autoscroll
+      />
     </View>
   );
 };

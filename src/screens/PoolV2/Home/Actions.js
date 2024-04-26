@@ -62,7 +62,7 @@ const Actions = ({
   return (
     <Row spaceBetween style={[styles.actions, globalStyled.defaultPaddingHorizontal]}>
       {buy ? buyButton : withdrawButton}
-      {provideButton}
+      {/* {provideButton} */}
     </Row>
   );
 };

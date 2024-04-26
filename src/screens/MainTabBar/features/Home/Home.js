@@ -32,14 +32,14 @@ const TabHome = () => {
       <ScrollView
         style={homeStyled.wrapHeader}
         showsVerticalScrollIndicator={false}
-        refreshControl={
+        refreshControl={(
           <RefreshControl
             refreshing={isFetching}
             onRefresh={() => {
               dispatch(actionFetchPools());
             }}
           />
-        }
+        )}
       >
         <Banner />
         {/*<NotificationBar />*/}
