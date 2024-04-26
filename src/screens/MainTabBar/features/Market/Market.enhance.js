@@ -3,6 +3,7 @@ import withHome from '@screens/MainTabBar/features/Home/Home.enhance';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import React from 'react';
 import { compose } from 'recompose';
+import BottomBarLearnMore from '@components/core/BottomBar/BottomBar_LearnMore';
 
 const withMarket = (WrappedComp) => (props) => {
   const [filter, setFilter] = React.useState({
@@ -17,6 +18,11 @@ const withMarket = (WrappedComp) => (props) => {
           ...filter,
           onFilter: setFilter,
         }}
+      />
+      <BottomBarLearnMore
+        onPress={() => {}}
+        text="Sunsetting Incognito."
+        autoscroll
       />
     </ErrorBoundary>
   );
