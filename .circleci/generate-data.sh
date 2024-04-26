@@ -10,9 +10,9 @@ NODE_USER_NAME=$NODE_USER_NAME
 " > .env
 
 # Generate android keystore file
-echo $KEYSTORE | base64 -di | tee android/app/wallet-app-release-key.keystore
-echo $PLAY_STORE_JSON | base64 -di | tee play_store.json
-echo $APPLE_STORE_DEVELOP_KEY | base64 -di | tee fastlane/develop.json
-echo $APPSTORE_MOBILE_PROVISION | base64 -di | tee fastlane/AppStore_com.incognito.wallet.mobileprovision
-echo $APPSTORE_PRIVATE_KEY | base64 -di | tee fastlane/appstore-private-key.p12
-echo $APPSTORE_DISTRIBUTION_CERT | base64 -di | tee fastlane/appstore-distribution.cer
+echo $KEYSTORE | base64 -di > android/app/wallet-app-release-key.keystore
+echo $PLAY_STORE_JSON | base64 -di > play_store.json
+echo $APPLE_STORE_DEVELOP_KEY | base64 -di > fastlane/develop.json
+echo $APPSTORE_MOBILE_PROVISION | base64 -di > fastlane/AppStore_com.incognito.wallet.mobileprovision
+echo $APPSTORE_PRIVATE_KEY | base64 -di > fastlane/appstore-private-key.p12
+echo $APPSTORE_DISTRIBUTION_CERT | base64 -di > fastlane/appstore-distribution.cer

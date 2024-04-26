@@ -160,8 +160,9 @@ export const listPoolsFollowingSelector = createSelector(
 
 export const getDataByPoolIdSelector = createSelector(
   listPoolsSelector,
-  (listPools) => (poolId) =>
-    poolId && listPools.find((pool) => pool?.poolId === poolId),
+  (listPools) => (poolId) => {
+    return poolId && listPools.find((pool) => pool?.poolId === poolId);
+  }
 );
 
 export const isFetchingSelector = createSelector(

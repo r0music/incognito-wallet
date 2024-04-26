@@ -14,6 +14,8 @@ import React, { memo } from 'react';
 import { useNavigation } from 'react-navigation-hooks';
 import { useDispatch } from 'react-redux';
 
+const BNB_BINANCE_TOKENID = 'b2655152784e8639fa19521a7035f331eea1f1e911b2f3200a507ebb4554387b'; //BNB on Binance Chain
+
 const MarketList = (props) => {
   const { renderItem, keySearch, filterField, orderField } = props;
 
@@ -27,7 +29,10 @@ const MarketList = (props) => {
   const activeTab = useDebounceSelector(marketTabSelector);
 
   // Get list verifiedToken list unVerifiedTokens from list all token
-  const _verifiedTokens = availableTokens?.filter((token) => token?.isVerified);
+  const _verifiedTokens = 
+    availableTokens?.filter((token) => token?.isVerified)
+    .filter((token => token.tokenId !== BNB_BINANCE_TOKENID));
+
   const _unVerifiedTokens = availableTokens?.filter(
     (token) => !token.isVerified,
   );

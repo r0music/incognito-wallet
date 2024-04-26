@@ -65,7 +65,7 @@ export const actionFetchListPools = () => async (dispatch, getState) => {
     const followIds = followPoolIdsSelector(state);
     await dispatch(actionFetching());
     const pDexV3Inst = await getPDexV3Instance();
-    const pools = (await pDexV3Inst.getListPools('all&verify=true')) || [];
+    let pools = (await pDexV3Inst.getListPools('all')) || [];
     const volume = pools.reduce(
       (prev, curr) => new BigNumber(Math.ceil(curr.volume)).plus(prev),
       new BigNumber(0),
@@ -77,8 +77,8 @@ export const actionFetchListPools = () => async (dispatch, getState) => {
     poolsIDs = [...followIds, ...poolsIDs];
     poolsIDs = uniq(poolsIDs);
     const priority = {
-      // PRV-USDT
-      '0000000000000000000000000000000000000000000000000000000000000004-076a4423fa20922526bd50b0d7b0dc1c593ce16e15ba141ede5fb5a28aa3f229-33a8ceae6db677d9860a6731de1a01de7e1ca7930404d7ec9ef5028f226f1633': 4,
+      // PRV-USDT 
+      '0000000000000000000000000000000000000000000000000000000000000004-076a4423fa20922526bd50b0d7b0dc1c593ce16e15ba141ede5fb5a28aa3f229-beaa6923ef56ad699dcfed194f9f2eec49846121f79b0d4645093a07c850085a': 4,
       // PRV-BTC
       '0000000000000000000000000000000000000000000000000000000000000004-b832e5d3b1f01a4f0623f7fe91d6673461e1f5d37d91fe78c5c2e6183ff39696-b2769c3d130a565027f05f74345760653bfc71200c3df9829e0e931a34f76cb4': 3,
       // PRV-ETH
@@ -97,8 +97,8 @@ export const actionFetchListPools = () => async (dispatch, getState) => {
             priority: _priority
           };
         })
-        .filter((pool) => !!pool)
-        .filter((pool) => !!pool?.isVerify) || [];
+        .filter((pool) => !!pool);
+    
     let topPools = payload.filter((pool) => Object.keys(priority).includes(pool.poolId));
     topPools = orderBy(topPools, 'apy', 'desc');
     const bottomPools = orderBy(payload, 'apy', 'desc');

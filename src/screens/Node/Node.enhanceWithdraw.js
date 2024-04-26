@@ -131,60 +131,37 @@ const enhanceWithdraw = (WrappedComp) => (props) => {
     }
   };
 
-  const handleMessageDevicesWithdrawInvalid = (devices) => {
-    let messages = '';
-    let accountNameList = [];
-    devices.map(item => {
-      accountNameList.push(item.device.AccountName || item.device.Name);
-      // messages = messages + `AccountName: ${item.device.AccountName || item.device.Name} \n ${item.errorMessage || ''} \n\n`;
-    });
-    messages = `Account Name: ${accountNameList.join(', ')} \nInsufficient PRV balance to cover network fee. \n ${feeAndSymbol} is required per node. `;
-    return messages;
-  };
-
   const handleWithdrawAll = async () => {
 
-    let devicesListCanWithdraw = [];
-    let devicesListCanNotWithdraw = [];
+    let jobWithdraw = [];
 
     dispatch(updateWithdrawing(true));
     setLoadingWithrawAll(true);
     for (const device of listDevice) {
       try {
         if (checkValidNode(device)) {
-          const {isValid, errorMessage} = await checkAccountBalanceForNode(device, listAccount);
-          if (isValid) devicesListCanWithdraw.push(device);
-          else devicesListCanNotWithdraw.push({ device, errorMessage });
+          jobWithdraw.push(handleWithdraw(device, false));
+          // const {isValid, errorMessage} = await checkAccountBalanceForNode(device, listAccount);
+          // if (isValid) devicesListCanWithdraw.push(device);
+          // else devicesListCanNotWithdraw.push({ device, errorMessage });
           // await handleWithdraw(device, false);
         }
       } catch {
-        /*Ignore the error*/
       } finally {
       }
     }
 
-    // console.log(' FINAL ', {
-    //   devicesListCanWithdraw,
-    //   devicesListCanNotWithdraw
-    // });
-
-    //Hanlde withdraw with devices valid
-    let jobWithdraw = [];
-    devicesListCanWithdraw.map(device => {
-      jobWithdraw.push(handleWithdraw(device, false));
-    });
-    await Promise.all(jobWithdraw);
-
-   //Hanlde withdraw with devices in-valid
-    if (devicesListCanNotWithdraw && devicesListCanNotWithdraw.length > 1) {
-      showToastErrorMessage(handleMessageDevicesWithdrawInvalid(devicesListCanNotWithdraw));
-    } else {
+    try {
+      await Promise.allSettled(jobWithdraw);
+    } catch (error) {
+    } finally {
       showToastMessage(MESSAGES.ALL_NODE_WITHDRAWAL);
-    }
 
-    // Turn-off Loading
-    dispatch(updateWithdrawing(false));
-    setLoadingWithrawAll(false);
+      // Turn-off Loading
+      dispatch(updateWithdrawing(false));
+      setLoadingWithrawAll(false);
+    }
+ 
   };
   
   const handlePressWithdraw = onClickView(handleWithdraw);
